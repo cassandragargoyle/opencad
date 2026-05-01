@@ -101,6 +101,11 @@ vi.mock('three', () => {
   class CylinderGeometry extends BufferGeometry {}
   class TorusGeometry extends BufferGeometry {}
   class ExtrudeGeometry extends BufferGeometry {}
+  class ConeGeometry extends BufferGeometry {}
+  class DodecahedronGeometry extends BufferGeometry {}
+  class CapsuleGeometry extends BufferGeometry {}
+  class SphereGeometry extends BufferGeometry {}
+  class BufferAttribute {}
   class Mesh {
     position = { set: vi.fn() };
     rotation = { x: 0, y: 0, z: 0 };
@@ -112,15 +117,43 @@ vi.mock('three', () => {
     raycast = vi.fn();
     traverse = vi.fn();
   }
+  class InstancedMesh extends Mesh {
+    count = 0;
+    instanceMatrix = { needsUpdate: false, array: new Float32Array(16 * 64) };
+    setMatrixAt = vi.fn();
+    getMatrixAt = vi.fn();
+  }
+  class Points {
+    userData = {};
+  }
+  class PointsMaterial { dispose = vi.fn(); }
   class Group {
     userData = {};
     add = vi.fn();
     traverse = vi.fn();
     children: Mesh[] = [];
   }
+  class Matrix4 {
+    compose = vi.fn().mockReturnThis();
+    decompose = vi.fn();
+    scale = vi.fn().mockReturnThis();
+    copy = vi.fn().mockReturnThis();
+  }
+  class Quaternion {
+    setFromEuler = vi.fn().mockReturnThis();
+  }
+  class Euler {
+    set = vi.fn().mockReturnThis();
+  }
+  // Extend Vector3 mock with methods needed by LandscapeInstanceManager.
+  class ExtVector3 extends Vector3 {
+    setScalar(_s: number) { this.x = _s; this.y = _s; this.z = _s; return this; }
+    distanceTo(_v: Vector3) { return 0; }
+    clone() { return new ExtVector3(this.x, this.y, this.z); }
+  }
 
   return {
-    Vector3,
+    Vector3: ExtVector3,
     Spherical,
     Color,
     PerspectiveCamera,
@@ -139,10 +172,22 @@ vi.mock('three', () => {
     CylinderGeometry,
     TorusGeometry,
     ExtrudeGeometry,
+    ConeGeometry,
+    DodecahedronGeometry,
+    CapsuleGeometry,
+    SphereGeometry,
+    BufferAttribute,
     Mesh,
+    InstancedMesh,
+    Points,
+    PointsMaterial,
     Group,
     Material,
+    Matrix4,
+    Quaternion,
+    Euler,
     Shape: class { moveTo = vi.fn(); lineTo = vi.fn(); closePath = vi.fn(); },
+    MathUtils: { degToRad: (deg: number) => (deg * Math.PI) / 180 },
     FrontSide: 0,
     DoubleSide: 2,
   };

@@ -12,6 +12,8 @@ import { getContextMenuItems, type ContextMenuGroup, type ElementContext } from 
 import { buildWallGraph, wallEndOffsets } from './wallGraph';
 import { trimBeamAtColumns } from '../lib/seoResolver';
 import type { Composite } from '@opencad/document';
+import { isLandscapeElement } from '@opencad/document';
+import { LandscapeInstanceManager } from '../three/LandscapeInstanceManager';
 
 // Patch Three.js prototypes once at module level for BVH-accelerated raycasting
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
@@ -607,6 +609,7 @@ export function useThreeViewport() {
   const pickVec2Ref      = useRef(new THREE.Vector2());
   const materialCacheRef = useRef<Map<string, THREE.MeshStandardMaterial>>(new Map());
   const dirLightRef      = useRef<THREE.DirectionalLight | null>(null);
+  const landscapeManagerRef = useRef<LandscapeInstanceManager | null>(null);
 
   // ── Sun study: move the DirectionalLight when ShadowAnalysisPanel updates
   // the sceneStore. Subscribing to the store directly (rather than via a
@@ -707,6 +710,9 @@ export function useThreeViewport() {
       const pv = (key: string, fallback: number) =>
         typeof props[key]?.value === 'number' ? (props[key]!.value as number) : fallback;
       const type = element.type;
+
+      // Landscape elements are handled by LandscapeInstanceManager — skip here.
+      if (isLandscapeElement(element)) return null;
 
       // Resolve applied material (overrides the type defaults when set)
       // Canonical key is 'Material' — matches every placement tool and the
@@ -1199,6 +1205,9 @@ export function useThreeViewport() {
     const newIds  = new Set(Object.keys(docElements));
     const oldIds  = new Set(elementMeshesRef.current.keys());
     const hadNone = oldIds.size === 0;
+
+    // Sync landscape instances — handled separately from regular meshes.
+    landscapeManagerRef.current?.sync(docElements);
 
     // ── Remove deleted elements ────────────────────────────────────────────
     for (const id of oldIds) {
@@ -1765,6 +1774,9 @@ export function useThreeViewport() {
 
     scene.add(new THREE.AxesHelper(1000));
 
+    // Landscape instance manager — one InstancedMesh per species.
+    landscapeManagerRef.current = new LandscapeInstanceManager(scene);
+
     // Renderer init is async (WebGPU resolves `navigator.gpu` asynchronously).
     // Everything renderer-dependent lives inside the IIFE below; `cancelled`
     // guards against unmount completing before init finishes.
@@ -2012,6 +2024,8 @@ export function useThreeViewport() {
       let coordFrame = 0;
       animate = () => {
         animationFrameRef.current = requestAnimationFrame(animate!);
+        // Update landscape LOD based on current camera position.
+        landscapeManagerRef.current?.updateLod(camera.position);
         try {
           renderer.render(scene, camera);
         } catch (err) {
@@ -2121,6 +2135,8 @@ export function useThreeViewport() {
         renderer.dispose();
         if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
       }
+      landscapeManagerRef.current?.dispose();
+      landscapeManagerRef.current = null;
       stateRef.current = { camera: null, renderer: null, scene: null };
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
