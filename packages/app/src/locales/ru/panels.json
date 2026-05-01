@@ -736,5 +736,16 @@
       "steelBollard": "Steel Bollard",
       "adultPerson": "Adult (Entourage)"
     }
+  },
+  "topoImport": {
+    "title": "Import Terrain",
+    "hint": "Paste CSV (x,y,z per line) or GeoJSON contour features.",
+    "placeholder": "0,0,10\n1000,0,12\n0,1000,15\n...",
+    "textareaLabel": "Terrain elevation data",
+    "importBtn": "Import Terrain",
+    "importing": "Importing…",
+    "defaultName": "Terrain",
+    "errorTooFewPoints": "Need at least {{min}} valid points.",
+    "errorParse": "Parse error: {{msg}}"
   }
 }

@@ -15,6 +15,7 @@ import type { Composite } from '@opencad/document';
 import { isLandscapeElement } from '@opencad/document';
 import { LandscapeInstanceManager } from '../three/LandscapeInstanceManager';
 import { TerrainRaycastSnapper } from '../three/TerrainRaycastSnapper';
+import { parseCSV, parseGeoJSON, buildTerrainGeometry } from '../lib/topoParser';
 
 // Patch Three.js prototypes once at module level for BVH-accelerated raycasting
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
@@ -1040,9 +1041,34 @@ export function useThreeViewport() {
         geometry = new THREE.BoxGeometry(w, h, d);
         posX = x + w / 2; posY = elev + h / 2; posZ = y + d / 2;
       } else if (type === 'topography') {
-        // Terrain surface from sample points. Fallback: flat plane from
-        // the element's bounding box so it's still visible in 3D even
-        // without Points data.
+        // Terrain surface — use stored sample points to build a real mesh,
+        // falling back to a flat box if no Points data is present.
+        const rawPts = props['Points']?.value;
+        if (typeof rawPts === 'string' && rawPts.length > 0) {
+          try {
+            let pts: import('../lib/topoParser').TerrainPoint[];
+            if (rawPts.trimStart().startsWith('{') || rawPts.trimStart().startsWith('[')) {
+              const parsed = JSON.parse(rawPts);
+              pts = parseGeoJSON(parsed).points.length > 0
+                ? parseGeoJSON(parsed).points
+                : (parsed as import('../lib/topoParser').TerrainPoint[]);
+            } else {
+              pts = parseCSV(rawPts).points;
+            }
+            if (pts.length >= 3) {
+              geometry = buildTerrainGeometry(pts, 32);
+              posX = 0; posY = 0; posZ = 0;
+              // Return early: geometry already in world space.
+              const mat = createMaterial(color, 0.85, pbr.roughness, pbr.metalness, appliedMat);
+              const mesh = new THREE.Mesh(geometry, mat);
+              mesh.userData.elementId   = element.id;
+              mesh.userData.elementType = type;
+              mesh.castShadow    = true;
+              mesh.receiveShadow = true;
+              return mesh;
+            }
+          } catch { /* fall through to box fallback */ }
+        }
         const bb = element.boundingBox;
         const bw = Math.max(bb.max.x - bb.min.x, 1000);
         const bd = Math.max(bb.max.y - bb.min.y, 1000);
