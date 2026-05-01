@@ -490,6 +490,24 @@
       "adultPerson": "Adult (Entourage)"
     }
   },
+  "grading": {
+    "title": "Grading",
+    "tools": "Grading tools",
+    "tool": {
+      "spot_level": "Spot Level",
+      "drainage_arrow": "Drainage Arrow",
+      "cutfill": "Cut / Fill"
+    },
+    "prefix": "Prefix",
+    "elevation": "Elevation",
+    "spotLevelHint": "Click in viewport to place a spot level.",
+    "drainageHint": "Click and drag in viewport to draw a drainage arrow.",
+    "placedSpotLevels": "{{count}} spot level(s) in document",
+    "cutVolume": "Cut",
+    "fillVolume": "Fill",
+    "netVolume": "Net",
+    "noCutFillData": "Add a topography element with elevation data to compute cut/fill."
+  },
   "setback": {
     "title": "Property Setbacks",
     "noPropertyLine": "Draw property_line elements to define the site boundary.",
