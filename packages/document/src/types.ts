@@ -207,7 +207,7 @@ export interface ViewCamera {
 export interface ViewSchema {
   id: string;
   name: string;
-  type: '3d' | '2d' | 'section' | 'render';
+  type: '3d' | '2d' | 'section' | 'elevation' | 'detail' | 'render';
   camera: ViewCamera;
   /**
    * Photoreal render payload (only set when `type === 'render'`).
@@ -222,6 +222,21 @@ export interface ViewSchema {
     envPreset?: string;
     createdAt: number;
   };
+  /** Section-specific: cut plane definition (only set when `type === 'section'`). */
+  sectionCut?: {
+    /** Plan point where the cut line starts. */
+    x1: number; y1: number;
+    /** Plan point where the cut line ends. */
+    x2: number; y2: number;
+    /** Bottom elevation of the section view (mm). */
+    zBottom: number;
+    /** Top elevation of the section view (mm). */
+    zTop: number;
+    /** Depth behind cut plane to include in view (mm). */
+    depth: number;
+  };
+  /** Elevation-specific: viewing direction (only set when `type === 'elevation'`). */
+  elevationDir?: 'N' | 'S' | 'E' | 'W';
 }
 
 export interface MaterialProperties {

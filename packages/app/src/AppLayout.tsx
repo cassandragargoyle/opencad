@@ -179,6 +179,7 @@ import { LandscapeToolPanel } from './components/LandscapeToolPanel';
 import { TopoImportPanel } from './components/TopoImportPanel';
 import { PropertySetbackPanel } from './components/PropertySetbackPanel';
 import { GradingPanel } from './components/GradingPanel';
+import { SectionViewPanel } from './components/SectionViewPanel';
 import { UpdateBanner } from './components/UpdateBanner';
 import { useAuthStore } from './stores/authStore';
 import { APIKeyPanel } from './components/APIKeyPanel';
@@ -235,7 +236,8 @@ type RightPanelTab =
   | 'underlay'
   | 'topoImport'
   | 'setback'
-  | 'grading';
+  | 'grading'
+  | 'sectionViews';
 
 const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNode }[] = [
   { id: 'graph', title: 'Graph', icon: <Share2 size={16} strokeWidth={2} /> },
@@ -243,6 +245,7 @@ const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNod
   { id: 'topoImport', title: 'Terrain', icon: <Mountain size={16} strokeWidth={2} /> },
   { id: 'setback', title: 'Setbacks', icon: <Fence size={16} strokeWidth={2} /> },
   { id: 'grading', title: 'Grading', icon: <Shovel size={16} strokeWidth={2} /> },
+  { id: 'sectionViews', title: 'Section/Elevation Views', icon: <Slice size={16} strokeWidth={2} /> },
   { id: 'properties', title: 'Properties', icon: <Settings2 size={16} strokeWidth={2} /> },
   { id: 'schedule', title: 'Schedule', icon: <Table2 size={16} strokeWidth={2} /> },
   { id: 'spaces', title: 'Spaces', icon: <LayoutDashboard size={16} strokeWidth={2} /> },
@@ -1011,6 +1014,7 @@ export function AppLayout() {
               {rightPanelTab === 'topoImport' && <TopoImportPanel />}
               {rightPanelTab === 'setback' && <PropertySetbackPanel />}
               {rightPanelTab === 'grading' && <GradingPanel />}
+              {rightPanelTab === 'sectionViews' && <SectionViewPanel />}
               {rightPanelTab === 'schedule' && <SchedulePanel />}
               {rightPanelTab === 'spaces' && <SpacePanel />}
               {rightPanelTab === 'clash' && <ClashDetectionPanel />}
