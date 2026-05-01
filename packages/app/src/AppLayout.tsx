@@ -38,6 +38,7 @@ import {
   Share2,
   Sprout,
   Mountain,
+  Fence,
 } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -175,6 +176,7 @@ import { ReviewPanel } from './components/ReviewPanel';
 import { GraphPanelWrapper } from './components/graph/GraphPanelWrapper';
 import { LandscapeToolPanel } from './components/LandscapeToolPanel';
 import { TopoImportPanel } from './components/TopoImportPanel';
+import { PropertySetbackPanel } from './components/PropertySetbackPanel';
 import { UpdateBanner } from './components/UpdateBanner';
 import { useAuthStore } from './stores/authStore';
 import { APIKeyPanel } from './components/APIKeyPanel';
@@ -229,12 +231,14 @@ type RightPanelTab =
   | 'compliance'
   | 'branches'
   | 'underlay'
-  | 'topoImport';
+  | 'topoImport'
+  | 'setback';
 
 const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNode }[] = [
   { id: 'graph', title: 'Graph', icon: <Share2 size={16} strokeWidth={2} /> },
   { id: 'landscape', title: 'Landscape', icon: <Sprout size={16} strokeWidth={2} /> },
   { id: 'topoImport', title: 'Terrain', icon: <Mountain size={16} strokeWidth={2} /> },
+  { id: 'setback', title: 'Setbacks', icon: <Fence size={16} strokeWidth={2} /> },
   { id: 'properties', title: 'Properties', icon: <Settings2 size={16} strokeWidth={2} /> },
   { id: 'schedule', title: 'Schedule', icon: <Table2 size={16} strokeWidth={2} /> },
   { id: 'spaces', title: 'Spaces', icon: <LayoutDashboard size={16} strokeWidth={2} /> },
@@ -1001,6 +1005,7 @@ export function AppLayout() {
               {rightPanelTab === 'graph' && <GraphPanelWrapper />}
               {rightPanelTab === 'landscape' && <LandscapeToolPanel />}
               {rightPanelTab === 'topoImport' && <TopoImportPanel />}
+              {rightPanelTab === 'setback' && <PropertySetbackPanel />}
               {rightPanelTab === 'schedule' && <SchedulePanel />}
               {rightPanelTab === 'spaces' && <SpacePanel />}
               {rightPanelTab === 'clash' && <ClashDetectionPanel />}
