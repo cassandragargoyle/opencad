@@ -5,6 +5,14 @@
  * Base URL: proxied through Vite dev server; uses /api prefix in production.
  */
 
+/** Thrown when the server returns 403 — used to surface plan-limit errors. */
+export class PlanLimitError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PlanLimitError';
+  }
+}
+
 /**
  * Token provider — injected at runtime by the auth layer so serverApi.ts
  * doesn't have a hard compile-time dependency on firebase.
@@ -37,6 +45,7 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
+    if (res.status === 403) throw new PlanLimitError(text);
     throw new Error(`API ${res.status}: ${text}`);
   }
   return res.json() as Promise<T>;
@@ -115,7 +124,7 @@ export const SERVER_WS_URL = (import.meta.env.VITE_SERVER_WS_URL as string | und
  */
 export async function isServerAvailable(): Promise<boolean> {
   try {
-    const res = await fetch('/health', { method: 'GET', signal: AbortSignal.timeout(3000) });
+    const res = await fetch('/api/v1/health', { method: 'GET', signal: AbortSignal.timeout(3000) });
     return res.status < 500;
   } catch {
     return false;
