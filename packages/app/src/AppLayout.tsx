@@ -40,6 +40,7 @@ import {
   Mountain,
   Fence,
   Shovel,
+  Hash,
 } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -180,6 +181,8 @@ import { TopoImportPanel } from './components/TopoImportPanel';
 import { PropertySetbackPanel } from './components/PropertySetbackPanel';
 import { GradingPanel } from './components/GradingPanel';
 import { SectionViewPanel } from './components/SectionViewPanel';
+import { DetailViewPanel } from './components/DetailViewPanel';
+import { AnnotationTagPanel } from './components/AnnotationTagPanel';
 import { UpdateBanner } from './components/UpdateBanner';
 import { useAuthStore } from './stores/authStore';
 import { APIKeyPanel } from './components/APIKeyPanel';
@@ -237,7 +240,9 @@ type RightPanelTab =
   | 'topoImport'
   | 'setback'
   | 'grading'
-  | 'sectionViews';
+  | 'sectionViews'
+  | 'detailViews'
+  | 'tags';
 
 const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNode }[] = [
   { id: 'graph', title: 'Graph', icon: <Share2 size={16} strokeWidth={2} /> },
@@ -246,6 +251,8 @@ const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNod
   { id: 'setback', title: 'Setbacks', icon: <Fence size={16} strokeWidth={2} /> },
   { id: 'grading', title: 'Grading', icon: <Shovel size={16} strokeWidth={2} /> },
   { id: 'sectionViews', title: 'Section/Elevation Views', icon: <Slice size={16} strokeWidth={2} /> },
+  { id: 'detailViews', title: 'Detail Views', icon: <Zap size={16} strokeWidth={2} /> },
+  { id: 'tags', title: 'Annotation Tags', icon: <Hash size={16} strokeWidth={2} /> },
   { id: 'properties', title: 'Properties', icon: <Settings2 size={16} strokeWidth={2} /> },
   { id: 'schedule', title: 'Schedule', icon: <Table2 size={16} strokeWidth={2} /> },
   { id: 'spaces', title: 'Spaces', icon: <LayoutDashboard size={16} strokeWidth={2} /> },
@@ -1015,6 +1022,8 @@ export function AppLayout() {
               {rightPanelTab === 'setback' && <PropertySetbackPanel />}
               {rightPanelTab === 'grading' && <GradingPanel />}
               {rightPanelTab === 'sectionViews' && <SectionViewPanel />}
+              {rightPanelTab === 'detailViews' && <DetailViewPanel />}
+              {rightPanelTab === 'tags' && <AnnotationTagPanel />}
               {rightPanelTab === 'schedule' && <SchedulePanel />}
               {rightPanelTab === 'spaces' && <SpacePanel />}
               {rightPanelTab === 'clash' && <ClashDetectionPanel />}

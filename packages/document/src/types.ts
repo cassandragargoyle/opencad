@@ -237,6 +237,13 @@ export interface ViewSchema {
   };
   /** Elevation-specific: viewing direction (only set when `type === 'elevation'`). */
   elevationDir?: 'N' | 'S' | 'E' | 'W';
+  /** Detail-specific: cropped region in model space (only set when `type === 'detail'`). */
+  detailRegion?: {
+    x: number; y: number;
+    width: number; height: number;
+    /** Print scale denominator (e.g. 10 = 1:10). */
+    scale?: number;
+  };
 }
 
 export interface MaterialProperties {
