@@ -16,6 +16,7 @@ import { Download } from 'lucide-react';
 import * as THREE from 'three';
 import { useTranslation } from 'react-i18next';
 import { getLiveScene } from '../hooks/useThreeViewport';
+import { bakeInstancesToBVH, addBakeToScene, removeBakeFromScene } from '../three/instanceBVHBake';
 import { useSceneStore } from '../stores/sceneStore';
 import { useDocumentStore } from '../stores/documentStore';
 import {
@@ -329,6 +330,10 @@ export function RenderingPanel(): React.ReactElement {
       // setSceneAsync triggers generateAsync or the scene generator throws.
       tracer.setBVHWorker(await makeInlineBVHGenerator());
 
+      // Bake landscape InstancedMeshes into merged flat geometries so the
+      // pathtracer's BVH generator covers all landscape instances.
+      const bake = bakeInstancesToBVH(scene);
+      addBakeToScene(scene, bake);
       try {
         await tracer.setSceneAsync(scene, camera);
       } catch (sceneErr) {
@@ -341,6 +346,10 @@ export function RenderingPanel(): React.ReactElement {
           `Path-tracer failed to build scene (${meshCount} meshes): ${sceneErr instanceof Error ? sceneErr.message : String(sceneErr)}`,
         );
       }
+      // Remove baked meshes from the live scene — they were only needed
+      // to populate the pathtracer's BVH.
+      removeBakeFromScene(scene, bake);
+      bake.dispose();
       if (cancelRef.current) return;
       setStatus('rendering');
 

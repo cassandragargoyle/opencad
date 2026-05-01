@@ -158,7 +158,7 @@ function inwardOffsetLine(
 }
 
 /** Point-in-polygon test using ray casting (Jordan curve theorem). */
-function pointInPolygon(pt: Point2D, poly: Point2D[]): boolean {
+export function pointInPolygon(pt: Point2D, poly: Point2D[]): boolean {
   const n = poly.length;
   let inside = false;
   for (let i = 0, j = n - 1; i < n; j = i++) {
