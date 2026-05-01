@@ -188,6 +188,11 @@ vi.mock('three', () => {
     Euler,
     Shape: class { moveTo = vi.fn(); lineTo = vi.fn(); closePath = vi.fn(); },
     MathUtils: { degToRad: (deg: number) => (deg * Math.PI) / 180 },
+    Plane: class {
+      normal = new Vector3(0, 1, 0);
+      constant = 0;
+      constructor(_n?: unknown, _c?: number) {}
+    },
     FrontSide: 0,
     DoubleSide: 2,
   };

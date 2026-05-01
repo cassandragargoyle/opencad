@@ -14,6 +14,7 @@ import { trimBeamAtColumns } from '../lib/seoResolver';
 import type { Composite } from '@opencad/document';
 import { isLandscapeElement } from '@opencad/document';
 import { LandscapeInstanceManager } from '../three/LandscapeInstanceManager';
+import { TerrainRaycastSnapper } from '../three/TerrainRaycastSnapper';
 
 // Patch Three.js prototypes once at module level for BVH-accelerated raycasting
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
@@ -610,6 +611,7 @@ export function useThreeViewport() {
   const materialCacheRef = useRef<Map<string, THREE.MeshStandardMaterial>>(new Map());
   const dirLightRef      = useRef<THREE.DirectionalLight | null>(null);
   const landscapeManagerRef = useRef<LandscapeInstanceManager | null>(null);
+  const terrainSnapperRef   = useRef<TerrainRaycastSnapper | null>(null);
 
   // ── Sun study: move the DirectionalLight when ShadowAnalysisPanel updates
   // the sceneStore. Subscribing to the store directly (rather than via a
@@ -1208,6 +1210,8 @@ export function useThreeViewport() {
 
     // Sync landscape instances — handled separately from regular meshes.
     landscapeManagerRef.current?.sync(docElements);
+    // Keep terrain snapper up-to-date so landscape placements snap to terrain.
+    terrainSnapperRef.current?.syncFromElementMeshes(elementMeshesRef.current, docElements);
 
     // ── Remove deleted elements ────────────────────────────────────────────
     for (const id of oldIds) {
@@ -1564,6 +1568,14 @@ export function useThreeViewport() {
         );
         raycasterRef.current.setFromCamera(pickVec2Ref.current, camera);
 
+        // Landscape placing mode: snap to terrain and call the place handler.
+        const placeHandler = (window as unknown as Record<string, unknown>).__landscapePlaceHandler;
+        if (typeof placeHandler === 'function' && terrainSnapperRef.current) {
+          const snap = terrainSnapperRef.current.snap(raycasterRef.current);
+          (placeHandler as (x: number, y: number, z: number) => void)(snap.x, snap.y, snap.z);
+          return;
+        }
+
         // Collect all leaf meshes (handles both Mesh and Group objects)
         const leafMeshes: THREE.Mesh[] = [];
         for (const obj of elementMeshesRef.current.values()) {
@@ -1776,6 +1788,8 @@ export function useThreeViewport() {
 
     // Landscape instance manager — one InstancedMesh per species.
     landscapeManagerRef.current = new LandscapeInstanceManager(scene);
+    // Terrain raycast snapper for landscape placement.
+    terrainSnapperRef.current = new TerrainRaycastSnapper();
 
     // Renderer init is async (WebGPU resolves `navigator.gpu` asynchronously).
     // Everything renderer-dependent lives inside the IIFE below; `cancelled`
@@ -2137,6 +2151,8 @@ export function useThreeViewport() {
       }
       landscapeManagerRef.current?.dispose();
       landscapeManagerRef.current = null;
+      terrainSnapperRef.current?.dispose();
+      terrainSnapperRef.current = null;
       stateRef.current = { camera: null, renderer: null, scene: null };
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
