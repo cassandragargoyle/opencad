@@ -80,3 +80,23 @@ export {
   type WorkflowStatus,
   type WorkflowState,
 } from './bcf';
+
+// Camera animation timeline (T-PRES-01)
+export {
+  cubicHermite,
+  interpolateCameraPath,
+  retimeKeyframe,
+  hasOverlap,
+  generatePresetKeyframes,
+  totalFrameCount,
+  frameTimestamps,
+  exportFramePoses,
+  autoTangents,
+  lerpVec3,
+  type Vec3 as AnimVec3,
+  type CameraKeyframe,
+  type AnimationSchema,
+  type CameraPose,
+  type AnimationPreset,
+  type Mp4ExportOptions,
+} from './animation';
