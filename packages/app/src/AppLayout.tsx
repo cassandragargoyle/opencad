@@ -186,6 +186,9 @@ import { AnnotationTagPanel } from './components/AnnotationTagPanel';
 import { RevisionCloudPanel } from './components/RevisionCloudPanel';
 import { CalloutPanel } from './components/CalloutPanel';
 import { KeynotePanel } from './components/KeynotePanel';
+import { DimensionTypePanel } from './components/DimensionTypePanel';
+import { LegendViewPanel } from './components/LegendViewPanel';
+import { SheetBrowserPanel } from './components/SheetBrowserPanel';
 import { UpdateBanner } from './components/UpdateBanner';
 import { useAuthStore } from './stores/authStore';
 import { APIKeyPanel } from './components/APIKeyPanel';
@@ -248,7 +251,10 @@ type RightPanelTab =
   | 'tags'
   | 'revisions'
   | 'callouts'
-  | 'keynotes';
+  | 'keynotes'
+  | 'dimensionTypes'
+  | 'legendViews'
+  | 'sheetBrowser';
 
 const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNode }[] = [
   { id: 'graph', title: 'Graph', icon: <Share2 size={16} strokeWidth={2} /> },
@@ -262,6 +268,9 @@ const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNod
   { id: 'revisions', title: 'Revision Clouds', icon: <GitBranch size={16} strokeWidth={2} /> },
   { id: 'callouts', title: 'Callout Markers', icon: <MessageCirclePlus size={16} strokeWidth={2} /> },
   { id: 'keynotes', title: 'Keynotes', icon: <FileText size={16} strokeWidth={2} /> },
+  { id: 'dimensionTypes', title: 'Dimension Types', icon: <Zap size={16} strokeWidth={2} /> },
+  { id: 'legendViews', title: 'Legend Views', icon: <Palette size={16} strokeWidth={2} /> },
+  { id: 'sheetBrowser', title: 'Sheet Browser', icon: <Sheet size={16} strokeWidth={2} /> },
   { id: 'properties', title: 'Properties', icon: <Settings2 size={16} strokeWidth={2} /> },
   { id: 'schedule', title: 'Schedule', icon: <Table2 size={16} strokeWidth={2} /> },
   { id: 'spaces', title: 'Spaces', icon: <LayoutDashboard size={16} strokeWidth={2} /> },
@@ -1036,6 +1045,9 @@ export function AppLayout() {
               {rightPanelTab === 'revisions' && <RevisionCloudPanel />}
               {rightPanelTab === 'callouts' && <CalloutPanel />}
               {rightPanelTab === 'keynotes' && <KeynotePanel />}
+              {rightPanelTab === 'dimensionTypes' && <DimensionTypePanel />}
+              {rightPanelTab === 'legendViews' && <LegendViewPanel />}
+              {rightPanelTab === 'sheetBrowser' && <SheetBrowserPanel />}
               {rightPanelTab === 'schedule' && <SchedulePanel />}
               {rightPanelTab === 'spaces' && <SpacePanel />}
               {rightPanelTab === 'clash' && <ClashDetectionPanel />}

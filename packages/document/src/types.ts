@@ -207,7 +207,7 @@ export interface ViewCamera {
 export interface ViewSchema {
   id: string;
   name: string;
-  type: '3d' | '2d' | 'section' | 'elevation' | 'detail' | 'render';
+  type: '3d' | '2d' | 'section' | 'elevation' | 'detail' | 'render' | 'legend';
   camera: ViewCamera;
   /**
    * Photoreal render payload (only set when `type === 'render'`).
