@@ -92,6 +92,7 @@ SECRETS=(
   "opencad-stripe-webhook-secret     STRIPE_WEBHOOK_SECRET    Stripe webhook signing secret (whsec_...)"
   "opencad-stripe-price-pro          STRIPE_PRICE_PRO         Stripe price ID for Pro tier (price_...)"
   "opencad-stripe-price-business     STRIPE_PRICE_BUSINESS    Stripe price ID for Business tier (price_...)"
+  "opencad-admin-uids                ADMIN_UIDS               Comma-separated Firebase UIDs that bypass the paygate"
 )
 
 for entry in "${SECRETS[@]}"; do

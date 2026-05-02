@@ -93,8 +93,8 @@ jobs:
             --min-instances=0 \
             --max-instances=10 \
             --add-cloudsql-instances=opencad-prod:us-central1:opencad-db \
-            --set-env-vars="CLOUD_SQL_INSTANCE=opencad-prod:us-central1:opencad-db,AUTH_ENABLED=true,FIREBASE_PROJECT_ID=${{ vars.VITE_FIREBASE_PROJECT_ID }},STORAGE_BACKEND=gcs,GCS_BUCKET=${{ vars.GCS_BUCKET }},CORS_ORIGINS=https://opencad.archi,GITHUB_REPO=CariHQ/opencad,APP_BASE_URL=https://app.opencad.archi,ADMIN_UIDS=${{ vars.ADMIN_UIDS }}" \
-            --set-secrets="DATABASE_URL=opencad-database-url:latest,JWT_SECRET=opencad-jwt-secret:latest,GITHUB_TOKEN=opencad-github-token:latest,STRIPE_SECRET_KEY=opencad-stripe-secret-key:latest,STRIPE_WEBHOOK_SECRET=opencad-stripe-webhook-secret:latest,STRIPE_PRICE_PRO=opencad-stripe-price-pro:latest,STRIPE_PRICE_BUSINESS=opencad-stripe-price-business:latest" \
+            --set-env-vars="CLOUD_SQL_INSTANCE=opencad-prod:us-central1:opencad-db,AUTH_ENABLED=true,FIREBASE_PROJECT_ID=${{ vars.VITE_FIREBASE_PROJECT_ID }},STORAGE_BACKEND=gcs,GCS_BUCKET=${{ vars.GCS_BUCKET }},CORS_ORIGINS=https://opencad.archi,GITHUB_REPO=CariHQ/opencad,APP_BASE_URL=https://app.opencad.archi" \
+            --set-secrets="DATABASE_URL=opencad-database-url:latest,JWT_SECRET=opencad-jwt-secret:latest,GITHUB_TOKEN=opencad-github-token:latest,STRIPE_SECRET_KEY=opencad-stripe-secret-key:latest,STRIPE_WEBHOOK_SECRET=opencad-stripe-webhook-secret:latest,STRIPE_PRICE_PRO=opencad-stripe-price-pro:latest,STRIPE_PRICE_BUSINESS=opencad-stripe-price-business:latest,ADMIN_UIDS=opencad-admin-uids:latest" \
             --quiet
 
   # ── 3. Build app & deploy to GCS ─────────────────────────────────────────────
