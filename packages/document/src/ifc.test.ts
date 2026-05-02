@@ -591,3 +591,123 @@ describe('T-BIM-003: IFC Pset Editing', () => {
     expect(updated.properties['Pset_A.Label']?.type).toBe('string');
   });
 });
+
+// ── T-IO-01: IFC 4.3 ADD2 tests ──────────────────────────────────────────────
+
+import { exportIFC43 } from './ifc';
+import { createProject, addElement } from './document';
+
+function makeDoc43() {
+  return createProject('proj-1', 'user-1');
+}
+
+describe('T-IO-01: IFC 4.3 ADD2 Reference View export', () => {
+  it('starts with ISO-10303-21 header', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc.trimStart()).toMatch(/^ISO-10303-21/);
+  });
+
+  it('uses IFC4X3_ADD2 schema', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc).toContain("FILE_SCHEMA(('IFC4X3_ADD2'))");
+  });
+
+  it('includes ReferenceView_V1.2 in FILE_DESCRIPTION', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc).toContain('ReferenceView_V1.2');
+  });
+
+  it('includes IFCPROJECT', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc).toContain('IFCPROJECT');
+  });
+
+  it('includes IFCSITE and IFCBUILDING', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc).toContain('IFCSITE');
+    expect(ifc).toContain('IFCBUILDING');
+  });
+
+  it('includes IFCBUILDINGSTOREY per level', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc).toContain('IFCBUILDINGSTOREY');
+  });
+
+  it('includes IFCUNITASSIGNMENT with SI units', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc).toContain('IFCUNITASSIGNMENT');
+    expect(ifc).toContain('LENGTHUNIT');
+    expect(ifc).toContain('MILLI');
+  });
+
+  it('includes IFCGEOMETRICREPRESENTATIONCONTEXT', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc).toContain('IFCGEOMETRICREPRESENTATIONCONTEXT');
+  });
+
+  it('exports wall as IFCWALL', () => {
+    const doc = makeDoc43();
+    const level = Object.keys(doc.organization.levels)[0];
+    const layer = Object.keys(doc.organization.layers)[0];
+    addElement(doc, {
+      type: 'wall',
+      properties: { Name: { type: 'string', value: 'Wall A' } },
+      layerId: layer,
+      levelId: level,
+    });
+    const ifc = exportIFC43(doc);
+    expect(ifc).toContain('IFCWALL');
+    expect(ifc).toContain('Wall A');
+  });
+
+  it('exports propertySets as IFCPROPERTYSET', () => {
+    const doc = makeDoc43();
+    const level = Object.keys(doc.organization.levels)[0];
+    const layer = Object.keys(doc.organization.layers)[0];
+    const eid = addElement(doc, {
+      type: 'slab',
+      properties: { Name: { type: 'string', value: 'Ground Slab' } },
+      layerId: layer,
+      levelId: level,
+    });
+    // addElement ignores propertySets — set them directly on the element
+    doc.content.elements[eid].propertySets = [{
+      id: 'pset1',
+      name: 'Pset_SlabCommon',
+      properties: {
+        Combustible: { type: 'boolean', value: false },
+        ThermalTransmittance: { type: 'number', value: 0.25 },
+      },
+    }];
+    const ifc = exportIFC43(doc);
+    expect(ifc).toContain('IFCPROPERTYSET');
+    expect(ifc).toContain('Pset_SlabCommon');
+    expect(ifc).toContain('IFCRELDEFINESBYPROPERTIES');
+    expect(ifc).toContain('ThermalTransmittance');
+  });
+
+  it('project name is in FILE_NAME', () => {
+    const doc = makeDoc43();
+    doc.name = 'My Tower';
+    const ifc = exportIFC43(doc);
+    expect(ifc).toContain('My Tower');
+  });
+
+  it('respects author and organisation options', () => {
+    const ifc = exportIFC43(makeDoc43(), { author: 'Jane Doe', organisation: 'Acme Inc' });
+    expect(ifc).toContain('Jane Doe');
+    expect(ifc).toContain('Acme Inc');
+  });
+
+  it('ends with END-ISO-10303-21', () => {
+    const ifc = exportIFC43(makeDoc43());
+    expect(ifc.trimEnd()).toMatch(/END-ISO-10303-21;?\s*$/);
+  });
+
+  it('GUID in IFCPROJECT is 22 chars', () => {
+    const ifc = exportIFC43(makeDoc43());
+    const m = /IFCPROJECT\('([^']+)'/.exec(ifc);
+    expect(m).not.toBeNull();
+    expect(m![1].length).toBe(22);
+  });
+});

@@ -782,3 +782,162 @@ describe('T-DXF-ROUNDTRIP: exportDXF(schema) → importDXF(result) → verify el
     expect(els.filter((e) => e.type === 'circle').length).toBeGreaterThanOrEqual(1);
   });
 });
+
+// ── T-IO-06 Polish tests ──────────────────────────────────────────────────────
+
+import {
+  buildLinetypeTableEntry,
+  buildTablesSection,
+  parseDxfTrueColour,
+  hexToTrueColour,
+  buildHatchEntity,
+  buildMtextEntity,
+  buildXrefInsert,
+  parseXrefs,
+  DXF_LINETYPE_PATTERNS,
+} from './dwg';
+
+describe('T-IO-06: DWG polish — linetypes', () => {
+  it('DXF_LINETYPE_PATTERNS has entries for all standard types', () => {
+    const required = ['CONTINUOUS', 'HIDDEN', 'DASHED', 'CENTER', 'PHANTOM', 'DOT', 'DASHDOT'];
+    for (const lt of required) {
+      expect(DXF_LINETYPE_PATTERNS).toHaveProperty(lt);
+    }
+  });
+
+  it('CONTINUOUS has empty pattern', () => {
+    expect(DXF_LINETYPE_PATTERNS.CONTINUOUS).toHaveLength(0);
+  });
+
+  it('buildLinetypeTableEntry produces valid LTYPE lines', () => {
+    const entry = buildLinetypeTableEntry('DASHED', 'ABC');
+    expect(entry).toContain('LTYPE');
+    expect(entry).toContain('DASHED');
+    expect(entry).toContain('ABC');
+  });
+
+  it('buildTablesSection includes LTYPE and LAYER sections', () => {
+    const layers = [{ id: 'l1', name: 'Walls', color: '#FF0000', visible: true, locked: false }];
+    const tables = buildTablesSection(layers);
+    expect(tables).toContain('LTYPE');
+    expect(tables).toContain('LAYER');
+    expect(tables).toContain('Walls');
+    expect(tables).toContain('TABLES');
+    expect(tables).toContain('ENDSEC');
+  });
+
+  it('buildTablesSection locked layer has negative ACI', () => {
+    const layers = [{ id: 'l1', name: 'Hidden', color: '#FF0000', visible: true, locked: true }];
+    const tables = buildTablesSection(layers);
+    // locked layers use negative ACI
+    expect(tables).toMatch(/-\d+/);
+  });
+});
+
+describe('T-IO-06: DWG polish — true colour', () => {
+  it('parseDxfTrueColour converts integer to hex', () => {
+    // 0xFF0000 = red
+    expect(parseDxfTrueColour(0xFF0000)).toBe('#FF0000');
+  });
+
+  it('hexToTrueColour converts hex to integer', () => {
+    expect(hexToTrueColour('#FF0000')).toBe(0xFF0000);
+    expect(hexToTrueColour('#0000FF')).toBe(0x0000FF);
+  });
+
+  it('round-trip: hex → int → hex', () => {
+    const hex = '#1A2B3C';
+    expect(parseDxfTrueColour(hexToTrueColour(hex))).toBe(hex.toUpperCase());
+  });
+});
+
+describe('T-IO-06: DWG polish — HATCH entity', () => {
+  it('buildHatchEntity starts with HATCH entity type', () => {
+    const lines = buildHatchEntity('Slabs', 'A1', 0, 0, 5000, 5000);
+    expect(lines[0]).toBe('0');
+    expect(lines[1]).toBe('HATCH');
+  });
+
+  it('buildHatchEntity includes correct layer', () => {
+    const lines = buildHatchEntity('Slabs', 'A1', 0, 0, 5000, 5000);
+    const idx = lines.indexOf('8');
+    expect(lines[idx + 1]).toBe('Slabs');
+  });
+
+  it('buildHatchEntity includes bounding corners', () => {
+    const lines = buildHatchEntity('0', 'H1', 100, 200, 500, 600);
+    expect(lines).toContain('100');
+    expect(lines).toContain('200');
+    expect(lines).toContain('500');
+    expect(lines).toContain('600');
+  });
+
+  it('custom pattern name is used', () => {
+    const lines = buildHatchEntity('0', 'H1', 0, 0, 1, 1, 'ANSI31');
+    expect(lines).toContain('ANSI31');
+  });
+});
+
+describe('T-IO-06: DWG polish — MTEXT entity', () => {
+  it('buildMtextEntity starts with MTEXT', () => {
+    const lines = buildMtextEntity('Notes', 'M1', 100, 200, 3, 'Hello');
+    expect(lines[1]).toBe('MTEXT');
+  });
+
+  it('buildMtextEntity includes text content', () => {
+    const lines = buildMtextEntity('Notes', 'M1', 100, 200, 3, 'My Text');
+    expect(lines).toContain('My Text');
+  });
+
+  it('buildMtextEntity includes position', () => {
+    const lines = buildMtextEntity('0', 'M1', 123, 456, 2.5, 'X');
+    expect(lines).toContain('123');
+    expect(lines).toContain('456');
+  });
+});
+
+describe('T-IO-06: DWG polish — xref', () => {
+  it('buildXrefInsert produces an INSERT entity', () => {
+    const lines = buildXrefInsert('0', 'X1', {
+      path: '../survey/site.dwg',
+      name: 'site',
+      x: 0, y: 0, z: 0,
+      scaleX: 1, scaleY: 1, scaleZ: 1,
+      rotation: 0,
+    });
+    expect(lines[1]).toBe('INSERT');
+  });
+
+  it('buildXrefInsert embeds path in XDATA', () => {
+    const lines = buildXrefInsert('0', 'X1', {
+      path: '../survey/site.dwg',
+      name: 'site',
+      x: 0, y: 0, z: 0,
+      scaleX: 1, scaleY: 1, scaleZ: 1,
+      rotation: 0,
+    });
+    expect(lines).toContain('../survey/site.dwg');
+    expect(lines).toContain('OpenCAD');
+  });
+
+  it('parseXrefs finds xref INSERTs in DXF text', () => {
+    const lines = buildXrefInsert('0', 'X1', {
+      path: 'survey.dwg',
+      name: 'SURVEY',
+      x: 10, y: 20, z: 0,
+      scaleX: 1, scaleY: 1, scaleZ: 1,
+      rotation: 45,
+    });
+    const dxf = '0\nSECTION\n2\nENTITIES\n' + lines.join('\n') + '\n0\nENDSEC\n0\nEOF';
+    const refs = parseXrefs(dxf);
+    expect(refs.length).toBe(1);
+    expect(refs[0].name).toBe('SURVEY');
+    expect(refs[0].path).toBe('survey.dwg');
+    expect(refs[0].rotation).toBe(45);
+  });
+
+  it('parseXrefs returns empty array when no xrefs present', () => {
+    const dxf = '0\nSECTION\n2\nENTITIES\n0\nENDSEC\n0\nEOF';
+    expect(parseXrefs(dxf)).toHaveLength(0);
+  });
+});

@@ -1231,3 +1231,264 @@ function _getIFCTypeStatic(elementType: ElementType): string {
   };
   return map[elementType] ?? 'IFCBUILDINGELEMENTPROXY';
 }
+
+// ── T-IO-01: IFC 4.3 ADD2 Reference View export ───────────────────────────────
+
+export interface IFC43ExportOptions {
+  /** Author field in FILE_NAME. Default 'OpenCAD'. */
+  author?: string;
+  /** Organisation field in FILE_NAME. Default ''. */
+  organisation?: string;
+}
+
+/**
+ * Export a DocumentSchema as IFC 4.3 ADD2 Reference View compliant STEP text.
+ * Upgrades the legacy IFC2X3 exporter with:
+ *  - FILE_SCHEMA IFC4X3_ADD2
+ *  - ViewDefinition [ReferenceView_V1.2] in FILE_DESCRIPTION
+ *  - IfcUnitAssignment (metric, millimetres)
+ *  - IfcPropertySet for every element propertySets entry
+ *  - IfcRelDefinesByProperties wiring psets to elements
+ *  - All RV element types (wall, slab, column, beam, door, window, stair,
+ *    railing, roof, space, furniture, planting)
+ *  - 22-char base64 GUID preservation for re-imported elements
+ */
+export function exportIFC43(
+  doc: DocumentSchema,
+  opts: IFC43ExportOptions = {},
+): string {
+  const author = opts.author ?? 'OpenCAD';
+  const org    = opts.organisation ?? '';
+  const lines: string[] = [];
+  let nextId = 1;
+  const next = (): number => nextId++;
+
+  const now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z/, '');
+  const projectName = doc.name || 'OpenCAD Project';
+
+  // ── Header ────────────────────────────────────────────────────────────────
+  lines.push('ISO-10303-21;');
+  lines.push('HEADER;');
+  lines.push(`FILE_DESCRIPTION(('ViewDefinition [ReferenceView_V1.2]'),'2;1');`);
+  lines.push(`FILE_NAME('${escStep(projectName)}','${now}',('${escStep(author)}'),('${escStep(org)}'),'','OpenCAD','');`);
+  lines.push(`FILE_SCHEMA(('IFC4X3_ADD2'));`);
+  lines.push('ENDSEC;');
+  lines.push('DATA;');
+
+  // ── Geometry context ──────────────────────────────────────────────────────
+  const idGeomCtx  = next(); // IfcGeometricRepresentationContext
+  const idDirZ     = next(); // IfcDirection (0,0,1)
+  const idDirX     = next(); // IfcDirection (1,0,0)
+  const idOrigin   = next(); // IfcCartesianPoint (0,0,0)
+  const idAxis     = next(); // IfcAxis2Placement3D
+  lines.push(`#${idDirZ}=IFCDIRECTION((0.,0.,1.));`);
+  lines.push(`#${idDirX}=IFCDIRECTION((1.,0.,0.));`);
+  lines.push(`#${idOrigin}=IFCCARTESIANPOINT((0.,0.,0.));`);
+  lines.push(`#${idAxis}=IFCAXIS2PLACEMENT3D(#${idOrigin},#${idDirZ},#${idDirX});`);
+  lines.push(`#${idGeomCtx}=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.E-05,#${idAxis},$);`);
+
+  // ── Unit assignment (SI, millimetres) ─────────────────────────────────────
+  const idLenUnit  = next(); // IfcSIUnit (millimetre)
+  const idAreaUnit = next(); // IfcSIUnit (square metre – derived)
+  const idVolUnit  = next(); // IfcSIUnit (cubic metre – derived)
+  const idUnitAss  = next(); // IfcUnitAssignment
+  lines.push(`#${idLenUnit}=IFCSIUNIT(*,.LENGTHUNIT.,.MILLI.,.METRE.);`);
+  lines.push(`#${idAreaUnit}=IFCSIUNIT(*,.AREAUNIT.,$,.SQUARE_METRE.);`);
+  lines.push(`#${idVolUnit}=IFCSIUNIT(*,.VOLUMEUNIT.,$,.CUBIC_METRE.);`);
+  lines.push(`#${idUnitAss}=IFCUNITASSIGNMENT((#${idLenUnit},#${idAreaUnit},#${idVolUnit}));`);
+
+  // ── Project hierarchy ────────────────────────────────────────────────────
+  const idProject  = next();
+  const idSite     = next();
+  const idBuilding = next();
+  const projectGuid = toIFC43Guid(doc.id);
+  lines.push(`#${idProject}=IFCPROJECT('${projectGuid}',$,'${escStep(projectName)}',$,$,$,$,(#${idGeomCtx}),#${idUnitAss});`);
+  lines.push(`#${idSite}=IFCSITE('${toIFC43Guid(doc.id + '-site')}',$,'Site',$,$,$,$,$,.ELEMENT.,$,$,$,$,());`);
+  lines.push(`#${idBuilding}=IFCBUILDING('${toIFC43Guid(doc.id + '-bldg')}',$,'Building',$,$,$,$,$,.ELEMENT.,$,$,());`);
+
+  // Aggregate: project -> site -> building
+  const idAgg1 = next();
+  const idAgg2 = next();
+  lines.push(`#${idAgg1}=IFCRELAGGREGATES('${newGuid()}',$,$,$,#${idProject},(#${idSite}));`);
+  lines.push(`#${idAgg2}=IFCRELAGGREGATES('${newGuid()}',$,$,$,#${idSite},(#${idBuilding}));`);
+
+  // ── Building storeys ──────────────────────────────────────────────────────
+  const levels = Object.values(doc.organization.levels);
+  const storeyEntityId: Record<string, number> = {};
+  const storeyElementIds: Record<string, number[]> = {};
+
+  for (const level of levels) {
+    const sid = next();
+    storeyEntityId[level.id] = sid;
+    storeyElementIds[level.id] = [];
+    lines.push(`#${sid}=IFCBUILDINGSTOREY('${toIFC43Guid(level.id)}',$,'${escStep(level.name)}',$,$,$,$,$,.ELEMENT.,${level.elevation}.);`);
+  }
+
+  // Aggregate building -> storeys
+  if (levels.length > 0) {
+    const storeySids = levels.map((lv) => `#${storeyEntityId[lv.id]}`).join(',');
+    lines.push(`#${next()}=IFCRELAGGREGATES('${newGuid()}',$,$,$,#${idBuilding},(${storeySids}));`);
+  }
+
+  // ── Elements + propertySets ───────────────────────────────────────────────
+  const elements = Object.values(doc.content.elements);
+  const psetRelIds: number[] = [];
+
+  for (const el of elements) {
+    const eid = next();
+    const ifcType = getIFC43Type(el.type as ElementType);
+    const name = String(el.properties?.Name?.value ?? el.id);
+    const guid = toIFC43Guid(el.id);
+    const bbox = el.boundingBox;
+    const bboxComment = bbox
+      ? ` /* bbox:${bbox.min.x},${bbox.min.y},${bbox.min.z}:${bbox.max.x},${bbox.max.y},${bbox.max.z} */`
+      : '';
+    lines.push(`#${eid}=${ifcType}('${guid}',$,'${escStep(name)}',$,$,$,$,$);${bboxComment}`);
+
+    // Place element in storey
+    if (el.levelId && storeyEntityId[el.levelId]) {
+      storeyElementIds[el.levelId].push(eid);
+    }
+
+    // Export propertySets
+    for (const pset of el.propertySets ?? []) {
+      const props = Object.entries(pset.properties ?? {})
+        .map(([key, pv]) => {
+          const pid = next();
+          const val = ifcPropValue(pv.type, pv.value);
+          lines.push(`#${pid}=IFCPROPERTYSINGLEVALUE('${escStep(key)}',$,${val},$);`);
+          return `#${pid}`;
+        });
+
+      if (props.length > 0) {
+        const psetId = next();
+        lines.push(`#${psetId}=IFCPROPERTYSET('${newGuid()}',$,'${escStep(pset.name)}',$,(${props.join(',')}));`);
+
+        const relId = next();
+        psetRelIds.push(relId);
+        lines.push(`#${relId}=IFCRELDEFINESBYPROPERTIES('${newGuid()}',$,$,$,(#${eid}),#${psetId});`);
+      }
+    }
+  }
+
+  // Contain elements in storeys
+  for (const level of levels) {
+    const eids = storeyElementIds[level.id];
+    if (eids && eids.length > 0) {
+      lines.push(`#${next()}=IFCRELCONTAINEDINSPATIALSTRUCTURE('${newGuid()}',$,$,$,(${eids.map((i) => `#${i}`).join(',')}),#${storeyEntityId[level.id]});`);
+    }
+  }
+
+  lines.push('ENDSEC;');
+  lines.push('END-ISO-10303-21;');
+  return lines.join('\n');
+}
+
+// ── IFC 4.3 helpers ──────────────────────────────────────────────────────────
+
+const IFC43_TYPE_MAP: Partial<Record<ElementType, string>> = {
+  wall:                 'IFCWALL',
+  slab:                 'IFCSLAB',
+  roof:                 'IFCROOF',
+  column:               'IFCCOLUMN',
+  beam:                 'IFCBEAM',
+  door:                 'IFCDOOR',
+  window:               'IFCWINDOW',
+  stair:                'IFCSTAIR',
+  railing:              'IFCRAILING',
+  space:                'IFCSPACE',
+  curtain_wall:         'IFCCURTAINWALL',
+  ceiling:              'IFCCOVERING',
+  foundation:           'IFCFOOTING',
+  truss:                'IFCBUILDINGELEMENTPROXY',
+  brace:                'IFCMEMBER',
+  ramp:                 'IFCRAMP',
+  mass:                 'IFCBUILDINGELEMENTPROXY',
+  site_furniture:       'IFCFURNISHINGELEMENT',
+  planting:             'IFCGEOGRAPHICELEMENT',
+  rock:                 'IFCGEOGRAPHICELEMENT',
+  topography:           'IFCGEOGRAPHICELEMENT',
+  terrain_contour:      'IFCGEOGRAPHICELEMENT',
+  property_line:        'IFCANNOTATION',
+  duct:                 'IFCDUCTSEGMENT',
+  pipe:                 'IFCPIPESEGMENT',
+  cable_tray:           'IFCCABLECARRIERSEGMENT',
+  conduit:              'IFCCABLESEGMENT',
+  plumbing_fixture:     'IFCFLOWTERMINAL',
+  electrical_equipment: 'IFCELECTRICAPPLIANCE',
+  mechanical_equipment: 'IFCMECHANICALFASTENER',
+  sprinkler:            'IFCFIRESUPPRESSIONTERMINAL',
+  lamp:                 'IFCLIGHTFIXTURE',
+  air_terminal:         'IFCAIRTERMINAL',
+  annotation:           'IFCANNOTATION',
+  dimension:            'IFCANNOTATION',
+  grid:                 'IFCGRID',
+  label:                'IFCANNOTATION',
+  section_mark:         'IFCANNOTATION',
+  elevation_mark:       'IFCANNOTATION',
+  detail_mark:          'IFCANNOTATION',
+  revision_cloud:       'IFCANNOTATION',
+  room_separator:       'IFCVIRTUALELEMENT',
+  model_text:           'IFCTEXTLITERAL',
+  skylight:             'IFCWINDOW',
+  person:               'IFCBUILDINGELEMENTPROXY',
+  vehicle:              'IFCBUILDINGELEMENTPROXY',
+  line:                 'IFCANNOTATION',
+  circle:               'IFCANNOTATION',
+  arc:                  'IFCANNOTATION',
+  polyline:             'IFCANNOTATION',
+  surface:              'IFCANNOTATION',
+  solid:                'IFCBUILDINGELEMENTPROXY',
+  point:                'IFCANNOTATION',
+  hotspot:              'IFCANNOTATION',
+  text:                 'IFCANNOTATION',
+  block_ref:            'IFCANNOTATION',
+  ellipse:              'IFCANNOTATION',
+  rectangle:            'IFCANNOTATION',
+  polygon:              'IFCANNOTATION',
+  component:            'IFCGROUP',
+  group:                'IFCGROUP',
+};
+
+function getIFC43Type(type: ElementType): string {
+  return IFC43_TYPE_MAP[type] ?? 'IFCBUILDINGELEMENTPROXY';
+}
+
+/**
+ * Derive a stable 22-char IFC GUID from an arbitrary string ID.
+ * Re-uses an existing 22-char GUID verbatim; otherwise creates one
+ * from the string's characters (not cryptographically random, but stable).
+ */
+function toIFC43Guid(id: string): string {
+  const IFC_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_$';
+  if (/^[0-9A-Za-z_$]{22}$/.test(id)) return id;
+  // Deterministic mapping: pad/truncate to 22 chars using the IFC charset
+  let out = '';
+  for (let i = 0; i < 22; i++) {
+    const code = id.charCodeAt(i % id.length) + i;
+    out += IFC_CHARS[code % 64];
+  }
+  return out;
+}
+
+function newGuid(): string {
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_$';
+  let g = '';
+  for (let i = 0; i < 22; i++) {
+    g += chars[Math.floor(Math.random() * 64)];
+  }
+  return g;
+}
+
+function escStep(s: string): string {
+  return s.replace(/'/g, "''").replace(/\\/g, '\\\\');
+}
+
+function ifcPropValue(type: string, value: unknown): string {
+  switch (type) {
+    case 'number':    return `IFCREAL(${Number(value)})`;
+    case 'boolean':   return `IFCBOOLEAN(${value ? '.T.' : '.F.'})`;
+    case 'string':
+    default:          return `IFCLABEL('${escStep(String(value))}')`;
+  }
+}
