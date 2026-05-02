@@ -693,3 +693,157 @@ export const OBJECT_LIBRARY: ObjectDefinition[] = [
 export const OBJECT_CATEGORIES: string[] = [
   ...new Set(OBJECT_LIBRARY.map((o) => o.category)),
 ];
+
+// ─── T-LIB-V2-01: Marketplace-compatible library object model ─────────────────
+
+export type ObjectCategory =
+  | 'doors'
+  | 'windows'
+  | 'fixtures'
+  | 'furniture'
+  | 'equipment'
+  | 'lighting'
+  | 'landscape';
+
+export interface LibraryObject {
+  id: string;
+  name: string;
+  category: ObjectCategory;
+  manufacturer?: string;
+  tags: string[];
+  thumbnailUrl?: string;
+  properties: Record<string, string | number>;
+}
+
+export const SEED_LIBRARY: LibraryObject[] = [
+  {
+    id: 'door-single-flush-900',
+    name: 'Single Flush Door 900',
+    category: 'doors',
+    manufacturer: 'OpenCAD Standard',
+    tags: ['door', 'interior', 'single', 'flush', '900mm'],
+    properties: { width: 900, height: 2100, thickness: 45, material: 'Timber' },
+  },
+  {
+    id: 'door-double-glass-1800',
+    name: 'Double Glass Door 1800',
+    category: 'doors',
+    manufacturer: 'OpenCAD Standard',
+    tags: ['door', 'exterior', 'double', 'glass', '1800mm'],
+    properties: { width: 1800, height: 2400, thickness: 45, material: 'Glass/Aluminium' },
+  },
+  {
+    id: 'window-casement-1200',
+    name: 'Casement Window 1200x1200',
+    category: 'windows',
+    manufacturer: 'OpenCAD Standard',
+    tags: ['window', 'casement', '1200mm', 'residential'],
+    properties: { width: 1200, height: 1200, sillHeight: 900, material: 'uPVC' },
+  },
+  {
+    id: 'window-sliding-1800',
+    name: 'Sliding Window 1800x1200',
+    category: 'windows',
+    manufacturer: 'OpenCAD Standard',
+    tags: ['window', 'sliding', '1800mm', 'residential'],
+    properties: { width: 1800, height: 1200, sillHeight: 900, material: 'Aluminium' },
+  },
+  {
+    id: 'fixture-toilet-standard',
+    name: 'Standard Toilet Suite',
+    category: 'fixtures',
+    manufacturer: 'Generic Plumbing',
+    tags: ['toilet', 'sanitary', 'bathroom', 'plumbing'],
+    properties: { width: 380, depth: 700, height: 820, waterRating: 4 },
+  },
+  {
+    id: 'fixture-basin-vanity',
+    name: 'Vanity Basin 600',
+    category: 'fixtures',
+    manufacturer: 'Generic Plumbing',
+    tags: ['basin', 'vanity', 'bathroom', 'plumbing'],
+    properties: { width: 600, depth: 450, height: 860 },
+  },
+  {
+    id: 'furniture-office-chair',
+    name: 'Ergonomic Office Chair',
+    category: 'furniture',
+    manufacturer: 'Generic Office',
+    tags: ['chair', 'office', 'seating', 'adjustable'],
+    properties: { width: 650, depth: 650, height: 1200 },
+  },
+  {
+    id: 'equipment-hvac-split',
+    name: 'Split System AC Unit',
+    category: 'equipment',
+    manufacturer: 'Generic HVAC',
+    tags: ['hvac', 'aircon', 'cooling', 'split-system'],
+    properties: { width: 800, depth: 200, height: 300, coolingKW: 7 },
+  },
+  {
+    id: 'lighting-downlight-led',
+    name: 'LED Recessed Downlight 90mm',
+    category: 'lighting',
+    manufacturer: 'Generic Lighting',
+    tags: ['light', 'led', 'recessed', 'downlight', '90mm'],
+    properties: { diameter: 90, height: 60, wattage: 9, lumens: 900 },
+  },
+  {
+    id: 'landscape-deciduous-tree',
+    name: 'Deciduous Tree (medium)',
+    category: 'landscape',
+    manufacturer: 'OpenCAD Standard',
+    tags: ['tree', 'landscape', 'deciduous', 'planting'],
+    properties: { crownDiameter: 6000, trunkDiameter: 300, height: 8000 },
+  },
+  {
+    id: 'landscape-shrub-box',
+    name: 'Box Hedge Shrub',
+    category: 'landscape',
+    manufacturer: 'OpenCAD Standard',
+    tags: ['shrub', 'hedge', 'landscape', 'box', 'planting'],
+    properties: { width: 600, depth: 400, height: 800 },
+  },
+];
+
+export function searchLibrary(query: string, category?: ObjectCategory): LibraryObject[] {
+  const lower = query.toLowerCase();
+  return SEED_LIBRARY.filter((obj) => {
+    const matchesCategory = category === undefined || obj.category === category;
+    if (!matchesCategory) return false;
+    if (!query) return true;
+    return (
+      obj.name.toLowerCase().includes(lower) ||
+      obj.tags.some((t) => t.toLowerCase().includes(lower)) ||
+      (obj.manufacturer?.toLowerCase().includes(lower) ?? false)
+    );
+  });
+}
+
+export function filterByTags(objects: LibraryObject[], tags: string[]): LibraryObject[] {
+  if (tags.length === 0) return objects;
+  const lowerTags = tags.map((t) => t.toLowerCase());
+  return objects.filter((obj) =>
+    lowerTags.every((tag) => obj.tags.some((t) => t.toLowerCase() === tag)),
+  );
+}
+
+export function groupByCategory(
+  objects: LibraryObject[],
+): Record<ObjectCategory, LibraryObject[]> {
+  const result: Record<ObjectCategory, LibraryObject[]> = {
+    doors: [],
+    windows: [],
+    fixtures: [],
+    furniture: [],
+    equipment: [],
+    lighting: [],
+    landscape: [],
+  };
+
+  for (const obj of objects) {
+    result[obj.category].push(obj);
+  }
+
+  return result;
+}
