@@ -1,3 +1,11 @@
+## [1.3.2](https://github.com/CariHQ/opencad/compare/v1.3.1...v1.3.2) (2026-05-02)
+
+
+### Bug Fixes
+
+* **infra:** move ADMIN_UIDS to GCP Secret Manager (opencad-admin-uids) ([f15431c](https://github.com/CariHQ/opencad/commit/f15431cc682a27301931ad64d8ea2ea3316917fb))
+* **server:** admin bypass applies to trial mode, not just expired ([600afa8](https://github.com/CariHQ/opencad/commit/600afa8abce66f95dbe3f7b13c19ab796f7e7cdf))
+
 ## [1.3.1](https://github.com/CariHQ/opencad/compare/v1.3.0...v1.3.1) (2026-05-02)
 
 
