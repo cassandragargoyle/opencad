@@ -90,3 +90,100 @@ export function diffDocuments(
     changes,
   };
 }
+
+// ── T-COL-01: Branch diff ─────────────────────────────────────────────────────
+
+export type DiffStatus = 'added' | 'removed' | 'modified' | 'unchanged';
+
+export interface PropertyDiff {
+  key: string;
+  before: unknown;
+  after: unknown;
+}
+
+export interface ElementDiff {
+  elementId: string;
+  elementType: string;
+  status: DiffStatus;
+  propertyDiffs: PropertyDiff[];
+}
+
+export interface BranchDiff {
+  added:     ElementDiff[];
+  removed:   ElementDiff[];
+  modified:  ElementDiff[];
+  unchanged: ElementDiff[];
+  totalCount: number;
+}
+
+/**
+ * Diff two document branches.
+ * Elements are keyed by id; returns added/removed/modified/unchanged
+ * with per-property before/after for modified elements.
+ */
+export function diffBranches(
+  snapshotA: DocumentSchema,
+  snapshotB: DocumentSchema,
+  options: { includeUnchanged?: boolean } = {},
+): BranchDiff {
+  const elA = snapshotA.content.elements;
+  const elB = snapshotB.content.elements;
+  const allIds = new Set([...Object.keys(elA), ...Object.keys(elB)]);
+
+  const added:     ElementDiff[] = [];
+  const removed:   ElementDiff[] = [];
+  const modified:  ElementDiff[] = [];
+  const unchanged: ElementDiff[] = [];
+
+  for (const id of allIds) {
+    const a = elA[id];
+    const b = elB[id];
+
+    if (!a && b) {
+      added.push({ elementId: id, elementType: b.type, status: 'added', propertyDiffs: [] });
+    } else if (a && !b) {
+      removed.push({ elementId: id, elementType: a.type, status: 'removed', propertyDiffs: [] });
+    } else if (a && b) {
+      const propDiffs = _diffProperties(a.properties ?? {}, b.properties ?? {});
+      if (propDiffs.length > 0 || a.type !== b.type || a.levelId !== b.levelId || a.layerId !== b.layerId) {
+        modified.push({ elementId: id, elementType: b.type, status: 'modified', propertyDiffs: propDiffs });
+      } else if (options.includeUnchanged) {
+        unchanged.push({ elementId: id, elementType: a.type, status: 'unchanged', propertyDiffs: [] });
+      }
+    }
+  }
+
+  const sortById = (arr: ElementDiff[]) => arr.sort((x, y) => x.elementId.localeCompare(y.elementId));
+  sortById(added); sortById(removed); sortById(modified); sortById(unchanged);
+
+  return {
+    added, removed, modified, unchanged,
+    totalCount: added.length + removed.length + modified.length + unchanged.length,
+  };
+}
+
+function _diffProperties(
+  propsA: Record<string, { type: string; value: unknown }>,
+  propsB: Record<string, { type: string; value: unknown }>,
+): PropertyDiff[] {
+  const diffs: PropertyDiff[] = [];
+  const allKeys = new Set([...Object.keys(propsA), ...Object.keys(propsB)]);
+  for (const key of allKeys) {
+    const va = propsA[key];
+    const vb = propsB[key];
+    const sa = va ? JSON.stringify(va.value) : undefined;
+    const sb = vb ? JSON.stringify(vb.value) : undefined;
+    if (sa !== sb) diffs.push({ key, before: va?.value, after: vb?.value });
+  }
+  return diffs.sort((x, y) => x.key.localeCompare(y.key));
+}
+
+/** Diff highlight colours per status (matches T-COL-01 spec). */
+export const DIFF_COLORS: Record<DiffStatus, string> = {
+  added:     '#22c55e',
+  removed:   '#ef4444',
+  modified:  '#f59e0b',
+  unchanged: 'transparent',
+};
+
+export const UNCHANGED_OPACITY = 0.3;

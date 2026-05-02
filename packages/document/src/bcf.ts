@@ -373,3 +373,108 @@ function isMaintainableElement(el: ElementSchema): boolean {
 function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
+
+// ── T-COL-03: Approval / submittal workflow ───────────────────────────────────
+
+/**
+ * Workflow states for a BCF topic in a submittal / approval pipeline.
+ * Follows the common RFI / submittal lifecycle used in construction.
+ */
+export type WorkflowStatus =
+  | 'draft'        // created but not yet submitted
+  | 'submitted'    // submitted for review
+  | 'in_review'    // reviewer is actively working on it
+  | 'approved'     // approved without comments
+  | 'approved_with_comments'  // approved but response attached
+  | 'rejected'     // rejected; re-submission required
+  | 'void'         // withdrawn by submitter
+  | 'closed';      // resolved and archived
+
+/** Allowed transitions (from → set of valid to states). */
+export const WORKFLOW_TRANSITIONS: Record<WorkflowStatus, WorkflowStatus[]> = {
+  draft:                   ['submitted', 'void'],
+  submitted:               ['in_review', 'void'],
+  in_review:               ['approved', 'approved_with_comments', 'rejected'],
+  approved:                ['closed'],
+  approved_with_comments:  ['closed'],
+  rejected:                ['draft', 'void'],
+  void:                    [],
+  closed:                  [],
+};
+
+export interface WorkflowTransitionRecord {
+  from: WorkflowStatus;
+  to: WorkflowStatus;
+  byUserId: string;
+  byUserName?: string;
+  comment?: string;
+  timestamp: number;
+}
+
+export interface WorkflowState {
+  topicId: string;
+  status: WorkflowStatus;
+  history: WorkflowTransitionRecord[];
+  /** User responsible for next action (e.g. assigned reviewer) */
+  assignedTo?: string;
+  /** Target resolution date */
+  dueDate?: string;
+}
+
+export function createWorkflowState(topicId: string): WorkflowState {
+  return { topicId, status: 'draft', history: [] };
+}
+
+/**
+ * Attempt a workflow transition.
+ * Returns the updated state on success or throws if the transition is invalid.
+ */
+export function transitionWorkflow(
+  state: WorkflowState,
+  to: WorkflowStatus,
+  byUserId: string,
+  options: { comment?: string; byUserName?: string; assignedTo?: string } = {},
+): WorkflowState {
+  const allowed = WORKFLOW_TRANSITIONS[state.status] ?? [];
+  if (!allowed.includes(to)) {
+    throw new Error(
+      `Invalid transition: ${state.status} → ${to}. Allowed: [${allowed.join(', ')}]`,
+    );
+  }
+
+  const record: WorkflowTransitionRecord = {
+    from: state.status,
+    to,
+    byUserId,
+    byUserName: options.byUserName,
+    comment: options.comment,
+    timestamp: Date.now(),
+  };
+
+  return {
+    ...state,
+    status: to,
+    history: [...state.history, record],
+    assignedTo: options.assignedTo ?? state.assignedTo,
+  };
+}
+
+/** True if the workflow can still be transitioned (not terminal). */
+export function isTerminalStatus(status: WorkflowStatus): boolean {
+  return WORKFLOW_TRANSITIONS[status].length === 0;
+}
+
+/** Return all allowed next statuses from a given status. */
+export function allowedTransitions(status: WorkflowStatus): WorkflowStatus[] {
+  return [...(WORKFLOW_TRANSITIONS[status] ?? [])];
+}
+
+/** Attach a workflow state to a BCF topic by id. */
+export function attachWorkflowToBCF(
+  file: BCFFile,
+  topicId: string,
+): WorkflowState {
+  const topic = file.topics.find((t) => t.guid === topicId);
+  if (!topic) throw new Error(`BCF topic ${topicId} not found`);
+  return createWorkflowState(topicId);
+}

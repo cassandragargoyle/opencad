@@ -54,3 +54,29 @@ export { exportUSDA, buildUSDZPayload, type USDExportOptions, type USDZPayload }
 
 // IFC 4.3 ADD2 Reference View export (T-IO-01)
 export { exportIFC43, type IFC43ExportOptions } from './ifc';
+
+// Branch diff (T-COL-01)
+export {
+  diffBranches,
+  DIFF_COLORS,
+  UNCHANGED_OPACITY,
+  type DiffStatus,
+  type PropertyDiff,
+  type ElementDiff,
+  type BranchDiff,
+} from './diff';
+
+// Element ownership / worksharing locks (T-COL-02)
+export { OwnershipStore, getLockedElementIds, type OwnershipLock } from './ownership';
+
+// BCF approval workflow state machine (T-COL-03)
+export {
+  createWorkflowState,
+  transitionWorkflow,
+  isTerminalStatus,
+  allowedTransitions,
+  attachWorkflowToBCF,
+  WORKFLOW_TRANSITIONS,
+  type WorkflowStatus,
+  type WorkflowState,
+} from './bcf';
