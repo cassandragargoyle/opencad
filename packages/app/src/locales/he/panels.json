@@ -731,5 +731,47 @@
       "steelBollard": "Steel Bollard",
       "adultPerson": "Adult (Entourage)"
     }
+  },
+  "topoImport": {
+    "title": "Import Terrain",
+    "hint": "Paste CSV (x,y,z per line) or GeoJSON contour features.",
+    "placeholder": "0,0,10\n1000,0,12\n0,1000,15\n...",
+    "textareaLabel": "Terrain elevation data",
+    "importBtn": "Import Terrain",
+    "importing": "Importing…",
+    "defaultName": "Terrain",
+    "errorTooFewPoints": "Need at least {{min}} valid points.",
+    "errorParse": "Parse error: {{msg}}"
+  },
+  "setback": {
+    "title": "Property Setbacks",
+    "noPropertyLine": "Draw property_line elements to define the site boundary.",
+    "siteArea": "Site area: {{area}} m²",
+    "front": "Front",
+    "rear": "Rear",
+    "left": "Left",
+    "right": "Right",
+    "generateEnvelope": "Generate Buildable Envelope",
+    "envelopeName": "Buildable Envelope",
+    "errorNoPropertyLine": "No property line polygon found in document.",
+    "errorNoArea": "Setbacks exceed site area — no buildable envelope."
+  },
+  "grading": {
+    "title": "Grading",
+    "tools": "Grading tools",
+    "tool": {
+      "spot_level": "Spot Level",
+      "drainage_arrow": "Drainage Arrow",
+      "cutfill": "Cut / Fill"
+    },
+    "prefix": "Prefix",
+    "elevation": "Elevation",
+    "spotLevelHint": "Click in viewport to place a spot level.",
+    "drainageHint": "Click and drag in viewport to draw a drainage arrow.",
+    "placedSpotLevels": "{{count}} spot level(s) in document",
+    "cutVolume": "Cut",
+    "fillVolume": "Fill",
+    "netVolume": "Net",
+    "noCutFillData": "Add a topography element with elevation data to compute cut/fill."
   }
 }

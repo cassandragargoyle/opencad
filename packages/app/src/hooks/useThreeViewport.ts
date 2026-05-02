@@ -12,6 +12,10 @@ import { getContextMenuItems, type ContextMenuGroup, type ElementContext } from 
 import { buildWallGraph, wallEndOffsets } from './wallGraph';
 import { trimBeamAtColumns } from '../lib/seoResolver';
 import type { Composite } from '@opencad/document';
+import { isLandscapeElement } from '@opencad/document';
+import { LandscapeInstanceManager } from '../three/LandscapeInstanceManager';
+import { TerrainRaycastSnapper } from '../three/TerrainRaycastSnapper';
+import { parseCSV, parseGeoJSON, buildTerrainGeometry } from '../lib/topoParser';
 
 // Patch Three.js prototypes once at module level for BVH-accelerated raycasting
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
@@ -607,6 +611,8 @@ export function useThreeViewport() {
   const pickVec2Ref      = useRef(new THREE.Vector2());
   const materialCacheRef = useRef<Map<string, THREE.MeshStandardMaterial>>(new Map());
   const dirLightRef      = useRef<THREE.DirectionalLight | null>(null);
+  const landscapeManagerRef = useRef<LandscapeInstanceManager | null>(null);
+  const terrainSnapperRef   = useRef<TerrainRaycastSnapper | null>(null);
 
   // ── Sun study: move the DirectionalLight when ShadowAnalysisPanel updates
   // the sceneStore. Subscribing to the store directly (rather than via a
@@ -707,6 +713,9 @@ export function useThreeViewport() {
       const pv = (key: string, fallback: number) =>
         typeof props[key]?.value === 'number' ? (props[key]!.value as number) : fallback;
       const type = element.type;
+
+      // Landscape elements are handled by LandscapeInstanceManager — skip here.
+      if (isLandscapeElement(element)) return null;
 
       // Resolve applied material (overrides the type defaults when set)
       // Canonical key is 'Material' — matches every placement tool and the
@@ -1032,9 +1041,34 @@ export function useThreeViewport() {
         geometry = new THREE.BoxGeometry(w, h, d);
         posX = x + w / 2; posY = elev + h / 2; posZ = y + d / 2;
       } else if (type === 'topography') {
-        // Terrain surface from sample points. Fallback: flat plane from
-        // the element's bounding box so it's still visible in 3D even
-        // without Points data.
+        // Terrain surface — use stored sample points to build a real mesh,
+        // falling back to a flat box if no Points data is present.
+        const rawPts = props['Points']?.value;
+        if (typeof rawPts === 'string' && rawPts.length > 0) {
+          try {
+            let pts: import('../lib/topoParser').TerrainPoint[];
+            if (rawPts.trimStart().startsWith('{') || rawPts.trimStart().startsWith('[')) {
+              const parsed = JSON.parse(rawPts);
+              pts = parseGeoJSON(parsed).points.length > 0
+                ? parseGeoJSON(parsed).points
+                : (parsed as import('../lib/topoParser').TerrainPoint[]);
+            } else {
+              pts = parseCSV(rawPts).points;
+            }
+            if (pts.length >= 3) {
+              geometry = buildTerrainGeometry(pts, 32);
+              posX = 0; posY = 0; posZ = 0;
+              // Return early: geometry already in world space.
+              const mat = createMaterial(color, 0.85, pbr.roughness, pbr.metalness, appliedMat);
+              const mesh = new THREE.Mesh(geometry, mat);
+              mesh.userData.elementId   = element.id;
+              mesh.userData.elementType = type;
+              mesh.castShadow    = true;
+              mesh.receiveShadow = true;
+              return mesh;
+            }
+          } catch { /* fall through to box fallback */ }
+        }
         const bb = element.boundingBox;
         const bw = Math.max(bb.max.x - bb.min.x, 1000);
         const bd = Math.max(bb.max.y - bb.min.y, 1000);
@@ -1199,6 +1233,11 @@ export function useThreeViewport() {
     const newIds  = new Set(Object.keys(docElements));
     const oldIds  = new Set(elementMeshesRef.current.keys());
     const hadNone = oldIds.size === 0;
+
+    // Sync landscape instances — handled separately from regular meshes.
+    landscapeManagerRef.current?.sync(docElements);
+    // Keep terrain snapper up-to-date so landscape placements snap to terrain.
+    terrainSnapperRef.current?.syncFromElementMeshes(elementMeshesRef.current, docElements);
 
     // ── Remove deleted elements ────────────────────────────────────────────
     for (const id of oldIds) {
@@ -1555,6 +1594,14 @@ export function useThreeViewport() {
         );
         raycasterRef.current.setFromCamera(pickVec2Ref.current, camera);
 
+        // Landscape placing mode: snap to terrain and call the place handler.
+        const placeHandler = (window as unknown as Record<string, unknown>).__landscapePlaceHandler;
+        if (typeof placeHandler === 'function' && terrainSnapperRef.current) {
+          const snap = terrainSnapperRef.current.snap(raycasterRef.current);
+          (placeHandler as (x: number, y: number, z: number) => void)(snap.x, snap.y, snap.z);
+          return;
+        }
+
         // Collect all leaf meshes (handles both Mesh and Group objects)
         const leafMeshes: THREE.Mesh[] = [];
         for (const obj of elementMeshesRef.current.values()) {
@@ -1764,6 +1811,11 @@ export function useThreeViewport() {
     }
 
     scene.add(new THREE.AxesHelper(1000));
+
+    // Landscape instance manager — one InstancedMesh per species.
+    landscapeManagerRef.current = new LandscapeInstanceManager(scene);
+    // Terrain raycast snapper for landscape placement.
+    terrainSnapperRef.current = new TerrainRaycastSnapper();
 
     // Renderer init is async (WebGPU resolves `navigator.gpu` asynchronously).
     // Everything renderer-dependent lives inside the IIFE below; `cancelled`
@@ -2012,6 +2064,8 @@ export function useThreeViewport() {
       let coordFrame = 0;
       animate = () => {
         animationFrameRef.current = requestAnimationFrame(animate!);
+        // Update landscape LOD based on current camera position.
+        landscapeManagerRef.current?.updateLod(camera.position);
         try {
           renderer.render(scene, camera);
         } catch (err) {
@@ -2121,6 +2175,10 @@ export function useThreeViewport() {
         renderer.dispose();
         if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
       }
+      landscapeManagerRef.current?.dispose();
+      landscapeManagerRef.current = null;
+      terrainSnapperRef.current?.dispose();
+      terrainSnapperRef.current = null;
       stateRef.current = { camera: null, renderer: null, scene: null };
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

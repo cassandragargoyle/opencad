@@ -201,6 +201,8 @@ interface DocumentState {
   getVersionList: () => Array<{ version: number; timestamp: number; message?: string }>;
   loadDocumentSchema: (schema: DocumentSchema) => void;
 
+  /** Add a section, elevation, or detail view to the document. */
+  addView: (view: import('@opencad/document').ViewSchema) => string | null;
   /** T-VIZ-040 v2: Save a finished photoreal render as a 'render'-type view. */
   addRendering: (params: { name: string; png: string; width: number; height: number; samples: number; envPreset?: string }) => string | null;
   deleteRendering: (viewId: string) => void;
@@ -832,6 +834,21 @@ export const useDocumentStore = create<DocumentState>()(
       },
 
       setUserRole: (role) => set({ userRole: role }),
+
+      /**
+       * Add a section, elevation, or detail view to the document.
+       * Returns the new view id.
+       */
+      addView: (view: import('@opencad/document').ViewSchema): string | null => {
+        if (!assertWritable()) return null;
+        const { model } = get();
+        if (!model) return null;
+        model.documentData.presentation.views[view.id] = view;
+        const newDoc = { ...model.documentData };
+        set({ document: newDoc, lastSaved: Date.now() });
+        persistDocument(newDoc);
+        return view.id;
+      },
 
       /**
        * Save a photoreal render as a `'render'` view in the document.
