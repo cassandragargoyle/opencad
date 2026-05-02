@@ -34,8 +34,8 @@ export function KeynotePanel(): React.ReactElement {
     [document],
   );
 
-  const modelKeys = filterKeynotesByType(tableRef.current, 'model');
-  const userKeys  = filterKeynotesByType(tableRef.current, 'user');
+  const _modelKeys = filterKeynotesByType(tableRef.current, 'model');
+  const _userKeys  = filterKeynotesByType(tableRef.current, 'user');
   const allKeys   = tableRef.current.entries;
 
   const addKey = () => {

@@ -1,7 +1,7 @@
 /**
  * T-VIEW-08: Sheet browser panel — auto-numbered sheet index grouped by discipline.
  */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isDocumentReadOnly } from '../stores/documentStore';
 import {
