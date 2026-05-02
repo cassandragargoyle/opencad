@@ -177,13 +177,7 @@ jobs:
             fs.writeFileSync(p, JSON.stringify(o, null, 2) + '\n');
           "
           # Replace only the first `version = "..."` (the [package] one) in Cargo.toml.
-          python3 - <<'PY'
-import os, re, pathlib
-p = pathlib.Path('packages/desktop/src-tauri/Cargo.toml')
-s = p.read_text()
-s2 = re.sub(r'(^version = ")[^"]+(")', r'\g<1>' + os.environ['ROOT_VERSION'] + r'\g<2>', s, count=1, flags=re.MULTILINE)
-p.write_text(s2)
-PY
+          python3 -c "import os,re,pathlib; p=pathlib.Path('packages/desktop/src-tauri/Cargo.toml'); s=p.read_text(); p.write_text(re.sub(r'(^version = \")\S+(\")', r'\g<1>'+os.environ['ROOT_VERSION']+r'\g<2>', s, count=1, flags=re.MULTILINE))"
         env:
           ROOT_VERSION: ${{ env.ROOT_VERSION || '' }}
 
