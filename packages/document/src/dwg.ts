@@ -979,7 +979,7 @@ export function exportDXF(document: DocumentSchema): string {
 }
 
 /**
- * T-IO-003: Export a DocumentSchema to a minimal DXF string.
+ * T-IO-003 (legacy alias — use exportDXF for new code): Export a DocumentSchema to a minimal DXF string.
  *
  * Produces:
  *  - HEADER section with $ACADVER and $INSUNITS
@@ -1077,4 +1077,232 @@ export function exportToDXF(doc: DocumentSchema): string {
   lines.push('0', 'EOF');
 
   return lines.join('\n');
+}
+
+// ── T-IO-06 Polish additions ──────────────────────────────────────────────────
+
+/**
+ * Standard DXF/DWG linetype names.
+ * Recognised by every AutoCAD version from R12 onward.
+ */
+export type DxfLinetype =
+  | 'CONTINUOUS'
+  | 'HIDDEN'
+  | 'HIDDEN2'
+  | 'DASHED'
+  | 'DASHED2'
+  | 'CENTER'
+  | 'CENTER2'
+  | 'PHANTOM'
+  | 'DOT'
+  | 'DASHDOT'
+  | 'DIVIDE';
+
+export const DXF_LINETYPE_PATTERNS: Record<DxfLinetype, number[]> = {
+  CONTINUOUS: [],
+  HIDDEN:     [6.35, -3.175],
+  HIDDEN2:    [3.175, -1.5875],
+  DASHED:     [12.7, -6.35],
+  DASHED2:    [6.35, -3.175],
+  CENTER:     [31.75, -6.35, 6.35, -6.35],
+  CENTER2:    [15.875, -3.175, 3.175, -3.175],
+  PHANTOM:    [31.75, -6.35, 6.35, -6.35, 6.35, -6.35],
+  DOT:        [0, -6.35],
+  DASHDOT:    [12.7, -6.35, 0, -6.35],
+  DIVIDE:     [12.7, -6.35, 0, -6.35, 0, -6.35],
+};
+
+/** Build a LTYPE TABLE entry. */
+export function buildLinetypeTableEntry(name: DxfLinetype, handle: string): string[] {
+  const pattern = DXF_LINETYPE_PATTERNS[name];
+  const totalLen = pattern.reduce((s, v) => s + Math.abs(v), 0);
+  const out = [
+    '0', 'LTYPE',
+    '5', handle,
+    '100', 'AcDbSymbolTableRecord',
+    '100', 'AcDbLinetypeTableRecord',
+    '2', name,
+    '70', '0',
+    '3', name,
+    '72', '65',
+    '73', String(pattern.length),
+    '40', String(totalLen),
+  ];
+  for (const dash of pattern) {
+    out.push('49', String(dash));
+    out.push('74', '0');
+  }
+  return out;
+}
+
+/** Build a complete TABLES section (LTYPE + LAYER). */
+export function buildTablesSection(
+  layerList: Array<{ id: string; name: string; color: string; visible: boolean; locked: boolean }>,
+  linetypes: DxfLinetype[] = ['CONTINUOUS', 'HIDDEN', 'DASHED', 'CENTER', 'PHANTOM', 'DOT', 'DASHDOT'],
+): string {
+  const out: string[] = [];
+  let h = 0x100;
+  const next = (): string => (h++).toString(16).toUpperCase();
+
+  out.push('0', 'SECTION', '2', 'TABLES');
+  out.push('0', 'TABLE', '2', 'LTYPE', '5', next(), '70', String(linetypes.length));
+  for (const lt of linetypes) out.push(...buildLinetypeTableEntry(lt, next()));
+  out.push('0', 'ENDTAB');
+
+  out.push('0', 'TABLE', '2', 'LAYER', '5', next(), '70', String(layerList.length));
+  for (const layer of layerList) {
+    const aci = hexToAci(layer.color);
+    out.push(
+      '0', 'LAYER', '5', next(),
+      '100', 'AcDbSymbolTableRecord', '100', 'AcDbLayerTableRecord',
+      '2', layer.name,
+      '70', layer.visible ? '0' : '1',
+      '62', String(layer.locked ? -aci : aci),
+      '6', 'CONTINUOUS', '370', '-3',
+    );
+  }
+  out.push('0', 'ENDTAB');
+  out.push('0', 'ENDSEC');
+  return out.join('\n');
+}
+
+/** Parse DXF group-420 true-colour → hex. */
+export function parseDxfTrueColour(raw: number): string {
+  const r = (raw >> 16) & 0xff;
+  const g = (raw >> 8) & 0xff;
+  const b = raw & 0xff;
+  return '#' + toHex(r) + toHex(g) + toHex(b);
+}
+
+/** Hex → DXF group-420 true-colour integer. */
+export function hexToTrueColour(hex: string): number {
+  const c = hex.replace('#', '');
+  const r = parseInt(c.slice(0, 2), 16);
+  const g = parseInt(c.slice(2, 4), 16);
+  const b = parseInt(c.slice(4, 6), 16);
+  return (r << 16) | (g << 8) | b;
+}
+
+/** Build a HATCH entity for a rectangle. */
+export function buildHatchEntity(
+  layerName: string,
+  handle: string,
+  minX: number, minY: number,
+  maxX: number, maxY: number,
+  patternName = 'SOLID',
+): string[] {
+  return [
+    '0', 'HATCH', '5', handle, '330', '0',
+    '100', 'AcDbEntity', '8', layerName,
+    '100', 'AcDbHatch',
+    '10', '0', '20', '0', '30', '0',
+    '210', '0', '220', '0', '230', '1',
+    '2', patternName,
+    '70', '1', '71', '0',
+    '91', '1', '92', '1', '93', '4',
+    '72', '0', '10', String(minX), '20', String(minY),
+    '72', '0', '10', String(maxX), '20', String(minY),
+    '72', '0', '10', String(maxX), '20', String(maxY),
+    '72', '0', '10', String(minX), '20', String(maxY),
+    '97', '0',
+    '75', '1', '76', '1', '52', '0', '41', '1', '77', '0', '78', '0',
+  ];
+}
+
+/** Build an MTEXT entity. */
+export function buildMtextEntity(
+  layerName: string,
+  handle: string,
+  x: number, y: number,
+  height: number,
+  text: string,
+  rotation = 0,
+): string[] {
+  return [
+    '0', 'MTEXT', '5', handle, '330', '0',
+    '100', 'AcDbEntity', '8', layerName,
+    '100', 'AcDbMText',
+    '10', String(x), '20', String(y), '30', '0',
+    '40', String(height), '41', '0',
+    '71', '1', '72', '5',
+    '1', text,
+    '7', 'STANDARD',
+    '50', String(rotation),
+    '73', '1', '44', '1',
+  ];
+}
+
+/** Xref placeholder. */
+export interface XrefPlaceholder {
+  path: string;
+  name: string;
+  x: number;
+  y: number;
+  z: number;
+  scaleX: number;
+  scaleY: number;
+  scaleZ: number;
+  rotation: number;
+}
+
+/** Build an INSERT + XDATA marking an xref attachment. */
+export function buildXrefInsert(
+  layerName: string,
+  handle: string,
+  xref: XrefPlaceholder,
+): string[] {
+  return [
+    '0', 'INSERT', '5', handle, '330', '0',
+    '100', 'AcDbEntity', '8', layerName,
+    '100', 'AcDbBlockReference',
+    '2', xref.name,
+    '10', String(xref.x), '20', String(xref.y), '30', String(xref.z),
+    '41', String(xref.scaleX), '42', String(xref.scaleY), '43', String(xref.scaleZ),
+    '50', String(xref.rotation),
+    '1001', 'OpenCAD', '1000', 'xref', '1000', xref.path,
+  ];
+}
+
+/**
+ * Parse xref INSERT entities from a DXF string.
+ * Returns INSERT entities that carry OpenCAD xref XDATA.
+ */
+export function parseXrefs(dxf: string): XrefPlaceholder[] {
+  const xrefs: XrefPlaceholder[] = [];
+  const re = /0\s*\nINSERT([\s\S]*?)(?=\n0\s*\n[A-Z]|\n0\s*\nENDSEC)/g;
+  let m: RegExpExecArray | null;
+
+  while ((m = re.exec(dxf)) !== null) {
+    const block = m[1];
+    if (!block.includes('xref')) continue;
+
+    const get = (code: number): string => {
+      const pat = new RegExp(`\\n${code}\\s*\\n([^\\n]+)`);
+      return pat.exec(block)?.[1]?.trim() ?? '';
+    };
+
+    const path = (() => {
+      const ls = block.split('\n');
+      for (let i = 0; i < ls.length - 1; i++) {
+        if (ls[i].trim() === '1000') {
+          const v = ls[i + 1]?.trim() ?? '';
+          if (v && v !== 'xref') return v;
+        }
+      }
+      return '';
+    })();
+
+    xrefs.push({
+      path,
+      name: get(2),
+      x: parseFloat(get(10)) || 0,
+      y: parseFloat(get(20)) || 0,
+      z: parseFloat(get(30)) || 0,
+      scaleX: parseFloat(get(41)) || 1,
+      scaleY: parseFloat(get(42)) || 1,
+      scaleZ: parseFloat(get(43)) || 1,
+      rotation: parseFloat(get(50)) || 0,
+    });
+  }
+  return xrefs;
 }

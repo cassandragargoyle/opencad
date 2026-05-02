@@ -39,3 +39,18 @@ export { parseRVT } from './revit';
 
 // SketchUp adapter
 export { parseSKP, serializeSKP } from './sketchup';
+
+// gbXML 6.01 export (T-IO-02)
+export { exportGbXML, type GbXMLExportOptions } from './gbxml';
+
+// COBie 2.4 export (T-IO-03)
+export { exportCOBie, cobieToCSVMap, type CobieSheet, type CobieExportOptions } from './cobie';
+
+// Rhino 3DM import/export (T-IO-04)
+export { importRhino3dm, exportRhino3dm, type Rhino3dmImportResult, type Rhino3dmExportResult } from './rhino3dm';
+
+// USD / USDZ export (T-IO-05)
+export { exportUSDA, buildUSDZPayload, type USDExportOptions, type USDZPayload } from './usd';
+
+// IFC 4.3 ADD2 Reference View export (T-IO-01)
+export { exportIFC43, type IFC43ExportOptions } from './ifc';
