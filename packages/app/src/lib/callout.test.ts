@@ -5,7 +5,6 @@ import { describe, it, expect } from 'vitest';
 import {
   createCalloutMarker,
   resolveCalloutLabel,
-  type CalloutMarker,
 } from './callout';
 
 describe('T-VIEW-06: callout', () => {

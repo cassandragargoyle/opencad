@@ -7,8 +7,6 @@ import {
   addKeynote,
   resolveKeynoteLabel,
   filterKeynotesByType,
-  type KeynoteTable,
-  type Keynote,
 } from './keynote';
 
 describe('T-VIEW-05: keynote', () => {

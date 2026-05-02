@@ -5,8 +5,6 @@ import { describe, it, expect } from 'vitest';
 import {
   createLegendView,
   addLegendEntry,
-  type LegendView,
-  type LegendEntryType,
 } from './legendView';
 
 describe('T-VIEW-10: legendView', () => {

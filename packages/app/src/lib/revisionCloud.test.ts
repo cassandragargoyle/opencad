@@ -5,7 +5,6 @@ import { describe, it, expect } from 'vitest';
 import {
   buildRevisionCloudPath,
   computeRevisionCloudBumps,
-  type CloudBump,
 } from './revisionCloud';
 
 describe('T-VIEW-04: revisionCloud', () => {

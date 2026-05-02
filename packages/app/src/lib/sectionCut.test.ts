@@ -6,7 +6,6 @@ import {
   computeSectionCut,
   sectionPlaneFromMarker,
   type SectionPlane,
-  type SectionCutResult,
 } from './sectionCut';
 import type { ElementSchema } from '@opencad/document';
 
