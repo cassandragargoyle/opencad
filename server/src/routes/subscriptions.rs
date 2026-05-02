@@ -127,7 +127,7 @@ pub async fn get_status(
         .map(|dt| dt.timestamp_millis());
 
     let derived = access_mode(&row, now);
-    let effective = if admin_bypass && derived == "expired" { "active" } else { derived };
+    let effective = if admin_bypass { "active" } else { derived };
 
     Ok(Json(SubscriptionStatus {
         tier: row.plan.clone(),
