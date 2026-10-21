@@ -1,0 +1,40 @@
+{
+  // Debug the Tauri desktop app (packages/desktop).
+  // Requires the CodeLLDB extension (vadimcn.vscode-lldb).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Tauri: Desktop (dev, debug)",
+      "cargo": {
+        // --no-default-features disables `custom-protocol`, so the app loads
+        // the Vite dev server (devUrl) instead of the bundled frontend.
+        "args": [
+          "build",
+          "--manifest-path=./packages/desktop/src-tauri/Cargo.toml",
+          "--no-default-features"
+        ],
+        "filter": { "name": "opencad-desktop", "kind": "bin" }
+      },
+      "cwd": "${workspaceFolder}/packages/desktop/src-tauri",
+      "env": { "RUST_LOG": "debug", "RUST_BACKTRACE": "1" },
+      "preLaunchTask": "ui:dev"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Tauri: Desktop (production build, debug)",
+      "cargo": {
+        "args": [
+          "build",
+          "--release",
+          "--manifest-path=./packages/desktop/src-tauri/Cargo.toml"
+        ],
+        "filter": { "name": "opencad-desktop", "kind": "bin" }
+      },
+      "cwd": "${workspaceFolder}/packages/desktop/src-tauri",
+      "preLaunchTask": "ui:build"
+    }
+  ]
+}
