@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ui:dev",
+      "type": "shell",
+      // Vite dev server for packages/app — Tauri loads it via devUrl (http://localhost:5173)
+      "command": "pnpm",
+      "args": ["--filter=@opencad/app", "dev"],
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activelyMatches": true,
+          "beginsPattern": "VITE v",
+          "endsPattern": "Local:.*localhost"
+        }
+      }
+    },
+    {
+      "label": "ui:build",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["build:browser"],
+      "problemMatcher": []
+    }
+  ]
+}
