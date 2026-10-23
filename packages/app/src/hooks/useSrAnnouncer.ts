@@ -5,7 +5,7 @@
  * into the aria-live="polite" region rendered by AppLayout. Calls are
  * throttled to 500 ms so rapid selection changes don't flood the AT.
  */
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 const THROTTLE_MS = 500;
 
@@ -23,9 +23,18 @@ export function useSrAnnouncer(): (message: string) => void {
       // Toggle empty → message so the live region fires even for repeated
       // identical strings (e.g. "1 element selected" twice in a row).
       el.textContent = '';
-      requestAnimationFrame(() => { el.textContent = pendingRef.current; });
+      requestAnimationFrame(() => {
+        el.textContent = pendingRef.current;
+      });
     }, THROTTLE_MS);
   }, []);
+
+  useEffect(
+    () => () => {
+      if (timerRef.current !== null) clearTimeout(timerRef.current);
+    },
+    []
+  );
 
   return announce;
 }
