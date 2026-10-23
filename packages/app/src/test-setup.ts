@@ -11,6 +11,15 @@ vi.mock('uuid', () => ({
   v4: () => crypto.randomUUID(),
 }));
 
+// The real WASM init fetches opencad_sync_bg.wasm, which fails slowly under
+// Node; the resulting console.warn can land after the test environment is torn
+// down (EnvironmentTeardownError). Fail fast instead. syncAdapter.test.ts
+// overrides this with vi.doMock.
+vi.mock('@opencad/sync-rs/pkg', () => ({
+  default: () => Promise.reject(new Error('CRDT WASM is not loaded in unit tests')),
+  DocumentCrdt: class {},
+}));
+
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
