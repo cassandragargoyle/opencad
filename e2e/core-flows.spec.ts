@@ -131,19 +131,14 @@ test.describe('T-E2E-001: Core flows', () => {
   /**
    * T-E2E-001-006: Context menu appears on right-click in viewport
    */
-  test.fixme('T-E2E-001-006: context menu appears on right-click in viewport', async ({ page }) => {
-    // Right-click on the canvas / viewport area
-    const canvas = page.locator('canvas').first();
+  test('T-E2E-001-006: context menu appears on right-click in viewport', async ({ page }) => {
+    // The custom context menu is wired to the 2D canvas; the default view is 3D.
+    await page.locator('.toolbar-tabs .tab-btn:has-text("Floor Plan")').click();
+    const canvas = page.locator('canvas:visible').first();
     await expect(canvas).toBeVisible();
 
     await canvas.click({ button: 'right', position: { x: 100, y: 100 } });
 
-    // A context menu should appear (role="menu" or .context-menu class)
-    const contextMenu = page.locator('[role="menu"], .context-menu').first();
-    const menuVisible = await contextMenu.isVisible().catch(() => false);
-
-    // Some implementations suppress the native context menu instead of showing a custom one.
-    // Both behaviours are acceptable — the test just verifies no crash occurs.
-    expect(menuVisible || true).toBe(true);
+    await expect(page.getByRole('menu')).toBeVisible();
   });
 });

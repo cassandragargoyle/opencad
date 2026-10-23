@@ -13,6 +13,11 @@ import { type Page, type Locator, expect } from '@playwright/test';
  * If you already have a specific project ID, pass it as the second argument.
  */
 export async function waitForAppReady(page: Page, projectPath = '/project/default'): Promise<void> {
+  // Suppress the first-visit guided tour — its dialog intercepts pointer events.
+  // Key mirrors TOUR_SEEN_KEY in packages/app/src/components/GuidedTour.tsx.
+  await page.addInitScript(() => {
+    window.localStorage.setItem('opencad-tour-seen', '1');
+  });
   await page.goto(projectPath, { waitUntil: 'networkidle' });
 
   // Wait for the two anchors that confirm the full shell has rendered
@@ -109,4 +114,14 @@ export async function openRightPanel(page: Page, tabName: string): Promise<void>
 
   await page.locator(`.right-panel-tab-btn[aria-label="${tabName}"]`).click();
   await expect(page.locator('.right-panel-content')).toBeVisible();
+}
+
+/** Layer rows in the Navigator's Layers section (expanded by default). */
+export function navigatorLayers(page: Page): Locator {
+  return page.locator('.nav-item.layer');
+}
+
+/** Add a layer via the "New layer" button in the Navigator's Layers section. */
+export async function addLayerViaNavigator(page: Page): Promise<void> {
+  await page.locator('.nav-icon-btn[title="New layer"]').click();
 }

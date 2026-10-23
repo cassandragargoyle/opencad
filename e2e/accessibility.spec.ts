@@ -124,19 +124,13 @@ test.describe('T-A11Y-002: App shell accessibility', () => {
     expect(hasInteractive).toBe(true);
   });
 
-  test.fixme('keyboard shortcut W activates wall tool', async ({ page }) => {
+  test('keyboard shortcut W activates wall tool', async ({ page }) => {
     // Focus the viewport area (not an input) so keyboard shortcuts are captured
     await page.locator('.app-main').click();
 
     await page.keyboard.press('w');
-    await page.waitForTimeout(200);
 
-    // The Wall tool button should now be active
-    await expect(page.locator('.tool-btn.active[title^="Wall"]')).toBeVisible({ timeout: 3000 }).catch(async () => {
-      // Shortcut letter may differ — confirm the active tool changed at all
-      const activeTool = await page.locator('.tool-btn.active').count();
-      expect(activeTool).toBeGreaterThan(0);
-    });
+    await expect(page.locator('.tool-btn.active[title^="Wall"]')).toBeVisible();
   });
 
   test('keyboard shortcut Escape deactivates current tool', async ({ page }) => {

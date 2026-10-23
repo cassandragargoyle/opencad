@@ -8,7 +8,15 @@
 import { test, expect } from '@playwright/test';
 // Tests marked test.fixme are stale or regressed — tracked in e2e/FIXME.md
 import { DocumentModel, createProject } from '@opencad/document';
-import { waitForAppReady, activateTool, drawRectangle, switchTo3D, openRightPanel } from './helpers';
+import {
+  waitForAppReady,
+  activateTool,
+  drawRectangle,
+  switchTo3D,
+  openRightPanel,
+  navigatorLayers,
+  addLayerViaNavigator,
+} from './helpers';
 
 test.describe('Document Model E2E Tests', () => {
   test.describe('T-DOC-001: Create project → verify document model initialized with correct schema', () => {
@@ -338,19 +346,19 @@ test.describe('T-E2E-001: Layer management', () => {
     await waitForAppReady(page);
   });
 
-  test.fixme('layer panel is accessible from the right panel', async ({ page }) => {
-    await openRightPanel(page, 'Layers');
-    await expect(page.locator('.layers-panel')).toBeVisible();
+  // Layers live in the Navigator (left panel); the right-panel Layers tab was removed.
+  test('layers are listed in the Navigator', async ({ page }) => {
+    await expect(page.locator('.nav-icon-btn[title="New layer"]')).toBeVisible();
   });
 
-  test.fixme('default layer "Default" exists', async ({ page }) => {
-    await openRightPanel(page, 'Layers');
+  test('a default layer exists', async ({ page }) => {
+    await expect(navigatorLayers(page).first()).toBeVisible();
+  });
 
-    // The document model initialises with a default layer named "Layer 1"
-    // (see LayersPanel — it reads from doc.organization.layers)
-    const layerNames = await page.locator('.layer-name').allTextContents();
-    // Accept "Layer 1", "Default", or any initial layer name set by createProject
-    expect(layerNames.length).toBeGreaterThan(0);
+  test('New layer button adds a layer', async ({ page }) => {
+    const before = await navigatorLayers(page).count();
+    await addLayerViaNavigator(page);
+    await expect(navigatorLayers(page)).toHaveCount(before + 1);
   });
 });
 
@@ -395,41 +403,25 @@ test.describe('T-E2E-001: Undo / Redo keyboard shortcuts', () => {
     await page.waitForTimeout(200);
   });
 
-  test.fixme('Ctrl+Z undoes the last action', async ({ page }) => {
-    // Perform an action: add a layer via the Layers panel
-    await openRightPanel(page, 'Layers');
-    const layersBefore = await page.locator('.layer-item').count();
+  // beforeEach switches to Floor Plan, where the 2D viewport is mounted —
+  // a single Ctrl+Z must undo exactly one step there.
+  test('Ctrl+Z undoes only the last action', async ({ page }) => {
+    const before = await navigatorLayers(page).count();
+    await addLayerViaNavigator(page);
+    await addLayerViaNavigator(page);
+    await expect(navigatorLayers(page)).toHaveCount(before + 2);
 
-    await page.locator('.panel-action-btn[title="Add Layer"]').click();
-    await page.waitForTimeout(200);
-    const layersAfterAdd = await page.locator('.layer-item').count();
-    expect(layersAfterAdd).toBe(layersBefore + 1);
-
-    // Undo
-    await page.keyboard.press('Control+Z');
-    await page.waitForTimeout(300);
-
-    const layersAfterUndo = await page.locator('.layer-item').count();
-    // Undo should have restored the previous count (if undo is wired for layers)
-    // If the undo stack does not cover layer changes, the count may stay the same.
-    // We assert no crash rather than an exact count to avoid false negatives.
-    expect(layersAfterUndo).toBeGreaterThanOrEqual(0);
-    await expect(page.locator('.app-toolbar')).toBeVisible();
+    await page.keyboard.press('Control+z');
+    await expect(navigatorLayers(page)).toHaveCount(before + 1);
   });
 
-  test.fixme('Ctrl+Shift+Z redoes the last undone action', async ({ page }) => {
-    // Add a layer, undo, then redo
-    await openRightPanel(page, 'Layers');
-    await page.locator('.panel-action-btn[title="Add Layer"]').click();
-    await page.waitForTimeout(200);
-
-    await page.keyboard.press('Control+Z');
-    await page.waitForTimeout(200);
+  test('Ctrl+Shift+Z redoes the last undone action', async ({ page }) => {
+    const before = await navigatorLayers(page).count();
+    await addLayerViaNavigator(page);
+    await page.keyboard.press('Control+z');
+    await expect(navigatorLayers(page)).toHaveCount(before);
 
     await page.keyboard.press('Control+Shift+Z');
-    await page.waitForTimeout(300);
-
-    // App should not have crashed
-    await expect(page.locator('.app-toolbar')).toBeVisible();
+    await expect(navigatorLayers(page)).toHaveCount(before + 1);
   });
 });
