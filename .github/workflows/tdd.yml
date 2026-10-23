@@ -116,7 +116,7 @@ jobs:
 
       - name: Build workspace dependencies (required for @opencad/app)
         if: matrix.package == '@opencad/app'
-        run: pnpm exec turbo run build --filter=@opencad/document
+        run: pnpm exec turbo run build --filter=@opencad/app^...
 
       - name: Run unit tests
         run: pnpm --filter=${{ matrix.package }} test:unit
