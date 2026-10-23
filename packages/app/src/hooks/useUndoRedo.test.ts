@@ -73,4 +73,18 @@ describe('T-DOC-007: useUndoRedo', () => {
     unmount();
     expect(spy).toHaveBeenCalledWith('keydown', expect.any(Function));
   });
+
+  // Browsers report e.key as 'Z' when Shift is held (or CapsLock is on).
+  it('calls redo on Ctrl+Shift+Z as reported by browsers (key "Z")', () => {
+    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: true }));
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, shiftKey: true, bubbles: true }));
+    expect(mockRedo).toHaveBeenCalledOnce();
+    expect(mockUndo).not.toHaveBeenCalled();
+  });
+
+  it('calls undo on Ctrl+Z with CapsLock on (key "Z", no Shift)', () => {
+    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: true }));
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, bubbles: true }));
+    expect(mockUndo).toHaveBeenCalledOnce();
+  });
 });

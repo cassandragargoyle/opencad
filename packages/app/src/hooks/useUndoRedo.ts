@@ -16,11 +16,13 @@ export function useUndoRedo({ undo, redo, canUndo, canRedo }: UseUndoRedoOptions
       const mod = e.ctrlKey || e.metaKey;
       if (!mod) return;
 
-      if (e.key === 'z' && !e.shiftKey) {
+      // Shift (or CapsLock) makes browsers report 'Z' rather than 'z'.
+      const key = e.key.toLowerCase();
+      if (key === 'z' && !e.shiftKey) {
         if (canUndo) { e.preventDefault(); undo(); }
-      } else if (e.key === 'z' && e.shiftKey) {
+      } else if (key === 'z' && e.shiftKey) {
         if (canRedo) { e.preventDefault(); redo(); }
-      } else if (e.key === 'y') {
+      } else if (key === 'y') {
         if (canRedo) { e.preventDefault(); redo(); }
       }
     };

@@ -175,4 +175,16 @@ describe('T-UI-004: Navigator', () => {
     fireEvent.click(elemItems[0]);
     expect(useDocumentStore.getState().selectedIds).toContain(elemId);
   });
+
+  it('T-DOC-007: adding a layer can be undone', () => {
+    render(<Navigator />);
+    const layerCount = () => Object.keys(useDocumentStore.getState().document!.organization.layers).length;
+    const before = layerCount();
+
+    fireEvent.click(screen.getByTitle('New layer'));
+    expect(layerCount()).toBe(before + 1);
+
+    useDocumentStore.getState().undo();
+    expect(layerCount()).toBe(before);
+  });
 });
