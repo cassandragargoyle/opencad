@@ -77,7 +77,7 @@ Shared utilities and types consumed by all other packages.
 Tauri v2 desktop application wrapper. The Rust backend (`src-tauri/`) handles native file I/O, local AI (Ollama), and OS integrations.
 
 ### `e2e/`
-Playwright end-to-end tests configured via `playwright.config.ts` at the root.
+Playwright end-to-end tests (`@opencad/e2e`), configured via `e2e/playwright.config.ts`.
 
 ## TDD Workflow (AGENTS.md)
 

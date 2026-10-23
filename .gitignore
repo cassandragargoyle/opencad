@@ -72,6 +72,7 @@ lerna-debug.log*
 coverage/
 .nyc_output/
 playwright-report/
+playwright-results.json
 test-results/
 blob-report/
 

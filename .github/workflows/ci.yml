@@ -233,8 +233,6 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 35
-    # Non-blocking: E2E requires a running web server; wired up in T-E2E-001
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -275,14 +273,14 @@ jobs:
         run: pnpm --filter=@opencad/e2e exec playwright install --with-deps chromium
 
       - name: Run E2E tests
-        run: pnpm --filter=@opencad/e2e test
+        run: pnpm --filter=@opencad/e2e test:chromium
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report/
+          path: e2e/playwright-report/
           retention-days: 30
 
   # ──────────────────────────────────────────────────────────────
