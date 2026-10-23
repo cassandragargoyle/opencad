@@ -4,6 +4,12 @@
   "tasks": {
     "build": {
       "outputs": ["dist/**", "pkg/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build", "build"]
+    },
+    "test:unit": {
+      "dependsOn": ["^build", "build"]
     }
   }
 }
