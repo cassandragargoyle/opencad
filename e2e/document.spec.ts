@@ -288,4 +288,50 @@ test.describe('T-E2E-001: Undo / Redo keyboard shortcuts', () => {
     await page.keyboard.press('Control+Shift+Z');
     await expect(navigatorLayers(page)).toHaveCount(before + 1);
   });
+
+  // INT-001: inside an editable element the browser's native undo wins
+  test('Ctrl+Z in a text input undoes the typing, not the document', async ({ page }) => {
+    const before = await navigatorLayers(page).count();
+    await addLayerViaNavigator(page);
+    await expect(navigatorLayers(page)).toHaveCount(before + 1);
+
+    const search = page.locator('.navigator-search-input');
+    await search.click();
+    await page.keyboard.type('abc');
+    await expect(search).toHaveValue('abc');
+
+    await page.keyboard.press('Control+z');
+    await expect(search).not.toHaveValue('abc');
+    await expect(navigatorLayers(page)).toHaveCount(before + 1);
+
+    await page.keyboard.press('Control+Shift+Z');
+    await expect(search).toHaveValue('abc');
+    await expect(navigatorLayers(page)).toHaveCount(before + 1);
+
+    // Leaving the field restores document undo
+    await search.blur();
+    await page.keyboard.press('Control+z');
+    await expect(navigatorLayers(page)).toHaveCount(before);
+  });
+
+  test('Ctrl+Z in a contentEditable element does not undo the document', async ({ page }) => {
+    const before = await navigatorLayers(page).count();
+    await addLayerViaNavigator(page);
+    await expect(navigatorLayers(page)).toHaveCount(before + 1);
+
+    // The app has no contentEditable of its own; inject one to exercise the guard
+    await page.evaluate(() => {
+      const el = document.createElement('div');
+      el.id = 'e2e-editable';
+      el.contentEditable = 'true';
+      document.body.appendChild(el);
+    });
+    const editable = page.locator('#e2e-editable');
+    await editable.click();
+    await page.keyboard.type('abc');
+
+    await page.keyboard.press('Control+z');
+    await expect(editable).not.toHaveText('abc');
+    await expect(navigatorLayers(page)).toHaveCount(before + 1);
+  });
 });
