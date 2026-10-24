@@ -12,12 +12,18 @@ import { type Page, type Locator, expect } from '@playwright/test';
  * Uses `/project/default` which the ProjectDashboard creates automatically.
  * If you already have a specific project ID, pass it as the second argument.
  */
-export async function waitForAppReady(page: Page, projectPath = '/project/default'): Promise<void> {
-  // Suppress the first-visit guided tour — its dialog intercepts pointer events.
-  // Key mirrors TOUR_SEEN_KEY in packages/app/src/components/GuidedTour.tsx.
+/**
+ * Suppress the first-visit guided tour — its dialog intercepts pointer events.
+ * Key mirrors TOUR_SEEN_KEY in packages/app/src/components/GuidedTour.tsx.
+ */
+export async function suppressGuidedTour(page: Page): Promise<void> {
   await page.addInitScript(() => {
     window.localStorage.setItem('opencad-tour-seen', '1');
   });
+}
+
+export async function waitForAppReady(page: Page, projectPath = '/project/default'): Promise<void> {
+  await suppressGuidedTour(page);
   await page.goto(projectPath, { waitUntil: 'networkidle' });
 
   // Wait for the two anchors that confirm the full shell has rendered

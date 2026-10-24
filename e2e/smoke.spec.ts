@@ -4,50 +4,39 @@
  */
 
 import { test, expect } from '@playwright/test';
-// Tests marked test.fixme are stale or regressed — tracked in e2e/FIXME.md
-import { waitForAppReady } from './helpers';
+import { waitForAppReady, suppressGuidedTour } from './helpers';
 
 test.describe('Smoke Tests', () => {
-  test.fixme('should load the application', async ({ page }) => {
-    await page.goto('/');
-
-    await expect(page.locator('h1')).toContainText('OpenCAD');
+  test.beforeEach(async ({ page }) => {
+    await suppressGuidedTour(page);
   });
 
-  test.fixme('should display project section', async ({ page }) => {
+  test('should load the project dashboard', async ({ page }) => {
     await page.goto('/');
-
-    await expect(page.locator('.project-section h2')).toContainText('Project');
-    await expect(page.locator('.project-info')).toBeVisible();
+    await expect(page.locator('.dashboard-title')).toBeVisible();
   });
 
-  test.fixme('should have functional layer creation', async ({ page }) => {
+  test('should open the editor for a new project', async ({ page }) => {
     await page.goto('/');
+    await page.locator('.dashboard-header .btn-primary').click();
 
-    const initialCount = await page.locator('.layers-section .item').count();
-    await page.click('.layers-section button');
-    const newCount = await page.locator('.layers-section .item').count();
-
-    expect(newCount).toBe(initialCount + 1);
+    await expect(page).toHaveURL(/\/project\/[^/]+$/);
+    await expect(page.locator('.app-toolbar')).toBeVisible();
+    await expect(page.locator('.project-name-text')).toHaveText('Untitled Project');
   });
 
-  test.fixme('should have functional element creation', async ({ page }) => {
+  test('should rename a project from the dashboard', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('.dashboard-header .btn-primary').click();
+    await expect(page.locator('.app-toolbar')).toBeVisible();
     await page.goto('/');
 
-    const initialCount = await page.locator('.elements-section .item').count();
-    await page.click('.elements-section button');
-    const newCount = await page.locator('.elements-section .item').count();
+    await page.locator('.project-card .project-name').first().dblclick();
+    const input = page.locator('.project-card .project-name-input');
+    await input.fill('Renamed Project');
+    await input.press('Enter');
 
-    expect(newCount).toBe(initialCount + 1);
-  });
-
-  test.fixme('should update project name', async ({ page }) => {
-    await page.goto('/');
-
-    await page.fill('.input-group input', 'New Project Name');
-    await page.click('.input-group button');
-
-    await expect(page.locator('.project-info')).toContainText('New Project Name');
+    await expect(page.locator('.project-card .project-name').first()).toHaveText('Renamed Project');
   });
 });
 
@@ -70,10 +59,9 @@ test.describe('T-E2E-001: App shell', () => {
     expect(elapsed).toBeLessThan(3000);
   });
 
-  test.fixme('toolbar is visible', async ({ page }) => {
+  test('toolbar is visible', async ({ page }) => {
     await expect(page.locator('.app-toolbar')).toBeVisible();
-    // Brand name is present
-    await expect(page.locator('.brand-name')).toContainText('OpenCAD');
+    await expect(page.locator('.app-toolbar img.brand-logo-img[alt="OpenCAD"]')).toBeVisible();
   });
 
   test('status bar is visible', async ({ page }) => {
