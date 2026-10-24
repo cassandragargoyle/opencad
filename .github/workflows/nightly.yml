@@ -51,17 +51,17 @@ jobs:
         run: pnpm build:browser
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium firefox
+        run: pnpm --filter=@opencad/e2e exec playwright install --with-deps chromium firefox
 
       - name: Run full E2E suite
-        run: pnpm test:e2e
+        run: pnpm --filter=@opencad/e2e exec playwright test --project=chromium --project=firefox
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-nightly
-          path: playwright-report/
+          path: e2e/playwright-report/
           retention-days: 90
 
   # ──────────────────────────────────────────────────────────────

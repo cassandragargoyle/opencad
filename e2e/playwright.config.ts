@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: '.',
+  // house-build.spec.ts is an experiment harness, run explicitly with ITER=<id>
+  testIgnore: process.env.ITER ? [] : ['house-build.spec.ts'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -14,8 +16,8 @@ export default defineConfig({
   webServer: {
     // In CI: serve the pre-built dist; locally: use the Vite dev server
     command: process.env.CI
-      ? 'pnpm --filter=@opencad/app exec vite preview --port 5173'
-      : 'pnpm dev:browser',
+      ? 'pnpm --filter=@opencad/app exec vite preview --port 5173 --strictPort'
+      : 'pnpm --filter=@opencad/app dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
