@@ -16,6 +16,12 @@ export function useUndoRedo({ undo, redo, canUndo, canRedo }: UseUndoRedoOptions
       const mod = e.ctrlKey || e.metaKey;
       if (!mod) return;
 
+      // Leave editable elements to the browser's native undo/redo
+      const target = e.target as HTMLElement;
+      const tag = target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (target.isContentEditable) return;
+
       // Shift (or CapsLock) makes browsers report 'Z' rather than 'z'.
       const key = e.key.toLowerCase();
       if (key === 'z' && !e.shiftKey) {

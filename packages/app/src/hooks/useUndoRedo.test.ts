@@ -107,4 +107,68 @@ describe('T-DOC-007: useUndoRedo', () => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, bubbles: true }));
     expect(mockUndo).toHaveBeenCalledOnce();
   });
+
+  describe('INT-001: editable elements keep native undo/redo', () => {
+    let el: HTMLElement | null = null;
+
+    afterEach(() => {
+      el?.remove();
+      el = null;
+    });
+
+    const dispatchOn = (target: HTMLElement, init: KeyboardEventInit) => {
+      const event = new KeyboardEvent('keydown', { ...init, bubbles: true, cancelable: true });
+      target.dispatchEvent(event);
+      return event;
+    };
+
+    const mount = (tag: string): HTMLElement => {
+      el = document.createElement(tag);
+      document.body.appendChild(el);
+      return el;
+    };
+
+    it.each(['input', 'textarea', 'select'])('ignores Ctrl+Z in %s', (tag) => {
+      renderHook(() =>
+        useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: true })
+      );
+      const event = dispatchOn(mount(tag), { key: 'z', ctrlKey: true });
+      expect(mockUndo).not.toHaveBeenCalled();
+      expect(event.defaultPrevented).toBe(false);
+    });
+
+    it('ignores Ctrl+Y and Ctrl+Shift+Z in input', () => {
+      renderHook(() =>
+        useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: true })
+      );
+      const input = mount('input');
+      const y = dispatchOn(input, { key: 'y', ctrlKey: true });
+      const shiftZ = dispatchOn(input, { key: 'Z', ctrlKey: true, shiftKey: true });
+      expect(mockRedo).not.toHaveBeenCalled();
+      expect(y.defaultPrevented).toBe(false);
+      expect(shiftZ.defaultPrevented).toBe(false);
+    });
+
+    it('ignores Ctrl+Z in a contentEditable element', () => {
+      renderHook(() =>
+        useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: true })
+      );
+      const div = mount('div');
+      div.contentEditable = 'true';
+      // jsdom does not implement isContentEditable
+      Object.defineProperty(div, 'isContentEditable', { value: true });
+      const event = dispatchOn(div, { key: 'z', ctrlKey: true });
+      expect(mockUndo).not.toHaveBeenCalled();
+      expect(event.defaultPrevented).toBe(false);
+    });
+
+    it('still undoes when the target is a non-editable element', () => {
+      renderHook(() =>
+        useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: true })
+      );
+      const event = dispatchOn(mount('div'), { key: 'z', ctrlKey: true });
+      expect(mockUndo).toHaveBeenCalledOnce();
+      expect(event.defaultPrevented).toBe(true);
+    });
+  });
 });
