@@ -9,7 +9,6 @@
  */
 
 import { test, expect } from '@playwright/test';
-// Tests marked test.fixme are stale or regressed — tracked in e2e/FIXME.md
 import { waitForAppReady, activateTool } from './helpers';
 
 // ---------------------------------------------------------------------------

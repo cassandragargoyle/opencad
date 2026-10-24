@@ -27,6 +27,8 @@ pnpm --filter=@opencad/document test:unit   # Run tests in a specific package
 pnpm --filter=@opencad/geometry test:unit
 pnpm test:e2e                               # Playwright E2E tests
 pnpm test:e2e:ui                            # Playwright with UI
+pnpm test:e2e:visual                        # Visual regression, in the Playwright container (podman/docker; run pnpm build:browser first)
+pnpm test:e2e:visual:update                 # Regenerate visual baselines after intentional UI changes
 
 # Quality
 pnpm typecheck           # TypeScript type checking
