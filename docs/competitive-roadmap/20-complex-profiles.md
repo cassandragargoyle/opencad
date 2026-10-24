@@ -9,6 +9,7 @@ Beams and columns render as plain rectangular prisms today. Real structural memb
 ## Scope
 
 ### In scope
+
 - `Profile` schema: a named 2D cross-section polygon (outer + inner loops), plus metadata (category, standard code like `W8×31`, `HSS4×4×1/4`, plus custom profiles).
 - Starter library of standard profiles: ~30 US/metric steel sections (W, S, HSS, C, L), plus a few architectural classics (cove, ogee, square cap).
 - Beam and Column schemas gain `ProfileId` (replacing flat `Width × Height`).
@@ -18,6 +19,7 @@ Beams and columns render as plain rectangular prisms today. Real structural memb
 - User-authored custom profiles via a simple 2D polygon editor (reuse the slab-polygon draw tool).
 
 ### Out of scope
+
 - Tapered sections (W-flange with varying depth).
 - Global profile-library sync / publishing.
 

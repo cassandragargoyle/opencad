@@ -5,7 +5,13 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { parsePLN, parsePLA, parseGDL, detectFormat as detectAC, importFile as importAC } from './archicad';
+import {
+  parsePLN,
+  parsePLA,
+  parseGDL,
+  detectFormat as detectAC,
+  importFile as importAC,
+} from './archicad';
 
 const SAMPLE_PLN = `<?xml version="1.0" encoding="UTF-8"?>
 <ArchiCADProject>

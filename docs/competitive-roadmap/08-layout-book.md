@@ -9,6 +9,7 @@ Architects deliver drawing sets — PDFs containing plans, elevations, sections,
 ## Scope
 
 ### In scope
+
 - A new top-level document object: `layouts: Layout[]`, where each layout is a named sheet.
 - Layout sizes: ISO A0 / A1 / A2 / A3 / A4 and ANSI A / B / C / D / E at true scale.
 - A **title block** — a reusable header/footer overlay bound to fields from the project (project name, client, sheet title, sheet number, date, drawn-by, revision). Ships with one built-in template; users can edit it.
@@ -18,6 +19,7 @@ Architects deliver drawing sets — PDFs containing plans, elevations, sections,
 - Export the entire layout book to a single multi-page PDF.
 
 ### Out of scope (this issue)
+
 - PDF import as template / background. Use-case but complex; defer.
 - User-authored title block templates via drag-and-drop — v1 edits through a JSON dialog.
 - Revision clouds / markup.

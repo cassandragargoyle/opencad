@@ -23,10 +23,7 @@ export function CompliancePanel(): React.ReactElement {
 
   function handleApplyFix(violation: Violation): void {
     if (!doc) return;
-    const fixed = applyFix(
-      doc as Parameters<typeof applyFix>[0],
-      violation
-    );
+    const fixed = applyFix(doc as Parameters<typeof applyFix>[0], violation);
     // Cast back to DocumentSchema — structurally identical
     loadDocumentSchema(fixed as Parameters<typeof loadDocumentSchema>[0]);
     // Re-run check after fix
@@ -44,17 +41,18 @@ export function CompliancePanel(): React.ReactElement {
       </div>
 
       <div className="panel-body">
-        <button
-          className="btn-primary compliance-run-btn"
-          onClick={runCheck}
-        >
+        <button className="btn-primary compliance-run-btn" onClick={runCheck}>
           <ShieldCheck size={14} />
           {t('compliance.runFull', { defaultValue: 'Run Compliance Check' })}
         </button>
 
         {violations === null ? (
           <div className="compliance-empty">
-            <p>{t('compliance.runHint', { defaultValue: 'Run check to verify the model against IBC rules.' })}</p>
+            <p>
+              {t('compliance.runHint', {
+                defaultValue: 'Run check to verify the model against IBC rules.',
+              })}
+            </p>
           </div>
         ) : violations.length === 0 ? (
           <div className="compliance-empty">
@@ -71,7 +69,12 @@ export function CompliancePanel(): React.ReactElement {
 
             {errors.length > 0 && (
               <div className="compliance-group">
-                <h4 className="compliance-group-title">{t('compliance.errorsHeading', { count: errors.length, defaultValue: 'Errors ({{count}})' })}</h4>
+                <h4 className="compliance-group-title">
+                  {t('compliance.errorsHeading', {
+                    count: errors.length,
+                    defaultValue: 'Errors ({{count}})',
+                  })}
+                </h4>
                 <ul className="compliance-list">
                   {errors.map((v) => (
                     <ViolationRow
@@ -86,7 +89,12 @@ export function CompliancePanel(): React.ReactElement {
 
             {warnings.length > 0 && (
               <div className="compliance-group">
-                <h4 className="compliance-group-title">{t('compliance.warningsHeading', { count: warnings.length, defaultValue: 'Warnings ({{count}})' })}</h4>
+                <h4 className="compliance-group-title">
+                  {t('compliance.warningsHeading', {
+                    count: warnings.length,
+                    defaultValue: 'Warnings ({{count}})',
+                  })}
+                </h4>
                 <ul className="compliance-list">
                   {warnings.map((v) => (
                     <ViolationRow

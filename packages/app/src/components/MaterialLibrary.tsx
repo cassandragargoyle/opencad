@@ -10,7 +10,11 @@ interface MaterialLibraryProps {
   currentMaterialName?: string;
 }
 
-export function MaterialLibrary({ onSelect, selectedCount, currentMaterialName }: MaterialLibraryProps) {
+export function MaterialLibrary({
+  onSelect,
+  selectedCount,
+  currentMaterialName,
+}: MaterialLibraryProps) {
   const { t } = useTranslation('panels');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
@@ -19,25 +23,31 @@ export function MaterialLibrary({ onSelect, selectedCount, currentMaterialName }
 
   const filtered = useMemo(() => {
     return BUILT_IN_MATERIALS.filter((m) => {
-      const matchesSearch =
-        search === '' || m.name.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = search === '' || m.name.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = category === 'All' || m.category === category;
       return matchesSearch && matchesCategory;
     });
   }, [search, category]);
 
-  const handleApply = useCallback((mat: Material) => {
-    if (selectedCount === 0) return;
-    onSelect(mat);
-    setJustAppliedName(mat.name);
-    // Clear the "just applied" message after 2 seconds — it's only a momentary
-    // confirmation. The persistent current material is shown via `currentMaterialName`.
-    setTimeout(() => setJustAppliedName(null), 2000);
-  }, [onSelect, selectedCount]);
+  const handleApply = useCallback(
+    (mat: Material) => {
+      if (selectedCount === 0) return;
+      onSelect(mat);
+      setJustAppliedName(mat.name);
+      // Clear the "just applied" message after 2 seconds — it's only a momentary
+      // confirmation. The persistent current material is shown via `currentMaterialName`.
+      setTimeout(() => setJustAppliedName(null), 2000);
+    },
+    [onSelect, selectedCount]
+  );
 
   const statusContent = () => {
     if (selectedCount === 0) {
-      return <span className="material-status-hint">Select elements on the canvas, then click Apply</span>;
+      return (
+        <span className="material-status-hint">
+          Select elements on the canvas, then click Apply
+        </span>
+      );
     }
     if (justAppliedName) {
       return (
@@ -63,18 +73,20 @@ export function MaterialLibrary({ onSelect, selectedCount, currentMaterialName }
   return (
     <div className="material-library">
       <div className="panel-header">
-        <span className="panel-title">{t('tool.materialLibrary.title', { defaultValue: 'Material Library' })}</span>
+        <span className="panel-title">
+          {t('tool.materialLibrary.title', { defaultValue: 'Material Library' })}
+        </span>
       </div>
 
-      <div className="material-selection-status">
-        {statusContent()}
-      </div>
+      <div className="material-selection-status">{statusContent()}</div>
 
       <div className="material-library-controls">
         <input
           type="text"
           className="material-search"
-          placeholder={t('tool.materialLibrary.searchPlaceholder', { defaultValue: 'Search materials…' })}
+          placeholder={t('tool.materialLibrary.searchPlaceholder', {
+            defaultValue: 'Search materials…',
+          })}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -89,7 +101,9 @@ export function MaterialLibrary({ onSelect, selectedCount, currentMaterialName }
           onChange={(e) => setCategory(e.target.value)}
           className="material-category-select"
         >
-          <option value="All">{t('tool.materialLibrary.allCategories', { defaultValue: 'All Categories' })}</option>
+          <option value="All">
+            {t('tool.materialLibrary.allCategories', { defaultValue: 'All Categories' })}
+          </option>
           {MATERIAL_CATEGORIES.map((c) => (
             <option key={c} value={c}>
               {c}
@@ -99,7 +113,9 @@ export function MaterialLibrary({ onSelect, selectedCount, currentMaterialName }
       </div>
 
       {filtered.length === 0 ? (
-        <div className="material-empty">{t('tool.materialLibrary.noMaterials', { defaultValue: 'No materials found' })}</div>
+        <div className="material-empty">
+          {t('tool.materialLibrary.noMaterials', { defaultValue: 'No materials found' })}
+        </div>
       ) : (
         <div className="material-grid">
           {filtered.map((mat) => {
@@ -123,16 +139,18 @@ export function MaterialLibrary({ onSelect, selectedCount, currentMaterialName }
                   <span className="material-name">{mat.name}</span>
                   <span className="material-category-tag">{mat.category}</span>
                   <span className="material-roughness">roughness: {mat.roughness.toFixed(2)}</span>
-                  <span className="material-cost">
-                    ${mat.costPerM2}/m²
-                  </span>
+                  <span className="material-cost">${mat.costPerM2}/m²</span>
                 </div>
                 <button
                   className={`btn-select-material${isCurrentMat ? ' applied' : ''}`}
                   onClick={() => handleApply(mat)}
                   disabled={selectedCount === 0}
                   aria-label={`Apply ${mat.name} to selected elements`}
-                  title={selectedCount === 0 ? 'Select elements in the viewport first' : `Apply ${mat.name} to ${selectedCount} element${selectedCount > 1 ? 's' : ''}`}
+                  title={
+                    selectedCount === 0
+                      ? 'Select elements in the viewport first'
+                      : `Apply ${mat.name} to ${selectedCount} element${selectedCount > 1 ? 's' : ''}`
+                  }
                 >
                   {isCurrentMat ? '✓ Applied' : 'Apply'}
                 </button>

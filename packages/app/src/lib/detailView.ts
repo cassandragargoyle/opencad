@@ -16,11 +16,7 @@ export interface DetailRegion {
 }
 
 /** Create a ViewSchema for a detail view. */
-export function createDetailView(
-  name: string,
-  region: DetailRegion,
-  scale: number,
-): ViewSchema {
+export function createDetailView(name: string, region: DetailRegion, scale: number): ViewSchema {
   const id = `detail_${Date.now().toString(36)}_${Math.floor(Math.random() * 0xffff).toString(16)}`;
   return {
     id,
@@ -28,9 +24,11 @@ export function createDetailView(
     type: 'detail',
     camera: {
       position: { x: region.x + region.width / 2, y: 1000, z: region.y + region.height / 2 },
-      target:   { x: region.x + region.width / 2, y: 0,    z: region.y + region.height / 2 },
+      target: { x: region.x + region.width / 2, y: 0, z: region.y + region.height / 2 },
       up: { x: 0, y: 1, z: 0 },
-      fov: 50, near: 1, far: 100_000,
+      fov: 50,
+      near: 1,
+      far: 100_000,
     },
     detailRegion: { ...region, scale },
   };
@@ -43,7 +41,7 @@ export function createDetailView(
  */
 export function getDetailViewElements(
   elements: ElementSchema[],
-  region: DetailRegion,
+  region: DetailRegion
 ): ElementSchema[] {
   return elements.filter((el) => {
     if (!el.visible) return false;
@@ -86,8 +84,14 @@ function elementOverlapsRegion(el: ElementSchema, r: DetailRegion): boolean {
 }
 
 function lineIntersectsRect(
-  x1: number, y1: number, x2: number, y2: number,
-  rx1: number, ry1: number, rx2: number, ry2: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  rx1: number,
+  ry1: number,
+  rx2: number,
+  ry2: number
 ): boolean {
   // Cohen-Sutherland simplified: check if bounding boxes overlap
   const lx1 = Math.min(x1, x2);

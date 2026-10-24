@@ -11,6 +11,7 @@ This issue introduces a minimal parametric-object system and a small starter lib
 ## Scope
 
 ### In scope
+
 - A **ParametricObject** schema: declarative JSON manifest that describes parameters (name, type, default, min, max), 2D symbol (SVG path per zoom level), 3D geometry (a short list of primitives — box, cylinder, revolve, sweep — each referencing parameters), metadata (category, vendor, tags).
 - A library of ~30 starter objects across categories: Plumbing (sink, toilet, bathtub, shower), Kitchen (sink, range, fridge, dishwasher, cabinet), Furniture (chair, sofa, bed, table), Lighting (pendant, sconce), Fixtures (door-hardware placeholders).
 - A dedicated **Object Library** panel listing objects by category, with search and filter.
@@ -19,6 +20,7 @@ This issue introduces a minimal parametric-object system and a small starter lib
 - Cost + carbon takeoff picks up the object's material assignments.
 
 ### Out of scope (this issue)
+
 - A scripting language (GDL equivalent) for authoring — v1 uses declarative JSON + a small number of primitive operators.
 - Asset upload / marketplace / community library — local bundled library only in v1.
 - IFC export of parametric objects as IFC proxies — nice-to-have follow-up.

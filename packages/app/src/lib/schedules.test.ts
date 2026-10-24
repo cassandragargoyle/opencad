@@ -17,10 +17,13 @@ function mkEl(type: ElementSchema['type'], props: Record<string, number | string
     propObj[k] = { type: typeof v === 'number' ? 'number' : 'string', value: v };
   }
   return {
-    id: `e-${++__id}`, type, layerId: 'l1',
+    id: `e-${++__id}`,
+    type,
+    layerId: 'l1',
     properties: propObj,
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
@@ -28,7 +31,9 @@ function mkDoc(els: ElementSchema[]): DocumentSchema {
   const elements: Record<string, ElementSchema> = {};
   for (const e of els) elements[e.id] = e;
   return {
-    id: 'doc', name: 't', version: { clock: {} },
+    id: 'doc',
+    name: 't',
+    version: { clock: {} },
     metadata: { createdAt: 0, updatedAt: 0, createdBy: 'u1', schemaVersion: '1' },
     content: { elements, spaces: {} },
     organization: { layers: {}, levels: {} },
@@ -88,9 +93,9 @@ describe('T-DOC-007: schedules', () => {
   });
 
   it('scheduleToCSV produces header + escaped values', () => {
-    const rows = doorSchedule(mkDoc([
-      mkEl('door', { Width: 900, Height: 2100, Material: 'Oak, Quarter-sawn' }),
-    ]));
+    const rows = doorSchedule(
+      mkDoc([mkEl('door', { Width: 900, Height: 2100, Material: 'Oak, Quarter-sawn' })])
+    );
     const csv = scheduleToCSV(rows);
     expect(csv.split('\n')[0]).toContain('tag');
     expect(csv).toContain('"Oak, Quarter-sawn"');

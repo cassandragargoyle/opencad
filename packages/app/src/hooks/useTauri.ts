@@ -230,10 +230,17 @@ export function useTauri(): TauriState {
   useEffect(() => {
     if (!isDesktop) return;
 
-    tauriGetLocalAIStatus().then(setLocalAI).catch(() => null);
-    tauriCheckForUpdate().then(setUpdateInfo).catch(() => null);
+    tauriGetLocalAIStatus()
+      .then(setLocalAI)
+      .catch(() => null);
+    tauriCheckForUpdate()
+      .then(setUpdateInfo)
+      .catch(() => null);
     tauriGetStorageInfo()
-      .then(({ used, total }) => { setStorageUsed(used); setStorageTotal(total); })
+      .then(({ used, total }) => {
+        setStorageUsed(used);
+        setStorageTotal(total);
+      })
       .catch(() => null);
   }, [isDesktop]);
 

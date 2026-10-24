@@ -31,7 +31,9 @@ describe('T-BIM-003: DoorWindowPanel', () => {
 
   describe('Door mode', () => {
     beforeEach(() => {
-      mockUseDocumentStore.mockReturnValue(makeStore('door') as ReturnType<typeof useDocumentStore>);
+      mockUseDocumentStore.mockReturnValue(
+        makeStore('door') as ReturnType<typeof useDocumentStore>
+      );
     });
 
     it('renders door panel title', () => {
@@ -70,7 +72,9 @@ describe('T-BIM-003: DoorWindowPanel', () => {
 
   describe('Window mode', () => {
     beforeEach(() => {
-      mockUseDocumentStore.mockReturnValue(makeStore('window') as ReturnType<typeof useDocumentStore>);
+      mockUseDocumentStore.mockReturnValue(
+        makeStore('window') as ReturnType<typeof useDocumentStore>
+      );
     });
 
     it('renders window panel title', () => {

@@ -31,7 +31,7 @@ describe('T-PRES-02: computeTeleportArc()', () => {
   it('arc descends due to gravity when pointing horizontally', () => {
     const arc = computeTeleportArc({ x: 0, y: 2, z: 0 }, { x: 0, y: 0, z: -1 }, 9.8, 8, 30);
     const firstY = arc[0]!.y;
-    const lastY  = arc[arc.length - 1]!.y;
+    const lastY = arc[arc.length - 1]!.y;
     expect(lastY).toBeLessThan(firstY);
   });
 
@@ -45,12 +45,20 @@ describe('T-PRES-02: computeTeleportArc()', () => {
 describe('T-PRES-02: teleportLandingPoint()', () => {
   it('returns null for arc that never reaches floor', () => {
     // Arc entirely above y=0
-    const arc = [{ x: 0, y: 1, z: 0 }, { x: 1, y: 2, z: -1 }, { x: 2, y: 3, z: -2 }];
+    const arc = [
+      { x: 0, y: 1, z: 0 },
+      { x: 1, y: 2, z: -1 },
+      { x: 2, y: 3, z: -2 },
+    ];
     expect(teleportLandingPoint(arc)).toBeNull();
   });
 
   it('returns landing point when arc crosses y=0', () => {
-    const arc = [{ x: 0, y: 1, z: 0 }, { x: 1, y: 0.5, z: -1 }, { x: 2, y: -0.5, z: -2 }];
+    const arc = [
+      { x: 0, y: 1, z: 0 },
+      { x: 1, y: 0.5, z: -1 },
+      { x: 2, y: -0.5, z: -2 },
+    ];
     const landing = teleportLandingPoint(arc);
     expect(landing).not.toBeNull();
     expect(landing!.y).toBeCloseTo(0);

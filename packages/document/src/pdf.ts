@@ -129,8 +129,7 @@ export function renderDocumentToPDF(
 
   let xrefOffset: number;
   if (imageBytes !== null) {
-    xrefOffset =
-      byteOffset + imageBytes.length + imageEndStr.length + infoStr.length;
+    xrefOffset = byteOffset + imageBytes.length + imageEndStr.length + infoStr.length;
   } else {
     xrefOffset = byteOffset + infoStr.length;
   }
@@ -195,8 +194,8 @@ export function exportToPDFDataURL(doc: DocumentSchema): string {
     if (el.type === 'line' || el.type === 'wall') {
       const sx = (el.properties['StartX']?.value as number) ?? t.x;
       const sy = (el.properties['StartY']?.value as number) ?? t.y;
-      const ex = (el.properties['EndX']?.value as number) ?? (el.boundingBox?.max.x ?? sx + 100);
-      const ey = (el.properties['EndY']?.value as number) ?? (el.boundingBox?.max.y ?? sy);
+      const ex = (el.properties['EndX']?.value as number) ?? el.boundingBox?.max.x ?? sx + 100;
+      const ey = (el.properties['EndY']?.value as number) ?? el.boundingBox?.max.y ?? sy;
       const scale = 0.2;
       streamLines.push(`${(sx * scale).toFixed(3)} ${(pageH - sy * scale).toFixed(3)} m`);
       streamLines.push(`${(ex * scale).toFixed(3)} ${(pageH - ey * scale).toFixed(3)} l`);
@@ -204,17 +203,25 @@ export function exportToPDFDataURL(doc: DocumentSchema): string {
     } else if (el.type === 'circle') {
       const cx = (el.properties['CenterX']?.value as number) ?? t.x;
       const cy = (el.properties['CenterY']?.value as number) ?? t.y;
-      const r  = (el.properties['Radius']?.value as number) ?? 25;
+      const r = (el.properties['Radius']?.value as number) ?? 25;
       const scale = 0.2;
       const pcx = cx * scale;
       const pcy = pageH - cy * scale;
-      const pr  = r * scale;
-      const k   = 0.5523 * pr;
+      const pr = r * scale;
+      const k = 0.5523 * pr;
       streamLines.push(`${(pcx - pr).toFixed(3)} ${pcy.toFixed(3)} m`);
-      streamLines.push(`${(pcx - pr).toFixed(3)} ${(pcy + k).toFixed(3)} ${(pcx - k).toFixed(3)} ${(pcy + pr).toFixed(3)} ${pcx.toFixed(3)} ${(pcy + pr).toFixed(3)} c`);
-      streamLines.push(`${(pcx + k).toFixed(3)} ${(pcy + pr).toFixed(3)} ${(pcx + pr).toFixed(3)} ${(pcy + k).toFixed(3)} ${(pcx + pr).toFixed(3)} ${pcy.toFixed(3)} c`);
-      streamLines.push(`${(pcx + pr).toFixed(3)} ${(pcy - k).toFixed(3)} ${(pcx + k).toFixed(3)} ${(pcy - pr).toFixed(3)} ${pcx.toFixed(3)} ${(pcy - pr).toFixed(3)} c`);
-      streamLines.push(`${(pcx - k).toFixed(3)} ${(pcy - pr).toFixed(3)} ${(pcx - pr).toFixed(3)} ${(pcy - k).toFixed(3)} ${(pcx - pr).toFixed(3)} ${pcy.toFixed(3)} c`);
+      streamLines.push(
+        `${(pcx - pr).toFixed(3)} ${(pcy + k).toFixed(3)} ${(pcx - k).toFixed(3)} ${(pcy + pr).toFixed(3)} ${pcx.toFixed(3)} ${(pcy + pr).toFixed(3)} c`
+      );
+      streamLines.push(
+        `${(pcx + k).toFixed(3)} ${(pcy + pr).toFixed(3)} ${(pcx + pr).toFixed(3)} ${(pcy + k).toFixed(3)} ${(pcx + pr).toFixed(3)} ${pcy.toFixed(3)} c`
+      );
+      streamLines.push(
+        `${(pcx + pr).toFixed(3)} ${(pcy - k).toFixed(3)} ${(pcx + k).toFixed(3)} ${(pcy - pr).toFixed(3)} ${pcx.toFixed(3)} ${(pcy - pr).toFixed(3)} c`
+      );
+      streamLines.push(
+        `${(pcx - k).toFixed(3)} ${(pcy - pr).toFixed(3)} ${(pcx - pr).toFixed(3)} ${(pcy - k).toFixed(3)} ${(pcx - pr).toFixed(3)} ${pcy.toFixed(3)} c`
+      );
       streamLines.push('S');
     }
   }
@@ -239,10 +246,12 @@ export function exportToPDFDataURL(doc: DocumentSchema): string {
   offsets[3] = byteOffset;
   append(
     `3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] ` +
-    `/Contents 4 0 R /Resources << >> >>\nendobj\n`,
+      `/Contents 4 0 R /Resources << >> >>\nendobj\n`
   );
   offsets[4] = byteOffset;
-  append(`4 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`);
+  append(
+    `4 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`
+  );
   offsets[5] = byteOffset;
   const docTitle = doc.name || 'OpenCAD Export';
   const infoStr = `5 0 obj\n<< /Title (${_pdfEscape(docTitle)}) /Producer (OpenCAD) >>\nendobj\n`;
@@ -255,8 +264,7 @@ export function exportToPDFDataURL(doc: DocumentSchema): string {
     xrefLines.push(`${String(offsets[i] ?? 0).padStart(10, '0')} 00000 n \n`);
   }
   const xrefStr = xrefLines.join('\n') + '\n';
-  const trailerStr =
-    `trailer\n<< /Size ${objCount} /Root 1 0 R /Info 5 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
+  const trailerStr = `trailer\n<< /Size ${objCount} /Root 1 0 R /Info 5 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
 
   const pdfStr = parts.join('') + xrefStr + trailerStr;
 
@@ -320,7 +328,7 @@ export interface SheetPage {
 export function renderSheetSetToPDF(
   doc: DocumentSchema,
   sheets: readonly SheetPage[],
-  options: Pick<PDFExportOptions, 'title'> = {},
+  options: Pick<PDFExportOptions, 'title'> = {}
 ): Blob {
   if (sheets.length === 0) {
     // Delegate to the single-page renderer for an empty-canvas blank page.
@@ -340,12 +348,12 @@ export function renderSheetSetToPDF(
     const pageSize = s.pageSize ?? 'A3';
     const orientation = s.orientation ?? 'landscape';
     const [rw, rh] = PAGE_SIZES[pageSize];
-    const [pageW, pageH] = orientation === 'landscape'
-      ? [Math.max(rw, rh), Math.min(rw, rh)]
-      : [rw, rh];
+    const [pageW, pageH] =
+      orientation === 'landscape' ? [Math.max(rw, rh), Math.min(rw, rh)] : [rw, rh];
 
     let imageBytes: Uint8Array | null = null;
-    let imgW = 0, imgH = 0;
+    let imgW = 0,
+      imgH = 0;
     if (s.canvas) {
       try {
         const dataUrl = s.canvas.toDataURL('image/jpeg', 0.88);
@@ -353,7 +361,9 @@ export function renderSheetSetToPDF(
         imageBytes = base64ToUint8Array(base64);
         imgW = s.canvas.width || pageW;
         imgH = s.canvas.height || pageH;
-      } catch { /* canvas tainted — blank page */ }
+      } catch {
+        /* canvas tainted — blank page */
+      }
     }
     return { pageW, pageH, imageBytes, imgW, imgH, label: s.title };
   });
@@ -404,30 +414,28 @@ export function renderSheetSetToPDF(
     const contentsObjNum = pageObjNum + 1;
     const imageObjNum = pageObjNum + 2;
 
-    const contentStream = p.imageBytes
-      ? `q ${p.pageW} 0 0 ${p.pageH} 0 0 cm /Im${i} Do Q\n`
-      : '';
-    const resources = p.imageBytes
-      ? `<< /XObject << /Im${i} ${imageObjNum} 0 R >> >>`
-      : '<< >>';
+    const contentStream = p.imageBytes ? `q ${p.pageW} 0 0 ${p.pageH} 0 0 cm /Im${i} Do Q\n` : '';
+    const resources = p.imageBytes ? `<< /XObject << /Im${i} ${imageObjNum} 0 R >> >>` : '<< >>';
 
     offsets[pageObjNum] = byteOffset;
     push(
       `${pageObjNum} 0 obj\n` +
-      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${p.pageW} ${p.pageH}] ` +
-      `/Contents ${contentsObjNum} 0 R /Resources ${resources} >>\nendobj\n`,
+        `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${p.pageW} ${p.pageH}] ` +
+        `/Contents ${contentsObjNum} 0 R /Resources ${resources} >>\nendobj\n`
     );
 
     offsets[contentsObjNum] = byteOffset;
-    push(`${contentsObjNum} 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`);
+    push(
+      `${contentsObjNum} 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`
+    );
 
     offsets[imageObjNum] = byteOffset;
     if (p.imageBytes) {
       push(
         `${imageObjNum} 0 obj\n` +
-        `<< /Type /XObject /Subtype /Image /Width ${p.imgW} /Height ${p.imgH} ` +
-        `/ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.imageBytes.length} >>\n` +
-        `stream\n`,
+          `<< /Type /XObject /Subtype /Image /Width ${p.imgW} /Height ${p.imgH} ` +
+          `/ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.imageBytes.length} >>\n` +
+          `stream\n`
       );
       push(p.imageBytes);
       push('endstream\nendobj\n');
@@ -440,7 +448,9 @@ export function renderSheetSetToPDF(
   // Info object
   const docTitle = options.title ?? doc.name ?? 'OpenCAD Sheet Set';
   offsets[infoObjNum] = byteOffset;
-  push(`${infoObjNum} 0 obj\n<< /Title (${escapePdfString(docTitle)}) /Producer (OpenCAD) >>\nendobj\n`);
+  push(
+    `${infoObjNum} 0 obj\n<< /Title (${escapePdfString(docTitle)}) /Producer (OpenCAD) >>\nendobj\n`
+  );
 
   // xref + trailer
   const xrefOffset = byteOffset;
@@ -449,7 +459,9 @@ export function renderSheetSetToPDF(
     xrefLines.push(`${String(offsets[i] ?? 0).padStart(10, '0')} 00000 n \n`);
   }
   push(xrefLines.join('\n') + '\n');
-  push(`trailer\n<< /Size ${xrefObjCount} /Root 1 0 R /Info ${infoObjNum} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`);
+  push(
+    `trailer\n<< /Size ${xrefObjCount} /Root 1 0 R /Info ${infoObjNum} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`
+  );
 
   // Concatenate to one Blob — merge everything into a single Uint8Array
   // with ArrayBuffer backing (Blob constructor is picky about SAB-typed
@@ -462,7 +474,10 @@ export function renderSheetSetToPDF(
   });
   const merged = new Uint8Array(totalLen);
   let pos = 0;
-  for (const u8 of encoded) { merged.set(u8, pos); pos += u8.byteLength; }
+  for (const u8 of encoded) {
+    merged.set(u8, pos);
+    pos += u8.byteLength;
+  }
   return new Blob([merged], { type: 'application/pdf' });
 }
 

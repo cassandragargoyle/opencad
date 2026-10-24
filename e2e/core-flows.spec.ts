@@ -85,9 +85,11 @@ test.describe('T-E2E-001: Core flows', () => {
    */
   test('T-E2E-001-004: dark mode toggle changes html data-theme attribute', async ({ page }) => {
     // Find the theme toggle button — it uses a Sun or Moon icon
-    const themeToggle = page.locator(
-      'button[title*="theme" i], button[aria-label*="theme" i], button[title*="dark" i], button[title*="light" i]'
-    ).first();
+    const themeToggle = page
+      .locator(
+        'button[title*="theme" i], button[aria-label*="theme" i], button[title*="dark" i], button[title*="light" i]'
+      )
+      .first();
 
     const initialTheme = await page.evaluate(() =>
       document.documentElement.getAttribute('data-theme')
@@ -95,9 +97,7 @@ test.describe('T-E2E-001: Core flows', () => {
 
     await themeToggle.click();
 
-    const newTheme = await page.evaluate(() =>
-      document.documentElement.getAttribute('data-theme')
-    );
+    const newTheme = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
 
     expect(newTheme).not.toBe(initialTheme);
   });
@@ -109,9 +109,9 @@ test.describe('T-E2E-001: Core flows', () => {
   test('T-E2E-001-005: default document has at least one layer', async ({ page }) => {
     // The Navigator or LayerPanel shows layer items
     // The layer panel is accessible via the right panel tabs
-    const layerTabBtn = page.locator(
-      '.right-panel-tab-btn[aria-label="Layers"], .right-panel-tab-btn[title="Layers"]'
-    ).first();
+    const layerTabBtn = page
+      .locator('.right-panel-tab-btn[aria-label="Layers"], .right-panel-tab-btn[title="Layers"]')
+      .first();
 
     // Click the Layers tab if visible
     const tabVisible = await layerTabBtn.isVisible().catch(() => false);

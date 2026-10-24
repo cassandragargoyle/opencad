@@ -4,11 +4,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import {
-  AIStreamClient,
-  type AIProvider,
-  type StreamChunk,
-} from './useAIStream';
+import { AIStreamClient, type AIProvider, type StreamChunk } from './useAIStream';
 
 describe('Issue #3: Real AI chat integration', () => {
   describe('AIStreamClient', () => {
@@ -93,7 +89,9 @@ describe('Issue #3: Real AI chat integration', () => {
 
       const client = new AIStreamClient(mockProvider, {
         storageGet: (k) => storage.get(k) ?? null,
-        storageSet: (k, v) => { storage.set(k, v); },
+        storageSet: (k, v) => {
+          storage.set(k, v);
+        },
       });
 
       client.saveHistory([

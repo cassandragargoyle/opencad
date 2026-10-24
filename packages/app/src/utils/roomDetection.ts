@@ -35,10 +35,10 @@ export interface WallSegment {
 export interface DetectedRoom {
   id: string;
   boundary: Point2D[]; // polygon vertices (clockwise)
-  area: number;        // m²
-  perimeter: number;   // m
+  area: number; // m²
+  perimeter: number; // m
   centroid: Point2D;
-  wallIds: string[];   // walls forming this room
+  wallIds: string[]; // walls forming this room
   name?: string;
 }
 
@@ -54,7 +54,7 @@ export function polygonArea(points: Point2D[]): number {
   let area = 0;
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n;
-    area += (points[i].x * points[j].y) - (points[j].x * points[i].y);
+    area += points[i].x * points[j].y - points[j].x * points[i].y;
   }
   return Math.abs(area) / 2;
 }
@@ -78,7 +78,7 @@ export function polygonCentroid(points: Point2D[]): Point2D {
   let signedArea = 0;
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n;
-    signedArea += (points[i].x * points[j].y) - (points[j].x * points[i].y);
+    signedArea += points[i].x * points[j].y - points[j].x * points[i].y;
   }
   signedArea /= 2;
 
@@ -94,7 +94,7 @@ export function polygonCentroid(points: Point2D[]): Point2D {
   let cy = 0;
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n;
-    const cross = (points[i].x * points[j].y) - (points[j].x * points[i].y);
+    const cross = points[i].x * points[j].y - points[j].x * points[i].y;
     cx += (points[i].x + points[j].x) * cross;
     cy += (points[i].y + points[j].y) * cross;
   }
@@ -161,7 +161,7 @@ function connected(
   ay: number,
   bx: number,
   by: number,
-  tolerance: number = SNAP_TOLERANCE,
+  tolerance: number = SNAP_TOLERANCE
 ): boolean {
   return dist2(ax, ay, bx, by) <= tolerance * tolerance;
 }
@@ -189,9 +189,7 @@ interface AdjInfo {
  * 5. Convert area/perimeter from mm units to m.
  */
 export function detectRoomsFromWalls(walls: ElementSchema[]): DetectedRoom[] {
-  const segments = walls
-    .map(elementToWallSegment)
-    .filter((s): s is WallSegment => s !== null);
+  const segments = walls.map(elementToWallSegment).filter((s): s is WallSegment => s !== null);
 
   if (segments.length < 3) return [];
 
@@ -244,10 +242,7 @@ export function detectRoomsFromWalls(walls: ElementSchema[]): DetectedRoom[] {
     const path: Array<{ segIdx: number; enteredViaStart: boolean }> = [];
     const visitedSegs = new Set<number>();
 
-    const dfs = (
-      segIdx: number,
-      enteredViaStart: boolean,
-    ): void => {
+    const dfs = (segIdx: number, enteredViaStart: boolean): void => {
       path.push({ segIdx, enteredViaStart });
       visitedSegs.add(segIdx);
 
@@ -300,8 +295,8 @@ export function detectRoomsFromWalls(walls: ElementSchema[]): DetectedRoom[] {
     rooms.push({
       id: `room-${roomCounter}`,
       boundary: loop.boundary,
-      area: areaMm2 * MM_TO_M * MM_TO_M,       // mm² → m²
-      perimeter: perimeterMm * MM_TO_M,          // mm → m
+      area: areaMm2 * MM_TO_M * MM_TO_M, // mm² → m²
+      perimeter: perimeterMm * MM_TO_M, // mm → m
       centroid: centroidMm,
       wallIds: loop.wallIds,
     });

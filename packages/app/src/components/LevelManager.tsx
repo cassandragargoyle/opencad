@@ -11,9 +11,8 @@ export function LevelManager() {
   const sortedLevels = Object.values(doc.organization.levels).sort((a, b) => a.order - b.order);
 
   const handleAdd = () => {
-    const maxElev = sortedLevels.length > 0
-      ? Math.max(...sortedLevels.map((l) => l.elevation)) + 3000
-      : 0;
+    const maxElev =
+      sortedLevels.length > 0 ? Math.max(...sortedLevels.map((l) => l.elevation)) + 3000 : 0;
     pushHistory('Add level');
     addLevel({ name: `Level ${sortedLevels.length + 1}`, elevation: maxElev, height: 3000 });
   };
@@ -40,7 +39,11 @@ export function LevelManager() {
     <div className="level-manager">
       <div className="panel-header">
         <span className="panel-title">{t('levels.title', { defaultValue: 'Levels' })}</span>
-        <button className="panel-action-btn" title={t('levels.addLevel', { defaultValue: 'Add level' })} onClick={handleAdd}>
+        <button
+          className="panel-action-btn"
+          title={t('levels.addLevel', { defaultValue: 'Add level' })}
+          onClick={handleAdd}
+        >
           +
         </button>
       </div>

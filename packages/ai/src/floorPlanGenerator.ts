@@ -106,7 +106,10 @@ ${JSON.stringify(existing, null, 2)}`;
 
 function parseSchemaFromResponse(text: string): DocumentSchema {
   // Strip markdown fences if present
-  const stripped = text.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim();
+  const stripped = text
+    .replace(/^```(?:json)?\n?/m, '')
+    .replace(/\n?```$/m, '')
+    .trim();
   // Find the outermost JSON object
   const firstBrace = stripped.indexOf('{');
   const lastBrace = stripped.lastIndexOf('}');
@@ -177,9 +180,7 @@ export class FloorPlanGenerator {
     const response = await this.client.messages.create({
       model: this.model,
       max_tokens: 8192,
-      messages: [
-        { role: 'user', content: userPrompt },
-      ],
+      messages: [{ role: 'user', content: userPrompt }],
       system: SYSTEM_PROMPT,
     });
 

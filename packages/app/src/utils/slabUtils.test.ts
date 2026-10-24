@@ -2,9 +2,18 @@
  * T-BIM-002: Slab Tool tests
  */
 import { describe, it, expect } from 'vitest';
-import { createSlabElement, SLAB_TYPES, DEFAULT_SLAB_THICKNESS, DEFAULT_SLAB_ELEVATION } from './slabUtils';
+import {
+  createSlabElement,
+  SLAB_TYPES,
+  DEFAULT_SLAB_THICKNESS,
+  DEFAULT_SLAB_ELEVATION,
+} from './slabUtils';
 
-const TRI = [{ x: 0, y: 0 }, { x: 1000, y: 0 }, { x: 500, y: 1000 }];
+const TRI = [
+  { x: 0, y: 0 },
+  { x: 1000, y: 0 },
+  { x: 500, y: 1000 },
+];
 
 describe('T-BIM-002: Slab Tool', () => {
   it('stores points as JSON string', () => {

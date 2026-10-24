@@ -11,14 +11,44 @@ export const DEFAULT_WINDOW_HEIGHT = 1200;
 export const DEFAULT_WINDOW_SILL_HEIGHT = 900;
 export const DEFAULT_WINDOW_MATERIAL = 'Aluminium';
 
-export interface Point { x: number; y: number; }
-export interface DoorOptions { width?: number; height?: number; material?: string; swing?: 'left'|'right'; layerId?: string; }
-export interface WindowOptions { width?: number; height?: number; sillHeight?: number; material?: string; glazingType?: string; layerId?: string; }
-export interface DoorElementParams { type: 'door'; layerId?: string; properties: Record<string, PropertyValue>; }
-export interface WindowElementParams { type: 'window'; layerId?: string; properties: Record<string, PropertyValue>; }
+export interface Point {
+  x: number;
+  y: number;
+}
+export interface DoorOptions {
+  width?: number;
+  height?: number;
+  material?: string;
+  swing?: 'left' | 'right';
+  layerId?: string;
+}
+export interface WindowOptions {
+  width?: number;
+  height?: number;
+  sillHeight?: number;
+  material?: string;
+  glazingType?: string;
+  layerId?: string;
+}
+export interface DoorElementParams {
+  type: 'door';
+  layerId?: string;
+  properties: Record<string, PropertyValue>;
+}
+export interface WindowElementParams {
+  type: 'window';
+  layerId?: string;
+  properties: Record<string, PropertyValue>;
+}
 
 export function createDoorElement(position: Point, options: DoorOptions = {}): DoorElementParams {
-  const { width = DEFAULT_DOOR_WIDTH, height = DEFAULT_DOOR_HEIGHT, material = DEFAULT_DOOR_MATERIAL, swing = 'left', layerId } = options;
+  const {
+    width = DEFAULT_DOOR_WIDTH,
+    height = DEFAULT_DOOR_HEIGHT,
+    material = DEFAULT_DOOR_MATERIAL,
+    swing = 'left',
+    layerId,
+  } = options;
   return {
     type: 'door',
     ...(layerId ? { layerId } : {}),
@@ -34,8 +64,18 @@ export function createDoorElement(position: Point, options: DoorOptions = {}): D
   };
 }
 
-export function createWindowElement(position: Point, options: WindowOptions = {}): WindowElementParams {
-  const { width = DEFAULT_WINDOW_WIDTH, height = DEFAULT_WINDOW_HEIGHT, sillHeight = DEFAULT_WINDOW_SILL_HEIGHT, material = DEFAULT_WINDOW_MATERIAL, glazingType = 'Clear', layerId } = options;
+export function createWindowElement(
+  position: Point,
+  options: WindowOptions = {}
+): WindowElementParams {
+  const {
+    width = DEFAULT_WINDOW_WIDTH,
+    height = DEFAULT_WINDOW_HEIGHT,
+    sillHeight = DEFAULT_WINDOW_SILL_HEIGHT,
+    material = DEFAULT_WINDOW_MATERIAL,
+    glazingType = 'Clear',
+    layerId,
+  } = options;
   return {
     type: 'window',
     ...(layerId ? { layerId } : {}),

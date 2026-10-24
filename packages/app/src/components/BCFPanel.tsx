@@ -25,7 +25,12 @@ const PRIORITY_LABELS: Record<BCFPriority, string> = {
   Low: 'Low',
 };
 
-export function BCFPanel({ initialTopics = [], onImport, onExport, onSelectTopic }: BCFPanelProps = {}) {
+export function BCFPanel({
+  initialTopics = [],
+  onImport,
+  onExport,
+  onSelectTopic,
+}: BCFPanelProps = {}) {
   const { t } = useTranslation('panels');
   const [topics] = useState<BCFTopic[]>(initialTopics);
 
@@ -63,7 +68,11 @@ export function BCFPanel({ initialTopics = [], onImport, onExport, onSelectTopic
       </div>
 
       {topics.length === 0 ? (
-        <div className="bcf-empty">{t('bcf.emptyDetail', { defaultValue: 'No BCF issues. Import a .bcf file or create issues from the model.' })}</div>
+        <div className="bcf-empty">
+          {t('bcf.emptyDetail', {
+            defaultValue: 'No BCF issues. Import a .bcf file or create issues from the model.',
+          })}
+        </div>
       ) : (
         <div className="bcf-topics">
           {topics.map((topic) => (
@@ -73,13 +82,12 @@ export function BCFPanel({ initialTopics = [], onImport, onExport, onSelectTopic
               onClick={() => onSelectTopic?.(topic)}
               role="button"
               tabIndex={0}
-              onKeyDown={(e) => { if (e.key === 'Enter') onSelectTopic?.(topic); }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') onSelectTopic?.(topic);
+              }}
             >
               <div className="topic-header">
-                <span
-                  className="topic-status"
-                  style={{ color: STATUS_COLORS[topic.topic_status] }}
-                >
+                <span className="topic-status" style={{ color: STATUS_COLORS[topic.topic_status] }}>
                   {topic.topic_status}
                 </span>
                 {topic.priority && (
@@ -87,9 +95,7 @@ export function BCFPanel({ initialTopics = [], onImport, onExport, onSelectTopic
                 )}
               </div>
               <div className="topic-title">{topic.title}</div>
-              {topic.assigned_to && (
-                <div className="topic-assigned">{topic.assigned_to}</div>
-              )}
+              {topic.assigned_to && <div className="topic-assigned">{topic.assigned_to}</div>}
               <div className="topic-date">{topic.creation_date}</div>
             </div>
           ))}

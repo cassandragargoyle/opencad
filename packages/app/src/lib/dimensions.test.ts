@@ -9,7 +9,13 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  angularDim, radialDim, diameterDim, arcLength, chainDim, ordinateDim, formatDimension,
+  angularDim,
+  radialDim,
+  diameterDim,
+  arcLength,
+  chainDim,
+  ordinateDim,
+  formatDimension,
 } from './dimensions';
 
 describe('T-DOC-033: dimensions', () => {
@@ -36,7 +42,12 @@ describe('T-DOC-033: dimensions', () => {
   });
 
   it('T-DOC-033-003: arcLength(r=1500, Δθ=π/2) ≈ 2356.19', () => {
-    const v = arcLength({ centre: { x: 0, y: 0 }, radius: 1500, startAngle: 0, endAngle: Math.PI / 2 });
+    const v = arcLength({
+      centre: { x: 0, y: 0 },
+      radius: 1500,
+      startAngle: 0,
+      endAngle: Math.PI / 2,
+    });
     expect(v).toBeCloseTo(2356.19, 1);
   });
 
@@ -50,8 +61,12 @@ describe('T-DOC-033: dimensions', () => {
   });
 
   it('T-DOC-033-005: ordinateDim from origin(0,0) to [(3,4),(5,2)] returns {xs:[3,5], ys:[4,2]}', () => {
-    expect(ordinateDim({ x: 0, y: 0 }, [{ x: 3, y: 4 }, { x: 5, y: 2 }]))
-      .toEqual({ xs: [3, 5], ys: [4, 2] });
+    expect(
+      ordinateDim({ x: 0, y: 0 }, [
+        { x: 3, y: 4 },
+        { x: 5, y: 2 },
+      ])
+    ).toEqual({ xs: [3, 5], ys: [4, 2] });
   });
 
   it('formatDimension linear with unit=m divides by 1000', () => {
@@ -63,10 +78,14 @@ describe('T-DOC-033: dimensions', () => {
   });
 
   it('formatDimension chain joins multiple values', () => {
-    expect(formatDimension({ kind: 'chain', value: [1000, 1500, 1500], precision: 0 })).toBe('1000 | 1500 | 1500');
+    expect(formatDimension({ kind: 'chain', value: [1000, 1500, 1500], precision: 0 })).toBe(
+      '1000 | 1500 | 1500'
+    );
   });
 
   it('formatDimension radial applies "R = " prefix when asked', () => {
-    expect(formatDimension({ kind: 'radial', value: 1500, precision: 0, prefix: 'R = ' })).toBe('R = 1500');
+    expect(formatDimension({ kind: 'radial', value: 1500, precision: 0, prefix: 'R = ' })).toBe(
+      'R = 1500'
+    );
   });
 });

@@ -20,12 +20,12 @@ export interface BulkImportJob {
 }
 
 export const MAX_FILE_SIZES: Record<ImportFormat, number> = {
-  skp: 500 * 1024 * 1024,   // 500 MB
-  ifc: 200 * 1024 * 1024,   // 200 MB
-  rfa: 100 * 1024 * 1024,   // 100 MB
-  obj: 150 * 1024 * 1024,   // 150 MB
-  fbx: 300 * 1024 * 1024,   // 300 MB
-  gltf: 250 * 1024 * 1024,  // 250 MB
+  skp: 500 * 1024 * 1024, // 500 MB
+  ifc: 200 * 1024 * 1024, // 200 MB
+  rfa: 100 * 1024 * 1024, // 100 MB
+  obj: 150 * 1024 * 1024, // 150 MB
+  fbx: 300 * 1024 * 1024, // 300 MB
+  gltf: 250 * 1024 * 1024, // 250 MB
 };
 
 const FORMAT_EXTENSIONS: Record<string, ImportFormat> = {
@@ -55,7 +55,7 @@ export function validateFileSize(sizeBytes: number, format: ImportFormat): boole
 }
 
 export function createBulkImportJob(
-  files: Array<{ name: string; format: ImportFormat; sizeBytes: number }>,
+  files: Array<{ name: string; format: ImportFormat; sizeBytes: number }>
 ): BulkImportJob {
   return {
     id: generateJobId(),

@@ -10,23 +10,23 @@ import { useState, useCallback, useMemo } from 'react';
 // ─── Constraint Types ─────────────────────────────────────────────────────────
 
 export type ConstraintType =
-  | 'coincident'      // two points at same location
-  | 'horizontal'      // line is horizontal
-  | 'vertical'        // line is vertical
-  | 'parallel'        // two lines are parallel
-  | 'perpendicular'   // two lines are perpendicular
-  | 'equal'           // equal length / radius
-  | 'fixed'           // point at fixed location
-  | 'distance'        // fixed distance between points
-  | 'angle'           // fixed angle between lines
-  | 'tangent'         // line tangent to circle
-  | 'midpoint';       // point is at midpoint of segment
+  | 'coincident' // two points at same location
+  | 'horizontal' // line is horizontal
+  | 'vertical' // line is vertical
+  | 'parallel' // two lines are parallel
+  | 'perpendicular' // two lines are perpendicular
+  | 'equal' // equal length / radius
+  | 'fixed' // point at fixed location
+  | 'distance' // fixed distance between points
+  | 'angle' // fixed angle between lines
+  | 'tangent' // line tangent to circle
+  | 'midpoint'; // point is at midpoint of segment
 
 export interface Constraint {
   id: string;
   type: ConstraintType;
-  entityIds: string[];    // element / point IDs involved
-  value?: number;         // for distance/angle constraints
+  entityIds: string[]; // element / point IDs involved
+  value?: number; // for distance/angle constraints
   satisfied: boolean;
 }
 
@@ -41,7 +41,7 @@ export interface ConstraintSolverState {
   constraints: Constraint[];
   points: ConstrainedPoint[];
   isSolved: boolean;
-  conflictIds: string[];  // constraint IDs that conflict
+  conflictIds: string[]; // constraint IDs that conflict
 }
 
 export interface UseConstraintSolverResult {
@@ -63,7 +63,9 @@ function checkConstraintSatisfied(
   constraint: Constraint,
   points: Map<string, ConstrainedPoint>
 ): boolean {
-  const pts = constraint.entityIds.map((id) => points.get(id)).filter(Boolean) as ConstrainedPoint[];
+  const pts = constraint.entityIds
+    .map((id) => points.get(id))
+    .filter(Boolean) as ConstrainedPoint[];
 
   switch (constraint.type) {
     case 'coincident':
@@ -101,30 +103,34 @@ function checkConstraintSatisfied(
   }
 }
 
-function computeDegreesOfFreedom(
-  pointCount: number,
-  constraints: Constraint[]
-): number {
+function computeDegreesOfFreedom(pointCount: number, constraints: Constraint[]): number {
   // Each 2D point has 2 DOF
   // Each constraint removes 1 DOF (simplified model)
   const totalDOF = pointCount * 2;
   let constraintDOF = 0;
   for (const c of constraints) {
     switch (c.type) {
-      case 'coincident': constraintDOF += 2; break;
-      case 'fixed': constraintDOF += 2; break;
+      case 'coincident':
+        constraintDOF += 2;
+        break;
+      case 'fixed':
+        constraintDOF += 2;
+        break;
       case 'horizontal':
       case 'vertical':
       case 'parallel':
       case 'perpendicular':
       case 'tangent':
       case 'midpoint':
-        constraintDOF += 1; break;
+        constraintDOF += 1;
+        break;
       case 'distance':
       case 'angle':
       case 'equal':
-        constraintDOF += 1; break;
-      default: constraintDOF += 1;
+        constraintDOF += 1;
+        break;
+      default:
+        constraintDOF += 1;
     }
   }
   return Math.max(0, totalDOF - constraintDOF);
@@ -223,22 +229,18 @@ export function useConstraintSolver(): UseConstraintSolverResult {
     conflictIds: [],
   });
 
-  const addConstraint = useCallback((
-    type: ConstraintType,
-    entityIds: string[],
-    value?: number
-  ): string => {
-    const id = crypto.randomUUID();
-    setState((prev) => ({
-      ...prev,
-      constraints: [
-        ...prev.constraints,
-        { id, type, entityIds, value, satisfied: false },
-      ],
-      isSolved: false,
-    }));
-    return id;
-  }, []);
+  const addConstraint = useCallback(
+    (type: ConstraintType, entityIds: string[], value?: number): string => {
+      const id = crypto.randomUUID();
+      setState((prev) => ({
+        ...prev,
+        constraints: [...prev.constraints, { id, type, entityIds, value, satisfied: false }],
+        isSolved: false,
+      }));
+      return id;
+    },
+    []
+  );
 
   const removeConstraint = useCallback((id: string) => {
     setState((prev) => ({
@@ -259,7 +261,7 @@ export function useConstraintSolver(): UseConstraintSolverResult {
   const updatePoint = useCallback((id: string, x: number, y: number) => {
     setState((prev) => ({
       ...prev,
-      points: prev.points.map((p) => p.id === id ? { ...p, x, y } : p),
+      points: prev.points.map((p) => (p.id === id ? { ...p, x, y } : p)),
       isSolved: false,
     }));
   }, []);

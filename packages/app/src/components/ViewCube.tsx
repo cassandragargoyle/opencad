@@ -21,7 +21,10 @@ const FACES: FaceConfig[] = [
 export function ViewCube({ setViewPreset }: ViewCubeProps): ReactElement {
   const { t } = useTranslation('common');
   return (
-    <div className="view-cube" aria-label={t('viewport.viewCubeAria', { defaultValue: 'View orientation cube' })}>
+    <div
+      className="view-cube"
+      aria-label={t('viewport.viewCubeAria', { defaultValue: 'View orientation cube' })}
+    >
       {FACES.map(({ preset, label }) => (
         <button
           key={preset}

@@ -109,13 +109,23 @@ describe('validateParameterValue', () => {
   });
 
   it('validates constraints min', () => {
-    const param: FamilyParameter = { name: 'width', type: 'length', defaultValue: 100, constraints: { min: 50 } };
+    const param: FamilyParameter = {
+      name: 'width',
+      type: 'length',
+      defaultValue: 100,
+      constraints: { min: 50 },
+    };
     expect(validateParameterValue(param, 50)).toBe(true);
     expect(validateParameterValue(param, 49)).toBe(false);
   });
 
   it('validates constraints max', () => {
-    const param: FamilyParameter = { name: 'width', type: 'length', defaultValue: 100, constraints: { max: 200 } };
+    const param: FamilyParameter = {
+      name: 'width',
+      type: 'length',
+      defaultValue: 100,
+      constraints: { max: 200 },
+    };
     expect(validateParameterValue(param, 200)).toBe(true);
     expect(validateParameterValue(param, 201)).toBe(false);
   });

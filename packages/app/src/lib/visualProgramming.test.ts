@@ -15,7 +15,13 @@ const simpleGraph: VPGraph = {
   nodes: [
     { id: 'n-const', type: 'constant', inputs: [], outputs: ['value'], params: { value: 10 } },
     { id: 'n-const2', type: 'constant', inputs: [], outputs: ['value'], params: { value: 5 } },
-    { id: 'n-add', type: 'math', inputs: ['a', 'b'], outputs: ['result'], params: { operation: 'add' } },
+    {
+      id: 'n-add',
+      type: 'math',
+      inputs: ['a', 'b'],
+      outputs: ['result'],
+      params: { operation: 'add' },
+    },
     { id: 'n-out', type: 'output', inputs: ['value'], outputs: ['value'], params: { name: 'sum' } },
   ],
   edges: [
@@ -147,8 +153,20 @@ describe('executeGraph', () => {
       nodes: [
         { id: 'c1', type: 'constant', inputs: [], outputs: ['value'], params: { value: 20 } },
         { id: 'c2', type: 'constant', inputs: [], outputs: ['value'], params: { value: 8 } },
-        { id: 'sub', type: 'math', inputs: ['a', 'b'], outputs: ['result'], params: { operation: 'sub' } },
-        { id: 'out', type: 'output', inputs: ['value'], outputs: ['value'], params: { name: 'result' } },
+        {
+          id: 'sub',
+          type: 'math',
+          inputs: ['a', 'b'],
+          outputs: ['result'],
+          params: { operation: 'sub' },
+        },
+        {
+          id: 'out',
+          type: 'output',
+          inputs: ['value'],
+          outputs: ['value'],
+          params: { name: 'result' },
+        },
       ],
       edges: [
         { id: 'e1', fromNodeId: 'c1', fromPort: 'value', toNodeId: 'sub', toPort: 'a' },
@@ -165,8 +183,20 @@ describe('executeGraph', () => {
       nodes: [
         { id: 'c1', type: 'constant', inputs: [], outputs: ['value'], params: { value: 6 } },
         { id: 'c2', type: 'constant', inputs: [], outputs: ['value'], params: { value: 7 } },
-        { id: 'mul', type: 'math', inputs: ['a', 'b'], outputs: ['result'], params: { operation: 'mul' } },
-        { id: 'out', type: 'output', inputs: ['value'], outputs: ['value'], params: { name: 'product' } },
+        {
+          id: 'mul',
+          type: 'math',
+          inputs: ['a', 'b'],
+          outputs: ['result'],
+          params: { operation: 'mul' },
+        },
+        {
+          id: 'out',
+          type: 'output',
+          inputs: ['value'],
+          outputs: ['value'],
+          params: { name: 'product' },
+        },
       ],
       edges: [
         { id: 'e1', fromNodeId: 'c1', fromPort: 'value', toNodeId: 'mul', toPort: 'a' },
@@ -182,8 +212,20 @@ describe('executeGraph', () => {
       nodes: [
         { id: 'c1', type: 'constant', inputs: [], outputs: ['value'], params: { value: true } },
         { id: 'c2', type: 'constant', inputs: [], outputs: ['value'], params: { value: false } },
-        { id: 'and', type: 'logic', inputs: ['a', 'b'], outputs: ['result'], params: { operation: 'and' } },
-        { id: 'out', type: 'output', inputs: ['value'], outputs: ['value'], params: { name: 'bool' } },
+        {
+          id: 'and',
+          type: 'logic',
+          inputs: ['a', 'b'],
+          outputs: ['result'],
+          params: { operation: 'and' },
+        },
+        {
+          id: 'out',
+          type: 'output',
+          inputs: ['value'],
+          outputs: ['value'],
+          params: { name: 'bool' },
+        },
       ],
       edges: [
         { id: 'e1', fromNodeId: 'c1', fromPort: 'value', toNodeId: 'and', toPort: 'a' },
@@ -198,8 +240,20 @@ describe('executeGraph', () => {
     const g: VPGraph = {
       nodes: [
         { id: 'c1', type: 'constant', inputs: [], outputs: ['value'], params: { value: false } },
-        { id: 'not', type: 'logic', inputs: ['a'], outputs: ['result'], params: { operation: 'not' } },
-        { id: 'out', type: 'output', inputs: ['value'], outputs: ['value'], params: { name: 'bool' } },
+        {
+          id: 'not',
+          type: 'logic',
+          inputs: ['a'],
+          outputs: ['result'],
+          params: { operation: 'not' },
+        },
+        {
+          id: 'out',
+          type: 'output',
+          inputs: ['value'],
+          outputs: ['value'],
+          params: { name: 'bool' },
+        },
       ],
       edges: [
         { id: 'e1', fromNodeId: 'c1', fromPort: 'value', toNodeId: 'not', toPort: 'a' },

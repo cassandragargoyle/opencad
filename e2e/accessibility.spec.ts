@@ -22,7 +22,9 @@ test.describe('T-A11Y-001: Project dashboard accessibility', () => {
     // Verify the page has at least one landmark role element (main, header, nav, footer)
     // which is the minimal requirement for a well-structured accessible page.
     const landmarkCount = await page
-      .locator('[role="main"], [role="navigation"], [role="banner"], [role="contentinfo"], main, nav, header, footer')
+      .locator(
+        '[role="main"], [role="navigation"], [role="banner"], [role="contentinfo"], main, nav, header, footer'
+      )
       .count();
     expect(landmarkCount).toBeGreaterThan(0);
 

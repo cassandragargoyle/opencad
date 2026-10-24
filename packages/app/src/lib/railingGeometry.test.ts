@@ -11,8 +11,13 @@ import { computeRailing } from './railingGeometry';
 describe('T-MOD-016: railings', () => {
   it('T-MOD-016-001: 4000mm straight path + postSpacing 1200 → ≥ 4 posts', () => {
     const r = computeRailing({
-      path: [{ x: 0, y: 0 }, { x: 4000, y: 0 }],
-      topRailHeight: 1000, postSpacing: 1200, balusterSpacing: 150,
+      path: [
+        { x: 0, y: 0 },
+        { x: 4000, y: 0 },
+      ],
+      topRailHeight: 1000,
+      postSpacing: 1200,
+      balusterSpacing: 150,
       balusterProfile: 'square',
     });
     expect(r.posts.length).toBeGreaterThanOrEqual(4);
@@ -22,8 +27,13 @@ describe('T-MOD-016: railings', () => {
 
   it('straight path produces one rail segment', () => {
     const r = computeRailing({
-      path: [{ x: 0, y: 0 }, { x: 4000, y: 0 }],
-      topRailHeight: 1000, postSpacing: 1200, balusterSpacing: 150,
+      path: [
+        { x: 0, y: 0 },
+        { x: 4000, y: 0 },
+      ],
+      topRailHeight: 1000,
+      postSpacing: 1200,
+      balusterSpacing: 150,
       balusterProfile: 'square',
     });
     expect(r.rails).toHaveLength(1);
@@ -31,8 +41,13 @@ describe('T-MOD-016: railings', () => {
 
   it('T-MOD-016-003: glass profile → zero balusters', () => {
     const r = computeRailing({
-      path: [{ x: 0, y: 0 }, { x: 4000, y: 0 }],
-      topRailHeight: 1000, postSpacing: 1200, balusterSpacing: 150,
+      path: [
+        { x: 0, y: 0 },
+        { x: 4000, y: 0 },
+      ],
+      topRailHeight: 1000,
+      postSpacing: 1200,
+      balusterSpacing: 150,
       balusterProfile: 'glass',
     });
     expect(r.balusters).toHaveLength(0);
@@ -40,8 +55,13 @@ describe('T-MOD-016: railings', () => {
 
   it('square profile produces non-zero balusters', () => {
     const r = computeRailing({
-      path: [{ x: 0, y: 0 }, { x: 4000, y: 0 }],
-      topRailHeight: 1000, postSpacing: 1200, balusterSpacing: 150,
+      path: [
+        { x: 0, y: 0 },
+        { x: 4000, y: 0 },
+      ],
+      topRailHeight: 1000,
+      postSpacing: 1200,
+      balusterSpacing: 150,
       balusterProfile: 'square',
     });
     expect(r.balusters.length).toBeGreaterThan(0);
@@ -49,8 +69,14 @@ describe('T-MOD-016: railings', () => {
 
   it('multi-segment path produces one rail per segment', () => {
     const r = computeRailing({
-      path: [{ x: 0, y: 0 }, { x: 2000, y: 0 }, { x: 2000, y: 2000 }],
-      topRailHeight: 1000, postSpacing: 1000, balusterSpacing: 100,
+      path: [
+        { x: 0, y: 0 },
+        { x: 2000, y: 0 },
+        { x: 2000, y: 2000 },
+      ],
+      topRailHeight: 1000,
+      postSpacing: 1000,
+      balusterSpacing: 100,
       balusterProfile: 'square',
     });
     expect(r.rails).toHaveLength(2);
@@ -58,7 +84,10 @@ describe('T-MOD-016: railings', () => {
 
   it('empty path returns zero posts + zero rails', () => {
     const r = computeRailing({
-      path: [], topRailHeight: 1000, postSpacing: 1000, balusterSpacing: 100,
+      path: [],
+      topRailHeight: 1000,
+      postSpacing: 1000,
+      balusterSpacing: 100,
       balusterProfile: 'square',
     });
     expect(r.posts).toHaveLength(0);
@@ -67,8 +96,14 @@ describe('T-MOD-016: railings', () => {
 
   it('closely-spaced points merge correctly (one post at the junction)', () => {
     const r = computeRailing({
-      path: [{ x: 0, y: 0 }, { x: 2000, y: 0 }, { x: 4000, y: 0 }],
-      topRailHeight: 1000, postSpacing: 2000, balusterSpacing: 100,
+      path: [
+        { x: 0, y: 0 },
+        { x: 2000, y: 0 },
+        { x: 4000, y: 0 },
+      ],
+      topRailHeight: 1000,
+      postSpacing: 2000,
+      balusterSpacing: 100,
       balusterProfile: 'square',
     });
     // Posts at 0, 2000, 4000 — second segment skips its start (already placed)

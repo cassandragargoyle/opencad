@@ -22,3 +22,7 @@ test-results/
 # IDE
 .vscode/
 .idea/
+
+# Generated (gitignored in nested .gitignore files)
+packages/sync-rs/pkg/
+packages/desktop/src-tauri/gen/

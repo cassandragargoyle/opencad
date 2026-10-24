@@ -40,7 +40,7 @@ export interface WindowScheduleRow extends ScheduleRow {
 export interface RoomScheduleRow extends ScheduleRow {
   tag: string;
   name: string;
-  area: number;            // m²
+  area: number; // m²
   occupancy: string;
   finishFloor: string;
   finishWalls: string;
@@ -64,14 +64,17 @@ function strProp(el: ElementSchema, key: string, fb = ''): string {
 function assignTags(
   elements: ElementSchema[],
   prefix: string,
-  startFrom: number = 1,
+  startFrom: number = 1
 ): Array<{ el: ElementSchema; tag: string }> {
   const used = new Set<string>();
   const withTags: Array<{ el: ElementSchema; tag: string }> = [];
   // Pass 1: carry explicit tags
   for (const el of elements) {
     const explicit = strProp(el, 'Tag', '');
-    if (explicit) { used.add(explicit); withTags.push({ el, tag: explicit }); }
+    if (explicit) {
+      used.add(explicit);
+      withTags.push({ el, tag: explicit });
+    }
   }
   // Pass 2: generate for untagged elements
   let seq = startFrom;
@@ -94,7 +97,7 @@ export function doorSchedule(doc: DocumentSchema): DoorScheduleRow[] {
   return withTags.map(({ el, tag }) => ({
     elementId: el.id,
     tag,
-    width:  numProp(el, 'Width',  900),
+    width: numProp(el, 'Width', 900),
     height: numProp(el, 'Height', 2100),
     material: strProp(el, 'Material', ''),
     hostWall: strProp(el, 'HostWallId', ''),
@@ -109,9 +112,9 @@ export function windowSchedule(doc: DocumentSchema): WindowScheduleRow[] {
   return withTags.map(({ el, tag }) => ({
     elementId: el.id,
     tag,
-    width:  numProp(el, 'Width',      1200),
-    height: numProp(el, 'Height',     1200),
-    sill:   numProp(el, 'SillHeight',  900),
+    width: numProp(el, 'Width', 1200),
+    height: numProp(el, 'Height', 1200),
+    sill: numProp(el, 'SillHeight', 900),
     material: strProp(el, 'Material', ''),
     hostWall: strProp(el, 'HostWallId', ''),
     level: el.levelId ?? '',
@@ -145,8 +148,8 @@ export function roomSchedule(doc: DocumentSchema): RoomScheduleRow[] {
         name: strProp(el, 'Name', '(room)'),
         area: numProp(el, 'Area', 0),
         occupancy: strProp(el, 'OccupancyType', ''),
-        finishFloor:   strProp(el, 'FinishFloor', ''),
-        finishWalls:   strProp(el, 'FinishWalls', ''),
+        finishFloor: strProp(el, 'FinishFloor', ''),
+        finishWalls: strProp(el, 'FinishWalls', ''),
         finishCeiling: strProp(el, 'FinishCeiling', ''),
       });
     }

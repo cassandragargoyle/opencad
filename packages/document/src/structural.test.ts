@@ -26,7 +26,12 @@ import {
 
 describe('T-STR-001: Foundation creation', () => {
   it('should create a strip foundation', () => {
-    const f = createFoundation({ foundationType: 'strip', width: 600, thickness: 250, length: 5000 });
+    const f = createFoundation({
+      foundationType: 'strip',
+      width: 600,
+      thickness: 250,
+      length: 5000,
+    });
     expect(f.type).toBe('foundation');
     expect(f.foundationType).toBe('strip');
     expect(f.width).toBe(600);
@@ -130,7 +135,7 @@ describe('T-STR-003: Reinforcement (rebar)', () => {
   it('should compute rebar weight from diameter, length, quantity', () => {
     const r = createRebar({ diameter: 16, length: 1000, quantity: 1 });
     const crossSection = Math.PI * 8 * 8; // mm²
-    const expected = (crossSection * 1000 / 1e9) * 7850;
+    const expected = ((crossSection * 1000) / 1e9) * 7850;
     expect(rebarWeight(r)).toBeCloseTo(expected, 3);
   });
 

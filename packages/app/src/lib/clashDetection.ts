@@ -59,9 +59,12 @@ export function elementBBox(el: ElementSchema): BBox {
 
 function boxesOverlap(a: BBox, b: BBox): boolean {
   return (
-    a.minX < b.maxX && a.maxX > b.minX &&
-    a.minY < b.maxY && a.maxY > b.minY &&
-    a.minZ < b.maxZ && a.maxZ > b.minZ
+    a.minX < b.maxX &&
+    a.maxX > b.minX &&
+    a.minY < b.maxY &&
+    a.maxY > b.minY &&
+    a.minZ < b.maxZ &&
+    a.maxZ > b.minZ
   );
 }
 
@@ -99,7 +102,7 @@ function boxesTouching(a: BBox, b: BBox, tolerance: number): boolean {
 export function detectClashes(
   structural: ElementSchema[],
   mep: ElementSchema[],
-  tolerance: number = 0.05,
+  tolerance: number = 0.05
 ): Clash[] {
   const clashes: Clash[] = [];
 

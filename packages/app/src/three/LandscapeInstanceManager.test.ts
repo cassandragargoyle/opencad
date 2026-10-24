@@ -35,11 +35,11 @@ function makeElement(
     properties: {
       SpeciesId: { type: 'string', value: speciesId },
       LibraryId: { type: 'string', value: 'starter' },
-      Scale:     { type: 'number', value: scale },
-      Rotation:  { type: 'number', value: rotation },
-      X:         { type: 'number', value: x },
-      Y:         { type: 'number', value: y },
-      Z:         { type: 'number', value: z },
+      Scale: { type: 'number', value: scale },
+      Rotation: { type: 'number', value: rotation },
+      X: { type: 'number', value: x },
+      Y: { type: 'number', value: y },
+      Z: { type: 'number', value: z },
     },
   };
 }
@@ -50,7 +50,7 @@ import { LandscapeInstanceManager } from './LandscapeInstanceManager';
 function makeScene() {
   const objects: THREE.Object3D[] = [];
   return {
-    add:    vi.fn((o: THREE.Object3D) => objects.push(o)),
+    add: vi.fn((o: THREE.Object3D) => objects.push(o)),
     remove: vi.fn((o: THREE.Object3D) => {
       const i = objects.indexOf(o);
       if (i >= 0) objects.splice(i, 1);
@@ -80,7 +80,10 @@ describe('T-SITE-04: LandscapeInstanceManager', () => {
   it('does not add non-landscape elements', () => {
     const elements = {
       w1: {
-        id: 'w1', type: 'wall', layerId: 'l1', levelId: '',
+        id: 'w1',
+        type: 'wall',
+        layerId: 'l1',
+        levelId: '',
         boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 1000, y: 100, z: 3000 } },
         transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 } },
         properties: {},
@@ -133,7 +136,9 @@ describe('T-SITE-04: LandscapeInstanceManager', () => {
 
   it('getElementId returns null for unknown mesh', () => {
     const dummy = new THREE.InstancedMesh(
-      new THREE.BoxGeometry(), new THREE.MeshStandardMaterial(), 4
+      new THREE.BoxGeometry(),
+      new THREE.MeshStandardMaterial(),
+      4
     );
     expect(manager.getElementId(dummy, 0)).toBeNull();
   });
@@ -163,9 +168,7 @@ describe('T-SITE-04: LandscapeInstanceManager', () => {
   it('updateLod does not throw', () => {
     const elements = { e1: makeElement('e1', 'planting', 'tree_oak') };
     manager.sync(elements as never);
-    expect(() =>
-      manager.updateLod(new THREE.Vector3(0, 10000, 0))
-    ).not.toThrow();
+    expect(() => manager.updateLod(new THREE.Vector3(0, 10000, 0))).not.toThrow();
   });
 
   it('raycast returns empty array when no instances', () => {

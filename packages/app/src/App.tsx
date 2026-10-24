@@ -20,8 +20,14 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   if (status === 'loading') {
     return (
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh' }}>
-        <span className="auth-spinner" style={{ width:24, height:24, borderWidth:3 }} aria-label="Loading" />
+      <div
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}
+      >
+        <span
+          className="auth-spinner"
+          style={{ width: 24, height: 24, borderWidth: 3 }}
+          aria-label="Loading"
+        />
       </div>
     );
   }

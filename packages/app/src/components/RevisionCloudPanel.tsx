@@ -14,24 +14,27 @@ interface Revision {
 }
 
 const SAMPLE_POLYGON = [
-  { x: 0, y: 0 }, { x: 5000, y: 0 }, { x: 5000, y: 3000 }, { x: 0, y: 3000 },
+  { x: 0, y: 0 },
+  { x: 5000, y: 0 },
+  { x: 5000, y: 3000 },
+  { x: 0, y: 3000 },
 ];
 
 export function RevisionCloudPanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document    = useDocumentStore((s) => s.document);
-  const addElement  = useDocumentStore((s) => s.addElement);
+  const document = useDocumentStore((s) => s.document);
+  const addElement = useDocumentStore((s) => s.addElement);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
-  const isReadOnly  = isDocumentReadOnly();
+  const isReadOnly = isDocumentReadOnly();
 
   const [revisions, setRevisions] = useState<Revision[]>([]);
-  const [newDesc, setNewDesc]     = useState('');
-  const [newDate, setNewDate]     = useState(new Date().toISOString().slice(0, 10));
-  const [status,  setStatus]      = useState('');
+  const [newDesc, setNewDesc] = useState('');
+  const [newDate, setNewDate] = useState(new Date().toISOString().slice(0, 10));
+  const [status, setStatus] = useState('');
 
   const layers = useMemo(
     () => (document ? Object.values(document.organization.layers) : []),
-    [document],
+    [document]
   );
 
   const addRevision = () => {
@@ -105,7 +108,12 @@ export function RevisionCloudPanel(): React.ReactElement {
             <h4 className="section-label">Revision Table</h4>
             <table className="data-table">
               <thead>
-                <tr><th>Rev</th><th>Description</th><th>Date</th><th></th></tr>
+                <tr>
+                  <th>Rev</th>
+                  <th>Description</th>
+                  <th>Date</th>
+                  <th></th>
+                </tr>
               </thead>
               <tbody>
                 {revisions.map((rev) => (
@@ -130,7 +138,11 @@ export function RevisionCloudPanel(): React.ReactElement {
           </div>
         )}
 
-        {status && <p className="panel-status" role="status">{status}</p>}
+        {status && (
+          <p className="panel-status" role="status">
+            {status}
+          </p>
+        )}
       </div>
     </div>
   );

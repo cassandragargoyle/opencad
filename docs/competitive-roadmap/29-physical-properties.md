@@ -9,6 +9,7 @@ Building materials already have `density` and `embodiedCarbon` on some entries b
 ## Scope
 
 ### In scope
+
 - Expand BuildingMaterial schema: `density (kg/m³)`, `thermalConductivity (W/m·K)`, `specificHeat (J/kg·K)`, `embodiedCarbon (kgCO₂/kg)`, `soundTransmissionClass (STC)`, `fireResistance (hours)`.
 - Bulk-populate built-in materials with realistic values from published tables (ASHRAE, ISO 10456 for thermal).
 - Composite-level computed values: `uValue (W/m²·K)`, `stcRating`, `thermalMass` — derived from layers.
@@ -16,6 +17,7 @@ Building materials already have `density` and `embodiedCarbon` on some entries b
 - Compliance rule R010: exterior wall U-value must be ≤ climate-zone code limit (varies; default IECC climate 4 = 0.315 W/m²·K).
 
 ### Out of scope
+
 - Dynamic thermal analysis over time (that's energy simulation — T-ANA-042).
 - Per-material fire test assembly ratings beyond simple hours.
 

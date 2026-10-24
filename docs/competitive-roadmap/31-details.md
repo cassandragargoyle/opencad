@@ -9,12 +9,14 @@ Detail drawings (wall head / sill, foundation-to-slab, roof edge, typical stair 
 ## Scope
 
 ### In scope
+
 - **Detail marker**: a new element placed on plans / sections that points at a region of the model; it has a number and a link to a Detail view.
 - **Detail view**: a named view that shows a zoomed-in portion of a source view, with its own annotation layer, additional drawn lines, and text notes.
 - When placed on a layout sheet, the detail view carries its marker number and sheet cross-reference (e.g., "2 / A-301").
 - Detail drawings can be linked to template "typical" details the user reuses across projects.
 
 ### Out of scope
+
 - Automatic 2D hatching derived from composites in the detail (handled by T-MOD-030 hatches).
 - Parametric detail libraries per vendor.
 

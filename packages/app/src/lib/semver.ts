@@ -23,9 +23,12 @@ export function bumpVersion(version: string, type: 'major' | 'minor' | 'patch'):
   if (!v) throw new Error(`Invalid semver: ${version}`);
 
   switch (type) {
-    case 'major': return `${v.major + 1}.0.0`;
-    case 'minor': return `${v.major}.${v.minor + 1}.0`;
-    case 'patch': return `${v.major}.${v.minor}.${v.patch + 1}`;
+    case 'major':
+      return `${v.major + 1}.0.0`;
+    case 'minor':
+      return `${v.major}.${v.minor + 1}.0`;
+    case 'patch':
+      return `${v.major}.${v.minor}.${v.patch + 1}`;
   }
 }
 

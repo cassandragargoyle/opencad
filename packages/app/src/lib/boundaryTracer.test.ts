@@ -11,15 +11,18 @@ import { traceBoundaryFromClick } from './boundaryTracer';
 let __id = 0;
 function wall(x1: number, y1: number, x2: number, y2: number): ElementSchema {
   return {
-    id: `w-${++__id}`, type: 'wall', layerId: 'l',
+    id: `w-${++__id}`,
+    type: 'wall',
+    layerId: 'l',
     properties: {
       StartX: { type: 'number', value: x1 },
       StartY: { type: 'number', value: y1 },
-      EndX:   { type: 'number', value: x2 },
-      EndY:   { type: 'number', value: y2 },
+      EndX: { type: 'number', value: x2 },
+      EndY: { type: 'number', value: y2 },
     },
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 

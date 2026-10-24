@@ -14,9 +14,9 @@ interface TagConfig {
 
 // Tag prefixes per element type
 const TAG_PREFIXES: Record<string, TagConfig> = {
-  door:   { prefix: 'D', baseNum: 1 },
+  door: { prefix: 'D', baseNum: 1 },
   window: { prefix: 'W', baseNum: 1 },
-  space:  { prefix: 'R', baseNum: 101 },
+  space: { prefix: 'R', baseNum: 101 },
 };
 
 /**
@@ -47,7 +47,10 @@ export function formatTagLabel(elementType: string, index: number): string {
  * `element.properties.Name.value` to obtain the display label.
  */
 export function generateElementTags(
-  elements: Record<string, { id: string; type: string; properties?: Record<string, { value: unknown }> }>
+  elements: Record<
+    string,
+    { id: string; type: string; properties?: Record<string, { value: unknown }> }
+  >
 ): Map<string, string> {
   const tags = new Map<string, string>();
   const counters: Record<string, number> = {};

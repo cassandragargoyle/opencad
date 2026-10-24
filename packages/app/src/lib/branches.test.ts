@@ -2,13 +2,7 @@
  * T-BRANCH-001: Design branch create / switch / diff / merge
  */
 import { describe, it, expect } from 'vitest';
-import {
-  createBranch,
-  deleteBranch,
-  switchBranch,
-  diffBranches,
-  mergeBranches,
-} from './branches';
+import { createBranch, deleteBranch, switchBranch, diffBranches, mergeBranches } from './branches';
 import { createProject, addElement } from '@opencad/document';
 
 function seed(name: string) {
@@ -18,10 +12,13 @@ function seed(name: string) {
   addElement(doc, {
     type: 'wall',
     properties: {
-      StartX: { type: 'number', value: 0 }, StartY: { type: 'number', value: 0 },
-      EndX:   { type: 'number', value: 3000 }, EndY: { type: 'number', value: 0 },
+      StartX: { type: 'number', value: 0 },
+      StartY: { type: 'number', value: 0 },
+      EndX: { type: 'number', value: 3000 },
+      EndY: { type: 'number', value: 0 },
     },
-    layerId, levelId,
+    layerId,
+    levelId,
   });
   return doc;
 }
@@ -94,7 +91,7 @@ describe('T-BRANCH-001: diff', () => {
 
 describe('T-BRANCH-001: merge', () => {
   it('prefer-theirs replaces overlapping elements', () => {
-    const mine   = seed('mine');
+    const mine = seed('mine');
     const theirs = seed('theirs');
     const id = Object.keys(mine.content.elements)[0]!;
     const tid = Object.keys(theirs.content.elements)[0]!;
@@ -107,7 +104,7 @@ describe('T-BRANCH-001: merge', () => {
   });
 
   it('prefer-mine keeps overlapping elements as-is', () => {
-    const mine   = seed('mine');
+    const mine = seed('mine');
     const theirs = seed('theirs');
     const id = Object.keys(mine.content.elements)[0]!;
     const tid = Object.keys(theirs.content.elements)[0]!;

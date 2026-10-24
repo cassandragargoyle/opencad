@@ -10,11 +10,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import {
-  DocumentModel,
-  createProject,
-  type LayerSchema,
-} from './index';
+import { DocumentModel, createProject, type LayerSchema } from './index';
 
 describe('Document Model - TDD Tests', () => {
   describe('T-DOC-001: Create project → verify document model initialized with correct schema', () => {
@@ -606,7 +602,9 @@ ENDSEC
 EOF`;
 
         const doc = parseDXF(dxfContent);
-        const circleEntities = Object.values(doc.content.elements).filter((e) => e.type === 'circle');
+        const circleEntities = Object.values(doc.content.elements).filter(
+          (e) => e.type === 'circle'
+        );
         expect(circleEntities.length).toBe(1);
       });
 
@@ -659,7 +657,9 @@ ENDSEC
 EOF`;
 
         const doc = parseDXF(dxfContent);
-        const faceEntities = Object.values(doc.content.elements).filter((e) => e.type === 'surface');
+        const faceEntities = Object.values(doc.content.elements).filter(
+          (e) => e.type === 'surface'
+        );
         expect(faceEntities.length).toBe(1);
       });
 
@@ -812,7 +812,9 @@ ENDSEC
 EOF`;
 
         const doc = parseDXF(dxfContent);
-        const polylineEntities = Object.values(doc.content.elements).filter((e) => e.type === 'polyline');
+        const polylineEntities = Object.values(doc.content.elements).filter(
+          (e) => e.type === 'polyline'
+        );
         expect(polylineEntities.length).toBe(1);
       });
 
@@ -903,7 +905,9 @@ EOF`;
 
         const doc = parseRVT(rvtContent);
         expect(Object.keys(doc.organization.levels).length).toBe(2);
-        expect(doc.organization.levels[Object.keys(doc.organization.levels)[0]].elevation).toBeDefined();
+        expect(
+          doc.organization.levels[Object.keys(doc.organization.levels)[0]].elevation
+        ).toBeDefined();
       });
 
       it('T-RVT-005: should parse family definitions', async () => {
@@ -1027,13 +1031,21 @@ EOF`;
         geometry: { type: 'brep', data: null },
         layerId,
         levelId,
-        transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
         boundingBox: {
           min: { x: 0, y: 0, z: 0, _type: 'Point3D' as const },
           max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' as const },
         },
         metadata: {
-          id: wallId, createdBy: 'user', createdAt: 0, updatedAt: 0, version: { clock: {} },
+          id: wallId,
+          createdBy: 'user',
+          createdAt: 0,
+          updatedAt: 0,
+          version: { clock: {} },
         },
         visible: true,
         locked: false,
@@ -1093,13 +1105,21 @@ EOF`;
         geometry: { type: 'brep', data: null },
         layerId,
         levelId,
-        transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
         boundingBox: {
           min: { x: 0, y: 0, z: 0, _type: 'Point3D' as const },
           max: { x: 3000, y: 200, z: 3000, _type: 'Point3D' as const },
         },
         metadata: {
-          id: wallId, createdBy: 'user', createdAt: 0, updatedAt: 0, version: { clock: {} },
+          id: wallId,
+          createdBy: 'user',
+          createdAt: 0,
+          updatedAt: 0,
+          version: { clock: {} },
         },
         visible: true,
         locked: false,
@@ -1131,17 +1151,31 @@ EOF`;
       doc.content.elements[colId] = {
         id: colId,
         type: 'column',
-        properties: { CenterX: { type: 'number', value: 1000 }, CenterY: { type: 'number', value: 1000 }, Radius: { type: 'number', value: 150 } },
+        properties: {
+          CenterX: { type: 'number', value: 1000 },
+          CenterY: { type: 'number', value: 1000 },
+          Radius: { type: 'number', value: 150 },
+        },
         propertySets: [],
         geometry: { type: 'brep', data: null },
         layerId,
         levelId,
-        transform: { translation: { x: 1000, y: 1000, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: 1000, y: 1000, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
         boundingBox: {
           min: { x: 850, y: 850, z: 0, _type: 'Point3D' as const },
           max: { x: 1150, y: 1150, z: 3000, _type: 'Point3D' as const },
         },
-        metadata: { id: colId, createdBy: 'user', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+        metadata: {
+          id: colId,
+          createdBy: 'user',
+          createdAt: 0,
+          updatedAt: 0,
+          version: { clock: {} },
+        },
         visible: true,
         locked: false,
       };
@@ -1176,17 +1210,32 @@ EOF`;
       doc.content.elements[lineId] = {
         id: lineId,
         type: 'wall',
-        properties: { StartX: { type: 'number', value: 0 }, StartY: { type: 'number', value: 0 }, EndX: { type: 'number', value: 2000 }, EndY: { type: 'number', value: 0 } },
+        properties: {
+          StartX: { type: 'number', value: 0 },
+          StartY: { type: 'number', value: 0 },
+          EndX: { type: 'number', value: 2000 },
+          EndY: { type: 'number', value: 0 },
+        },
         propertySets: [],
         geometry: { type: 'brep', data: null },
         layerId,
         levelId,
-        transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
         boundingBox: {
           min: { x: 0, y: 0, z: 0, _type: 'Point3D' as const },
           max: { x: 2000, y: 200, z: 3000, _type: 'Point3D' as const },
         },
-        metadata: { id: lineId, createdBy: 'user', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+        metadata: {
+          id: lineId,
+          createdBy: 'user',
+          createdAt: 0,
+          updatedAt: 0,
+          version: { clock: {} },
+        },
         visible: true,
         locked: false,
       };
@@ -1195,7 +1244,7 @@ EOF`;
     });
   });
 
-    describe('T-BIM-010: Curtain Wall Element', () => {
+  describe('T-BIM-010: Curtain Wall Element', () => {
     describe('T-BIM-010-a: curtain_wall is a valid ElementType', () => {
       it('should accept curtain_wall as a valid element type in createProject addElement', async () => {
         const { createProject, addElement } = await import('./document');
@@ -1208,7 +1257,10 @@ EOF`;
           type: 'curtain_wall',
           layerId,
           levelId,
-          points: [{ x: 0, y: 0, z: 0 }, { x: 5000, y: 0, z: 0 }],
+          points: [
+            { x: 0, y: 0, z: 0 },
+            { x: 5000, y: 0, z: 0 },
+          ],
         });
 
         expect(id).toBeTruthy();

@@ -18,9 +18,7 @@ import {
 import { firebaseAuth, isFirebaseConfigured } from './firebase';
 import type { SSOConfig } from '../components/SSOSettingsPanel';
 
-export type SSOResult =
-  | { ok: true; user: User }
-  | { ok: false; error: string };
+export type SSOResult = { ok: true; user: User } | { ok: false; error: string };
 
 export function buildProvider(config: SSOConfig): AuthProvider | null {
   if (!config.enabled) return null;
@@ -42,7 +40,10 @@ export function buildProvider(config: SSOConfig): AuthProvider | null {
 }
 
 function slug(input: string): string {
-  return input.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return input
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 export async function ssoSignIn(config: SSOConfig): Promise<SSOResult> {

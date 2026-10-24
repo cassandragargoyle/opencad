@@ -37,4 +37,8 @@ export type { ValidationResult } from './validation';
 
 // AI project generation with validation
 export { generateProject } from './generate';
-export type { GenerateProjectOptions, GenerateProjectResult, ElementValidationSummary } from './generate';
+export type {
+  GenerateProjectOptions,
+  GenerateProjectResult,
+  ElementValidationSummary,
+} from './generate';

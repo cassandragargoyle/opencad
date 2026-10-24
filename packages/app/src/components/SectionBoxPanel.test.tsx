@@ -126,7 +126,9 @@ describe('T-VP-002: SectionBoxPanel enhanced controls', () => {
 
   it('renders "Show section plane" toggle button', () => {
     render(<SectionBoxPanel />);
-    expect(screen.getByRole('checkbox', { name: /show section plane|enable/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', { name: /show section plane|enable/i })
+    ).toBeInTheDocument();
   });
 
   it('toggling "Show section plane" calls onToggle with new state', () => {
@@ -150,14 +152,20 @@ describe('T-VP-002: SectionBoxPanel enhanced controls', () => {
   it('Z axis button is active/selected by default', () => {
     const { container } = render(<SectionBoxPanel />);
     const zBtn = screen.getByRole('button', { name: /^Z$/i });
-    expect(zBtn.classList.contains('active') || zBtn.getAttribute('aria-pressed') === 'true' || container.querySelector('.axis-btn.active')).toBeTruthy();
+    expect(
+      zBtn.classList.contains('active') ||
+        zBtn.getAttribute('aria-pressed') === 'true' ||
+        container.querySelector('.axis-btn.active')
+    ).toBeTruthy();
   });
 
   it('clicking axis button updates active state', () => {
     render(<SectionBoxPanel />);
     const xBtn = screen.getByRole('button', { name: /^X$/i });
     fireEvent.click(xBtn);
-    expect(xBtn.classList.contains('active') || xBtn.getAttribute('aria-pressed') === 'true').toBeTruthy();
+    expect(
+      xBtn.classList.contains('active') || xBtn.getAttribute('aria-pressed') === 'true'
+    ).toBeTruthy();
   });
 });
 
@@ -182,22 +190,19 @@ describe('T-VP-002: SectionBoxPanel — 6-slider section box UI', () => {
     render(<SectionBoxPanel onBoxChange={onBoxChange} />);
     const checkbox = screen.getByTestId('section-box-enabled');
     fireEvent.click(checkbox);
-    expect(onBoxChange).toHaveBeenCalledWith(
-      expect.objectContaining({ enabled: true }),
-    );
+    expect(onBoxChange).toHaveBeenCalledWith(expect.objectContaining({ enabled: true }));
     fireEvent.click(checkbox);
-    expect(onBoxChange).toHaveBeenCalledWith(
-      expect.objectContaining({ enabled: false }),
-    );
+    expect(onBoxChange).toHaveBeenCalledWith(expect.objectContaining({ enabled: false }));
   });
 
   it('Fit to Model button triggers onBoxChange with bounding box of elements', () => {
-    const elements = [{ x: 0, y: 0, z: 0 }, { x: 10, y: 10, z: 10 }];
+    const elements = [
+      { x: 0, y: 0, z: 0 },
+      { x: 10, y: 10, z: 10 },
+    ];
     render(<SectionBoxPanel onBoxChange={onBoxChange} elements={elements} />);
     fireEvent.click(screen.getByTestId('fit-to-model-btn'));
-    expect(onBoxChange).toHaveBeenCalledWith(
-      expect.objectContaining({ enabled: true }),
-    );
+    expect(onBoxChange).toHaveBeenCalledWith(expect.objectContaining({ enabled: true }));
     const called = onBoxChange.mock.calls[0][0];
     expect(called.minX).toBeLessThanOrEqual(0);
     expect(called.maxX).toBeGreaterThanOrEqual(10);
@@ -213,16 +218,14 @@ describe('T-VP-002: SectionBoxPanel — 6-slider section box UI', () => {
         minX: DEFAULT_SECTION_BOX.minX,
         maxX: DEFAULT_SECTION_BOX.maxX,
         enabled: DEFAULT_SECTION_BOX.enabled,
-      }),
+      })
     );
   });
 
   it('Slider change updates the correct dimension', () => {
     render(<SectionBoxPanel onBoxChange={onBoxChange} />);
     fireEvent.change(screen.getByTestId('section-max-x'), { target: { value: '75' } });
-    expect(onBoxChange).toHaveBeenCalledWith(
-      expect.objectContaining({ maxX: 75 }),
-    );
+    expect(onBoxChange).toHaveBeenCalledWith(expect.objectContaining({ maxX: 75 }));
   });
 
   it('sliders have min=-200 and max=200 attributes', () => {

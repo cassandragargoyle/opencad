@@ -9,6 +9,7 @@ Solar access / shadow impact studies are required deliverables for urban plannin
 ## Scope
 
 ### In scope
+
 - Animation controls: date range (start / end), time range, step size (5 min / hour / day / month).
 - Playback: play / pause / scrub, playback speed.
 - Sun position updates the 3D sun direction per frame.
@@ -17,6 +18,7 @@ Solar access / shadow impact studies are required deliverables for urban plannin
 - Works in any 3D view (iso / perspective / elevation).
 
 ### Out of scope
+
 - Climate-data-driven (TMY) simulations — pure astronomical sun path in v1.
 - Multi-site comparisons.
 

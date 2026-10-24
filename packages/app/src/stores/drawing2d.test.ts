@@ -14,7 +14,14 @@ import { useDocumentStore } from './documentStore';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
-function prop(el: ReturnType<typeof useDocumentStore.getState>['document'] extends null ? never : NonNullable<ReturnType<typeof useDocumentStore.getState>['document']>['content']['elements'][string], key: string): unknown {
+function prop(
+  el: ReturnType<typeof useDocumentStore.getState>['document'] extends null
+    ? never
+    : NonNullable<
+        ReturnType<typeof useDocumentStore.getState>['document']
+      >['content']['elements'][string],
+  key: string
+): unknown {
   return el?.properties?.[key]?.value;
 }
 
@@ -31,7 +38,9 @@ function defaultLayerId() {
 // ─── T-2D-001: Line tool stores correct coordinates ─────────────────────────
 
 describe('T-2D-001: Line tool stores correct coordinates', () => {
-  beforeEach(() => { freshStore(); });
+  beforeEach(() => {
+    freshStore();
+  });
 
   it('addElement(annotation) stores StartX/Y, EndX/Y matching draw coordinates', () => {
     const layerId = defaultLayerId();
@@ -39,11 +48,11 @@ describe('T-2D-001: Line tool stores correct coordinates', () => {
       type: 'annotation',
       layerId,
       properties: {
-        Name:   { type: 'string', value: 'Line' },
+        Name: { type: 'string', value: 'Line' },
         StartX: { type: 'number', value: 100 },
         StartY: { type: 'number', value: 200 },
-        EndX:   { type: 'number', value: 500 },
-        EndY:   { type: 'number', value: 600 },
+        EndX: { type: 'number', value: 500 },
+        EndY: { type: 'number', value: 600 },
       },
     });
 
@@ -59,7 +68,12 @@ describe('T-2D-001: Line tool stores correct coordinates', () => {
     const id = useDocumentStore.getState().addElement({
       type: 'annotation',
       layerId: defaultLayerId(),
-      properties: { StartX: { type: 'number', value: 0 }, StartY: { type: 'number', value: 0 }, EndX: { type: 'number', value: 100 }, EndY: { type: 'number', value: 100 } },
+      properties: {
+        StartX: { type: 'number', value: 0 },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: 100 },
+        EndY: { type: 'number', value: 100 },
+      },
     });
     expect(typeof id).toBe('string');
     expect(id.length).toBeGreaterThan(0);
@@ -67,8 +81,26 @@ describe('T-2D-001: Line tool stores correct coordinates', () => {
 
   it('multiple lines are stored independently', () => {
     const layerId = defaultLayerId();
-    const id1 = useDocumentStore.getState().addElement({ type: 'annotation', layerId, properties: { StartX: { type: 'number', value: 0 }, StartY: { type: 'number', value: 0 }, EndX: { type: 'number', value: 10 }, EndY: { type: 'number', value: 0 } } });
-    const id2 = useDocumentStore.getState().addElement({ type: 'annotation', layerId, properties: { StartX: { type: 'number', value: 20 }, StartY: { type: 'number', value: 0 }, EndX: { type: 'number', value: 30 }, EndY: { type: 'number', value: 0 } } });
+    const id1 = useDocumentStore.getState().addElement({
+      type: 'annotation',
+      layerId,
+      properties: {
+        StartX: { type: 'number', value: 0 },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: 10 },
+        EndY: { type: 'number', value: 0 },
+      },
+    });
+    const id2 = useDocumentStore.getState().addElement({
+      type: 'annotation',
+      layerId,
+      properties: {
+        StartX: { type: 'number', value: 20 },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: 30 },
+        EndY: { type: 'number', value: 0 },
+      },
+    });
     expect(id1).not.toBe(id2);
     const els = useDocumentStore.getState().document!.content.elements;
     expect(prop(els[id1]!, 'StartX')).toBe(0);
@@ -79,7 +111,9 @@ describe('T-2D-001: Line tool stores correct coordinates', () => {
 // ─── T-2D-002: Snap tolerance — elements store exact input coordinates ───────
 
 describe('T-2D-002: Snap tolerance — input coordinates are stored exactly', () => {
-  beforeEach(() => { freshStore(); });
+  beforeEach(() => {
+    freshStore();
+  });
 
   it('fractional coordinates are preserved (no rounding by store)', () => {
     const id = useDocumentStore.getState().addElement({
@@ -88,7 +122,7 @@ describe('T-2D-002: Snap tolerance — input coordinates are stored exactly', ()
       properties: {
         CenterX: { type: 'number', value: 123.456 },
         CenterY: { type: 'number', value: 789.012 },
-        Radius:  { type: 'number', value: 50.5 },
+        Radius: { type: 'number', value: 50.5 },
       },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;
@@ -103,8 +137,8 @@ describe('T-2D-002: Snap tolerance — input coordinates are stored exactly', ()
       properties: {
         StartX: { type: 'number', value: -500 },
         StartY: { type: 'number', value: -300 },
-        EndX:   { type: 'number', value: -100 },
-        EndY:   { type: 'number', value: -50 },
+        EndX: { type: 'number', value: -100 },
+        EndY: { type: 'number', value: -50 },
       },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;
@@ -116,7 +150,9 @@ describe('T-2D-002: Snap tolerance — input coordinates are stored exactly', ()
 // ─── T-2D-003: Dimension tool stores start/end correctly ────────────────────
 
 describe('T-2D-003: Dimension tool stores start and end coordinates', () => {
-  beforeEach(() => { freshStore(); });
+  beforeEach(() => {
+    freshStore();
+  });
 
   it('dimension element stores StartX/Y and EndX/Y', () => {
     const id = useDocumentStore.getState().addElement({
@@ -125,9 +161,9 @@ describe('T-2D-003: Dimension tool stores start and end coordinates', () => {
       properties: {
         StartX: { type: 'number', value: 0 },
         StartY: { type: 'number', value: 0 },
-        EndX:   { type: 'number', value: 3000 },
-        EndY:   { type: 'number', value: 0 },
-        Label:  { type: 'string', value: '3000' },
+        EndX: { type: 'number', value: 3000 },
+        EndY: { type: 'number', value: 0 },
+        Label: { type: 'string', value: '3000' },
       },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;
@@ -142,8 +178,8 @@ describe('T-2D-003: Dimension tool stores start and end coordinates', () => {
       properties: {
         StartX: { type: 'number', value: 100 },
         StartY: { type: 'number', value: 100 },
-        EndX:   { type: 'number', value: 1100 },
-        EndY:   { type: 'number', value: 100 },
+        EndX: { type: 'number', value: 1100 },
+        EndY: { type: 'number', value: 100 },
       },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;
@@ -155,7 +191,9 @@ describe('T-2D-003: Dimension tool stores start and end coordinates', () => {
 // ─── T-2D-004: Layer visibility — elements belong to their layer ─────────────
 
 describe('T-2D-004: Layer visibility — elements are assigned to the correct layer', () => {
-  beforeEach(() => { freshStore(); });
+  beforeEach(() => {
+    freshStore();
+  });
 
   it('element is stored under the specified layerId', () => {
     const doc = useDocumentStore.getState().document!;
@@ -165,8 +203,10 @@ describe('T-2D-004: Layer visibility — elements are assigned to the correct la
       type: 'rectangle',
       layerId,
       properties: {
-        X: { type: 'number', value: 0 }, Y: { type: 'number', value: 0 },
-        Width: { type: 'number', value: 500 }, Height: { type: 'number', value: 300 },
+        X: { type: 'number', value: 0 },
+        Y: { type: 'number', value: 0 },
+        Width: { type: 'number', value: 500 },
+        Height: { type: 'number', value: 300 },
       },
     });
 
@@ -175,11 +215,17 @@ describe('T-2D-004: Layer visibility — elements are assigned to the correct la
   });
 
   it('addLayer → addElement with new layerId → element is on new layer', () => {
-    const newLayerId = useDocumentStore.getState().addLayer({ name: 'Annotations', color: '#ff0000' });
+    const newLayerId = useDocumentStore
+      .getState()
+      .addLayer({ name: 'Annotations', color: '#ff0000' });
     const id = useDocumentStore.getState().addElement({
       type: 'text',
       layerId: newLayerId,
-      properties: { X: { type: 'number', value: 50 }, Y: { type: 'number', value: 50 }, Text: { type: 'string', value: 'Note' } },
+      properties: {
+        X: { type: 'number', value: 50 },
+        Y: { type: 'number', value: 50 },
+        Text: { type: 'string', value: 'Note' },
+      },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;
     expect(el.layerId).toBe(newLayerId);
@@ -203,7 +249,9 @@ describe('T-2D-004: Layer visibility — elements are assigned to the correct la
 // ─── T-2D-005: Undo/redo maintains state consistency ────────────────────────
 
 describe('T-2D-005: Undo/redo state consistency', () => {
-  beforeEach(() => { freshStore(); });
+  beforeEach(() => {
+    freshStore();
+  });
 
   it('undo after 2 pushes returns to initial element count', () => {
     const layerId = defaultLayerId();
@@ -211,11 +259,22 @@ describe('T-2D-005: Undo/redo state consistency', () => {
     useDocumentStore.getState().pushHistory('initial');
     const before = Object.keys(useDocumentStore.getState().document!.content.elements).length;
 
-    useDocumentStore.getState().addElement({ type: 'annotation', layerId, properties: { StartX: { type: 'number', value: 0 }, StartY: { type: 'number', value: 0 }, EndX: { type: 'number', value: 100 }, EndY: { type: 'number', value: 0 } } });
+    useDocumentStore.getState().addElement({
+      type: 'annotation',
+      layerId,
+      properties: {
+        StartX: { type: 'number', value: 0 },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: 100 },
+        EndY: { type: 'number', value: 0 },
+      },
+    });
     useDocumentStore.getState().pushHistory('Add line');
 
     // One element added
-    expect(Object.keys(useDocumentStore.getState().document!.content.elements).length).toBe(before + 1);
+    expect(Object.keys(useDocumentStore.getState().document!.content.elements).length).toBe(
+      before + 1
+    );
 
     // Undo restores to the initial snapshot
     useDocumentStore.getState().undo();
@@ -228,20 +287,40 @@ describe('T-2D-005: Undo/redo state consistency', () => {
     useDocumentStore.getState().pushHistory('initial');
     const before = Object.keys(useDocumentStore.getState().document!.content.elements).length;
 
-    useDocumentStore.getState().addElement({ type: 'rectangle', layerId, properties: { X: { type: 'number', value: 0 }, Y: { type: 'number', value: 0 }, Width: { type: 'number', value: 200 }, Height: { type: 'number', value: 100 } } });
+    useDocumentStore.getState().addElement({
+      type: 'rectangle',
+      layerId,
+      properties: {
+        X: { type: 'number', value: 0 },
+        Y: { type: 'number', value: 0 },
+        Width: { type: 'number', value: 200 },
+        Height: { type: 'number', value: 100 },
+      },
+    });
     useDocumentStore.getState().pushHistory('Add rectangle');
 
     useDocumentStore.getState().undo();
     expect(Object.keys(useDocumentStore.getState().document!.content.elements).length).toBe(before);
 
     useDocumentStore.getState().redo();
-    expect(Object.keys(useDocumentStore.getState().document!.content.elements).length).toBe(before + 1);
+    expect(Object.keys(useDocumentStore.getState().document!.content.elements).length).toBe(
+      before + 1
+    );
   });
 
   it('20 actions → undo 10 → redo 5 → correct historyIndex', () => {
     const layerId = defaultLayerId();
     for (let i = 0; i < 20; i++) {
-      useDocumentStore.getState().addElement({ type: 'annotation', layerId, properties: { StartX: { type: 'number', value: i }, StartY: { type: 'number', value: 0 }, EndX: { type: 'number', value: i + 1 }, EndY: { type: 'number', value: 0 } } });
+      useDocumentStore.getState().addElement({
+        type: 'annotation',
+        layerId,
+        properties: {
+          StartX: { type: 'number', value: i },
+          StartY: { type: 'number', value: 0 },
+          EndX: { type: 'number', value: i + 1 },
+          EndY: { type: 'number', value: 0 },
+        },
+      });
       useDocumentStore.getState().pushHistory(`step ${i}`);
     }
     for (let i = 0; i < 10; i++) useDocumentStore.getState().undo();
@@ -258,7 +337,15 @@ describe('T-2D-005: Undo/redo state consistency', () => {
 
   it('canRedo is false when at the latest history entry', () => {
     const layerId = defaultLayerId();
-    useDocumentStore.getState().addElement({ type: 'circle', layerId, properties: { CenterX: { type: 'number', value: 0 }, CenterY: { type: 'number', value: 0 }, Radius: { type: 'number', value: 100 } } });
+    useDocumentStore.getState().addElement({
+      type: 'circle',
+      layerId,
+      properties: {
+        CenterX: { type: 'number', value: 0 },
+        CenterY: { type: 'number', value: 0 },
+        Radius: { type: 'number', value: 100 },
+      },
+    });
     useDocumentStore.getState().pushHistory('Add circle');
     expect(useDocumentStore.getState().canRedo).toBe(false);
   });
@@ -267,9 +354,16 @@ describe('T-2D-005: Undo/redo state consistency', () => {
 // ─── T-2D-006: Polygon and polyline store point arrays ──────────────────────
 
 describe('T-2D-006: Polygon and polyline store points array', () => {
-  beforeEach(() => { freshStore(); });
+  beforeEach(() => {
+    freshStore();
+  });
 
-  const points = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }];
+  const points = [
+    { x: 0, y: 0 },
+    { x: 100, y: 0 },
+    { x: 100, y: 100 },
+    { x: 0, y: 100 },
+  ];
 
   it('polygon element stores JSON-encoded Points property', () => {
     const id = useDocumentStore.getState().addElement({
@@ -300,13 +394,19 @@ describe('T-2D-006: Polygon and polyline store points array', () => {
 // ─── T-2D-007: Circle and arc store center + radius ─────────────────────────
 
 describe('T-2D-007: Circle and arc geometry', () => {
-  beforeEach(() => { freshStore(); });
+  beforeEach(() => {
+    freshStore();
+  });
 
   it('circle stores CenterX, CenterY, Radius', () => {
     const id = useDocumentStore.getState().addElement({
       type: 'circle',
       layerId: defaultLayerId(),
-      properties: { CenterX: { type: 'number', value: 250 }, CenterY: { type: 'number', value: 250 }, Radius: { type: 'number', value: 100 } },
+      properties: {
+        CenterX: { type: 'number', value: 250 },
+        CenterY: { type: 'number', value: 250 },
+        Radius: { type: 'number', value: 100 },
+      },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;
     expect(prop(el, 'CenterX')).toBe(250);
@@ -317,7 +417,11 @@ describe('T-2D-007: Circle and arc geometry', () => {
     const id = useDocumentStore.getState().addElement({
       type: 'circle',
       layerId: defaultLayerId(),
-      properties: { CenterX: { type: 'number', value: 500 }, CenterY: { type: 'number', value: 500 }, Radius: { type: 'number', value: 200 } },
+      properties: {
+        CenterX: { type: 'number', value: 500 },
+        CenterY: { type: 'number', value: 500 },
+        Radius: { type: 'number', value: 200 },
+      },
     });
     const bb = useDocumentStore.getState().document!.content.elements[id]!.boundingBox;
     expect(bb.min.x).toBe(300);
@@ -331,11 +435,11 @@ describe('T-2D-007: Circle and arc geometry', () => {
       type: 'arc',
       layerId: defaultLayerId(),
       properties: {
-        CenterX:    { type: 'number', value: 0 },
-        CenterY:    { type: 'number', value: 0 },
-        Radius:     { type: 'number', value: 150 },
+        CenterX: { type: 'number', value: 0 },
+        CenterY: { type: 'number', value: 0 },
+        Radius: { type: 'number', value: 150 },
         StartAngle: { type: 'number', value: 0 },
-        EndAngle:   { type: 'number', value: Math.PI },
+        EndAngle: { type: 'number', value: Math.PI },
       },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;
@@ -347,15 +451,19 @@ describe('T-2D-007: Circle and arc geometry', () => {
 // ─── T-2D-008: Rectangle stores X, Y, Width, Height ────────────────────────
 
 describe('T-2D-008: Rectangle geometry', () => {
-  beforeEach(() => { freshStore(); });
+  beforeEach(() => {
+    freshStore();
+  });
 
   it('rectangle stores X, Y, Width, Height', () => {
     const id = useDocumentStore.getState().addElement({
       type: 'rectangle',
       layerId: defaultLayerId(),
       properties: {
-        X: { type: 'number', value: 100 }, Y: { type: 'number', value: 200 },
-        Width: { type: 'number', value: 800 }, Height: { type: 'number', value: 600 },
+        X: { type: 'number', value: 100 },
+        Y: { type: 'number', value: 200 },
+        Width: { type: 'number', value: 800 },
+        Height: { type: 'number', value: 600 },
       },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;
@@ -367,7 +475,12 @@ describe('T-2D-008: Rectangle geometry', () => {
     const id = useDocumentStore.getState().addElement({
       type: 'rectangle',
       layerId: defaultLayerId(),
-      properties: { X: { type: 'number', value: 50 }, Y: { type: 'number', value: 50 }, Width: { type: 'number', value: 400 }, Height: { type: 'number', value: 300 } },
+      properties: {
+        X: { type: 'number', value: 50 },
+        Y: { type: 'number', value: 50 },
+        Width: { type: 'number', value: 400 },
+        Height: { type: 'number', value: 300 },
+      },
     });
     const bb = useDocumentStore.getState().document!.content.elements[id]!.boundingBox;
     expect(bb.min.x).toBe(50);

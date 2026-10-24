@@ -29,7 +29,6 @@ export interface OwnershipLock {
   ttlMs: number;
 }
 
-
 // ── In-memory lock store ──────────────────────────────────────────────────────
 
 export class OwnershipStore {
@@ -165,9 +164,7 @@ export class OwnershipStore {
 export function getLockedElementIds(
   store: OwnershipStore,
   doc: DocumentSchema,
-  viewingPeerId: string,
+  viewingPeerId: string
 ): string[] {
-  return Object.keys(doc.content.elements).filter((id) =>
-    store.isLocked(id, viewingPeerId),
-  );
+  return Object.keys(doc.content.elements).filter((id) => store.isLocked(id, viewingPeerId));
 }

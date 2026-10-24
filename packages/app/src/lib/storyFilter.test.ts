@@ -17,7 +17,9 @@ function mkDoc(levels: LevelSchema[], els: ElementSchema[]): DocumentSchema {
   const levelMap: Record<string, LevelSchema> = {};
   for (const l of levels) levelMap[l.id] = l;
   return {
-    id: 'doc', name: 't', version: { clock: {} },
+    id: 'doc',
+    name: 't',
+    version: { clock: {} },
     metadata: { createdAt: 0, updatedAt: 0, createdBy: 'u1', schemaVersion: '1' },
     content: { elements, spaces: {} },
     organization: { layers: {}, levels: levelMap },
@@ -29,14 +31,19 @@ function mkDoc(levels: LevelSchema[], els: ElementSchema[]): DocumentSchema {
 let __id = 0;
 function mkEl(elev: number): ElementSchema {
   return {
-    id: `e-${++__id}`, type: 'wall', layerId: 'l1',
+    id: `e-${++__id}`,
+    type: 'wall',
+    layerId: 'l1',
     properties: {
-      StartX: { type: 'number', value: 0 }, StartY: { type: 'number', value: 0 },
-      EndX:   { type: 'number', value: 1000 }, EndY: { type: 'number', value: 0 },
+      StartX: { type: 'number', value: 0 },
+      StartY: { type: 'number', value: 0 },
+      EndX: { type: 'number', value: 1000 },
+      EndY: { type: 'number', value: 0 },
       ElevationOffset: { type: 'number', value: elev },
     },
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
@@ -90,9 +97,13 @@ describe('T-DOC-037: storyFilter', () => {
 
   it('falls back to first level for elements with no ElevationOffset', () => {
     const el: ElementSchema = {
-      id: 'plain', type: 'wall', layerId: 'l',
-      properties: {}, boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-      createdAt: 0, updatedAt: 0,
+      id: 'plain',
+      type: 'wall',
+      layerId: 'l',
+      properties: {},
+      boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
+      createdAt: 0,
+      updatedAt: 0,
     } as ElementSchema;
     const story = storyForElement(el, levels);
     expect(story?.id).toBe('l1');

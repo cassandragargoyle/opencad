@@ -4,11 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  validateManifest,
-  MANIFEST_REQUIRED_FIELDS,
-  type PluginManifest,
-} from './pluginManifest';
+import { validateManifest, MANIFEST_REQUIRED_FIELDS, type PluginManifest } from './pluginManifest';
 
 describe('T-PLG-001: PluginManifest validation', () => {
   const validManifest: PluginManifest = {

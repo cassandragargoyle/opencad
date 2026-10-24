@@ -83,7 +83,10 @@ describe('T-BIM-006: LevelManager', () => {
     fireEvent.change(nameInputs[0], { target: { value: 'Basement' } });
     fireEvent.blur(nameInputs[0]);
     expect(store.pushHistory).toHaveBeenCalled();
-    expect(store.updateLevel).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ name: 'Basement' }));
+    expect(store.updateLevel).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ name: 'Basement' })
+    );
   });
 
   it('calls updateLevel and pushHistory when elevation is changed', () => {
@@ -94,11 +97,16 @@ describe('T-BIM-006: LevelManager', () => {
     fireEvent.change(elevInputs[0], { target: { value: '-3000' } });
     fireEvent.blur(elevInputs[0]);
     expect(store.pushHistory).toHaveBeenCalled();
-    expect(store.updateLevel).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ elevation: -3000 }));
+    expect(store.updateLevel).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ elevation: -3000 })
+    );
   });
 
   it('renders empty state when no document', () => {
-    mockUseDocumentStore.mockReturnValue(makeStore({ document: null }) as ReturnType<typeof useDocumentStore>);
+    mockUseDocumentStore.mockReturnValue(
+      makeStore({ document: null }) as ReturnType<typeof useDocumentStore>
+    );
     const { container } = render(<LevelManager />);
     expect(container.firstChild).toBeNull();
   });

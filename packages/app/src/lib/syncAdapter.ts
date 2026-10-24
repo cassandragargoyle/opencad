@@ -31,16 +31,16 @@ interface LwwEntry {
 }
 
 type CrdtDelta =
-  | { op: 'Set';     element_id: string; entry: LwwEntry }
+  | { op: 'Set'; element_id: string; entry: LwwEntry }
   | { op: 'SetProp'; element_id: string; prop: string; entry: LwwEntry }
-  | { op: 'Delete';  element_id: string; lamport: number; peer_id: string }
-  | { op: 'Batch';   deltas: CrdtDelta[] };
+  | { op: 'Delete'; element_id: string; lamport: number; peer_id: string }
+  | { op: 'Batch'; deltas: CrdtDelta[] };
 
 /** Decoded form passed to the onRemoteDelta callback. */
 export type RemoteDelta =
-  | { op: 'set';     elementId: string; value: unknown }
+  | { op: 'set'; elementId: string; value: unknown }
   | { op: 'setprop'; elementId: string; prop: string; value: unknown }
-  | { op: 'delete';  elementId: string };
+  | { op: 'delete'; elementId: string };
 
 // ── WASM DocumentCrdt type ────────────────────────────────────────────────────
 
@@ -147,10 +147,7 @@ export async function initSyncCrdt(peerId?: string): Promise<void> {
  * @param getToken   Optional async function returning a Firebase ID token.
  *                   The token is appended as `?token=` for the auth middleware.
  */
-export function connectToProject(
-  projectId: string,
-  getToken?: () => Promise<string | null>,
-): void {
+export function connectToProject(projectId: string, getToken?: () => Promise<string | null>): void {
   // Close existing connection to the old project (if any).
   if (_ws) {
     _ws.onclose = null; // prevent auto-reconnect on intentional close
@@ -175,7 +172,9 @@ export function crdtApplyLocal(elementId: string, value: unknown): void {
   try {
     const delta = _crdt.apply_local(elementId, JSON.stringify(value));
     _enqueue(delta);
-  } catch { /* CRDT errors must never break the document write path */ }
+  } catch {
+    /* CRDT errors must never break the document write path */
+  }
 }
 
 /** Record a single property update (property-level LWW). */
@@ -184,7 +183,9 @@ export function crdtApplyProperty(elementId: string, prop: string, value: unknow
   try {
     const delta = _crdt.apply_property(elementId, prop, JSON.stringify(value));
     _enqueue(delta);
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 /** Record a delete (tombstone). */
@@ -193,7 +194,9 @@ export function crdtDeleteElement(elementId: string): void {
   try {
     const delta = _crdt.delete_element(elementId);
     _enqueue(delta);
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 // ── Incoming / state access ───────────────────────────────────────────────────
@@ -216,8 +219,11 @@ export function crdtFullStateDelta(): string | null {
 /** Merged element state as a parsed object, or null if CRDT not ready. */
 export function crdtGetState(): Record<string, unknown> | null {
   if (!_crdt) return null;
-  try { return JSON.parse(_crdt.state_json()) as Record<string, unknown>; }
-  catch { return null; }
+  try {
+    return JSON.parse(_crdt.state_json()) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
 }
 
 export function crdtVectorClock(): string | null {
@@ -243,13 +249,18 @@ export function crdtUpdatePresence(x: number, y: number, elementId = ''): void {
   try {
     const presence = _crdt.update_presence(x, y, elementId);
     _ws.send(JSON.stringify({ type: 'presence', payload: presence }));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 export function crdtCursors(): unknown {
   if (!_crdt) return {};
-  try { return JSON.parse(_crdt.cursors_json()); }
-  catch { return {}; }
+  try {
+    return JSON.parse(_crdt.cursors_json());
+  } catch {
+    return {};
+  }
 }
 
 // ── Offline flush ─────────────────────────────────────────────────────────────
@@ -261,8 +272,12 @@ export function crdtFlushOfflineQueue(): void {
   _outbox = [];
   _persistQueue([]);
   for (const delta of batch) {
-    try { _ws.send(JSON.stringify({ type: 'delta', payload: delta })); }
-    catch { _outbox.unshift(delta); break; }
+    try {
+      _ws.send(JSON.stringify({ type: 'delta', payload: delta }));
+    } catch {
+      _outbox.unshift(delta);
+      break;
+    }
   }
 }
 
@@ -283,7 +298,9 @@ async function _openWs(): Promise<void> {
     try {
       const token = await _wsGetToken();
       if (token) url += `?token=${encodeURIComponent(token)}`;
-    } catch { /* proceed without token (dev mode) */ }
+    } catch {
+      /* proceed without token (dev mode) */
+    }
   }
 
   try {
@@ -319,19 +336,24 @@ async function _openWs(): Promise<void> {
           _crdt.merge_presence(msg.payload);
           return;
         }
-      } catch { /* ignore malformed messages */ }
+      } catch {
+        /* ignore malformed messages */
+      }
     };
 
     _ws.onclose = (evt) => {
       _ws = null;
       if (evt.code !== 1000 && _wsProjectId) {
         // Not a clean close — schedule reconnect.
-        _reconnectTimer = setTimeout(() => { void _openWs(); }, 5000);
+        _reconnectTimer = setTimeout(() => {
+          void _openWs();
+        }, 5000);
       }
     };
 
-    _ws.onerror = () => { _ws?.close(); };
-
+    _ws.onerror = () => {
+      _ws?.close();
+    };
   } catch {
     _ws = null;
   }
@@ -343,14 +365,15 @@ function _handleRemoteDelta(payload: string): void {
 
   // Parse to determine the operation and originating peer.
   let delta: CrdtDelta;
-  try { delta = JSON.parse(payload) as CrdtDelta; }
-  catch { return; }
+  try {
+    delta = JSON.parse(payload) as CrdtDelta;
+  } catch {
+    return;
+  }
 
   // Skip own echoes — the server broadcasts back to the sender too.
   const originPeer =
-    delta.op === 'Delete' ? delta.peer_id :
-    delta.op === 'Batch'  ? null :
-    delta.entry.peer_id;
+    delta.op === 'Delete' ? delta.peer_id : delta.op === 'Batch' ? null : delta.entry.peer_id;
   if (originPeer === _peerId) return;
 
   // Translate to RemoteDelta and dispatch.
@@ -370,7 +393,12 @@ function _dispatchDelta(delta: CrdtDelta): void {
       _onRemoteDelta({ op: 'set', elementId: delta.element_id, value: delta.entry.value });
       break;
     case 'SetProp':
-      _onRemoteDelta({ op: 'setprop', elementId: delta.element_id, prop: delta.prop, value: delta.entry.value });
+      _onRemoteDelta({
+        op: 'setprop',
+        elementId: delta.element_id,
+        prop: delta.prop,
+        value: delta.entry.value,
+      });
       break;
     case 'Delete':
       _onRemoteDelta({ op: 'delete', elementId: delta.element_id });
@@ -392,18 +420,25 @@ function _enqueue(delta: string): void {
       _ws.send(JSON.stringify({ type: 'delta', payload: delta }));
       _outbox.pop();
       _persistQueue(_outbox);
-    } catch { /* stay queued */ }
+    } catch {
+      /* stay queued */
+    }
   }
 }
 
 function _persistQueue(queue: string[]): void {
-  try { localStorage.setItem(QUEUE_LS_KEY, JSON.stringify(queue)); }
-  catch { /* ignore quota errors */ }
+  try {
+    localStorage.setItem(QUEUE_LS_KEY, JSON.stringify(queue));
+  } catch {
+    /* ignore quota errors */
+  }
 }
 
 function _loadPersistedQueue(): string[] {
   try {
     const raw = localStorage.getItem(QUEUE_LS_KEY);
     return raw ? (JSON.parse(raw) as string[]) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }

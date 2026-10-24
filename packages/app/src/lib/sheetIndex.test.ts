@@ -20,10 +20,10 @@ describe('T-VIEW-08: sheetIndex', () => {
 
   it('autoNumberSheets assigns sequential numbers per discipline', () => {
     const sheets: Sheet[] = [
-      createSheet({ title: 'Floor Plan',   discipline: 'A' }),
-      createSheet({ title: 'Foundation',   discipline: 'S' }),
-      createSheet({ title: 'Elevations',   discipline: 'A' }),
-      createSheet({ title: 'Details',      discipline: 'S' }),
+      createSheet({ title: 'Floor Plan', discipline: 'A' }),
+      createSheet({ title: 'Foundation', discipline: 'S' }),
+      createSheet({ title: 'Elevations', discipline: 'A' }),
+      createSheet({ title: 'Details', discipline: 'S' }),
     ];
     const numbered = autoNumberSheets(sheets);
     const aSheets = numbered.filter((s) => s.discipline === 'A');
@@ -68,9 +68,7 @@ describe('T-VIEW-08: sheetIndex', () => {
   });
 
   it('sheet index rows are sorted: sheets without sheetNumber come last', () => {
-    const sheets: Sheet[] = [
-      createSheet({ title: 'Plan', discipline: 'A' }),
-    ];
+    const sheets: Sheet[] = [createSheet({ title: 'Plan', discipline: 'A' })];
     const rows = buildSheetIndexRows(autoNumberSheets(sheets));
     expect(rows[0]?.sheetNumber).toBeTruthy();
   });

@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  buildCertFixtureSet,
-  buildCertSubmission,
-} from './ifcCertFixtures';
+import { buildCertFixtureSet, buildCertSubmission } from './ifcCertFixtures';
 
 describe('T-CERT-002: cert fixture set', () => {
   it('every fixture produces a non-empty IFC string', () => {

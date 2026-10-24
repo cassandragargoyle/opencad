@@ -16,8 +16,10 @@ const RECT = {
     { x: 10000, y: 6000 },
     { x: 0, y: 6000 },
   ] as [
-    { x: number; y: number }, { x: number; y: number },
-    { x: number; y: number }, { x: number; y: number },
+    { x: number; y: number },
+    { x: number; y: number },
+    { x: number; y: number },
+    { x: number; y: number },
   ],
   slopeAngleDeg: 30,
   eaveZ: 3000,
@@ -53,8 +55,8 @@ describe('T-MOD-011: multi-plane roof', () => {
   it('T-MOD-011-005: hip planes have non-zero slope, gables have slope π/2', () => {
     const planes = rectangleRoof({ ...RECT, gableSides: ['north', 'south'] });
     for (const p of planes) {
-      if (p.kind === 'hip')    expect(p.slopeAngle).toBeLessThan(Math.PI / 2);
-      if (p.kind === 'gable')  expect(p.slopeAngle).toBeCloseTo(Math.PI / 2);
+      if (p.kind === 'hip') expect(p.slopeAngle).toBeLessThan(Math.PI / 2);
+      if (p.kind === 'gable') expect(p.slopeAngle).toBeCloseTo(Math.PI / 2);
     }
   });
 
@@ -65,8 +67,9 @@ describe('T-MOD-011: multi-plane roof', () => {
 
   it('all vertices sit at z ≥ eaveZ', () => {
     const planes = rectangleRoof(RECT);
-    for (const p of planes) for (const v of p.vertices) {
-      expect(v.z).toBeGreaterThanOrEqual(3000);
-    }
+    for (const p of planes)
+      for (const v of p.vertices) {
+        expect(v.z).toBeGreaterThanOrEqual(3000);
+      }
   });
 });

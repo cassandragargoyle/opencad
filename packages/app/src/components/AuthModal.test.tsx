@@ -19,7 +19,9 @@ vi.mock('../stores/authStore', () => ({
 describe('T-AUTH-002: AuthModal', () => {
   const onClose = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders sign-in form by default', () => {
     render(<AuthModal onClose={onClose} />);
@@ -39,7 +41,9 @@ describe('T-AUTH-002: AuthModal', () => {
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'secret123' } });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
     // signIn is async; just verify it was called
-    await vi.waitFor(() => expect(mockSignIn).toHaveBeenCalledWith('test@example.com', 'secret123'));
+    await vi.waitFor(() =>
+      expect(mockSignIn).toHaveBeenCalledWith('test@example.com', 'secret123')
+    );
   });
 
   it('switches to register form', () => {
@@ -62,7 +66,9 @@ describe('T-AUTH-002: AuthModal', () => {
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'alice@example.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'pass1234' } });
     fireEvent.click(screen.getByRole('button', { name: /create free account/i }));
-    await vi.waitFor(() => expect(mockSignUp).toHaveBeenCalledWith('Alice', 'alice@example.com', 'pass1234'));
+    await vi.waitFor(() =>
+      expect(mockSignUp).toHaveBeenCalledWith('Alice', 'alice@example.com', 'pass1234')
+    );
   });
 
   it('shows close button when not required', () => {

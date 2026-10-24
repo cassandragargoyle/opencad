@@ -3,11 +3,7 @@
  */
 import { describe, it, expect, vi } from 'vitest';
 import * as THREE from 'three';
-import {
-  bakeInstancesToBVH,
-  addBakeToScene,
-  removeBakeFromScene,
-} from './instanceBVHBake';
+import { bakeInstancesToBVH, addBakeToScene, removeBakeFromScene } from './instanceBVHBake';
 
 // three-mesh-bvh patches — no WebGL needed.
 vi.mock('three-mesh-bvh', () => ({
@@ -20,12 +16,9 @@ function makeScene(): THREE.Scene {
   return new THREE.Scene();
 }
 
-function makeInstancedMesh(
-  count: number,
-  isLandscape = true
-): THREE.InstancedMesh {
+function makeInstancedMesh(count: number, isLandscape = true): THREE.InstancedMesh {
   const geom = new THREE.BoxGeometry(100, 100, 100);
-  const mat  = new THREE.MeshStandardMaterial({ color: 'green' });
+  const mat = new THREE.MeshStandardMaterial({ color: 'green' });
   const mesh = new THREE.InstancedMesh(geom, mat, count);
   mesh.count = count;
   mesh.userData.isLandscape = isLandscape;
@@ -65,7 +58,7 @@ describe('T-SITE-09: instanceBVHBake', () => {
 
   it('merged mesh has vertex count = srcVertices × instanceCount', () => {
     const scene = makeScene();
-    const inst  = makeInstancedMesh(4, true);
+    const inst = makeInstancedMesh(4, true);
     const srcVertCount = inst.geometry.getAttribute('position').count;
     scene.add(inst);
     const bake = bakeInstancesToBVH(scene);
@@ -84,11 +77,8 @@ describe('T-SITE-09: instanceBVHBake', () => {
     const scene = makeScene();
     // Two instances: one at X=0, one at X=1000.
     const geom = new THREE.BufferGeometry();
-    geom.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array([0, 0, 0]), 3)
-    );
-    const mat  = new THREE.MeshStandardMaterial();
+    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0, 0, 0]), 3));
+    const mat = new THREE.MeshStandardMaterial();
     const inst = new THREE.InstancedMesh(geom, mat, 2);
     inst.count = 2;
     inst.userData.isLandscape = true;
@@ -105,8 +95,8 @@ describe('T-SITE-09: instanceBVHBake', () => {
   });
 
   it('addBakeToScene adds meshes to the scene', () => {
-    const scene  = makeScene();
-    const inst   = makeInstancedMesh(1, true);
+    const scene = makeScene();
+    const inst = makeInstancedMesh(1, true);
     scene.add(inst);
     const bake = bakeInstancesToBVH(scene);
     const beforeCount = scene.children.length;
@@ -116,7 +106,7 @@ describe('T-SITE-09: instanceBVHBake', () => {
 
   it('removeBakeFromScene removes meshes from the scene', () => {
     const scene = makeScene();
-    const inst  = makeInstancedMesh(1, true);
+    const inst = makeInstancedMesh(1, true);
     scene.add(inst);
     const bake = bakeInstancesToBVH(scene);
     addBakeToScene(scene, bake);
@@ -142,10 +132,7 @@ describe('T-SITE-09: instanceBVHBake', () => {
     scene.add(other);
 
     // Only bake tree_oak.
-    const bake = bakeInstancesToBVH(
-      scene,
-      (m) => m.userData.speciesId === 'tree_oak'
-    );
+    const bake = bakeInstancesToBVH(scene, (m) => m.userData.speciesId === 'tree_oak');
     expect(bake.meshes).toHaveLength(1);
   });
 

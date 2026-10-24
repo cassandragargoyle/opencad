@@ -20,8 +20,8 @@ const sampleRoom: RoomGeometry = {
   depth: 8,
   height: 3,
   absorptionCoeffs: {
-    floor:    [...flatAbsorption],
-    ceiling:  [...flatAbsorption],
+    floor: [...flatAbsorption],
+    ceiling: [...flatAbsorption],
     'wall-n': [...flatAbsorption],
     'wall-s': [...flatAbsorption],
     'wall-e': [...flatAbsorption],

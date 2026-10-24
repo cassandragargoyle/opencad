@@ -9,6 +9,7 @@ RVT is a proprietary, closed format. Many consultants deliver RVT files. The cur
 ## Scope
 
 ### In scope
+
 - Import path via ODA (Open Design Alliance) or Speckle bridge. Export probably infeasible — target import-only v1.
 - Supported entities: walls, floors, roofs, structural members, doors, windows, levels, grids, families (limited).
 - Import families as parametric objects (best effort; fall back to flat geometry).
@@ -16,6 +17,7 @@ RVT is a proprietary, closed format. Many consultants deliver RVT files. The cur
 - Import + preview in OpenCAD in under 10 s on typical mid-size residential.
 
 ### Out of scope
+
 - RVT export — proprietary.
 - Full family-editor support.
 - Interoperability with Revit's worksharing.

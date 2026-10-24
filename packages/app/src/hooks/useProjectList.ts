@@ -26,7 +26,9 @@ function loadProjects(): ProjectEntry[] {
 function saveProjects(projects: ProjectEntry[]): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-  } catch { /* ignore storage errors */ }
+  } catch {
+    /* ignore storage errors */
+  }
 }
 
 export interface UseProjectListResult {
@@ -69,9 +71,7 @@ export function useProjectList(): UseProjectListResult {
 
   const renameProject = useCallback((id: string, name: string) => {
     setProjects((prev) => {
-      const next = prev.map((p) =>
-        p.id === id ? { ...p, name, updatedAt: Date.now() } : p
-      );
+      const next = prev.map((p) => (p.id === id ? { ...p, name, updatedAt: Date.now() } : p));
       saveProjects(next);
       return next;
     });

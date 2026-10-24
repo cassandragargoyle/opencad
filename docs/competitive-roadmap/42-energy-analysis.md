@@ -9,6 +9,7 @@ Energy performance is a legal requirement in much of the world (Part L UK, Passi
 ## Scope
 
 ### In scope
+
 - A new **Energy** right-panel tab.
 - Inputs:
   - Climate zone / location (auto from project geolocation).
@@ -27,6 +28,7 @@ Energy performance is a legal requirement in much of the world (Part L UK, Passi
 - One simple climate model (degree-day method) for v1 — not full TMY hour-by-hour.
 
 ### Out of scope
+
 - Hour-by-hour TMY simulation (defer to plugin integration with EnergyPlus).
 - HVAC equipment sizing.
 - Photovoltaic / solar thermal.

@@ -54,7 +54,11 @@ beforeEach(() => {
 
 describe('T-PAY-001: useSubscription', () => {
   it('T-PAY-001-001: initial tier is "free" before fetch resolves', () => {
-    mockGetStatus.mockReturnValue(new Promise(() => { /* never resolves */ }));
+    mockGetStatus.mockReturnValue(
+      new Promise(() => {
+        /* never resolves */
+      })
+    );
     const { result } = renderHook(() => useSubscription());
     expect(result.current.tier).toBe('free');
     expect(result.current.isLoading).toBe(true);
@@ -111,7 +115,7 @@ describe('T-PAY-001: useSubscription', () => {
     mockGetStatus.mockReturnValue(
       new Promise<{ tier: string; validUntil: null }>((res) => {
         resolve = res;
-      }),
+      })
     );
 
     const { result } = renderHook(() => useSubscription());

@@ -9,6 +9,7 @@ Any contemporary / experimental building design has curved surfaces — arched r
 ## Scope
 
 ### In scope
+
 - Shell schema: `method: 'revolve' | 'extrude' | 'loft' | 'sweep'`, `profile: Point[]`, `path?: Point[]`, `axis?: Vector3`, `rotations?: number`.
 - **Revolve**: profile rotated around an axis (domes, barrel vaults).
 - **Extrude**: profile lifted along a vector (sheds, canopies).
@@ -19,6 +20,7 @@ Any contemporary / experimental building design has curved surfaces — arched r
 - 2D plan shows the shell's footprint projected.
 
 ### Out of scope
+
 - NURBS surface editing with control points. Use tessellated output.
 - Boolean ops with shells (goes through T-GEO-001 SEO infrastructure).
 - Parametric joins between shells and walls.

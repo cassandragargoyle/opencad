@@ -9,7 +9,13 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  reserve, isReserved, reserveOwner, release, pruneExpired, refresh, RESERVATION_TTL_MS,
+  reserve,
+  isReserved,
+  reserveOwner,
+  release,
+  pruneExpired,
+  refresh,
+  RESERVATION_TTL_MS,
 } from './reservations';
 
 describe('T-COL-052: reservations', () => {

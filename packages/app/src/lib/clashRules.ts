@@ -68,12 +68,24 @@ export function matchesFilter(el: ElementSchema, filter: ElementFilter): boolean
       const v = getProp(el, pred.key);
       if (v === undefined) return false;
       switch (pred.op) {
-        case '=':  if (v !== pred.value) return false; break;
-        case '!=': if (v === pred.value) return false; break;
-        case '<':  if (!(typeof v === 'number' && v < (pred.value as number))) return false; break;
-        case '<=': if (!(typeof v === 'number' && v <= (pred.value as number))) return false; break;
-        case '>':  if (!(typeof v === 'number' && v > (pred.value as number))) return false; break;
-        case '>=': if (!(typeof v === 'number' && v >= (pred.value as number))) return false; break;
+        case '=':
+          if (v !== pred.value) return false;
+          break;
+        case '!=':
+          if (v === pred.value) return false;
+          break;
+        case '<':
+          if (!(typeof v === 'number' && v < (pred.value as number))) return false;
+          break;
+        case '<=':
+          if (!(typeof v === 'number' && v <= (pred.value as number))) return false;
+          break;
+        case '>':
+          if (!(typeof v === 'number' && v > (pred.value as number))) return false;
+          break;
+        case '>=':
+          if (!(typeof v === 'number' && v >= (pred.value as number))) return false;
+          break;
       }
     }
   }
@@ -87,21 +99,27 @@ export const DEFAULT_CLASH_RULES: ClashRule[] = [
     name: 'Structure vs MEP',
     setA: { types: ['wall', 'column', 'beam', 'slab', 'roof'] },
     setB: { types: ['duct', 'pipe', 'conduit', 'cable_tray', 'hvac', 'plumbing'] },
-    tolerance: 50, severity: 'critical', enabled: true,
+    tolerance: 50,
+    severity: 'critical',
+    enabled: true,
   },
   {
     id: 'rule-arch-vs-hvac',
     name: 'Architecture vs HVAC',
     setA: { types: ['wall', 'slab', 'roof', 'door', 'window'] },
     setB: { types: ['hvac', 'duct'] },
-    tolerance: 50, severity: 'moderate', enabled: true,
+    tolerance: 50,
+    severity: 'moderate',
+    enabled: true,
   },
   {
     id: 'rule-plumb-vs-elec',
     name: 'Plumbing vs Electrical',
     setA: { types: ['plumbing', 'pipe'] },
     setB: { types: ['conduit', 'cable_tray'] },
-    tolerance: 25, severity: 'moderate', enabled: true,
+    tolerance: 25,
+    severity: 'moderate',
+    enabled: true,
   },
 ];
 
@@ -112,7 +130,7 @@ export const DEFAULT_CLASH_RULES: ClashRule[] = [
  */
 export function candidatePairs(
   rule: ClashRule,
-  elements: ElementSchema[],
+  elements: ElementSchema[]
 ): Array<[ElementSchema, ElementSchema]> {
   const setA = elements.filter((el) => matchesFilter(el, rule.setA));
   const setB = elements.filter((el) => matchesFilter(el, rule.setB));

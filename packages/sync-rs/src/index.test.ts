@@ -23,9 +23,15 @@ vi.mock('../pkg/opencad_sync.js', () => ({
       const d = JSON.parse(deltaJson) as { element_id: string; entry: { value: unknown } };
       this._state[d.element_id] = d.entry.value;
     }
-    stateJson()    { return JSON.stringify(this._state); }
-    vectorClock()  { return JSON.stringify(this._clock); }
-    elementCount() { return Object.keys(this._state).length; }
+    stateJson() {
+      return JSON.stringify(this._state);
+    }
+    vectorClock() {
+      return JSON.stringify(this._clock);
+    }
+    elementCount() {
+      return Object.keys(this._state).length;
+    }
   },
 }));
 

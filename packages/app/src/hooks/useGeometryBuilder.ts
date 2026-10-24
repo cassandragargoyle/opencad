@@ -20,14 +20,20 @@ interface GeometryWasmModule {
   extrude_profile(profilePoints: Float64Array, height: number): Float32Array;
   subtract_box(
     vertices: Float32Array,
-    boxMinX: number, boxMinY: number, boxMinZ: number,
-    boxMaxX: number, boxMaxY: number, boxMaxZ: number,
+    boxMinX: number,
+    boxMinY: number,
+    boxMinZ: number,
+    boxMaxX: number,
+    boxMaxY: number,
+    boxMaxZ: number
   ): Float32Array;
   build_wall_mesh(
-    x1: number, y1: number,
-    x2: number, y2: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
     height: number,
-    thickness: number,
+    thickness: number
   ): Float32Array;
   default(input?: unknown): Promise<unknown>;
 }
@@ -65,10 +71,18 @@ function fanTriangulateXY(points: [number, number][], z: number, out: number[]):
 
 function pushQuad(
   out: number[],
-  x0: number, y0: number, z0: number,
-  x1: number, y1: number, z1: number,
-  x2: number, y2: number, z2: number,
-  x3: number, y3: number, z3: number,
+  x0: number,
+  y0: number,
+  z0: number,
+  x1: number,
+  y1: number,
+  z1: number,
+  x2: number,
+  y2: number,
+  z2: number,
+  x3: number,
+  y3: number,
+  z3: number
 ): void {
   out.push(x0, y0, z0, x1, y1, z1, x2, y2, z2);
   out.push(x0, y0, z0, x2, y2, z2, x3, y3, z3);
@@ -102,15 +116,17 @@ function tsExtrudeProfile(profilePoints: number[], height: number): Float32Array
 
 function tsSubtractBox(
   vertices: Float32Array,
-  boxMinX: number, boxMinY: number, boxMinZ: number,
-  boxMaxX: number, boxMaxY: number, boxMaxZ: number,
+  boxMinX: number,
+  boxMinY: number,
+  boxMinZ: number,
+  boxMaxX: number,
+  boxMaxY: number,
+  boxMaxZ: number
 ): Float32Array {
   const out: number[] = [];
   const triCount = Math.floor(vertices.length / 9);
   const inside = (x: number, y: number, z: number) =>
-    x >= boxMinX && x <= boxMaxX &&
-    y >= boxMinY && y <= boxMaxY &&
-    z >= boxMinZ && z <= boxMaxZ;
+    x >= boxMinX && x <= boxMaxX && y >= boxMinY && y <= boxMaxY && z >= boxMinZ && z <= boxMaxZ;
 
   for (let t = 0; t < triCount; t++) {
     const b = t * 9;
@@ -130,10 +146,12 @@ function tsSubtractBox(
 }
 
 function tsBuildWallMesh(
-  x1: number, y1: number,
-  x2: number, y2: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
   height: number,
-  thickness: number,
+  thickness: number
 ): Float32Array {
   const dx = x2 - x1;
   const dy = y2 - y1;
@@ -149,14 +167,14 @@ function tsBuildWallMesh(
 
   type V = [number, number, number];
   const v: V[] = [
-    [x1 - px * t, y1 - py * t, 0],  // 0
-    [x1 + px * t, y1 + py * t, 0],  // 1
-    [x2 + px * t, y2 + py * t, 0],  // 2
-    [x2 - px * t, y2 - py * t, 0],  // 3
-    [x1 - px * t, y1 - py * t, h],  // 4
-    [x1 + px * t, y1 + py * t, h],  // 5
-    [x2 + px * t, y2 + py * t, h],  // 6
-    [x2 - px * t, y2 - py * t, h],  // 7
+    [x1 - px * t, y1 - py * t, 0], // 0
+    [x1 + px * t, y1 + py * t, 0], // 1
+    [x2 + px * t, y2 + py * t, 0], // 2
+    [x2 - px * t, y2 - py * t, 0], // 3
+    [x1 - px * t, y1 - py * t, h], // 4
+    [x1 + px * t, y1 + py * t, h], // 5
+    [x2 + px * t, y2 + py * t, h], // 6
+    [x2 - px * t, y2 - py * t, h], // 7
   ];
 
   const out: number[] = [];
@@ -181,8 +199,12 @@ export interface Profile2D {
 }
 
 export interface BoxRegion {
-  minX: number; minY: number; minZ: number;
-  maxX: number; maxY: number; maxZ: number;
+  minX: number;
+  minY: number;
+  minZ: number;
+  maxX: number;
+  maxY: number;
+  maxZ: number;
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
@@ -207,20 +229,17 @@ export function useGeometryBuilder() {
    * @param height  - Extrusion height along the Z axis
    * @returns       - Flat `Float32Array` of (x,y,z) triplets ready for Three.js `BufferGeometry`
    */
-  const buildExtrudedGeometry = useCallback(
-    (profile: Profile2D, height: number): Float32Array => {
-      const wasm = wasmRef.current;
-      if (wasm) {
-        try {
-          return wasm.extrude_profile(new Float64Array(profile.points), height);
-        } catch {
-          // fall through to TS fallback
-        }
+  const buildExtrudedGeometry = useCallback((profile: Profile2D, height: number): Float32Array => {
+    const wasm = wasmRef.current;
+    if (wasm) {
+      try {
+        return wasm.extrude_profile(new Float64Array(profile.points), height);
+      } catch {
+        // fall through to TS fallback
       }
-      return tsExtrudeProfile(profile.points, height);
-    },
-    [],
-  );
+    }
+    return tsExtrudeProfile(profile.points, height);
+  }, []);
 
   /**
    * Boolean subtraction: remove triangles fully inside an AABB.
@@ -230,24 +249,25 @@ export function useGeometryBuilder() {
    * @param box      - The AABB to subtract
    * @returns        - Filtered vertex buffer
    */
-  const subtractBox = useCallback(
-    (geometry: Float32Array, box: BoxRegion): Float32Array => {
-      const wasm = wasmRef.current;
-      if (wasm) {
-        try {
-          return wasm.subtract_box(
-            geometry,
-            box.minX, box.minY, box.minZ,
-            box.maxX, box.maxY, box.maxZ,
-          );
-        } catch {
-          // fall through
-        }
+  const subtractBox = useCallback((geometry: Float32Array, box: BoxRegion): Float32Array => {
+    const wasm = wasmRef.current;
+    if (wasm) {
+      try {
+        return wasm.subtract_box(
+          geometry,
+          box.minX,
+          box.minY,
+          box.minZ,
+          box.maxX,
+          box.maxY,
+          box.maxZ
+        );
+      } catch {
+        // fall through
       }
-      return tsSubtractBox(geometry, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
-    },
-    [],
-  );
+    }
+    return tsSubtractBox(geometry, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
+  }, []);
 
   /**
    * Build a wall mesh from an `ElementSchema` with type `'wall'`.
@@ -258,32 +278,29 @@ export function useGeometryBuilder() {
    * @param wall - A wall `ElementSchema`
    * @returns    - Flat `Float32Array` of (x,y,z) triplets
    */
-  const buildWallGeometry = useCallback(
-    (wall: ElementSchema): Float32Array => {
-      const pv = (key: string, def: number): number => {
-        const p = (wall.properties as Record<string, { value: unknown }>)[key];
-        return typeof p?.value === 'number' ? p.value : def;
-      };
+  const buildWallGeometry = useCallback((wall: ElementSchema): Float32Array => {
+    const pv = (key: string, def: number): number => {
+      const p = (wall.properties as Record<string, { value: unknown }>)[key];
+      return typeof p?.value === 'number' ? p.value : def;
+    };
 
-      const x1 = pv('StartX', 0);
-      const y1 = pv('StartY', 0);
-      const x2 = pv('EndX', x1 + 1000);
-      const y2 = pv('EndY', y1);
-      const height = pv('Height', 3000);
-      const thickness = pv('Width', 200);
+    const x1 = pv('StartX', 0);
+    const y1 = pv('StartY', 0);
+    const x2 = pv('EndX', x1 + 1000);
+    const y2 = pv('EndY', y1);
+    const height = pv('Height', 3000);
+    const thickness = pv('Width', 200);
 
-      const wasm = wasmRef.current;
-      if (wasm) {
-        try {
-          return wasm.build_wall_mesh(x1, y1, x2, y2, height, thickness);
-        } catch {
-          // fall through
-        }
+    const wasm = wasmRef.current;
+    if (wasm) {
+      try {
+        return wasm.build_wall_mesh(x1, y1, x2, y2, height, thickness);
+      } catch {
+        // fall through
       }
-      return tsBuildWallMesh(x1, y1, x2, y2, height, thickness);
-    },
-    [],
-  );
+    }
+    return tsBuildWallMesh(x1, y1, x2, y2, height, thickness);
+  }, []);
 
   return { buildExtrudedGeometry, subtractBox, buildWallGeometry };
 }

@@ -37,7 +37,7 @@ export function computeTeleportArc(
   direction: Vec3,
   gravity = 9.8,
   velocity = 8,
-  numPoints = 30,
+  numPoints = 30
 ): ArcPoint[] {
   const points: ArcPoint[] = [];
   const dt = 0.05; // time step per segment
@@ -94,9 +94,13 @@ export function teleportLandingPoint(arc: ArcPoint[]): ArcPoint | null {
  * @param snapDeg          Snap increment (default 30°)
  * @returns New yaw in degrees, normalised to [0, 360)
  */
-export function snapTurn(currentAngleDeg: number, direction: 'left' | 'right', snapDeg = 30): number {
+export function snapTurn(
+  currentAngleDeg: number,
+  direction: 'left' | 'right',
+  snapDeg = 30
+): number {
   const delta = direction === 'right' ? snapDeg : -snapDeg;
-  return ((currentAngleDeg + delta) % 360 + 360) % 360;
+  return (((currentAngleDeg + delta) % 360) + 360) % 360;
 }
 
 // ── Grab state machine ────────────────────────────────────────────────────────
@@ -104,10 +108,10 @@ export function snapTurn(currentAngleDeg: number, direction: 'left' | 'right', s
 export type GrabState = 'idle' | 'hover' | 'grab' | 'releasing';
 
 export type GrabEvent =
-  | 'enter'     // controller ray intersects object
-  | 'exit'      // ray leaves object
-  | 'trigger'   // trigger pressed while hovering
-  | 'release';  // trigger released while grabbing
+  | 'enter' // controller ray intersects object
+  | 'exit' // ray leaves object
+  | 'trigger' // trigger pressed while hovering
+  | 'release'; // trigger released while grabbing
 
 /**
  * Grab interaction state machine (pure function, no side effects).
@@ -120,7 +124,7 @@ export function grabStateMachine(state: GrabState, event: GrabEvent): GrabState 
       return 'idle';
 
     case 'hover':
-      if (event === 'exit')    return 'idle';
+      if (event === 'exit') return 'idle';
       if (event === 'trigger') return 'grab';
       return 'hover';
 
@@ -170,27 +174,36 @@ export function lerpAvatarPose(a: XrAvatarPose, b: XrAvatarPose, t: number): XrA
     };
   }
 
-  function slerpQ(qa: [number,number,number,number], qb: [number,number,number,number]): [number,number,number,number] {
+  function slerpQ(
+    qa: [number, number, number, number],
+    qb: [number, number, number, number]
+  ): [number, number, number, number] {
     // Normalised linear interpolation (good enough for avatar display)
-    const dot = qa[0]*qb[0] + qa[1]*qb[1] + qa[2]*qb[2] + qa[3]*qb[3];
+    const dot = qa[0] * qb[0] + qa[1] * qb[1] + qa[2] * qb[2] + qa[3] * qb[3];
     const sign = dot < 0 ? -1 : 1;
     const rx = qa[0] + t * (sign * qb[0] - qa[0]);
     const ry = qa[1] + t * (sign * qb[1] - qa[1]);
     const rz = qa[2] + t * (sign * qb[2] - qa[2]);
     const rw = qa[3] + t * (sign * qb[3] - qa[3]);
-    const len = Math.sqrt(rx*rx + ry*ry + rz*rz + rw*rw);
-    return [rx/len, ry/len, rz/len, rw/len];
+    const len = Math.sqrt(rx * rx + ry * ry + rz * rz + rw * rw);
+    return [rx / len, ry / len, rz / len, rw / len];
   }
 
   function lerpPose(pa?: XrPose, pb?: XrPose): XrPose | undefined {
     if (!pa || !pb) return pa ?? pb;
-    return { position: lerpV3(pa.position, pb.position), orientation: slerpQ(pa.orientation, pb.orientation) };
+    return {
+      position: lerpV3(pa.position, pb.position),
+      orientation: slerpQ(pa.orientation, pb.orientation),
+    };
   }
 
   return {
     ...b,
-    head:      { position: lerpV3(a.head.position, b.head.position), orientation: slerpQ(a.head.orientation, b.head.orientation) },
-    leftHand:  lerpPose(a.leftHand, b.leftHand),
+    head: {
+      position: lerpV3(a.head.position, b.head.position),
+      orientation: slerpQ(a.head.orientation, b.head.orientation),
+    },
+    leftHand: lerpPose(a.leftHand, b.leftHand),
     rightHand: lerpPose(a.rightHand, b.rightHand),
     updatedAt: b.updatedAt,
   };
@@ -210,8 +223,9 @@ export function isWebXRSupported(): boolean {
 export async function checkImmersiveVR(): Promise<boolean> {
   if (!isWebXRSupported()) return false;
   try {
-    return await (navigator as unknown as { xr: { isSessionSupported(m: string): Promise<boolean> } })
-      .xr.isSessionSupported('immersive-vr');
+    return await (
+      navigator as unknown as { xr: { isSessionSupported(m: string): Promise<boolean> } }
+    ).xr.isSessionSupported('immersive-vr');
   } catch {
     return false;
   }
@@ -228,7 +242,7 @@ export type FoveationLevel = 0 | 1 | 2 | 3;
 export function recommendFoveationLevel(targetFps: number, currentFps: number): FoveationLevel {
   const ratio = currentFps / targetFps;
   if (ratio >= 0.95) return 0;
-  if (ratio >= 0.80) return 1;
+  if (ratio >= 0.8) return 1;
   if (ratio >= 0.65) return 2;
   return 3;
 }

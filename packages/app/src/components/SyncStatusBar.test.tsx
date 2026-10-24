@@ -5,7 +5,9 @@ import { SyncStatusBar } from './SyncStatusBar';
 expect.extend(jestDomMatchers);
 
 describe('T-SYNC-012: SyncStatusBar', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('shows connected status', () => {
     render(<SyncStatusBar status="connected" pendingOps={0} lastSynced={Date.now()} />);
@@ -23,7 +25,14 @@ describe('T-SYNC-012: SyncStatusBar', () => {
   });
 
   it('shows error status', () => {
-    render(<SyncStatusBar status="error" pendingOps={0} lastSynced={null} errorMessage="Connection refused" />);
+    render(
+      <SyncStatusBar
+        status="error"
+        pendingOps={0}
+        lastSynced={null}
+        errorMessage="Connection refused"
+      />
+    );
     expect(screen.getAllByText(/error|connection refused/i).length).toBeGreaterThan(0);
   });
 

@@ -71,9 +71,7 @@ export function compareVersions(a: Version, b: Version): VersionDiff {
   const aDoc = a.document;
   const bDoc = b.document;
 
-  const addedElements = Object.keys(bDoc.content.elements).filter(
-    (k) => !aDoc.content.elements[k]
-  );
+  const addedElements = Object.keys(bDoc.content.elements).filter((k) => !aDoc.content.elements[k]);
   const removedElements = Object.keys(aDoc.content.elements).filter(
     (k) => !bDoc.content.elements[k]
   );

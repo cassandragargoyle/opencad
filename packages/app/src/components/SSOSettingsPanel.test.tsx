@@ -7,7 +7,9 @@ expect.extend(jestDomMatchers);
 describe('T-AUTH-001: SSOSettingsPanel', () => {
   const onSave = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const defaultConfig = {
     enabled: false,
@@ -37,13 +39,23 @@ describe('T-AUTH-001: SSOSettingsPanel', () => {
   });
 
   it('shows SAML fields when provider is SAML', () => {
-    render(<SSOSettingsPanel config={{ ...defaultConfig, enabled: true, provider: 'saml' }} onSave={onSave} />);
+    render(
+      <SSOSettingsPanel
+        config={{ ...defaultConfig, enabled: true, provider: 'saml' }}
+        onSave={onSave}
+      />
+    );
     expect(screen.getByLabelText(/entity id/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/sso url/i)).toBeInTheDocument();
   });
 
   it('shows OIDC fields when provider is OIDC', () => {
-    render(<SSOSettingsPanel config={{ ...defaultConfig, enabled: true, provider: 'oidc' }} onSave={onSave} />);
+    render(
+      <SSOSettingsPanel
+        config={{ ...defaultConfig, enabled: true, provider: 'oidc' }}
+        onSave={onSave}
+      />
+    );
     expect(screen.getByLabelText(/client id/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/discovery url/i)).toBeInTheDocument();
   });
@@ -60,9 +72,18 @@ describe('T-AUTH-001: SSOSettingsPanel', () => {
   });
 
   it('updates entity ID field', () => {
-    render(<SSOSettingsPanel config={{ ...defaultConfig, enabled: true, provider: 'saml' }} onSave={onSave} />);
-    fireEvent.change(screen.getByLabelText(/entity id/i), { target: { value: 'https://idp.example.com' } });
+    render(
+      <SSOSettingsPanel
+        config={{ ...defaultConfig, enabled: true, provider: 'saml' }}
+        onSave={onSave}
+      />
+    );
+    fireEvent.change(screen.getByLabelText(/entity id/i), {
+      target: { value: 'https://idp.example.com' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /save/i }));
-    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ entityId: 'https://idp.example.com' }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ entityId: 'https://idp.example.com' })
+    );
   });
 });

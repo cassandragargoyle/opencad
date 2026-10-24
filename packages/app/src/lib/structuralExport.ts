@@ -11,7 +11,9 @@ import type { DocumentSchema, ElementSchema } from '@opencad/document';
 
 export interface Joint {
   id: string;
-  x: number; y: number; z: number;
+  x: number;
+  y: number;
+  z: number;
   /** Element ids that terminate at this joint. */
   incident: string[];
 }
@@ -54,9 +56,11 @@ function str(el: ElementSchema, key: string): string | undefined {
 /** Snap-to-existing joint or add a new one; returns the joint id. */
 function getOrCreateJoint(
   joints: Joint[],
-  x: number, y: number, z: number,
+  x: number,
+  y: number,
+  z: number,
   incidentElId: string,
-  tolerance = 20,
+  tolerance = 20
 ): string {
   for (const j of joints) {
     if (Math.hypot(j.x - x, j.y - y, j.z - z) <= tolerance) {
@@ -81,27 +85,37 @@ export function buildAnalyticalModel(doc: DocumentSchema): AnalyticalModel {
   for (const el of Object.values(doc.content.elements)) {
     switch (el.type) {
       case 'column': {
-        const x = num(el, 'X'), y = num(el, 'Y');
+        const x = num(el, 'X'),
+          y = num(el, 'Y');
         const h = num(el, 'Height', 3000);
         const elev = num(el, 'ElevationOffset', 0);
         const sj = getOrCreateJoint(joints, x, y, elev, el.id);
         const ej = getOrCreateJoint(joints, x, y, elev + h, el.id);
         lines.push({
-          id: `line-${el.id}`, sourceElementId: el.id, kind: 'column',
-          startJointId: sj, endJointId: ej,
-          profile: str(el, 'SectionType'), material: str(el, 'Material'),
+          id: `line-${el.id}`,
+          sourceElementId: el.id,
+          kind: 'column',
+          startJointId: sj,
+          endJointId: ej,
+          profile: str(el, 'SectionType'),
+          material: str(el, 'Material'),
         });
         break;
       }
       case 'beam': {
-        const x1 = num(el, 'StartX'), y1 = num(el, 'StartY');
-        const x2 = num(el, 'EndX',   x1 + 1000), y2 = num(el, 'EndY', y1);
+        const x1 = num(el, 'StartX'),
+          y1 = num(el, 'StartY');
+        const x2 = num(el, 'EndX', x1 + 1000),
+          y2 = num(el, 'EndY', y1);
         const elev = num(el, 'ElevationOffset', 0);
         const sj = getOrCreateJoint(joints, x1, y1, elev, el.id);
         const ej = getOrCreateJoint(joints, x2, y2, elev, el.id);
         lines.push({
-          id: `line-${el.id}`, sourceElementId: el.id, kind: 'beam',
-          startJointId: sj, endJointId: ej,
+          id: `line-${el.id}`,
+          sourceElementId: el.id,
+          kind: 'beam',
+          startJointId: sj,
+          endJointId: ej,
           material: str(el, 'Material'),
         });
         break;
@@ -114,28 +128,37 @@ export function buildAnalyticalModel(doc: DocumentSchema): AnalyticalModel {
           const pts = JSON.parse(raw) as Array<{ x: number; y: number }>;
           const elev = num(el, 'ElevationOffset', 0);
           areas.push({
-            id: `area-${el.id}`, sourceElementId: el.id,
+            id: `area-${el.id}`,
+            sourceElementId: el.id,
             kind: el.type === 'slab' ? 'slab' : 'roof',
             vertices: pts.map((p) => ({ x: p.x, y: p.y, z: elev })),
             thickness: num(el, 'Thickness', 200),
             material: str(el, 'Material'),
           });
-        } catch { unsupportedSourceIds.push(el.id); }
+        } catch {
+          unsupportedSourceIds.push(el.id);
+        }
         break;
       }
       case 'wall': {
         // Walls only enter the analytical model when explicitly tagged
         // Structural=true.
         if (str(el, 'Structural') === 'true') {
-          const x1 = num(el, 'StartX'), y1 = num(el, 'StartY');
-          const x2 = num(el, 'EndX'),   y2 = num(el, 'EndY');
+          const x1 = num(el, 'StartX'),
+            y1 = num(el, 'StartY');
+          const x2 = num(el, 'EndX'),
+            y2 = num(el, 'EndY');
           const h = num(el, 'Height', 3000);
           const elev = num(el, 'ElevationOffset', 0);
           areas.push({
-            id: `area-${el.id}`, sourceElementId: el.id, kind: 'wall',
+            id: `area-${el.id}`,
+            sourceElementId: el.id,
+            kind: 'wall',
             vertices: [
-              { x: x1, y: y1, z: elev }, { x: x2, y: y2, z: elev },
-              { x: x2, y: y2, z: elev + h }, { x: x1, y: y1, z: elev + h },
+              { x: x1, y: y1, z: elev },
+              { x: x2, y: y2, z: elev },
+              { x: x2, y: y2, z: elev + h },
+              { x: x1, y: y1, z: elev + h },
             ],
             thickness: num(el, 'Width', 200),
             material: str(el, 'Material'),
@@ -252,8 +275,8 @@ export const ASCE7_LOAD_COMBOS: string[] = [
 // ── Internal helpers ──────────────────────────────────────────────────────────
 
 const _OPENSEES_ELASTIC_MODULUS: Record<SectionProfile['material'], number> = {
-  steel:    200000, // 200 GPa (MPa = N/mm²)
-  concrete: 25000,  // 25 GPa  (C30/37)
+  steel: 200000, // 200 GPa (MPa = N/mm²)
+  concrete: 25000, // 25 GPa  (C30/37)
 };
 
 function _tclLine(...parts: (string | number)[]): string {
@@ -274,9 +297,7 @@ function _tclComment(text: string): string {
  * 3D node: `node $tag $x $y $z`
  */
 export function exportOpenSeesNodes(nodes: StructuralNode[]): string {
-  const lines: string[] = [
-    _tclComment('── Nodes ──────────────────────────────────────'),
-  ];
+  const lines: string[] = [_tclComment('── Nodes ──────────────────────────────────────')];
   for (const node of nodes) {
     const xM = (node.x / 1000).toFixed(6);
     const yM = (node.y / 1000).toFixed(6);
@@ -302,12 +323,10 @@ export function exportOpenSeesNodes(nodes: StructuralNode[]): string {
  */
 export function exportOpenSeesElements(
   members: StructuralMember[],
-  sections: SectionProfile[],
+  sections: SectionProfile[]
 ): string {
   const sectionMap = new Map<number, SectionProfile>(sections.map((s) => [s.id, s]));
-  const lines: string[] = [
-    _tclComment('── Materials ───────────────────────────────────'),
-  ];
+  const lines: string[] = [_tclComment('── Materials ───────────────────────────────────')];
 
   const emittedMats = new Set<number>();
   for (const member of members) {
@@ -317,7 +336,7 @@ export function exportOpenSeesElements(
     const E = _OPENSEES_ELASTIC_MODULUS[sec.material];
     lines.push(
       _tclComment(`Section ${sec.id}: ${sec.type} (${sec.material}) E=${E} MPa`),
-      _tclLine('uniaxialMaterial', 'Elastic', sec.id, E),
+      _tclLine('uniaxialMaterial', 'Elastic', sec.id, E)
     );
   }
 
@@ -325,7 +344,7 @@ export function exportOpenSeesElements(
 
   const emittedTransf = new Set<number>();
   for (const member of members) {
-    const isColumn  = member.type === 'column' || member.type === 'wall';
+    const isColumn = member.type === 'column' || member.type === 'wall';
     const transfTag = isColumn ? 100 + member.id : 200 + member.id;
     if (emittedTransf.has(transfTag)) continue;
     emittedTransf.add(transfTag);
@@ -338,19 +357,22 @@ export function exportOpenSeesElements(
   for (const member of members) {
     const sec = sectionMap.get(member.sectionId);
     if (!sec) {
-      lines.push(_tclComment(`WARNING: section ${member.sectionId} not found for member ${member.id}`));
+      lines.push(
+        _tclComment(`WARNING: section ${member.sectionId} not found for member ${member.id}`)
+      );
       continue;
     }
-    const E        = _OPENSEES_ELASTIC_MODULUS[sec.material];
-    const G        = sec.material === 'steel' ? E / (2 * 1.3) : E / (2 * 1.2);
+    const E = _OPENSEES_ELASTIC_MODULUS[sec.material];
+    const G = sec.material === 'steel' ? E / (2 * 1.3) : E / (2 * 1.2);
     const isColumn = member.type === 'column' || member.type === 'wall';
     const transfTag = isColumn ? 100 + member.id : 200 + member.id;
-    const J        = Math.min(sec.Ix, sec.Iy) / 2;
+    const J = Math.min(sec.Ix, sec.Iy) / 2;
 
     lines.push(
       _tclComment(`${member.type} ${member.id}: section ${sec.id}`),
       _tclLine(
-        'element', 'elasticBeamColumn',
+        'element',
+        'elasticBeamColumn',
         member.id,
         member.nodeI,
         member.nodeJ,
@@ -360,8 +382,8 @@ export function exportOpenSeesElements(
         J.toFixed(1),
         sec.Iy.toFixed(1),
         sec.Ix.toFixed(1),
-        transfTag,
-      ),
+        transfTag
+      )
     );
   }
 
@@ -383,7 +405,7 @@ export function exportOpenSeesLoads(loadCase: LoadCase): string {
   ];
   for (const load of loadCase.loads) {
     lines.push(
-      `    load ${load.nodeId} ${load.Fx.toFixed(3)} ${load.Fy.toFixed(3)} ${load.Fz.toFixed(3)} ${load.Mx.toFixed(3)} ${load.My.toFixed(3)} ${load.Mz.toFixed(3)}`,
+      `    load ${load.nodeId} ${load.Fx.toFixed(3)} ${load.Fy.toFixed(3)} ${load.Fz.toFixed(3)} ${load.Mx.toFixed(3)} ${load.My.toFixed(3)} ${load.Mz.toFixed(3)}`
     );
   }
   lines.push('}');
@@ -406,11 +428,11 @@ export function buildOpenSeesTCL(
   nodes: StructuralNode[],
   members: StructuralMember[],
   sections: SectionProfile[],
-  loadCases: LoadCase[],
+  loadCases: LoadCase[]
 ): string {
   const is2D = nodes.every((n) => n.dof === 3);
-  const ndm  = is2D ? 2 : 3;
-  const ndf  = is2D ? 3 : 6;
+  const ndm = is2D ? 2 : 3;
+  const ndf = is2D ? 3 : 6;
 
   const parts: string[] = [
     _tclComment('═══════════════════════════════════════════════'),
@@ -456,7 +478,7 @@ export function buildOpenSeesTCL(
     'analyze 1',
     '',
     _tclComment('── Print node displacements ─────────────────────'),
-    'print node',
+    'print node'
   );
 
   return parts.join('\n');
@@ -475,14 +497,18 @@ export function buildOpenSeesTCL(
  * @returns Map of node id string → {ux, uy, uz} (all in metres, from SI model).
  */
 export function parseOpenSeesDisplacements(
-  tclOutput: string,
+  tclOutput: string
 ): Record<string, { ux: number; uy: number; uz: number }> {
   const result: Record<string, { ux: number; uy: number; uz: number }> = {};
   const blockRe = /Node:\s*(\d+)[\s\S]*?Disps\s*[=:]\s*([\d.eE+\-\s]+)/g;
   let m: RegExpExecArray | null;
   while ((m = blockRe.exec(tclOutput)) !== null) {
     const nodeId = m[1]!.trim();
-    const vals   = m[2]!.trim().split(/\s+/).map(Number).filter((v) => !isNaN(v));
+    const vals = m[2]!
+      .trim()
+      .split(/\s+/)
+      .map(Number)
+      .filter((v) => !isNaN(v));
     result[nodeId] = { ux: vals[0] ?? 0, uy: vals[1] ?? 0, uz: vals[2] ?? 0 };
   }
   return result;
@@ -504,12 +530,17 @@ export function exportAnalyticalCSV(model: AnalyticalModel): string {
   for (const ln of model.lines) {
     const a = model.joints.find((j) => j.id === ln.startJointId)!;
     const b = model.joints.find((j) => j.id === ln.endJointId)!;
-    lines.push(`line,${ln.id},${a.x},${a.y},${a.z},${b.x},${b.y},${b.z},${ln.kind},${ln.material ?? ''}`);
+    lines.push(
+      `line,${ln.id},${a.x},${a.y},${a.z},${b.x},${b.y},${b.z},${ln.kind},${ln.material ?? ''}`
+    );
   }
   for (const a of model.areas) {
     // First vertex as p1, last as p2 — placeholder; real SAF carries all verts
-    const v1 = a.vertices[0]!, v2 = a.vertices[a.vertices.length - 1]!;
-    lines.push(`area,${a.id},${v1.x},${v1.y},${v1.z},${v2.x},${v2.y},${v2.z},${a.kind},${a.material ?? ''}`);
+    const v1 = a.vertices[0]!,
+      v2 = a.vertices[a.vertices.length - 1]!;
+    lines.push(
+      `area,${a.id},${v1.x},${v1.y},${v1.z},${v2.x},${v2.y},${v2.z},${a.kind},${a.material ?? ''}`
+    );
   }
   return lines.join('\n') + '\n';
 }

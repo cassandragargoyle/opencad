@@ -39,14 +39,18 @@ export function RenderPanel() {
   return (
     <div className="render-panel">
       <div className="panel-header">
-        <span className="panel-title">{t('rendering.title', { defaultValue: 'Render Settings' })}</span>
+        <span className="panel-title">
+          {t('rendering.title', { defaultValue: 'Render Settings' })}
+        </span>
       </div>
 
       <div className="render-section">
         <h4>{t('rendering.lighting', { defaultValue: 'Lighting' })}</h4>
 
         <div className="render-field">
-          <label htmlFor="ao-toggle">{t('rendering.ambientOcclusion', { defaultValue: 'Ambient Occlusion' })}</label>
+          <label htmlFor="ao-toggle">
+            {t('rendering.ambientOcclusion', { defaultValue: 'Ambient Occlusion' })}
+          </label>
           <input
             id="ao-toggle"
             data-testid="enable-ao-checkbox"
@@ -57,7 +61,9 @@ export function RenderPanel() {
         </div>
 
         <div className="render-field">
-          <label htmlFor="shadows-toggle">{t('rendering.shadows', { defaultValue: 'Shadows' })}</label>
+          <label htmlFor="shadows-toggle">
+            {t('rendering.shadows', { defaultValue: 'Shadows' })}
+          </label>
           <input
             id="shadows-toggle"
             data-testid="enable-shadows-checkbox"
@@ -69,7 +75,9 @@ export function RenderPanel() {
 
         {settings.enableShadows && (
           <div className="render-field">
-            <label htmlFor="shadow-intensity">{t('rendering.shadowIntensity', { defaultValue: 'Shadow Intensity' })}</label>
+            <label htmlFor="shadow-intensity">
+              {t('rendering.shadowIntensity', { defaultValue: 'Shadow Intensity' })}
+            </label>
             <input
               id="shadow-intensity"
               type="range"
@@ -84,7 +92,9 @@ export function RenderPanel() {
         )}
 
         <div className="render-field">
-          <label htmlFor="exposure-range">{t('rendering.exposure', { defaultValue: 'Exposure' })}</label>
+          <label htmlFor="exposure-range">
+            {t('rendering.exposure', { defaultValue: 'Exposure' })}
+          </label>
           <input
             id="exposure-range"
             type="range"
@@ -98,15 +108,21 @@ export function RenderPanel() {
         </div>
 
         <div className="render-field">
-          <label htmlFor="tone-mapping-select">{t('rendering.toneMapping', { defaultValue: 'Tone Mapping' })}</label>
+          <label htmlFor="tone-mapping-select">
+            {t('rendering.toneMapping', { defaultValue: 'Tone Mapping' })}
+          </label>
           <select
             id="tone-mapping-select"
             value={settings.toneMapping}
             onChange={(e) => update({ toneMapping: e.target.value as ToneMapping })}
           >
             <option value="linear">{t('rendering.tone.linear', { defaultValue: 'Linear' })}</option>
-            <option value="aces">{t('rendering.tone.aces', { defaultValue: 'ACES Filmic' })}</option>
-            <option value="reinhard">{t('rendering.tone.reinhard', { defaultValue: 'Reinhard' })}</option>
+            <option value="aces">
+              {t('rendering.tone.aces', { defaultValue: 'ACES Filmic' })}
+            </option>
+            <option value="reinhard">
+              {t('rendering.tone.reinhard', { defaultValue: 'Reinhard' })}
+            </option>
             <option value="cineon">{t('rendering.tone.cineon', { defaultValue: 'Cineon' })}</option>
           </select>
         </div>
@@ -116,34 +132,46 @@ export function RenderPanel() {
         <h4>{t('rendering.environment', { defaultValue: 'Environment' })}</h4>
 
         <div className="render-field">
-          <label htmlFor="env-map-select">{t('rendering.environmentMap', { defaultValue: 'Environment Map' })}</label>
+          <label htmlFor="env-map-select">
+            {t('rendering.environmentMap', { defaultValue: 'Environment Map' })}
+          </label>
           <select
             id="env-map-select"
             value={settings.environmentMap}
             onChange={(e) => update({ environmentMap: e.target.value as EnvironmentMap })}
           >
             <option value="studio">{t('rendering.env.studio', { defaultValue: 'Studio' })}</option>
-            <option value="outdoor">{t('rendering.env.outdoor', { defaultValue: 'Outdoor' })}</option>
-            <option value="interior">{t('rendering.env.interior', { defaultValue: 'Interior' })}</option>
+            <option value="outdoor">
+              {t('rendering.env.outdoor', { defaultValue: 'Outdoor' })}
+            </option>
+            <option value="interior">
+              {t('rendering.env.interior', { defaultValue: 'Interior' })}
+            </option>
             <option value="night">{t('rendering.env.night', { defaultValue: 'Night' })}</option>
           </select>
         </div>
 
         <div className="render-field">
-          <label htmlFor="render-quality-select">{t('rendering.renderQuality', { defaultValue: 'Render Quality' })}</label>
+          <label htmlFor="render-quality-select">
+            {t('rendering.renderQuality', { defaultValue: 'Render Quality' })}
+          </label>
           <select
             id="render-quality-select"
             value={settings.renderQuality}
             onChange={(e) => update({ renderQuality: e.target.value as RenderQuality })}
           >
             <option value="draft">{t('rendering.quality.draft', { defaultValue: 'Draft' })}</option>
-            <option value="standard">{t('rendering.quality.standard', { defaultValue: 'Standard' })}</option>
+            <option value="standard">
+              {t('rendering.quality.standard', { defaultValue: 'Standard' })}
+            </option>
             <option value="high">{t('rendering.quality.high', { defaultValue: 'High' })}</option>
           </select>
         </div>
 
         <div className="render-field">
-          <label htmlFor="ground-reflections-toggle">{t('rendering.groundReflections', { defaultValue: 'Ground Reflections' })}</label>
+          <label htmlFor="ground-reflections-toggle">
+            {t('rendering.groundReflections', { defaultValue: 'Ground Reflections' })}
+          </label>
           <input
             id="ground-reflections-toggle"
             type="checkbox"
@@ -168,7 +196,9 @@ export function RenderPanel() {
 
         {settings.bloomEnabled && (
           <div className="render-field">
-            <label htmlFor="bloom-strength">{t('rendering.bloomStrength', { defaultValue: 'Bloom Strength' })}</label>
+            <label htmlFor="bloom-strength">
+              {t('rendering.bloomStrength', { defaultValue: 'Bloom Strength' })}
+            </label>
             <input
               id="bloom-strength"
               type="range"

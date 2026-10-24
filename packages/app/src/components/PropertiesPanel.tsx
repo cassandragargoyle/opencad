@@ -51,9 +51,9 @@ function summarizeStructuredValue(key: string, prop: PropertyValue): string | nu
     if (Array.isArray(parsed)) {
       const n = parsed.length;
       const lower = key.toLowerCase();
-      if (lower === 'points')   return `${n} ${n === 1 ? 'point' : 'points'}`;
+      if (lower === 'points') return `${n} ${n === 1 ? 'point' : 'points'}`;
       if (lower === 'vertices') return `${n} ${n === 1 ? 'vertex' : 'vertices'}`;
-      if (lower === 'layers')   return `${n} ${n === 1 ? 'layer' : 'layers'}`;
+      if (lower === 'layers') return `${n} ${n === 1 ? 'layer' : 'layers'}`;
       return `${n} ${n === 1 ? 'item' : 'items'}`;
     }
     if (parsed && typeof parsed === 'object') {
@@ -68,12 +68,23 @@ function summarizeStructuredValue(key: string, prop: PropertyValue): string | nu
 
 export function PropertiesPanel() {
   const { t } = useTranslation('panels');
-  const { document: doc, selectedIds, updateElement, pushHistory, updateFamilyParam } = useDocumentStore();
+  const {
+    document: doc,
+    selectedIds,
+    updateElement,
+    pushHistory,
+    updateFamilyParam,
+  } = useDocumentStore();
   const [pendingProps, setPendingProps] = useState<PendingProp[]>([]);
   // Live-polled position from the 3D viewport so the Location X/Y/Z inputs
   // update while the user drags the TransformControls gizmo — otherwise we'd
   // only see the value after the drag commits.
-  const [liveCoords, setLiveCoords] = useState<{ x: number; y: number; z: number; elementId: string } | null>(null);
+  const [liveCoords, setLiveCoords] = useState<{
+    x: number;
+    y: number;
+    z: number;
+    elementId: string;
+  } | null>(null);
   // Pause live-coord polling while a coord input has focus — prevents the
   // key from changing (which would unmount the input) while the user types.
   const coordFocusedRef = useRef(false);
@@ -109,7 +120,10 @@ export function PropertiesPanel() {
         </div>
         <div className="properties-content empty">
           <p className="properties-empty-hint">
-            {t('properties.multi', { count: selectedIds.length, defaultValue: '{{count}} elements selected' })}
+            {t('properties.multi', {
+              count: selectedIds.length,
+              defaultValue: '{{count}} elements selected',
+            })}
           </p>
         </div>
       </div>
@@ -168,7 +182,12 @@ export function PropertiesPanel() {
     });
   };
 
-  const handlePsetPropertyBlur = (psetId: string, propKey: string, rawValue: string, existing: PropertyValue) => {
+  const handlePsetPropertyBlur = (
+    psetId: string,
+    propKey: string,
+    rawValue: string,
+    existing: PropertyValue
+  ) => {
     let parsed: string | number | boolean = rawValue;
     if (existing.type === 'number') {
       const match = rawValue.match(/^([\d.]+)/);
@@ -225,14 +244,19 @@ export function PropertiesPanel() {
       <div className="panel-header">
         <span className="panel-title">{t('properties.title')}</span>
         <div className="panel-actions">
-          <button className="panel-action-btn" title={t('properties.more', { defaultValue: 'More' })}>
+          <button
+            className="panel-action-btn"
+            title={t('properties.more', { defaultValue: 'More' })}
+          >
             ⋮
           </button>
         </div>
       </div>
       <div className="properties-content">
         <div className="property-group">
-          <div className="property-group-title">{t('properties.group.general', { defaultValue: 'General' })}</div>
+          <div className="property-group-title">
+            {t('properties.group.general', { defaultValue: 'General' })}
+          </div>
           <div className="property-row">
             <span className="property-label">{translateFieldLabel(t, 'Type')}</span>
             <div className="property-value">
@@ -242,115 +266,130 @@ export function PropertiesPanel() {
         </div>
 
         {/* T-EXT-01: Family parameters section */}
-        {selectedElement.family && (() => {
-          const familyDef = resolveFamily(selectedElement.family.familyId);
-          if (!familyDef) return (
-            <div className="property-group">
-              <div className="property-group-title">Family</div>
-              <div className="property-row">
-                <span className="property-label">ID</span>
-                <div className="property-value">
-                  <input type="text" className="property-input" value={selectedElement.family.familyId} readOnly />
-                </div>
-              </div>
-              <div className="family-param-warning">
-                ⚠ Family definition not loaded
-              </div>
-            </div>
-          );
-
-          const orderedParams: ParamSchema[] = familyDef.ui?.order
-            ? familyDef.ui.order.map((id) => familyDef.parameters.find((p) => p.id === id)!).filter(Boolean)
-            : familyDef.parameters;
-
-          const renderParamInput = (schema: ParamSchema) => {
-            const currentVal = selectedElement.family!.params[schema.id] ?? schema.default;
-            if (schema.type === 'enum' && schema.options) {
+        {selectedElement.family &&
+          (() => {
+            const familyDef = resolveFamily(selectedElement.family.familyId);
+            if (!familyDef)
               return (
-                <select
-                  className="property-input"
-                  value={String(currentVal)}
-                  onChange={(e) => {
-                    pushHistory(`Edit ${schema.label}`);
-                    updateFamilyParam(selectedElement.id, schema.id, e.target.value);
-                  }}
-                >
-                  {schema.options.map((opt: { value: string; label: string }) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
+                <div className="property-group">
+                  <div className="property-group-title">Family</div>
+                  <div className="property-row">
+                    <span className="property-label">ID</span>
+                    <div className="property-value">
+                      <input
+                        type="text"
+                        className="property-input"
+                        value={selectedElement.family.familyId}
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                  <div className="family-param-warning">⚠ Family definition not loaded</div>
+                </div>
               );
-            }
-            if (schema.type === 'boolean') {
+
+            const orderedParams: ParamSchema[] = familyDef.ui?.order
+              ? familyDef.ui.order
+                  .map((id) => familyDef.parameters.find((p) => p.id === id)!)
+                  .filter(Boolean)
+              : familyDef.parameters;
+
+            const renderParamInput = (schema: ParamSchema) => {
+              const currentVal = selectedElement.family!.params[schema.id] ?? schema.default;
+              if (schema.type === 'enum' && schema.options) {
+                return (
+                  <select
+                    className="property-input"
+                    value={String(currentVal)}
+                    onChange={(e) => {
+                      pushHistory(`Edit ${schema.label}`);
+                      updateFamilyParam(selectedElement.id, schema.id, e.target.value);
+                    }}
+                  >
+                    {schema.options.map((opt: { value: string; label: string }) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                );
+              }
+              if (schema.type === 'boolean') {
+                return (
+                  <input
+                    type="checkbox"
+                    checked={Boolean(currentVal)}
+                    onChange={(e) => {
+                      pushHistory(`Edit ${schema.label}`);
+                      updateFamilyParam(selectedElement.id, schema.id, e.target.checked);
+                    }}
+                  />
+                );
+              }
+              // number / dimension / string / material-ref
               return (
                 <input
-                  type="checkbox"
-                  checked={Boolean(currentVal)}
-                  onChange={(e) => {
+                  type={
+                    schema.type === 'string' || schema.type === 'material-ref' ? 'text' : 'number'
+                  }
+                  className="property-input"
+                  defaultValue={String(currentVal)}
+                  min={schema.min}
+                  max={schema.max}
+                  step={schema.step}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                      const step = schema.step ?? 1;
+                      const delta = e.key === 'ArrowUp' ? step : -step;
+                      const next = Number(currentVal) + delta;
+                      e.preventDefault();
+                      pushHistory(`Edit ${schema.label}`);
+                      updateFamilyParam(selectedElement.id, schema.id, next);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const raw = e.target.value;
+                    const v: ParamValue =
+                      schema.type === 'string' || schema.type === 'material-ref'
+                        ? raw
+                        : parseFloat(raw);
+                    if (typeof v === 'number' && isNaN(v)) return;
                     pushHistory(`Edit ${schema.label}`);
-                    updateFamilyParam(selectedElement.id, schema.id, e.target.checked);
+                    updateFamilyParam(selectedElement.id, schema.id, v);
                   }}
                 />
               );
-            }
-            // number / dimension / string / material-ref
-            return (
-              <input
-                type={schema.type === 'string' || schema.type === 'material-ref' ? 'text' : 'number'}
-                className="property-input"
-                defaultValue={String(currentVal)}
-                min={schema.min}
-                max={schema.max}
-                step={schema.step}
-                onKeyDown={(e) => {
-                  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                    const step = schema.step ?? 1;
-                    const delta = e.key === 'ArrowUp' ? step : -step;
-                    const next = Number(currentVal) + delta;
-                    e.preventDefault();
-                    pushHistory(`Edit ${schema.label}`);
-                    updateFamilyParam(selectedElement.id, schema.id, next);
-                  }
-                }}
-                onBlur={(e) => {
-                  const raw = e.target.value;
-                  const v: ParamValue = (schema.type === 'string' || schema.type === 'material-ref')
-                    ? raw
-                    : parseFloat(raw);
-                  if (typeof v === 'number' && isNaN(v)) return;
-                  pushHistory(`Edit ${schema.label}`);
-                  updateFamilyParam(selectedElement.id, schema.id, v);
-                }}
-              />
-            );
-          };
+            };
 
-          return (
-            <div className="property-group">
-              <div className="property-group-title">
-                {familyDef.name}
-                <span className="family-version-badge">v{familyDef.version}</span>
-              </div>
-              {orderedParams.map((schema) => (
-                <div className="property-row" key={schema.id}>
-                  <span className="property-label">{schema.label}{schema.unit ? ` (${schema.unit})` : ''}</span>
-                  <div className="property-value">{renderParamInput(schema)}</div>
+            return (
+              <div className="property-group">
+                <div className="property-group-title">
+                  {familyDef.name}
+                  <span className="family-version-badge">v{familyDef.version}</span>
                 </div>
-              ))}
-            </div>
-          );
-        })()}
+                {orderedParams.map((schema) => (
+                  <div className="property-row" key={schema.id}>
+                    <span className="property-label">
+                      {schema.label}
+                      {schema.unit ? ` (${schema.unit})` : ''}
+                    </span>
+                    <div className="property-value">{renderParamInput(schema)}</div>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
 
         <div className="property-group">
-          <div className="property-group-title">{t('properties.group.location', { defaultValue: 'Location (mm)' })}</div>
+          <div className="property-group-title">
+            {t('properties.group.location', { defaultValue: 'Location (mm)' })}
+          </div>
           {(['x', 'y', 'z'] as const).map((axis) => {
             // Prefer the live 3D-viewport coords for the currently selected
             // element — these update in real time while TransformControls is
             // dragging. Fall back to the persisted transform.translation.
             const live =
-              liveCoords && liveCoords.elementId === selectedIds[0]
-                ? liveCoords[axis]
-                : null;
+              liveCoords && liveCoords.elementId === selectedIds[0] ? liveCoords[axis] : null;
             const value =
               live !== null
                 ? live.toFixed(0)
@@ -364,7 +403,9 @@ export function PropertiesPanel() {
                     className="property-input"
                     key={`${selectedIds[0]}-${axis}-${live ?? selectedElement.transform.translation[axis]}`}
                     defaultValue={value}
-                    onFocus={() => { coordFocusedRef.current = true; }}
+                    onFocus={() => {
+                      coordFocusedRef.current = true;
+                    }}
                     onBlur={(e) => handleTranslationBlur(axis, e.target.value)}
                   />
                 </div>
@@ -435,7 +476,9 @@ export function PropertiesPanel() {
 
         {selectedElement.propertySets && selectedElement.propertySets.length > 0 && (
           <div className="property-group">
-            <div className="property-group-title">{t('properties.group.ifcPsets', { defaultValue: 'IFC Property Sets' })}</div>
+            <div className="property-group-title">
+              {t('properties.group.ifcPsets', { defaultValue: 'IFC Property Sets' })}
+            </div>
             {selectedElement.propertySets.map((pset) => (
               <div key={pset.id} className="pset-group">
                 <div className="pset-name">{pset.name}</div>
@@ -470,10 +513,14 @@ export function PropertiesPanel() {
                   title={t('properties.addPset', { defaultValue: 'Add Pset' })}
                   onClick={() => {
                     const name = window.prompt(
-                      t('properties.addPsetPrompt', { defaultValue: 'Enter Pset name (e.g. Pset_WallCommon):' }),
+                      t('properties.addPsetPrompt', {
+                        defaultValue: 'Enter Pset name (e.g. Pset_WallCommon):',
+                      })
                     );
                     if (!name?.trim()) return;
-                    const psetName = name.trim().startsWith('Pset_') ? name.trim() : `Pset_${name.trim()}`;
+                    const psetName = name.trim().startsWith('Pset_')
+                      ? name.trim()
+                      : `Pset_${name.trim()}`;
                     const key = `${psetName}.NewProperty`;
                     pushHistory(`Add Pset ${psetName}`);
                     updateElement(selectedIds[0], {

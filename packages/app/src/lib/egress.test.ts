@@ -37,7 +37,7 @@ describe('T-ANA-02: occupantLoad()', () => {
   });
 
   it('uses fallback factor for unknown type', () => {
-    const known   = occupantLoad(100, 'other');
+    const known = occupantLoad(100, 'other');
     const unknown = occupantLoad(100, 'xyz-nonexistent');
     expect(known).toBe(unknown);
   });
@@ -127,15 +127,15 @@ describe('T-ANA-02: BFS egress path', () => {
   function makeSimpleGraph() {
     return {
       nodes: [
-        { id: 'room',      x: 0,   y: 0,   isExit: false },
-        { id: 'corridor',  x: 5,   y: 0,   isExit: false },
-        { id: 'stairwell', x: 10,  y: 0,   isExit: false },
-        { id: 'exit',      x: 15,  y: 0,   isExit: true  },
+        { id: 'room', x: 0, y: 0, isExit: false },
+        { id: 'corridor', x: 5, y: 0, isExit: false },
+        { id: 'stairwell', x: 10, y: 0, isExit: false },
+        { id: 'exit', x: 15, y: 0, isExit: true },
       ],
       edges: [
-        { from: 'room',      to: 'corridor',  distanceMm: 5000 },
-        { from: 'corridor',  to: 'stairwell', distanceMm: 5000 },
-        { from: 'stairwell', to: 'exit',      distanceMm: 5000 },
+        { from: 'room', to: 'corridor', distanceMm: 5000 },
+        { from: 'corridor', to: 'stairwell', distanceMm: 5000 },
+        { from: 'stairwell', to: 'exit', distanceMm: 5000 },
       ],
     };
   }
@@ -176,9 +176,9 @@ describe('T-ANA-02: BFS egress path', () => {
   it('prefers shorter path when two exits exist', () => {
     const graph = {
       nodes: [
-        { id: 'room',    x: 0,  y: 0, isExit: false },
-        { id: 'exit-a',  x: 5,  y: 0, isExit: true  },
-        { id: 'exit-b',  x: 20, y: 0, isExit: true  },
+        { id: 'room', x: 0, y: 0, isExit: false },
+        { id: 'exit-a', x: 5, y: 0, isExit: true },
+        { id: 'exit-b', x: 20, y: 0, isExit: true },
       ],
       edges: [
         { from: 'room', to: 'exit-a', distanceMm: 5000 },
@@ -194,7 +194,7 @@ describe('T-ANA-02: BFS egress path', () => {
 describe('T-ANA-02: checkSpaceEgress()', () => {
   const baseInput = {
     id: 'office-1',
-    areaSqM: 186,     // 186 m² / 9.3 = 20 occupants
+    areaSqM: 186, // 186 m² / 9.3 = 20 occupants
     occupancyGroup: 'B',
     occupancyClass: 'business',
     exitsProvided: 2,

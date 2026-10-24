@@ -164,7 +164,7 @@ Return the floor plan as JSON with the following structure:
   private parseGeneratedLayout(
     content: string,
     _prompt: string,
-    targetArea?: number,
+    targetArea?: number
   ): GeneratedLayout {
     let data: { rooms?: unknown[]; circulation?: unknown[]; total_area_sqft?: number };
 

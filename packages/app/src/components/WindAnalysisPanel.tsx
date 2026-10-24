@@ -13,7 +13,7 @@ export interface WindAnalysisSettings {
 const DEFAULT_SETTINGS: WindAnalysisSettings = {
   latitude: 51.5074,
   longitude: -0.1278,
-  prevailingDirection: 225,   // SW — prevailing in London
+  prevailingDirection: 225, // SW — prevailing in London
   averageSpeedMs: 4.5,
   showWindRose: true,
   showVentilationPotential: false,
@@ -42,7 +42,9 @@ export function WindAnalysisPanel({ onRun, onChange }: WindAnalysisPanelProps = 
   return (
     <div className="wind-analysis-panel">
       <div className="panel-header">
-        <span className="panel-title">{t('wind.fullTitle', { defaultValue: 'Wind & Microclimate Analysis' })}</span>
+        <span className="panel-title">
+          {t('wind.fullTitle', { defaultValue: 'Wind & Microclimate Analysis' })}
+        </span>
       </div>
 
       <div className="analysis-section">
@@ -72,7 +74,9 @@ export function WindAnalysisPanel({ onRun, onChange }: WindAnalysisPanelProps = 
       <div className="analysis-section">
         <h4>{t('wind.windData', { defaultValue: 'Wind Data' })}</h4>
         <div className="field-row">
-          <label htmlFor="wind-direction">{t('wind.prevailingDirection', { defaultValue: 'Prevailing Wind Direction (°)' })}</label>
+          <label htmlFor="wind-direction">
+            {t('wind.prevailingDirection', { defaultValue: 'Prevailing Wind Direction (°)' })}
+          </label>
           <input
             id="wind-direction"
             type="number"
@@ -86,7 +90,9 @@ export function WindAnalysisPanel({ onRun, onChange }: WindAnalysisPanelProps = 
         </div>
 
         <div className="field-row">
-          <label htmlFor="wind-speed">{t('wind.averageSpeed', { defaultValue: 'Average Speed (m/s)' })}</label>
+          <label htmlFor="wind-speed">
+            {t('wind.averageSpeed', { defaultValue: 'Average Speed (m/s)' })}
+          </label>
           <input
             id="wind-speed"
             type="number"
@@ -98,15 +104,24 @@ export function WindAnalysisPanel({ onRun, onChange }: WindAnalysisPanelProps = 
           />
         </div>
 
-        <div className="compass-reference" aria-label={t('wind.compassReference', { defaultValue: 'Compass reference' })}>
-          <span>{t('wind.compassLegend', { defaultValue: 'North: 0° | South: 180° | East: 90° | West: 270°' })}</span>
+        <div
+          className="compass-reference"
+          aria-label={t('wind.compassReference', { defaultValue: 'Compass reference' })}
+        >
+          <span>
+            {t('wind.compassLegend', {
+              defaultValue: 'North: 0° | South: 180° | East: 90° | West: 270°',
+            })}
+          </span>
         </div>
       </div>
 
       <div className="analysis-section">
         <h4>{t('wind.visualisation', { defaultValue: 'Visualisation' })}</h4>
         <div className="field-row">
-          <label htmlFor="wind-rose-toggle">{t('wind.showWindRose', { defaultValue: 'Show Wind Rose' })}</label>
+          <label htmlFor="wind-rose-toggle">
+            {t('wind.showWindRose', { defaultValue: 'Show Wind Rose' })}
+          </label>
           <input
             id="wind-rose-toggle"
             type="checkbox"
@@ -115,7 +130,9 @@ export function WindAnalysisPanel({ onRun, onChange }: WindAnalysisPanelProps = 
           />
         </div>
         <div className="field-row">
-          <label htmlFor="ventilation-toggle">{t('wind.showVentilation', { defaultValue: 'Show Ventilation Potential' })}</label>
+          <label htmlFor="ventilation-toggle">
+            {t('wind.showVentilation', { defaultValue: 'Show Ventilation Potential' })}
+          </label>
           <input
             id="ventilation-toggle"
             type="checkbox"

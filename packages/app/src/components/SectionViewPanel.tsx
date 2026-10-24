@@ -18,10 +18,10 @@ const ELEVATION_DIRS = [
 
 export function SectionViewPanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document   = useDocumentStore((s) => s.document);
-  const addView    = useDocumentStore((s) => s.addView);
+  const document = useDocumentStore((s) => s.document);
+  const addView = useDocumentStore((s) => s.addView);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
-  const isReadOnly  = isDocumentReadOnly();
+  const isReadOnly = isDocumentReadOnly();
 
   const [tool, setTool] = useState<ViewTool>('section');
   const [viewName, setViewName] = useState('Section 1');
@@ -30,23 +30,24 @@ export function SectionViewPanel(): React.ReactElement {
   const [x2, setX2] = useState('10000');
   const [y2, setY2] = useState('0');
   const [zBottom, setZBottom] = useState('0');
-  const [zTop,    setZTop]    = useState('3000');
-  const [depth,   setDepth]   = useState('6000');
+  const [zTop, setZTop] = useState('3000');
+  const [depth, setDepth] = useState('6000');
   const [elevDir, setElevDir] = useState<'N' | 'S' | 'E' | 'W'>('N');
-  const [status,  setStatus]  = useState('');
+  const [status, setStatus] = useState('');
 
   const elements = useMemo(
-    () => document ? Object.values(document.content.elements) : [],
-    [document],
+    () => (document ? Object.values(document.content.elements) : []),
+    [document]
   );
 
   const existingSections = useMemo(
-    () => document
-      ? Object.values(document.presentation.views).filter(
-          (v) => v.type === 'section' || v.type === 'elevation',
-        )
-      : [],
-    [document],
+    () =>
+      document
+        ? Object.values(document.presentation.views).filter(
+            (v) => v.type === 'section' || v.type === 'elevation'
+          )
+        : [],
+    [document]
   );
 
   const createSection = () => {
@@ -56,13 +57,13 @@ export function SectionViewPanel(): React.ReactElement {
     const px2 = parseFloat(x2) || 10000;
     const py2 = parseFloat(y2) || 0;
     const pzBottom = parseFloat(zBottom) || 0;
-    const pzTop    = parseFloat(zTop)    || 3000;
-    const pdepth   = parseFloat(depth)   || 6000;
+    const pzTop = parseFloat(zTop) || 3000;
+    const pdepth = parseFloat(depth) || 6000;
 
     const plane = sectionPlaneFromMarker(
       { x: px1, y: py1 },
       { x: px2, y: py2 },
-      { zBottom: pzBottom, zTop: pzTop, depth: pdepth },
+      { zBottom: pzBottom, zTop: pzTop, depth: pdepth }
     );
 
     const cuts = computeSectionCut(elements, plane);
@@ -74,11 +75,21 @@ export function SectionViewPanel(): React.ReactElement {
       type: 'section',
       camera: {
         position: { x: (px1 + px2) / 2, y: pzBottom, z: (py1 + py2) / 2 },
-        target:   { x: (px1 + px2) / 2, y: (pzBottom + pzTop) / 2, z: (py1 + py2) / 2 },
+        target: { x: (px1 + px2) / 2, y: (pzBottom + pzTop) / 2, z: (py1 + py2) / 2 },
         up: { x: 0, y: 1, z: 0 },
-        fov: 50, near: 1, far: 100_000,
+        fov: 50,
+        near: 1,
+        far: 100_000,
       },
-      sectionCut: { x1: px1, y1: py1, x2: px2, y2: py2, zBottom: pzBottom, zTop: pzTop, depth: pdepth },
+      sectionCut: {
+        x1: px1,
+        y1: py1,
+        x2: px2,
+        y2: py2,
+        zBottom: pzBottom,
+        zTop: pzTop,
+        depth: pdepth,
+      },
     };
 
     pushHistory(`Add section view "${view.name}"`);
@@ -96,9 +107,11 @@ export function SectionViewPanel(): React.ReactElement {
       type: 'elevation',
       camera: {
         position: { x: 0, y: 0, z: 0 },
-        target:   { x: 0, y: 0, z: 0 },
+        target: { x: 0, y: 0, z: 0 },
         up: { x: 0, y: 1, z: 0 },
-        fov: 50, near: 1, far: 100_000,
+        fov: 50,
+        near: 1,
+        far: 100_000,
       },
       elevationDir: elevDir,
     };
@@ -144,42 +157,80 @@ export function SectionViewPanel(): React.ReactElement {
             <div className="field-row">
               <label className="field-label half">
                 Start X (mm)
-                <input type="number" className="panel-input" value={x1} onChange={(e) => setX1(e.target.value)} disabled={isReadOnly} />
+                <input
+                  type="number"
+                  className="panel-input"
+                  value={x1}
+                  onChange={(e) => setX1(e.target.value)}
+                  disabled={isReadOnly}
+                />
               </label>
               <label className="field-label half">
                 Start Y (mm)
-                <input type="number" className="panel-input" value={y1} onChange={(e) => setY1(e.target.value)} disabled={isReadOnly} />
+                <input
+                  type="number"
+                  className="panel-input"
+                  value={y1}
+                  onChange={(e) => setY1(e.target.value)}
+                  disabled={isReadOnly}
+                />
               </label>
             </div>
             <div className="field-row">
               <label className="field-label half">
                 End X (mm)
-                <input type="number" className="panel-input" value={x2} onChange={(e) => setX2(e.target.value)} disabled={isReadOnly} />
+                <input
+                  type="number"
+                  className="panel-input"
+                  value={x2}
+                  onChange={(e) => setX2(e.target.value)}
+                  disabled={isReadOnly}
+                />
               </label>
               <label className="field-label half">
                 End Y (mm)
-                <input type="number" className="panel-input" value={y2} onChange={(e) => setY2(e.target.value)} disabled={isReadOnly} />
+                <input
+                  type="number"
+                  className="panel-input"
+                  value={y2}
+                  onChange={(e) => setY2(e.target.value)}
+                  disabled={isReadOnly}
+                />
               </label>
             </div>
             <div className="field-row">
               <label className="field-label half">
                 Elevation Bottom (mm)
-                <input type="number" className="panel-input" value={zBottom} onChange={(e) => setZBottom(e.target.value)} disabled={isReadOnly} />
+                <input
+                  type="number"
+                  className="panel-input"
+                  value={zBottom}
+                  onChange={(e) => setZBottom(e.target.value)}
+                  disabled={isReadOnly}
+                />
               </label>
               <label className="field-label half">
                 Elevation Top (mm)
-                <input type="number" className="panel-input" value={zTop} onChange={(e) => setZTop(e.target.value)} disabled={isReadOnly} />
+                <input
+                  type="number"
+                  className="panel-input"
+                  value={zTop}
+                  onChange={(e) => setZTop(e.target.value)}
+                  disabled={isReadOnly}
+                />
               </label>
             </div>
             <label className="field-label">
               Depth (mm)
-              <input type="number" className="panel-input" value={depth} onChange={(e) => setDepth(e.target.value)} disabled={isReadOnly} />
+              <input
+                type="number"
+                className="panel-input"
+                value={depth}
+                onChange={(e) => setDepth(e.target.value)}
+                disabled={isReadOnly}
+              />
             </label>
-            <button
-              className="panel-btn primary"
-              onClick={createSection}
-              disabled={isReadOnly}
-            >
+            <button className="panel-btn primary" onClick={createSection} disabled={isReadOnly}>
               Create Section View
             </button>
           </>
@@ -196,22 +247,22 @@ export function SectionViewPanel(): React.ReactElement {
                 disabled={isReadOnly}
               >
                 {ELEVATION_DIRS.map((d) => (
-                  <option key={d.value} value={d.value}>{d.label}</option>
+                  <option key={d.value} value={d.value}>
+                    {d.label}
+                  </option>
                 ))}
               </select>
             </label>
-            <button
-              className="panel-btn primary"
-              onClick={createElevation}
-              disabled={isReadOnly}
-            >
+            <button className="panel-btn primary" onClick={createElevation} disabled={isReadOnly}>
               Create Elevation View
             </button>
           </>
         )}
 
         {status && (
-          <p className="panel-status" role="status">{status}</p>
+          <p className="panel-status" role="status">
+            {status}
+          </p>
         )}
 
         {existingSections.length > 0 && (
@@ -220,7 +271,9 @@ export function SectionViewPanel(): React.ReactElement {
             <ul className="view-list">
               {existingSections.map((v) => (
                 <li key={v.id} className="view-item">
-                  <span className="view-type-badge">{v.type === 'section' ? 'S' : v.elevationDir ?? 'E'}</span>
+                  <span className="view-type-badge">
+                    {v.type === 'section' ? 'S' : (v.elevationDir ?? 'E')}
+                  </span>
                   <span className="view-name">{v.name}</span>
                 </li>
               ))}

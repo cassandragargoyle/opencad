@@ -31,7 +31,7 @@ const METHOD_PERMISSION: Record<string, SandboxPermission | null> = {
   'ui.showNotification': 'ui',
   'ui.openPanel': 'ui',
   'ui.registerCommand': 'ui',
-  'log': null,
+  log: null,
 };
 
 function makeStubAPI(): PluginAPI {
@@ -78,7 +78,7 @@ describe('T-PLG-006: sandbox permission gate', () => {
       if (perm !== null) {
         expect(
           allowed.includes(perm),
-          `method '${method}' requires unknown permission '${perm}'`,
+          `method '${method}' requires unknown permission '${perm}'`
         ).toBe(true);
       }
     }

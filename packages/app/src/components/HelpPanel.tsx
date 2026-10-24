@@ -29,59 +29,62 @@ interface ShortcutEntry {
 
 const SHORTCUTS: ShortcutEntry[] = [
   // Tools
-  { keys: 'V',     description: 'Select tool',          category: 'Tools' },
-  { keys: 'W',     description: 'Wall tool',            category: 'Tools' },
-  { keys: 'D',     description: 'Door tool',            category: 'Tools' },
-  { keys: 'N',     description: 'Window tool',          category: 'Tools' },
-  { keys: 'S',     description: 'Slab tool',            category: 'Tools' },
-  { keys: 'O',     description: 'Roof tool',            category: 'Tools' },
-  { keys: 'K',     description: 'Column tool',          category: 'Tools' },
-  { keys: 'B',     description: 'Beam tool',            category: 'Tools' },
-  { keys: 'T',     description: 'Stair tool',           category: 'Tools' },
-  { keys: 'G',     description: 'Railing tool',         category: 'Tools' },
-  { keys: 'L',     description: 'Line tool',            category: 'Tools' },
-  { keys: 'R',     description: 'Rectangle tool',       category: 'Tools' },
-  { keys: 'C',     description: 'Circle tool',          category: 'Tools' },
-  { keys: 'A',     description: 'Arc tool',             category: 'Tools' },
-  { keys: 'P',     description: 'Polygon tool',         category: 'Tools' },
-  { keys: 'M',     description: 'Dimension tool',       category: 'Tools' },
+  { keys: 'V', description: 'Select tool', category: 'Tools' },
+  { keys: 'W', description: 'Wall tool', category: 'Tools' },
+  { keys: 'D', description: 'Door tool', category: 'Tools' },
+  { keys: 'N', description: 'Window tool', category: 'Tools' },
+  { keys: 'S', description: 'Slab tool', category: 'Tools' },
+  { keys: 'O', description: 'Roof tool', category: 'Tools' },
+  { keys: 'K', description: 'Column tool', category: 'Tools' },
+  { keys: 'B', description: 'Beam tool', category: 'Tools' },
+  { keys: 'T', description: 'Stair tool', category: 'Tools' },
+  { keys: 'G', description: 'Railing tool', category: 'Tools' },
+  { keys: 'L', description: 'Line tool', category: 'Tools' },
+  { keys: 'R', description: 'Rectangle tool', category: 'Tools' },
+  { keys: 'C', description: 'Circle tool', category: 'Tools' },
+  { keys: 'A', description: 'Arc tool', category: 'Tools' },
+  { keys: 'P', description: 'Polygon tool', category: 'Tools' },
+  { keys: 'M', description: 'Dimension tool', category: 'Tools' },
 
   // View
-  { keys: '0',     description: 'Zoom to fit (3D)',                  category: 'View' },
-  { keys: '1',     description: 'Top view (3D)',                     category: 'View' },
-  { keys: '2',     description: 'Front elevation (3D)',              category: 'View' },
-  { keys: '3',     description: 'Right elevation (3D)',              category: 'View' },
-  { keys: '4',     description: 'Left elevation (3D)',               category: 'View' },
-  { keys: 'Scroll',description: 'Zoom (cursor-anchored)',            category: 'View' },
-  { keys: 'Middle-drag', description: 'Pan the view',                category: 'View' },
-  { keys: '\\',    description: 'Toggle focus mode (hide chrome)',   category: 'View' },
+  { keys: '0', description: 'Zoom to fit (3D)', category: 'View' },
+  { keys: '1', description: 'Top view (3D)', category: 'View' },
+  { keys: '2', description: 'Front elevation (3D)', category: 'View' },
+  { keys: '3', description: 'Right elevation (3D)', category: 'View' },
+  { keys: '4', description: 'Left elevation (3D)', category: 'View' },
+  { keys: 'Scroll', description: 'Zoom (cursor-anchored)', category: 'View' },
+  { keys: 'Middle-drag', description: 'Pan the view', category: 'View' },
+  { keys: '\\', description: 'Toggle focus mode (hide chrome)', category: 'View' },
 
   // Edit
-  { keys: 'Ctrl+Z',         description: 'Undo',                     category: 'Edit' },
-  { keys: 'Ctrl+Shift+Z',   description: 'Redo',                     category: 'Edit' },
-  { keys: 'Ctrl+S',         description: 'Save snapshot',            category: 'Edit' },
-  { keys: 'Ctrl+A',         description: 'Select all',               category: 'Edit' },
-  { keys: 'Ctrl+D',         description: 'Deselect all',             category: 'Edit' },
-  { keys: 'Ctrl+C',         description: 'Copy selection',           category: 'Edit' },
-  { keys: 'Ctrl+V',         description: 'Paste',                    category: 'Edit' },
-  { keys: 'Delete',         description: 'Delete selection',         category: 'Edit' },
-  { keys: 'Esc',            description: 'Cancel current operation', category: 'Edit' },
-  { keys: 'Enter',          description: 'Commit numeric values (coord box)', category: 'Edit' },
-  { keys: 'Tab',            description: 'Cycle coord-box fields',   category: 'Edit' },
-  { keys: 'Shift (drag)',   description: 'Lock dominant axis',       category: 'Edit' },
-  { keys: 'Alt+click',      description: 'Pick up parameters (eyedropper)', category: 'Edit' },
-  { keys: 'Alt+Shift+click',description: 'Inject held parameters',   category: 'Edit' },
+  { keys: 'Ctrl+Z', description: 'Undo', category: 'Edit' },
+  { keys: 'Ctrl+Shift+Z', description: 'Redo', category: 'Edit' },
+  { keys: 'Ctrl+S', description: 'Save snapshot', category: 'Edit' },
+  { keys: 'Ctrl+A', description: 'Select all', category: 'Edit' },
+  { keys: 'Ctrl+D', description: 'Deselect all', category: 'Edit' },
+  { keys: 'Ctrl+C', description: 'Copy selection', category: 'Edit' },
+  { keys: 'Ctrl+V', description: 'Paste', category: 'Edit' },
+  { keys: 'Delete', description: 'Delete selection', category: 'Edit' },
+  { keys: 'Esc', description: 'Cancel current operation', category: 'Edit' },
+  { keys: 'Enter', description: 'Commit numeric values (coord box)', category: 'Edit' },
+  { keys: 'Tab', description: 'Cycle coord-box fields', category: 'Edit' },
+  { keys: 'Shift (drag)', description: 'Lock dominant axis', category: 'Edit' },
+  { keys: 'Alt+click', description: 'Pick up parameters (eyedropper)', category: 'Edit' },
+  { keys: 'Alt+Shift+click', description: 'Inject held parameters', category: 'Edit' },
 
   // Navigation
-  { keys: 'Ctrl+[',  description: 'Toggle left panel',  category: 'Navigation' },
-  { keys: 'Ctrl+]',  description: 'Toggle right panel', category: 'Navigation' },
-  { keys: 'Ctrl+K',  description: 'Open command palette', category: 'Navigation' },
+  { keys: 'Ctrl+[', description: 'Toggle left panel', category: 'Navigation' },
+  { keys: 'Ctrl+]', description: 'Toggle right panel', category: 'Navigation' },
+  { keys: 'Ctrl+K', description: 'Open command palette', category: 'Navigation' },
 
   // Misc
-  { keys: '?',  description: 'Open this Help panel',    category: 'Misc' },
+  { keys: '?', description: 'Open this Help panel', category: 'Misc' },
 ];
 
-interface HowTo { title: string; steps: string[]; }
+interface HowTo {
+  title: string;
+  steps: string[];
+}
 const HOW_TOS: HowTo[] = [
   {
     title: 'Draw your first wall',
@@ -135,17 +138,47 @@ const HOW_TOS: HowTo[] = [
   },
 ];
 
-interface Tip { title: string; body: string; }
+interface Tip {
+  title: string;
+  body: string;
+}
 const TIPS: Tip[] = [
-  { title: 'Numeric drawing', body: 'While any drag tool is active, just start typing a length — the coord box appears automatically. Tab cycles fields, Enter commits.' },
-  { title: 'Magic wand', body: 'Click inside a wall-bounded room with the Slab/Zone tool active — the boundary auto-traces.' },
-  { title: 'Inference snaps', body: 'Move slowly near an existing endpoint and a dotted guide appears. Cursor snaps to its X or Y for clean alignment.' },
-  { title: 'Mirror & array', body: 'Got something good? Use Mirror, Rotate Array, or Linear Array (right-click the selection) to multiply with one click.' },
-  { title: 'Pick up & inject', body: 'Alt+click an element to copy its parameters; Alt+Shift+click another to paste.' },
-  { title: 'Composite walls', body: 'Each wall is a multi-layer composite — toggle layers in 3D to see the structure or in 2D to see the hatch.' },
-  { title: 'Solo a selection', body: 'Select a few elements + the Solo button to render only them. Reset brings the rest back.' },
-  { title: 'Compliance violations', body: 'The Compliance panel auto-runs every rule. Click a violation to fly to the offending element.' },
-  { title: 'Story filters', body: 'Plans default to current-level only. Switch the dropdown to See All to view every story at once.' },
+  {
+    title: 'Numeric drawing',
+    body: 'While any drag tool is active, just start typing a length — the coord box appears automatically. Tab cycles fields, Enter commits.',
+  },
+  {
+    title: 'Magic wand',
+    body: 'Click inside a wall-bounded room with the Slab/Zone tool active — the boundary auto-traces.',
+  },
+  {
+    title: 'Inference snaps',
+    body: 'Move slowly near an existing endpoint and a dotted guide appears. Cursor snaps to its X or Y for clean alignment.',
+  },
+  {
+    title: 'Mirror & array',
+    body: 'Got something good? Use Mirror, Rotate Array, or Linear Array (right-click the selection) to multiply with one click.',
+  },
+  {
+    title: 'Pick up & inject',
+    body: 'Alt+click an element to copy its parameters; Alt+Shift+click another to paste.',
+  },
+  {
+    title: 'Composite walls',
+    body: 'Each wall is a multi-layer composite — toggle layers in 3D to see the structure or in 2D to see the hatch.',
+  },
+  {
+    title: 'Solo a selection',
+    body: 'Select a few elements + the Solo button to render only them. Reset brings the rest back.',
+  },
+  {
+    title: 'Compliance violations',
+    body: 'The Compliance panel auto-runs every rule. Click a violation to fly to the offending element.',
+  },
+  {
+    title: 'Story filters',
+    body: 'Plans default to current-level only. Switch the dropdown to See All to view every story at once.',
+  },
 ];
 
 type Tab = 'shortcuts' | 'howto' | 'tips';
@@ -158,7 +191,9 @@ export function HelpPanel({ open, onClose, onStartTour }: HelpPanelProps) {
   const filteredShortcuts = useMemo(() => {
     if (!query.trim()) return SHORTCUTS;
     const q = query.toLowerCase();
-    return SHORTCUTS.filter((s) => s.keys.toLowerCase().includes(q) || s.description.toLowerCase().includes(q));
+    return SHORTCUTS.filter(
+      (s) => s.keys.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
+    );
   }, [query]);
 
   const grouped = useMemo(() => {
@@ -169,20 +204,47 @@ export function HelpPanel({ open, onClose, onStartTour }: HelpPanelProps) {
 
   if (!open) return null;
   return (
-    <div className="help-overlay" role="dialog" aria-label={t('help.title', { defaultValue: 'Help' })} onClick={onClose}>
+    <div
+      className="help-overlay"
+      role="dialog"
+      aria-label={t('help.title', { defaultValue: 'Help' })}
+      onClick={onClose}
+    >
       <div className="help-panel" onClick={(e) => e.stopPropagation()}>
         <header className="help-header">
           <h2>{t('help.title', { defaultValue: 'Help' })}</h2>
-          <button className="help-close" onClick={onClose} aria-label={t('help.close', { defaultValue: 'Close help' })}><X size={16} /></button>
+          <button
+            className="help-close"
+            onClick={onClose}
+            aria-label={t('help.close', { defaultValue: 'Close help' })}
+          >
+            <X size={16} />
+          </button>
         </header>
         <nav className="help-tabs">
-          <button className={`help-tab ${tab === 'shortcuts' ? 'active' : ''}`} onClick={() => setTab('shortcuts')}>{t('help.tabs.shortcuts', { defaultValue: 'Shortcuts' })}</button>
-          <button className={`help-tab ${tab === 'howto' ? 'active' : ''}`} onClick={() => setTab('howto')}>{t('help.tabs.howTo', { defaultValue: 'How To' })}</button>
-          <button className={`help-tab ${tab === 'tips' ? 'active' : ''}`} onClick={() => setTab('tips')}>{t('help.tabs.tips', { defaultValue: 'Tips' })}</button>
+          <button
+            className={`help-tab ${tab === 'shortcuts' ? 'active' : ''}`}
+            onClick={() => setTab('shortcuts')}
+          >
+            {t('help.tabs.shortcuts', { defaultValue: 'Shortcuts' })}
+          </button>
+          <button
+            className={`help-tab ${tab === 'howto' ? 'active' : ''}`}
+            onClick={() => setTab('howto')}
+          >
+            {t('help.tabs.howTo', { defaultValue: 'How To' })}
+          </button>
+          <button
+            className={`help-tab ${tab === 'tips' ? 'active' : ''}`}
+            onClick={() => setTab('tips')}
+          >
+            {t('help.tabs.tips', { defaultValue: 'Tips' })}
+          </button>
         </nav>
         <div className="help-tour-cta">
           <button className="help-tour-btn" onClick={onStartTour}>
-            <Sparkles size={14} /> {t('help.takeGuidedTour', { defaultValue: 'Take the guided tour' })}
+            <Sparkles size={14} />{' '}
+            {t('help.takeGuidedTour', { defaultValue: 'Take the guided tour' })}
           </button>
         </div>
         <div className="help-body">
@@ -212,7 +274,12 @@ export function HelpPanel({ open, onClose, onStartTour }: HelpPanelProps) {
                 </section>
               ))}
               {filteredShortcuts.length === 0 && (
-                <p className="help-empty">{t('help.noShortcutsMatch', { query, defaultValue: 'No shortcuts match “{{query}}”.' })}</p>
+                <p className="help-empty">
+                  {t('help.noShortcutsMatch', {
+                    query,
+                    defaultValue: 'No shortcuts match “{{query}}”.',
+                  })}
+                </p>
               )}
             </>
           )}
@@ -222,7 +289,9 @@ export function HelpPanel({ open, onClose, onStartTour }: HelpPanelProps) {
                 <section key={h.title} className="help-section">
                   <h3>{h.title}</h3>
                   <ol className="help-steps">
-                    {h.steps.map((step, i) => <li key={i}>{step}</li>)}
+                    {h.steps.map((step, i) => (
+                      <li key={i}>{step}</li>
+                    ))}
                   </ol>
                 </section>
               ))}
@@ -240,7 +309,10 @@ export function HelpPanel({ open, onClose, onStartTour }: HelpPanelProps) {
           )}
         </div>
         <footer className="help-footer">
-          {t('help.needMore', { defaultValue: 'Need more?' })} <a href="https://github.com/CariHQ/opencad/issues/new" target="_blank" rel="noreferrer">{t('help.openIssue', { defaultValue: 'Open an issue' })}</a>
+          {t('help.needMore', { defaultValue: 'Need more?' })}{' '}
+          <a href="https://github.com/CariHQ/opencad/issues/new" target="_blank" rel="noreferrer">
+            {t('help.openIssue', { defaultValue: 'Open an issue' })}
+          </a>
         </footer>
       </div>
     </div>

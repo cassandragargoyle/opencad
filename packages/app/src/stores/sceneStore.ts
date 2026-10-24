@@ -35,14 +35,18 @@ function loadHiddenCategories(): Set<ElementType> {
   try {
     const raw = localStorage.getItem(HIDDEN_CATEGORIES_KEY);
     if (raw) return new Set(JSON.parse(raw) as ElementType[]);
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return new Set();
 }
 
 function saveHiddenCategories(cats: Set<ElementType>): void {
   try {
     localStorage.setItem(HIDDEN_CATEGORIES_KEY, JSON.stringify([...cats]));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 interface SceneState {
@@ -131,7 +135,7 @@ export function isElementVisible(
   elementType: string,
   layerVisible: boolean,
   temporaryHide: TemporaryHide,
-  hiddenCategories: Set<ElementType>,
+  hiddenCategories: Set<ElementType>
 ): boolean {
   if (!elementVisible) return false;
   if (!layerVisible) return false;
@@ -145,13 +149,16 @@ export function isElementVisible(
  * Convert a sun elevation + azimuth (degrees) into a world-space light
  * direction vector. +Y is up, -Z is north.
  */
-export function sunDirectionToVector(sun: SunDirection, distance = 10000): { x: number; y: number; z: number } {
+export function sunDirectionToVector(
+  sun: SunDirection,
+  distance = 10000
+): { x: number; y: number; z: number } {
   const elRad = (sun.elevationDeg * Math.PI) / 180;
   const azRad = (sun.azimuthDeg * Math.PI) / 180;
   const cosEl = Math.cos(elRad);
   return {
-    x:  Math.sin(azRad) * cosEl * distance,
-    y:  Math.sin(elRad) * distance,
+    x: Math.sin(azRad) * cosEl * distance,
+    y: Math.sin(elRad) * distance,
     z: -Math.cos(azRad) * cosEl * distance,
   };
 }

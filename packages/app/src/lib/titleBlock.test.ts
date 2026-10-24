@@ -7,19 +7,19 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  renderTitleBlock, DEFAULT_TITLE_BLOCK_SVG,
-  ISO_SHEET_SIZES, ANSI_SHEET_SIZES,
+  renderTitleBlock,
+  DEFAULT_TITLE_BLOCK_SVG,
+  ISO_SHEET_SIZES,
+  ANSI_SHEET_SIZES,
 } from './titleBlock';
 
 describe('T-DOC-008: titleBlock', () => {
   it('T-DOC-008-001: `{{project}}` resolves from ctx', () => {
-    expect(renderTitleBlock('Project: {{project}}', { project: 'Villa' }))
-      .toBe('Project: Villa');
+    expect(renderTitleBlock('Project: {{project}}', { project: 'Villa' })).toBe('Project: Villa');
   });
 
   it('T-DOC-008-002: missing token renders empty, not literal', () => {
-    expect(renderTitleBlock('Before: {{nonexistent}} :After', {}))
-      .toBe('Before:  :After');
+    expect(renderTitleBlock('Before: {{nonexistent}} :After', {})).toBe('Before:  :After');
   });
 
   it('T-DOC-008-003: `{{date}}` autotext resolves from ctx.date when present', () => {
@@ -32,20 +32,25 @@ describe('T-DOC-008: titleBlock', () => {
   });
 
   it('T-DOC-008-003c: `{{sheet-count}}` resolves from ctx.sheetCount', () => {
-    expect(renderTitleBlock('{{sheet-count}} sheets', { sheetCount: 12 }))
-      .toBe('12 sheets');
+    expect(renderTitleBlock('{{sheet-count}} sheets', { sheetCount: 12 })).toBe('12 sheets');
   });
 
   it('extra tokens resolve via ctx.extra', () => {
-    expect(renderTitleBlock('Job: {{jobcode}}', { extra: { jobcode: 'CA-2026-044' } }))
-      .toBe('Job: CA-2026-044');
+    expect(renderTitleBlock('Job: {{jobcode}}', { extra: { jobcode: 'CA-2026-044' } })).toBe(
+      'Job: CA-2026-044'
+    );
   });
 
   it('DEFAULT_TITLE_BLOCK_SVG substitutes all core fields', () => {
     const out = renderTitleBlock(DEFAULT_TITLE_BLOCK_SVG, {
-      project: 'Villa', client: 'Owner', sheetTitle: 'Floor Plan',
-      sheetNumber: 'A-101', scale: '1:100', date: '2026-04-20',
-      drawnBy: 'KG', revision: 'A',
+      project: 'Villa',
+      client: 'Owner',
+      sheetTitle: 'Floor Plan',
+      sheetNumber: 'A-101',
+      scale: '1:100',
+      date: '2026-04-20',
+      drawnBy: 'KG',
+      revision: 'A',
     });
     expect(out).toContain('Villa');
     expect(out).toContain('Owner');

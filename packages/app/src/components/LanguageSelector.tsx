@@ -17,7 +17,9 @@ export function LanguageSelector(): React.ReactElement {
   useEffect(() => {
     const onChange = (lc: string): void => setCurrent(lc);
     i18n.on('languageChanged', onChange);
-    return () => { i18n.off('languageChanged', onChange); };
+    return () => {
+      i18n.off('languageChanged', onChange);
+    };
   }, [i18n]);
 
   const handle = async (e: React.ChangeEvent<HTMLSelectElement>): Promise<void> => {
@@ -29,7 +31,9 @@ export function LanguageSelector(): React.ReactElement {
       className="language-selector"
       aria-label={t('language.aria', { defaultValue: 'Language' })}
       value={current}
-      onChange={(e) => { void handle(e); }}
+      onChange={(e) => {
+        void handle(e);
+      }}
     >
       {SUPPORTED_LOCALES.map((l) => (
         <option key={l.code} value={l.code}>

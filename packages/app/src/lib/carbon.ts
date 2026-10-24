@@ -81,7 +81,7 @@ export const EC3_EPDS: Record<string, EPDRecord> = {
     name: 'Reinforcing Steel',
     category: 'Steel',
     declaredUnit: 'kg',
-    gwp: { A1: 0.75, A2: 0.01, A3: 0.30, A4: 0.02, A5: 0.01 },
+    gwp: { A1: 0.75, A2: 0.01, A3: 0.3, A4: 0.02, A5: 0.01 },
     massPerUnit: 1,
     source: 'industry-average',
   },
@@ -172,7 +172,7 @@ export interface ElementCarbonResult {
  */
 export function calcMaterialCarbon(
   q: MaterialQuantity,
-  epds: Record<string, EPDRecord> = EC3_EPDS,
+  epds: Record<string, EPDRecord> = EC3_EPDS
 ): ElementCarbonResult {
   const epd = epds[q.epdId];
   if (!epd) {
@@ -227,14 +227,17 @@ export interface BuildingCarbonSummary {
 export function summariseBuilding(
   quantities: MaterialQuantity[],
   grossFloorAreaM2?: number,
-  epds: Record<string, EPDRecord> = EC3_EPDS,
+  epds: Record<string, EPDRecord> = EC3_EPDS
 ): BuildingCarbonSummary {
   const elements = quantities.map((q) => calcMaterialCarbon(q, epds));
 
-  const byStage = LIFECYCLE_STAGES.reduce((acc, stage) => {
-    acc[stage] = elements.reduce((s, el) => s + el.stageEmissions[stage], 0);
-    return acc;
-  }, {} as Record<LifecycleStage, number>);
+  const byStage = LIFECYCLE_STAGES.reduce(
+    (acc, stage) => {
+      acc[stage] = elements.reduce((s, el) => s + el.stageEmissions[stage], 0);
+      return acc;
+    },
+    {} as Record<LifecycleStage, number>
+  );
 
   const totalA1A5 = Object.values(byStage).reduce((s, v) => s + v, 0);
 
@@ -245,9 +248,8 @@ export function summariseBuilding(
     byCategory[cat] = (byCategory[cat] ?? 0) + el.totalA1A5;
   }
 
-  const intensityPerM2 = grossFloorAreaM2 && grossFloorAreaM2 > 0
-    ? totalA1A5 / grossFloorAreaM2
-    : undefined;
+  const intensityPerM2 =
+    grossFloorAreaM2 && grossFloorAreaM2 > 0 ? totalA1A5 / grossFloorAreaM2 : undefined;
 
   return { totalA1A5_kgCO2e: totalA1A5, byStage, byCategory, intensityPerM2, elements };
 }
@@ -258,23 +260,27 @@ export function summariseBuilding(
  * RIBA 2030 Climate Challenge benchmarks (kgCO₂e/m² GFA) by building type.
  */
 export const RIBA_BENCHMARKS: Record<string, { target2030: number; target2035: number }> = {
-  'office':       { target2030: 350, target2035: 300 },
-  'residential':  { target2030: 300, target2035: 250 },
-  'education':    { target2030: 350, target2035: 300 },
-  'healthcare':   { target2030: 400, target2035: 350 },
-  'retail':       { target2030: 400, target2035: 350 },
-  'industrial':   { target2030: 450, target2035: 400 },
+  office: { target2030: 350, target2035: 300 },
+  residential: { target2030: 300, target2035: 250 },
+  education: { target2030: 350, target2035: 300 },
+  healthcare: { target2030: 400, target2035: 350 },
+  retail: { target2030: 400, target2035: 350 },
+  industrial: { target2030: 450, target2035: 400 },
 };
 
 export function benchmarkCarbon(
   intensityKgCO2ePerM2: number,
-  buildingType: string,
-): { meetsTarget2030: boolean; meetsTarget2035: boolean; benchmark: typeof RIBA_BENCHMARKS[string] | null } {
+  buildingType: string
+): {
+  meetsTarget2030: boolean;
+  meetsTarget2035: boolean;
+  benchmark: (typeof RIBA_BENCHMARKS)[string] | null;
+} {
   const benchmark = RIBA_BENCHMARKS[buildingType] ?? null;
   if (!benchmark) return { meetsTarget2030: false, meetsTarget2035: false, benchmark: null };
   return {
-    meetsTarget2030:  intensityKgCO2ePerM2 <= benchmark.target2030,
-    meetsTarget2035:  intensityKgCO2ePerM2 <= benchmark.target2035,
+    meetsTarget2030: intensityKgCO2ePerM2 <= benchmark.target2030,
+    meetsTarget2035: intensityKgCO2ePerM2 <= benchmark.target2035,
     benchmark,
   };
 }

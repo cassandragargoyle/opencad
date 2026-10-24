@@ -9,6 +9,7 @@ When debugging a stair clash, you need to hide everything except stairs, slabs, 
 ## Scope
 
 ### In scope
+
 - 3D filter UI overlay: checkboxes per element type, per material, per property.
 - Saved filter presets ("Structural", "MEP", "Envelope").
 - Solo / hide toolbar: select N elements → `Solo` shows only them; `Hide` hides them.
@@ -16,6 +17,7 @@ When debugging a stair clash, you need to hide everything except stairs, slabs, 
 - Does not persist (filter is view-state, not document state), but saved presets live on the user account.
 
 ### Out of scope
+
 - Query-language filters ("all walls with Height > 3000").
 - Boolean-composited filter predicates.
 

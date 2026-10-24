@@ -64,7 +64,12 @@ function makeStore(overrides = {}) {
   return {
     document: {
       id: 'doc1',
-      organization: { layers: { l1: { id: 'l1', name: 'Default', color: '#888', visible: true, locked: false, order: 0 } }, levels: {} },
+      organization: {
+        layers: {
+          l1: { id: 'l1', name: 'Default', color: '#888', visible: true, locked: false, order: 0 },
+        },
+        levels: {},
+      },
       content: { elements: {} },
       library: {},
     },
@@ -76,8 +81,8 @@ function makeStore(overrides = {}) {
 
 describe('T-SITE-02: LandscapeToolPanel', () => {
   beforeEach(() => {
-    vi.mocked(useDocumentStore).mockImplementation((selector: (s: ReturnType<typeof makeStore>) => unknown) =>
-      selector(makeStore())
+    vi.mocked(useDocumentStore).mockImplementation(
+      (selector: (s: ReturnType<typeof makeStore>) => unknown) => selector(makeStore())
     );
     global.fetch = vi.fn().mockResolvedValue({
       json: () => Promise.resolve(MOCK_MANIFEST),
@@ -114,7 +119,9 @@ describe('T-SITE-02: LandscapeToolPanel', () => {
     render(<LandscapeToolPanel />);
     await waitFor(() => screen.getAllByRole('option'));
     fireEvent.click(screen.getByRole('tab', { name: /rocks/i }));
-    await waitFor(() => expect(screen.getByRole('option', { name: /granite/i })).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByRole('option', { name: /granite/i })).toBeInTheDocument()
+    );
   });
 
   it('clicking a thumbnail arms the place tool', async () => {
@@ -170,8 +177,9 @@ describe('T-SITE-02: LandscapeToolPanel', () => {
   });
 
   it('shows empty state when no document', () => {
-    vi.mocked(useDocumentStore).mockImplementation((selector: (s: ReturnType<typeof makeStore>) => unknown) =>
-      selector(makeStore({ document: null }))
+    vi.mocked(useDocumentStore).mockImplementation(
+      (selector: (s: ReturnType<typeof makeStore>) => unknown) =>
+        selector(makeStore({ document: null }))
     );
     render(<LandscapeToolPanel />);
     expect(screen.queryByRole('tablist')).not.toBeInTheDocument();

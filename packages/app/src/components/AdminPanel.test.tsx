@@ -13,9 +13,9 @@ import { AdminPanel, type AdminMember } from './AdminPanel';
 import { getCanForRole } from '../hooks/useRole';
 
 const SAMPLE_MEMBERS: AdminMember[] = [
-  { id: 'u1', name: 'Alice Mercer',  role: 'architect'  },
-  { id: 'u2', name: 'Bob Tanaka',    role: 'structural' },
-  { id: 'u3', name: 'Carol Osei',    role: 'owner'      },
+  { id: 'u1', name: 'Alice Mercer', role: 'architect' },
+  { id: 'u2', name: 'Bob Tanaka', role: 'structural' },
+  { id: 'u3', name: 'Carol Osei', role: 'owner' },
 ];
 
 describe('T-ROLE-007: AdminPanel', () => {
@@ -84,13 +84,7 @@ describe('T-ROLE-007: AdminPanel', () => {
    * T-ROLE-007-006: Admin role hides itself from the list (can't demote yourself)
    */
   it('T-ROLE-007-006: admin hides themselves from the list', () => {
-    render(
-      <AdminPanel
-        can={getCanForRole('admin')}
-        members={SAMPLE_MEMBERS}
-        currentUserId="u1"
-      />
-    );
+    render(<AdminPanel can={getCanForRole('admin')} members={SAMPLE_MEMBERS} currentUserId="u1" />);
     // u1 is the current user — their row should not appear
     expect(screen.queryByTestId('member-row-u1')).toBeNull();
     // Other members still appear

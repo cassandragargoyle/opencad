@@ -60,7 +60,8 @@ export function parseLength(input: string | null | undefined): number | null {
   if (s === '') return null;
 
   // Pattern: `15'-3"` or `15'3"` → feet-and-inches
-  const feetInches = /^(-?\d+(?:\.\d+)?)\s*'\s*-?\s*(\d+(?:\s+\d+\s*\/\s*\d+|\.\d+)?(?:\s*\/\s*\d+)?)\s*"?$/.exec(s);
+  const feetInches =
+    /^(-?\d+(?:\.\d+)?)\s*'\s*-?\s*(\d+(?:\s+\d+\s*\/\s*\d+|\.\d+)?(?:\s*\/\s*\d+)?)\s*"?$/.exec(s);
   if (feetInches) {
     const feet = parseFloat(feetInches[1]!);
     const inchesPart = parseNumericFragment(feetInches[2]!);
@@ -88,12 +89,18 @@ export function parseLength(input: string | null | undefined): number | null {
     const n = parseFloat(unitMatch[1]!);
     const u = unitMatch[2]!;
     switch (u) {
-      case 'mm': return n;
-      case 'cm': return n * MM_PER_CM;
-      case 'm':  return n * MM_PER_METRE;
-      case 'km': return n * MM_PER_METRE * 1000;
-      case 'ft': return n * MM_PER_FOOT;
-      case 'in': return n * MM_PER_INCH;
+      case 'mm':
+        return n;
+      case 'cm':
+        return n * MM_PER_CM;
+      case 'm':
+        return n * MM_PER_METRE;
+      case 'km':
+        return n * MM_PER_METRE * 1000;
+      case 'ft':
+        return n * MM_PER_FOOT;
+      case 'in':
+        return n * MM_PER_INCH;
     }
   }
 

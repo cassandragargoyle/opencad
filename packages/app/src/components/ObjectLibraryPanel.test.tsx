@@ -11,7 +11,19 @@ const makeStore = (overrides = {}) => ({
   document: {
     id: 'doc-1',
     content: { elements: {}, spaces: {} },
-    organization: { layers: { 'layer-1': { id: 'layer-1', name: 'Layer 1', color: '#000', visible: true, locked: false, order: 0 } }, levels: {} },
+    organization: {
+      layers: {
+        'layer-1': {
+          id: 'layer-1',
+          name: 'Layer 1',
+          color: '#000',
+          visible: true,
+          locked: false,
+          order: 0,
+        },
+      },
+      levels: {},
+    },
     presentation: { views: {}, annotations: {} },
     library: { materials: {} },
     versions: [],

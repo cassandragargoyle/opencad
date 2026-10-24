@@ -16,8 +16,8 @@ import {
 describe('T-PERF-01: encodeChunk() / decodeChunk()', () => {
   it('round-trips a plain object', () => {
     const original = { id: 'el-1', type: 'wall', x: 100, y: 200 };
-    const bytes    = encodeChunk(original);
-    const decoded  = decodeChunk(bytes);
+    const bytes = encodeChunk(original);
+    const decoded = decodeChunk(bytes);
     expect(decoded).toEqual(original);
   });
 
@@ -28,15 +28,15 @@ describe('T-PERF-01: encodeChunk() / decodeChunk()', () => {
 
   it('encoded bytes start with correct version', () => {
     const bytes = encodeChunk({ x: 1 });
-    const view  = new DataView(bytes.buffer);
+    const view = new DataView(bytes.buffer);
     expect(view.getUint32(0, false)).toBe(OPFS_CHUNK_VERSION);
   });
 
   it('header is OPFS_HEADER_BYTES long', () => {
     expect(OPFS_HEADER_BYTES).toBe(8);
-    const bytes   = encodeChunk({});
-    const view    = new DataView(bytes.buffer);
-    const payLen  = view.getUint32(4, false);
+    const bytes = encodeChunk({});
+    const view = new DataView(bytes.buffer);
+    const payLen = view.getUint32(4, false);
     expect(bytes.byteLength).toBe(OPFS_HEADER_BYTES + payLen);
   });
 
@@ -46,7 +46,7 @@ describe('T-PERF-01: encodeChunk() / decodeChunk()', () => {
 
   it('throws on unsupported version', () => {
     const bytes = encodeChunk({ x: 1 });
-    const bad   = new Uint8Array(bytes);
+    const bad = new Uint8Array(bytes);
     new DataView(bad.buffer).setUint32(0, 99, false);
     expect(() => decodeChunk(bad)).toThrow(/version/i);
   });

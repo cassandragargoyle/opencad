@@ -53,7 +53,7 @@ export function latLonToLocalXY(
   lat: number,
   lon: number,
   centerLat: number,
-  centerLon: number,
+  centerLon: number
 ): { x: number; y: number } {
   const latRad = (centerLat * Math.PI) / 180;
   const dLat = ((lat - centerLat) * Math.PI) / 180;
@@ -93,7 +93,7 @@ interface OverpassResponse {
 export async function fetchOSMData(
   lat: number,
   lon: number,
-  radiusMeters: number,
+  radiusMeters: number
 ): Promise<OSMSiteData> {
   const query = `[out:json][timeout:10];
 (
@@ -109,9 +109,7 @@ out geom;`;
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Overpass API request failed: ${response.status} ${response.statusText}`,
-    );
+    throw new Error(`Overpass API request failed: ${response.status} ${response.statusText}`);
   }
 
   const data = (await response.json()) as OverpassResponse;
@@ -158,10 +156,7 @@ out geom;`;
  * @param siteData - Parsed OSM site data
  * @param layerId  - Target layer ID for all generated elements
  */
-export function osmToDocumentElements(
-  siteData: OSMSiteData,
-  layerId: string,
-): ElementSchema[] {
+export function osmToDocumentElements(siteData: OSMSiteData, layerId: string): ElementSchema[] {
   const elements: ElementSchema[] = [];
 
   for (const building of siteData.buildings) {
@@ -171,8 +166,7 @@ export function osmToDocumentElements(
     // Determine whether the footprint is already closed (first == last).
     const firstPt = pts[0];
     const lastPt = pts[pts.length - 1];
-    const isClosed =
-      firstPt.lat === lastPt.lat && firstPt.lon === lastPt.lon;
+    const isClosed = firstPt.lat === lastPt.lat && firstPt.lon === lastPt.lon;
 
     // Iterate over edges.  For an open polygon we add a closing edge; for a
     // closed polygon the last point IS the first point so skip the final duped vertex.
@@ -182,18 +176,8 @@ export function osmToDocumentElements(
       const fromPt = pts[i];
       const toPt = pts[(i + 1) % pts.length]; // wraps around to close polygon
 
-      const from = latLonToLocalXY(
-        fromPt.lat,
-        fromPt.lon,
-        siteData.centerLat,
-        siteData.centerLon,
-      );
-      const to = latLonToLocalXY(
-        toPt.lat,
-        toPt.lon,
-        siteData.centerLat,
-        siteData.centerLon,
-      );
+      const from = latLonToLocalXY(fromPt.lat, fromPt.lon, siteData.centerLat, siteData.centerLon);
+      const to = latLonToLocalXY(toPt.lat, toPt.lon, siteData.centerLat, siteData.centerLon);
 
       // Convert metres → millimetres
       const startX = from.x * 1000;

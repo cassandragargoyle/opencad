@@ -68,7 +68,7 @@ export interface FieldIssue {
  * Create a new FieldIssue with defaults.
  */
 export function createFieldIssue(
-  params: Pick<FieldIssue, 'title' | 'position3D' | 'createdBy'> & Partial<FieldIssue>,
+  params: Pick<FieldIssue, 'title' | 'position3D' | 'createdBy'> & Partial<FieldIssue>
 ): FieldIssue {
   const now = Date.now();
   return {
@@ -109,14 +109,14 @@ export type IssueFilter = {
  */
 export function filterIssues(issues: FieldIssue[], filter: IssueFilter): FieldIssue[] {
   return issues.filter((issue) => {
-    if (filter.status   && !filter.status.includes(issue.status))     return false;
+    if (filter.status && !filter.status.includes(issue.status)) return false;
     if (filter.priority && !filter.priority.includes(issue.priority)) return false;
     if (filter.assignedTo !== undefined && issue.assignedTo !== filter.assignedTo) return false;
-    if (filter.createdBy  !== undefined && issue.createdBy  !== filter.createdBy)  return false;
-    if (filter.hasBcfLink === true  && !issue.bcfTopicGuid) return false;
+    if (filter.createdBy !== undefined && issue.createdBy !== filter.createdBy) return false;
+    if (filter.hasBcfLink === true && !issue.bcfTopicGuid) return false;
     if (filter.hasBcfLink === false && !!issue.bcfTopicGuid) return false;
-    if (filter.hasPhoto   === true  && issue.photos.length === 0) return false;
-    if (filter.hasPhoto   === false && issue.photos.length > 0)   return false;
+    if (filter.hasPhoto === true && issue.photos.length === 0) return false;
+    if (filter.hasPhoto === false && issue.photos.length > 0) return false;
     if (filter.tags && filter.tags.length > 0) {
       const issueTagSet = new Set(issue.tags);
       if (!filter.tags.every((t) => issueTagSet.has(t))) return false;
@@ -128,11 +128,18 @@ export function filterIssues(issues: FieldIssue[], filter: IssueFilter): FieldIs
 export type IssueSortKey = 'createdAt' | 'updatedAt' | 'priority' | 'status' | 'title';
 
 const PRIORITY_ORDER: Record<FieldIssuePriority, number> = {
-  critical: 0, high: 1, medium: 2, low: 3,
+  critical: 0,
+  high: 1,
+  medium: 2,
+  low: 3,
 };
 
 const STATUS_ORDER: Record<FieldIssueStatus, number> = {
-  open: 0, 'in-progress': 1, resolved: 2, closed: 3, void: 4,
+  open: 0,
+  'in-progress': 1,
+  resolved: 2,
+  closed: 3,
+  void: 4,
 };
 
 /**
@@ -143,11 +150,21 @@ export function sortIssues(issues: FieldIssue[], key: IssueSortKey, desc = false
   const sorted = [...issues].sort((a, b) => {
     let cmp = 0;
     switch (key) {
-      case 'createdAt':  cmp = a.createdAt  - b.createdAt;  break;
-      case 'updatedAt':  cmp = a.updatedAt  - b.updatedAt;  break;
-      case 'priority':   cmp = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]; break;
-      case 'status':     cmp = STATUS_ORDER[a.status]     - STATUS_ORDER[b.status];     break;
-      case 'title':      cmp = a.title.localeCompare(b.title); break;
+      case 'createdAt':
+        cmp = a.createdAt - b.createdAt;
+        break;
+      case 'updatedAt':
+        cmp = a.updatedAt - b.updatedAt;
+        break;
+      case 'priority':
+        cmp = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+        break;
+      case 'status':
+        cmp = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+        break;
+      case 'title':
+        cmp = a.title.localeCompare(b.title);
+        break;
     }
     return desc ? -cmp : cmp;
   });
@@ -176,7 +193,7 @@ export function clusterIssues(issues: FieldIssue[], radiusMm: number): IssueClus
     if (assigned.has(issue.id)) continue;
 
     const nearby = issues.filter(
-      (other) => !assigned.has(other.id) && dist3D(issue.position3D, other.position3D) <= radiusMm,
+      (other) => !assigned.has(other.id) && dist3D(issue.position3D, other.position3D) <= radiusMm
     );
 
     const centroid = avgVec3(nearby.map((i) => i.position3D));
@@ -195,7 +212,11 @@ function dist3D(a: Vec3, b: Vec3): number {
 
 function avgVec3(pts: Vec3[]): Vec3 {
   if (pts.length === 0) return { x: 0, y: 0, z: 0 };
-  const sum = pts.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y, z: acc.z + p.z }), { x: 0, y: 0, z: 0 });
+  const sum = pts.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y, z: acc.z + p.z }), {
+    x: 0,
+    y: 0,
+    z: 0,
+  });
   return { x: sum.x / pts.length, y: sum.y / pts.length, z: sum.z / pts.length };
 }
 
@@ -222,14 +243,14 @@ export interface IssueStats {
  */
 export function issueStats(issues: FieldIssue[]): IssueStats {
   return {
-    total:      issues.length,
-    open:       issues.filter((i) => i.status === 'open').length,
+    total: issues.length,
+    open: issues.filter((i) => i.status === 'open').length,
     inProgress: issues.filter((i) => i.status === 'in-progress').length,
-    resolved:   issues.filter((i) => i.status === 'resolved').length,
-    closed:     issues.filter((i) => i.status === 'closed').length,
-    critical:   issues.filter((i) => i.priority === 'critical').length,
+    resolved: issues.filter((i) => i.status === 'resolved').length,
+    closed: issues.filter((i) => i.status === 'closed').length,
+    critical: issues.filter((i) => i.priority === 'critical').length,
     withPhotos: issues.filter((i) => i.photos.length > 0).length,
-    withBcf:    issues.filter((i) => !!i.bcfTopicGuid).length,
+    withBcf: issues.filter((i) => !!i.bcfTopicGuid).length,
   };
 }
 
@@ -257,15 +278,15 @@ export function assembleReportEntries(issues: FieldIssue[]): IssueReportEntry[] 
   const sorted = sortIssues(sortIssues(issues, 'createdAt'), 'priority');
   return sorted.map((issue, i) => ({
     issueNumber: i + 1,
-    title:       issue.title,
-    status:      issue.status,
-    priority:    issue.priority,
+    title: issue.title,
+    status: issue.status,
+    priority: issue.priority,
     description: issue.description,
-    assignedTo:  issue.assignedTo,
-    createdBy:   issue.createdBy,
-    createdAt:   new Date(issue.createdAt).toISOString().split('T')[0]!,
-    photoCount:  issue.photos.length,
-    gpsLabel:    issue.gps
+    assignedTo: issue.assignedTo,
+    createdBy: issue.createdBy,
+    createdAt: new Date(issue.createdAt).toISOString().split('T')[0]!,
+    photoCount: issue.photos.length,
+    gpsLabel: issue.gps
       ? `${issue.gps.latitude.toFixed(6)}, ${issue.gps.longitude.toFixed(6)}`
       : undefined,
     bcfTopicGuid: issue.bcfTopicGuid,

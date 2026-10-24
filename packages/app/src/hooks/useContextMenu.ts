@@ -4,7 +4,10 @@
  * Returns helpers to open / close the context menu and the current menu state.
  */
 import { useState, useCallback } from 'react';
-import { getContextMenuItems, type ContextMenuResult } from '../components/contextMenu/contextMenuDefs';
+import {
+  getContextMenuItems,
+  type ContextMenuResult,
+} from '../components/contextMenu/contextMenuDefs';
 import { useRole } from './useRole';
 
 export interface ContextMenuState {

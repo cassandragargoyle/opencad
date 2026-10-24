@@ -40,11 +40,7 @@ function evaluator(): Evaluator {
  * cloned from `a`. Input meshes are not mutated; their world transforms
  * are baked into the resulting geometry.
  */
-export function meshBoolean(
-  op: BooleanOp,
-  a: THREE.Mesh,
-  b: THREE.Mesh,
-): THREE.Mesh {
+export function meshBoolean(op: BooleanOp, a: THREE.Mesh, b: THREE.Mesh): THREE.Mesh {
   const brushA = new Brush(a.geometry, a.material as THREE.Material);
   brushA.applyMatrix4(a.matrixWorld);
   brushA.updateMatrixWorld();

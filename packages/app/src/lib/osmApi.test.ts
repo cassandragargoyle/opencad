@@ -122,8 +122,8 @@ describe('T-SITE-001: osmToDocumentElements', () => {
       id: 'way/999',
       buildingType: 'yes',
       footprint: [
-        { lat: 51.5, lon: -0.1 },         // center → (0, 0)
-        { lat: 51.5000899, lon: -0.1 },    // ~10 m north
+        { lat: 51.5, lon: -0.1 }, // center → (0, 0)
+        { lat: 51.5000899, lon: -0.1 }, // ~10 m north
       ],
       tags: {},
     };
@@ -150,8 +150,12 @@ describe('T-SITE-001: osmToDocumentElements', () => {
 // ── fetchOSMData ───────────────────────────────────────────────────────────
 
 describe('T-SITE-001: fetchOSMData', () => {
-  beforeEach(() => { vi.resetAllMocks(); });
-  afterEach(() => { vi.restoreAllMocks(); });
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
   const makeOverpassResponse = (elements: unknown[] = []) => ({
     elements,

@@ -5,8 +5,15 @@
  * returns a triangle-soup mesh ready for Three.js BufferGeometry.
  */
 
-export interface Vec3 { x: number; y: number; z: number }
-export interface Mesh { vertices: Vec3[]; triangles: number[] }
+export interface Vec3 {
+  x: number;
+  y: number;
+  z: number;
+}
+export interface Mesh {
+  vertices: Vec3[];
+  triangles: number[];
+}
 
 /** Helper to emit a quad as two triangles. */
 function quad(tris: number[], a: number, b: number, c: number, d: number): void {
@@ -17,16 +24,14 @@ function quad(tris: number[], a: number, b: number, c: number, d: number): void 
  * Revolve a profile around an axis (v1: Y axis only). The profile is
  * a list of points in (r, y) where r = radius from the axis.
  */
-export function revolveMesh(
-  profile: Array<{ r: number; y: number }>,
-  segments: number = 32,
-): Mesh {
+export function revolveMesh(profile: Array<{ r: number; y: number }>, segments: number = 32): Mesh {
   const verts: Vec3[] = [];
   const tris: number[] = [];
   const n = profile.length;
   for (let s = 0; s <= segments; s++) {
     const a = (s / segments) * Math.PI * 2;
-    const c = Math.cos(a), si = Math.sin(a);
+    const c = Math.cos(a),
+      si = Math.sin(a);
     for (const p of profile) {
       verts.push({ x: p.r * c, y: p.y, z: p.r * si });
     }
@@ -46,10 +51,7 @@ export function revolveMesh(
 /**
  * Extrude a 2D profile along a straight vector.
  */
-export function extrudeMesh(
-  profile: Array<{ x: number; y: number }>,
-  extrude: Vec3,
-): Mesh {
+export function extrudeMesh(profile: Array<{ x: number; y: number }>, extrude: Vec3): Mesh {
   const verts: Vec3[] = [];
   const tris: number[] = [];
   const n = profile.length;
@@ -62,8 +64,8 @@ export function extrudeMesh(
   }
   // Simple triangle fan for caps (concave polygons caveated)
   for (let i = 1; i < n - 1; i++) {
-    tris.push(0, i, i + 1);                    // bottom cap
-    tris.push(n, n + i + 1, n + i);            // top cap (reverse order)
+    tris.push(0, i, i + 1); // bottom cap
+    tris.push(n, n + i + 1, n + i); // top cap (reverse order)
   }
   return { vertices: verts, triangles: tris };
 }
@@ -71,10 +73,7 @@ export function extrudeMesh(
 /**
  * Loft between two equal-vertex-count profiles.
  */
-export function loftMesh(
-  profileA: Vec3[],
-  profileB: Vec3[],
-): Mesh {
+export function loftMesh(profileA: Vec3[], profileB: Vec3[]): Mesh {
   if (profileA.length !== profileB.length) {
     throw new Error('loftMesh: profile vertex counts must match');
   }
@@ -91,10 +90,7 @@ export function loftMesh(
 /**
  * Sweep a 2D profile along a polyline path (v1: straight segments).
  */
-export function sweepMesh(
-  profile: Array<{ x: number; y: number }>,
-  path: Vec3[],
-): Mesh {
+export function sweepMesh(profile: Array<{ x: number; y: number }>, path: Vec3[]): Mesh {
   if (path.length < 2) return { vertices: [], triangles: [] };
   const verts: Vec3[] = [];
   const tris: number[] = [];

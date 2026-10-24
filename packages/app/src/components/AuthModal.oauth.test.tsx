@@ -100,7 +100,9 @@ describe('T-AUTH-008 / T-AUTH-009 / T-AUTH-010: AuthModal OAuth providers', () =
     // Make the promise hang to keep loading state active
     let resolveSignIn!: () => void;
     mockSignInWithGoogle.mockReturnValue(
-      new Promise<void>((res) => { resolveSignIn = res; }),
+      new Promise<void>((res) => {
+        resolveSignIn = res;
+      })
     );
 
     render(<AuthModal onClose={onClose} />);

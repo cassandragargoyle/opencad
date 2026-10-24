@@ -7,29 +7,40 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  buildViewMapTree, applyTemplate, templatesForCategory, DEFAULT_TEMPLATES,
+  buildViewMapTree,
+  applyTemplate,
+  templatesForCategory,
+  DEFAULT_TEMPLATES,
   type ViewEntry,
 } from './viewMap';
 
 describe('T-VIZ-039: viewMap', () => {
   it('T-VIZ-039-001: views under "Plans / Ground Floor" nest correctly', () => {
     const views: ViewEntry[] = [
-      { id: 'v1', name: 'Floor Plan', category: 'plan',
-        folderPath: 'Plans / Ground Floor', settings: {} },
-      { id: 'v2', name: 'Roof Plan', category: 'plan',
-        folderPath: 'Plans / Roof', settings: {} },
+      {
+        id: 'v1',
+        name: 'Floor Plan',
+        category: 'plan',
+        folderPath: 'Plans / Ground Floor',
+        settings: {},
+      },
+      { id: 'v2', name: 'Roof Plan', category: 'plan', folderPath: 'Plans / Roof', settings: {} },
     ];
     const tree = buildViewMapTree(views);
-    expect(tree).toHaveLength(1);                     // one root folder "Plans"
+    expect(tree).toHaveLength(1); // one root folder "Plans"
     expect(tree[0]!.name).toBe('Plans');
     expect(tree[0]!.children).toHaveLength(2);
   });
 
   it('T-VIZ-039-002: applyTemplate merges template.settings over view.settings', () => {
     const view: ViewEntry = {
-      id: 'v', name: 'A', category: 'plan', folderPath: 'Plans', settings: { scale: '1:200' },
+      id: 'v',
+      name: 'A',
+      category: 'plan',
+      folderPath: 'Plans',
+      settings: { scale: '1:200' },
     };
-    const tpl = DEFAULT_TEMPLATES[0]!;  // Working Plan 1:100
+    const tpl = DEFAULT_TEMPLATES[0]!; // Working Plan 1:100
     const out = applyTemplate(view, tpl);
     expect(out.settings.scale).toBe('1:100');
     expect(out.templateId).toBe(tpl.id);

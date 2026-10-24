@@ -6,12 +6,38 @@ expect.extend(jestDomMatchers);
 
 describe('T-COST-002: CarbonPanel', () => {
   const onExport = vi.fn();
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const entries: CarbonEntry[] = [
-    { id: 'e1', material: 'Concrete C30', quantity: 50, unit: 'm³', kgCO2ePerUnit: 300, totalKgCO2e: 15000, stage: 'A1-A3' },
-    { id: 'e2', material: 'Structural Steel', quantity: 2, unit: 't', kgCO2ePerUnit: 1600, totalKgCO2e: 3200, stage: 'A1-A3' },
-    { id: 'e3', material: 'Timber Frame', quantity: 10, unit: 'm³', kgCO2ePerUnit: 50, totalKgCO2e: 500, stage: 'A1-A3' },
+    {
+      id: 'e1',
+      material: 'Concrete C30',
+      quantity: 50,
+      unit: 'm³',
+      kgCO2ePerUnit: 300,
+      totalKgCO2e: 15000,
+      stage: 'A1-A3',
+    },
+    {
+      id: 'e2',
+      material: 'Structural Steel',
+      quantity: 2,
+      unit: 't',
+      kgCO2ePerUnit: 1600,
+      totalKgCO2e: 3200,
+      stage: 'A1-A3',
+    },
+    {
+      id: 'e3',
+      material: 'Timber Frame',
+      quantity: 10,
+      unit: 'm³',
+      kgCO2ePerUnit: 50,
+      totalKgCO2e: 500,
+      stage: 'A1-A3',
+    },
   ];
 
   it('renders Carbon Calculator header', () => {

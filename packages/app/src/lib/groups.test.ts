@@ -9,7 +9,11 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  createGroup, ungroup, expandGroup, topmostGroup, resolveSelection,
+  createGroup,
+  ungroup,
+  expandGroup,
+  topmostGroup,
+  resolveSelection,
   type Group,
 } from './groups';
 

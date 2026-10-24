@@ -8,16 +8,18 @@
  */
 
 export interface CurtainWallGrid {
-  len: number;     // wall length, mm
-  height: number;  // wall height, mm
+  len: number; // wall length, mm
+  height: number; // wall height, mm
   gridH: number[]; // horizontal mullion positions, fractions 0..1
   gridV: number[]; // vertical mullion positions, fractions 0..1
-  mullionProfile?: { width: number; depth: number };  // default 50×120 mm
+  mullionProfile?: { width: number; depth: number }; // default 50×120 mm
 }
 
 export interface Panel {
-  x: number; y: number;      // bottom-left corner (mm) in wall-local 2D
-  width: number; height: number;
+  x: number;
+  y: number; // bottom-left corner (mm) in wall-local 2D
+  width: number;
+  height: number;
   /** Optional per-panel material override (e.g. 'spandrel'). */
   override?: string;
 }
@@ -42,8 +44,9 @@ export function computeGridPanels(g: CurtainWallGrid): Panel[] {
   for (let i = 0; i < xs.length - 1; i++) {
     for (let j = 0; j < ys.length - 1; j++) {
       panels.push({
-        x: xs[i]!, y: ys[j]!,
-        width:  xs[i + 1]! - xs[i]!,
+        x: xs[i]!,
+        y: ys[j]!,
+        width: xs[i + 1]! - xs[i]!,
         height: ys[j + 1]! - ys[j]!,
       });
     }
@@ -72,6 +75,6 @@ export function computeMullions(g: CurtainWallGrid): MullionSegment[] {
 function normaliseFractions(xs: number[]): number[] {
   const clean = xs
     .filter((v) => Number.isFinite(v) && v >= 0 && v <= 1)
-    .map((v) => Math.round(v * 1e6) / 1e6);        // round to 6 dp for dedup
+    .map((v) => Math.round(v * 1e6) / 1e6); // round to 6 dp for dedup
   return Array.from(new Set(clean)).sort((a, b) => a - b);
 }

@@ -21,11 +21,11 @@ interface PluginReportModalProps {
 }
 
 const REASONS: { value: PluginReportBody['reason']; label: string }[] = [
-  { value: 'malware',  label: 'Malware or security issue' },
-  { value: 'broken',   label: 'Broken or crashes' },
-  { value: 'spam',     label: 'Spam or unwanted behaviour' },
-  { value: 'policy',   label: 'Policy / content violation' },
-  { value: 'other',    label: 'Something else' },
+  { value: 'malware', label: 'Malware or security issue' },
+  { value: 'broken', label: 'Broken or crashes' },
+  { value: 'spam', label: 'Spam or unwanted behaviour' },
+  { value: 'policy', label: 'Policy / content violation' },
+  { value: 'other', label: 'Something else' },
 ];
 
 export function PluginReportModal({
@@ -76,9 +76,7 @@ export function PluginReportModal({
           <h3 id="plugin-report-title" className="plugin-consent-title">
             {t('pluginReport.title', { name: pluginName })}
           </h3>
-          <div className="plugin-consent-meta">
-            {t('pluginReport.subtitle')}
-          </div>
+          <div className="plugin-consent-meta">{t('pluginReport.subtitle')}</div>
         </div>
 
         <label className="plugin-report-field">
@@ -90,7 +88,9 @@ export function PluginReportModal({
             disabled={submitting}
           >
             {REASONS.map((r) => (
-              <option key={r.value} value={r.value}>{REASONS_LABELS[r.value]}</option>
+              <option key={r.value} value={r.value}>
+                {REASONS_LABELS[r.value]}
+              </option>
             ))}
           </select>
         </label>

@@ -4,11 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  calculateSolarPosition,
-  estimateDaylightHours,
-  type SolarConfig,
-} from './solarAnalysis';
+import { calculateSolarPosition, estimateDaylightHours, type SolarConfig } from './solarAnalysis';
 
 describe('T-AI-030: calculateSolarPosition', () => {
   it('T-AI-030: returns elevation and azimuth for a given config', () => {

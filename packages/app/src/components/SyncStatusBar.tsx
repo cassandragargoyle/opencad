@@ -23,7 +23,12 @@ const STATUS_LABELS: Record<SyncStatus, string> = {
   error: 'Sync Error',
 };
 
-export function SyncStatusBar({ status, pendingOps, lastSynced, errorMessage }: SyncStatusBarProps) {
+export function SyncStatusBar({
+  status,
+  pendingOps,
+  lastSynced,
+  errorMessage,
+}: SyncStatusBarProps) {
   return (
     <div className={`sync-status-bar sync-${status}`} role="status" aria-live="polite">
       <span className={`status-dot status-dot-${status}`} aria-hidden="true" />
@@ -33,9 +38,7 @@ export function SyncStatusBar({ status, pendingOps, lastSynced, errorMessage }: 
         <span className="status-error-msg"> — {errorMessage}</span>
       )}
 
-      {pendingOps > 0 && (
-        <span className="pending-ops">{pendingOps} pending</span>
-      )}
+      {pendingOps > 0 && <span className="pending-ops">{pendingOps} pending</span>}
 
       {status === 'connected' && lastSynced !== null && (
         <span className="last-synced">Last synced {formatRelativeTime(lastSynced)}</span>

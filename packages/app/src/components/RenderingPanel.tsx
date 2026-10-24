@@ -71,11 +71,27 @@ async function loadPathTracer(): Promise<WebGLPathTracerCtor> {
  * Called once immediately before setSceneAsync.
  */
 const TEXTURE_SLOTS = [
-  'map', 'metalnessMap', 'roughnessMap', 'transmissionMap', 'emissiveMap',
-  'normalMap', 'clearcoatMap', 'clearcoatNormalMap', 'clearcoatRoughnessMap',
-  'sheenColorMap', 'sheenRoughnessMap', 'iridescenceMap',
-  'iridescenceThicknessMap', 'specularColorMap', 'specularIntensityMap',
-  'alphaMap', 'aoMap', 'bumpMap', 'displacementMap', 'envMap', 'lightMap',
+  'map',
+  'metalnessMap',
+  'roughnessMap',
+  'transmissionMap',
+  'emissiveMap',
+  'normalMap',
+  'clearcoatMap',
+  'clearcoatNormalMap',
+  'clearcoatRoughnessMap',
+  'sheenColorMap',
+  'sheenRoughnessMap',
+  'iridescenceMap',
+  'iridescenceThicknessMap',
+  'specularColorMap',
+  'specularIntensityMap',
+  'alphaMap',
+  'aoMap',
+  'bumpMap',
+  'displacementMap',
+  'envMap',
+  'lightMap',
 ] as const;
 function sanitizeSceneTextures(scene: THREE.Scene): number {
   let repaired = 0;
@@ -87,8 +103,11 @@ function sanitizeSceneTextures(scene: THREE.Scene): number {
     if (seen.has(t)) return;
     seen.add(t);
     const mat = t.matrix as { elements?: ArrayLike<number> } | null | undefined;
-    if (!mat || !Array.isArray((mat as { elements?: unknown }).elements)
-        && !(mat as { elements?: unknown })?.elements) {
+    if (
+      !mat ||
+      (!Array.isArray((mat as { elements?: unknown }).elements) &&
+        !(mat as { elements?: unknown })?.elements)
+    ) {
       (t as { matrix: THREE.Matrix3 }).matrix = new THREE.Matrix3();
       repaired++;
     }
@@ -134,19 +153,35 @@ async function makeInlineBVHGenerator(): Promise<BVHGeneratorLike> {
 // ─── Presets ─────────────────────────────────────────────────────────────────
 
 type Preset = 'draft' | 'preview' | 'final';
-interface PresetConfig { samples: number; labelDefault: string; hintDefault: string; }
+interface PresetConfig {
+  samples: number;
+  labelDefault: string;
+  hintDefault: string;
+}
 const PRESETS: Record<Preset, PresetConfig> = {
-  draft:   { samples: 1,   labelDefault: 'Draft',   hintDefault: 'Fast preview, noisy — good for composition checks.' },
-  preview: { samples: 16,  labelDefault: 'Preview', hintDefault: 'Balanced quality and speed — usable for review.' },
-  final:   { samples: 256, labelDefault: 'Final',   hintDefault: 'Clean render suitable for a client deliverable.' },
+  draft: {
+    samples: 1,
+    labelDefault: 'Draft',
+    hintDefault: 'Fast preview, noisy — good for composition checks.',
+  },
+  preview: {
+    samples: 16,
+    labelDefault: 'Preview',
+    hintDefault: 'Balanced quality and speed — usable for review.',
+  },
+  final: {
+    samples: 256,
+    labelDefault: 'Final',
+    hintDefault: 'Clean render suitable for a client deliverable.',
+  },
 };
 
 type ResPreset = '720p' | '1080p' | '2K' | '4K' | 'custom';
 const RES_PRESETS: Record<Exclude<ResPreset, 'custom'>, { w: number; h: number }> = {
-  '720p':  { w: 1280, h: 720 },
+  '720p': { w: 1280, h: 720 },
   '1080p': { w: 1920, h: 1080 },
-  '2K':    { w: 2560, h: 1440 },
-  '4K':    { w: 3840, h: 2160 },
+  '2K': { w: 2560, h: 1440 },
+  '4K': { w: 3840, h: 2160 },
 };
 
 // ─── Props ───────────────────────────────────────────────────────────────────
@@ -245,9 +280,11 @@ export function RenderingPanel(): React.ReactElement {
       offscreen.outputColorSpace = THREE.SRGBColorSpace;
       offscreen.toneMapping = THREE.ACESFilmicToneMapping;
       renderer = offscreen;
-      setFallbackWarning(t('rendering.webgpuFallback', {
-        defaultValue: 'Live view is WebGPU — rendering via an offscreen WebGL context.',
-      }));
+      setFallbackWarning(
+        t('rendering.webgpuFallback', {
+          defaultValue: 'Live view is WebGPU — rendering via an offscreen WebGL context.',
+        })
+      );
     }
 
     const prevEnv = scene.environment;
@@ -272,20 +309,36 @@ export function RenderingPanel(): React.ReactElement {
     const cleanup = (): void => {
       if (cleanedUp) return;
       cleanedUp = true;
-      try { cancelAnimationFrame(rafId); } catch { /* ignore */ }
-      try { tracer?.dispose(); } catch { /* tracer internal mid-dispose */ }
+      try {
+        cancelAnimationFrame(rafId);
+      } catch {
+        /* ignore */
+      }
+      try {
+        tracer?.dispose();
+      } catch {
+        /* tracer internal mid-dispose */
+      }
       tracer = null;
       try {
         scene.environment = prevEnv;
         scene.background = prevBg;
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       if (restoreSize && live.renderer instanceof THREE.WebGLRenderer) {
         try {
           live.renderer.setPixelRatio(restoreSize.pr);
           live.renderer.setSize(restoreSize.w, restoreSize.h, false);
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
       }
-      try { offscreen?.dispose(); } catch { /* ignore */ }
+      try {
+        offscreen?.dispose();
+      } catch {
+        /* ignore */
+      }
       setRunning(false);
     };
 
@@ -297,7 +350,7 @@ export function RenderingPanel(): React.ReactElement {
       });
       if (meshCount === 0) {
         throw new Error(
-          'Photoreal render needs at least one solid element in view — the current scene has no meshes the path-tracer can trace. Switch to 3D view and draw a wall / slab / column first.',
+          'Photoreal render needs at least one solid element in view — the current scene has no meshes the path-tracer can trace. Switch to 3D view and draw a wall / slab / column first.'
         );
       }
 
@@ -318,7 +371,11 @@ export function RenderingPanel(): React.ReactElement {
       // Warm the renderer so programs/uniforms exist before the path-tracer
       // snapshots them. Important on the WebGPU-fallback path where the
       // offscreen WebGL context has never drawn this scene.
-      try { renderer.render(scene, camera); } catch { /* non-fatal */ }
+      try {
+        renderer.render(scene, camera);
+      } catch {
+        /* non-fatal */
+      }
 
       const PathTracer = await loadPathTracer();
       tracer = new PathTracer(renderer);
@@ -343,7 +400,7 @@ export function RenderingPanel(): React.ReactElement {
         // eslint-disable-next-line no-console
         console.error('[photoreal] setSceneAsync failed', (sceneErr as Error)?.stack ?? sceneErr);
         throw new Error(
-          `Path-tracer failed to build scene (${meshCount} meshes): ${sceneErr instanceof Error ? sceneErr.message : String(sceneErr)}`,
+          `Path-tracer failed to build scene (${meshCount} meshes): ${sceneErr instanceof Error ? sceneErr.message : String(sceneErr)}`
         );
       }
       // Remove baked meshes from the live scene — they were only needed
@@ -354,7 +411,10 @@ export function RenderingPanel(): React.ReactElement {
       setStatus('rendering');
 
       const loop = (): void => {
-        if (cancelRef.current || !tracer) { cleanup(); return; }
+        if (cancelRef.current || !tracer) {
+          cleanup();
+          return;
+        }
         if (tracer.samples >= targetSamples) {
           try {
             const canvas = renderer.domElement;
@@ -465,7 +525,9 @@ export function RenderingPanel(): React.ReactElement {
                 max={8192}
                 step={1}
                 value={customW}
-                onChange={(e) => setCustomW(Math.max(128, Math.min(8192, parseInt(e.target.value, 10) || 0)))}
+                onChange={(e) =>
+                  setCustomW(Math.max(128, Math.min(8192, parseInt(e.target.value, 10) || 0)))
+                }
                 disabled={running}
               />
             </div>
@@ -480,7 +542,9 @@ export function RenderingPanel(): React.ReactElement {
                 max={8192}
                 step={1}
                 value={customH}
-                onChange={(e) => setCustomH(Math.max(128, Math.min(8192, parseInt(e.target.value, 10) || 0)))}
+                onChange={(e) =>
+                  setCustomH(Math.max(128, Math.min(8192, parseInt(e.target.value, 10) || 0)))
+                }
                 disabled={running}
               />
             </div>
@@ -488,7 +552,9 @@ export function RenderingPanel(): React.ReactElement {
         )}
         <div className="field-row">
           <span className="field-label">{t('rendering.output', { defaultValue: 'Output' })}</span>
-          <span className="field-value">{width} × {height}</span>
+          <span className="field-value">
+            {width} × {height}
+          </span>
         </div>
       </div>
 
@@ -566,7 +632,9 @@ export function RenderingPanel(): React.ReactElement {
       {/* Status */}
       {fallbackWarning && (
         <div className="analysis-section">
-          <div className="rendering-warning" role="status">{fallbackWarning}</div>
+          <div className="rendering-warning" role="status">
+            {fallbackWarning}
+          </div>
         </div>
       )}
       {status === 'rendering' && (
@@ -601,7 +669,9 @@ export function RenderingPanel(): React.ReactElement {
       )}
       {error && (
         <div className="analysis-section">
-          <div className="rendering-error" role="alert">{error}</div>
+          <div className="rendering-error" role="alert">
+            {error}
+          </div>
         </div>
       )}
 
@@ -610,7 +680,9 @@ export function RenderingPanel(): React.ReactElement {
         <button
           type="button"
           className="btn-run-analysis"
-          onClick={() => { void start(); }}
+          onClick={() => {
+            void start();
+          }}
           disabled={running || status === 'rendering' || status === 'building'}
         >
           {running
@@ -619,11 +691,7 @@ export function RenderingPanel(): React.ReactElement {
         </button>
       ) : (
         <>
-          <button
-            type="button"
-            className="btn-run-analysis"
-            onClick={download}
-          >
+          <button type="button" className="btn-run-analysis" onClick={download}>
             <Download size={14} />
             {t('rendering.downloadPng', { defaultValue: 'Download PNG' })}
           </button>

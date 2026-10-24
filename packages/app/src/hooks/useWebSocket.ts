@@ -16,7 +16,7 @@ export interface WSMessage {
 export interface UseWebSocketOptions {
   url: string;
   enabled?: boolean;
-  reconnectDelay?: number;   // ms between reconnect attempts (default: 2000)
+  reconnectDelay?: number; // ms between reconnect attempts (default: 2000)
   maxReconnectAttempts?: number; // 0 = unlimited (default: 10)
   onMessage?: (msg: WSMessage) => void;
   onConnect?: () => void;
@@ -126,7 +126,17 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketResult {
     } catch {
       setReadyState('closed');
     }
-  }, [url, enabled, reconnectDelay, maxReconnectAttempts, onConnect, onDisconnect, onError, onMessage, clearReconnectTimer]);
+  }, [
+    url,
+    enabled,
+    reconnectDelay,
+    maxReconnectAttempts,
+    onConnect,
+    onDisconnect,
+    onError,
+    onMessage,
+    clearReconnectTimer,
+  ]);
 
   useEffect(() => {
     unmountedRef.current = false;

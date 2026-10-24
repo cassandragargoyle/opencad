@@ -9,6 +9,7 @@ Real construction document workflows require swapping between "structural only",
 ## Scope
 
 ### In scope
+
 - **Layer Combinations**: named presets storing `{ layerId: { visible, locked } }`. A switcher shows the current combination; switching swaps the whole layer state.
 - **Graphic Overrides**: named rule sets, each rule `{ condition: ElementFilter, style: { strokeColor, fillColor, strokeWidth, opacity, hatchPattern } }`. Conditions can filter by type, wallType, level, custom property.
 - When a Graphic Override is active, element rendering uses the override style instead of the default material.
@@ -16,6 +17,7 @@ Real construction document workflows require swapping between "structural only",
 - Combinations + overrides are first-class document elements, sync over CRDT, survive reloads.
 
 ### Out of scope (this issue)
+
 - Per-view overrides (each view remembers its own set) — v1 is document-level.
 - Animation / transition between combinations.
 

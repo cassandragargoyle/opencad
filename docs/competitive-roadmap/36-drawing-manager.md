@@ -9,6 +9,7 @@ A drawing set has a numbering system: A-101 = first floor plan, A-201 = second f
 ## Scope
 
 ### In scope
+
 - A **Drawing Manager** panel lists all drawings grouped by category (plans, sections, elevations, details, schedules, 3D views, renderings).
 - Layouts get automatic sheet numbers based on category prefix + sequence (`A-101`, `A-102`, …); user-editable.
 - Viewports on layout sheets get automatic per-sheet viewport numbers (1, 2, 3…); user-editable.
@@ -17,6 +18,7 @@ A drawing set has a numbering system: A-101 = first floor plan, A-201 = second f
 - Drawing Manager shows the cross-reference graph: "A-101 references A-301 viewport 2".
 
 ### Out of scope
+
 - Multi-project drawing numbering (per-project in v1).
 - Revision tracking (nice-to-have follow-up).
 

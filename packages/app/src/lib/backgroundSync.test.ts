@@ -37,9 +37,9 @@ describe('T-OFF-020: background sync', () => {
     const push = vi.fn().mockRejectedValue(new Error('boom'));
 
     const stop = startBackgroundSync({ push, pollMs: 10, maxBackoffMs: 200 });
-    await vi.advanceTimersByTimeAsync(15);   // first failure
+    await vi.advanceTimersByTimeAsync(15); // first failure
     const after1 = push.mock.calls.length;
-    await vi.advanceTimersByTimeAsync(15);   // within back-off window → no retry
+    await vi.advanceTimersByTimeAsync(15); // within back-off window → no retry
     expect(push.mock.calls.length).toBe(after1);
     stop();
   });

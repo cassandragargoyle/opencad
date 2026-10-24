@@ -57,7 +57,9 @@ export function SpacePanel() {
         </div>
 
         <div className="tool-panel-row">
-          <label htmlFor="space-usage">{t('spaces.usageType', { defaultValue: 'Usage Type' })}</label>
+          <label htmlFor="space-usage">
+            {t('spaces.usageType', { defaultValue: 'Usage Type' })}
+          </label>
           <select
             id="space-usage"
             aria-label={t('spaces.usageType', { defaultValue: 'Usage Type' })}
@@ -74,7 +76,9 @@ export function SpacePanel() {
         </div>
 
         <div className="tool-panel-row">
-          <label htmlFor="space-required-area">{t('spaces.requiredArea', { defaultValue: 'Required Area (m²)' })}</label>
+          <label htmlFor="space-required-area">
+            {t('spaces.requiredArea', { defaultValue: 'Required Area (m²)' })}
+          </label>
           <input
             id="space-required-area"
             type="number"
@@ -86,12 +90,16 @@ export function SpacePanel() {
           />
         </div>
 
-        <div className="tool-panel-hint">{t('spaces.placeHint', { defaultValue: 'Click inside walls to place space' })}</div>
+        <div className="tool-panel-hint">
+          {t('spaces.placeHint', { defaultValue: 'Click inside walls to place space' })}
+        </div>
       </div>
 
       {spaces.length > 0 && (
         <div className="tool-panel-group">
-          <div className="tool-panel-group-title">{t('spaces.heading', { count: spaces.length, defaultValue: 'Spaces ({{count}})' })}</div>
+          <div className="tool-panel-group-title">
+            {t('spaces.heading', { count: spaces.length, defaultValue: 'Spaces ({{count}})' })}
+          </div>
           {spaces.map((sp) => {
             const spName = String(sp.properties['name']?.value ?? sp.id);
             const actual = Number(sp.properties['actualArea']?.value ?? 0);
@@ -105,13 +113,22 @@ export function SpacePanel() {
                 </div>
                 {deficit && (
                   <div role="alert" className="compliance-warning">
-                    {t('spaces.areaDeficit', { actual, required, defaultValue: 'Area deficit: {{actual}} m² < required {{required}} m²' })}
+                    {t('spaces.areaDeficit', {
+                      actual,
+                      required,
+                      defaultValue: 'Area deficit: {{actual}} m² < required {{required}} m²',
+                    })}
                   </div>
                 )}
               </div>
             );
           })}
-          <div className="space-total">{t('spaces.totalFloor', { area: totalArea, defaultValue: 'Total floor area: {{area}} m²' })}</div>
+          <div className="space-total">
+            {t('spaces.totalFloor', {
+              area: totalArea,
+              defaultValue: 'Total floor area: {{area}} m²',
+            })}
+          </div>
         </div>
       )}
     </div>

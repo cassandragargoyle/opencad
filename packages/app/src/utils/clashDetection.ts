@@ -7,13 +7,17 @@
 import type { ElementSchema } from '@opencad/document';
 
 export const enum ClashSeverity {
-  Hard = 'hard',    // Physical intersection — must resolve
-  Soft = 'soft',    // Clearance violation — review recommended
+  Hard = 'hard', // Physical intersection — must resolve
+  Soft = 'soft', // Clearance violation — review recommended
 }
 
 export interface BoundingBox {
-  minX: number; minY: number; minZ: number;
-  maxX: number; maxY: number; maxZ: number;
+  minX: number;
+  minY: number;
+  minZ: number;
+  maxX: number;
+  maxY: number;
+  maxZ: number;
 }
 
 export interface ClashResult {
@@ -51,9 +55,12 @@ export function getBoundingBox(element: ElementSchema): BoundingBox | null {
       const ys = [sp.y + ny, sp.y - ny, ep.y + ny, ep.y - ny];
 
       return {
-        minX: Math.min(...xs), maxX: Math.max(...xs),
-        minY: Math.min(...ys), maxY: Math.max(...ys),
-        minZ: Math.min(sp.z, ep.z), maxZ: Math.max(sp.z, ep.z) + height,
+        minX: Math.min(...xs),
+        maxX: Math.max(...xs),
+        minY: Math.min(...ys),
+        maxY: Math.max(...ys),
+        minZ: Math.min(sp.z, ep.z),
+        maxZ: Math.max(sp.z, ep.z) + height,
       };
     }
 
@@ -64,9 +71,12 @@ export function getBoundingBox(element: ElementSchema): BoundingBox | null {
       const height = (geoData.height as number | undefined) ?? 3000;
       if (!pos) return null;
       return {
-        minX: pos.x - width / 2, maxX: pos.x + width / 2,
-        minY: pos.y - depth / 2, maxY: pos.y + depth / 2,
-        minZ: pos.z, maxZ: pos.z + height,
+        minX: pos.x - width / 2,
+        maxX: pos.x + width / 2,
+        minY: pos.y - depth / 2,
+        maxY: pos.y + depth / 2,
+        minZ: pos.z,
+        maxZ: pos.z + height,
       };
     }
 
@@ -94,9 +104,12 @@ export function getBoundingBox(element: ElementSchema): BoundingBox | null {
       const xs = pts.map((p) => p.x);
       const ys = pts.map((p) => p.y);
       return {
-        minX: Math.min(...xs), maxX: Math.max(...xs),
-        minY: Math.min(...ys), maxY: Math.max(...ys),
-        minZ: z, maxZ: z + thickness,
+        minX: Math.min(...xs),
+        maxX: Math.max(...xs),
+        minY: Math.min(...ys),
+        maxY: Math.max(...ys),
+        minZ: z,
+        maxZ: z + thickness,
       };
     }
 
@@ -108,9 +121,12 @@ export function getBoundingBox(element: ElementSchema): BoundingBox | null {
 /** Returns true if two AABBs strictly intersect (not just touching). */
 export function boxesIntersect(a: BoundingBox, b: BoundingBox): boolean {
   return (
-    a.minX < b.maxX && a.maxX > b.minX &&
-    a.minY < b.maxY && a.maxY > b.minY &&
-    a.minZ < b.maxZ && a.maxZ > b.minZ
+    a.minX < b.maxX &&
+    a.maxX > b.minX &&
+    a.minY < b.maxY &&
+    a.maxY > b.minY &&
+    a.minZ < b.maxZ &&
+    a.maxZ > b.minZ
   );
 }
 
@@ -121,7 +137,11 @@ const SOFT_CLASH_CLEARANCE = 50;
  * Returns true if two AABBs are within the soft-clash clearance zone
  * (within 50mm of each other) but do NOT strictly intersect.
  */
-export function boxesWithinClearance(a: BoundingBox, b: BoundingBox, clearance: number = SOFT_CLASH_CLEARANCE): boolean {
+export function boxesWithinClearance(
+  a: BoundingBox,
+  b: BoundingBox,
+  clearance: number = SOFT_CLASH_CLEARANCE
+): boolean {
   if (boxesIntersect(a, b)) return false;
 
   const expanded: BoundingBox = {

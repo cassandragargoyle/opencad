@@ -20,10 +20,7 @@ export interface ChatMessage {
 
 export interface AIProvider {
   name: string;
-  stream(
-    prompt: string,
-    history?: ChatMessage[]
-  ): AsyncGenerator<StreamChunk, void, unknown>;
+  stream(prompt: string, history?: ChatMessage[]): AsyncGenerator<StreamChunk, void, unknown>;
 }
 
 export interface AIStorageAdapter {
@@ -79,10 +76,16 @@ export class AIStreamClient {
   }
 
   /** Build a code compliance prompt from a list of violations. */
-  buildCompliancePrompt(violations: Array<{ message: string; rule?: string; roomId?: string; type?: string; severity?: string }>): string {
-    const lines = violations.map(
-      (v, i) => `${i + 1}. ${v.message}${v.rule ? ` (${v.rule})` : ''}`
-    );
+  buildCompliancePrompt(
+    violations: Array<{
+      message: string;
+      rule?: string;
+      roomId?: string;
+      type?: string;
+      severity?: string;
+    }>
+  ): string {
+    const lines = violations.map((v, i) => `${i + 1}. ${v.message}${v.rule ? ` (${v.rule})` : ''}`);
     return [
       'The following IBC code compliance violations were detected in the current floor plan:',
       '',
@@ -94,7 +97,10 @@ export class AIStreamClient {
 }
 
 /** Ollama provider factory (local AI) */
-export function createOllamaProvider(baseUrl = 'http://localhost:11434', model = 'llama3'): AIProvider {
+export function createOllamaProvider(
+  baseUrl = 'http://localhost:11434',
+  model = 'llama3'
+): AIProvider {
   return {
     name: 'ollama',
     async *stream(prompt: string): AsyncGenerator<StreamChunk, void, unknown> {
@@ -139,7 +145,7 @@ export function createOllamaProvider(baseUrl = 'http://localhost:11434', model =
 export function createServerProvider(
   provider: 'openai' | 'anthropic' | 'ollama',
   model: string,
-  authHeader: () => Promise<string | null> = async () => null,
+  authHeader: () => Promise<string | null> = async () => null
 ): AIProvider {
   return {
     name: `server:${provider}`,
@@ -197,7 +203,10 @@ export function createOpenAICompatibleProvider(
 ): AIProvider {
   return {
     name: 'openai-compatible',
-    async *stream(prompt: string, history?: ChatMessage[]): AsyncGenerator<StreamChunk, void, unknown> {
+    async *stream(
+      prompt: string,
+      history?: ChatMessage[]
+    ): AsyncGenerator<StreamChunk, void, unknown> {
       const messages = [
         ...(history ?? []).map((m) => ({ role: m.role, content: m.content })),
         { role: 'user', content: prompt },

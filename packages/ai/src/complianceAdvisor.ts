@@ -14,10 +14,7 @@ import type { Violation } from './codeCompliance';
  *
  * Requires a valid Anthropic API key and network access.
  */
-export async function getAISuggestion(
-  violation: Violation,
-  apiKey: string
-): Promise<string> {
+export async function getAISuggestion(violation: Violation, apiKey: string): Promise<string> {
   const prompt = `You are a building code compliance expert. Explain the following IBC violation in plain language and suggest how an architect can resolve it.
 
 Violation:

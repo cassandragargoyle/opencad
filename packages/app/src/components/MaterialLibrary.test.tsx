@@ -178,7 +178,8 @@ describe('T-BIM-001: MaterialLibrary', () => {
     // Material swatches should have a title attribute with density info
     const swatches = document.querySelectorAll('[title]');
     const hasDensityInfo = Array.from(swatches).some(
-      (el) => el.getAttribute('title')?.includes('density') || el.getAttribute('title')?.includes('kg/m')
+      (el) =>
+        el.getAttribute('title')?.includes('density') || el.getAttribute('title')?.includes('kg/m')
     );
     expect(hasDensityInfo).toBe(true);
   });

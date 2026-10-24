@@ -51,7 +51,7 @@ describe('T-ANA-04: calcMaterialCarbon()', () => {
   });
 
   it('transport override replaces A4', () => {
-    const std      = calcMaterialCarbon({ epdId: 'concrete-30mpa', quantity: 1 });
+    const std = calcMaterialCarbon({ epdId: 'concrete-30mpa', quantity: 1 });
     const nearsite = calcMaterialCarbon({ epdId: 'concrete-30mpa', quantity: 1, transportKm: 10 });
     // Near site should have much lower A4
     expect(nearsite.stageEmissions.A4).toBeLessThan(std.stageEmissions.A4);

@@ -32,10 +32,7 @@ export const DEFAULT_AR_CONFIG: ARSessionConfig = {
   hitTestFrequencyHz: 30,
 };
 
-export function parseHitTestResult(raw: {
-  position: number[];
-  normal: number[];
-}): ARHitResult {
+export function parseHitTestResult(raw: { position: number[]; normal: number[] }): ARHitResult {
   const [px = 0, py = 0, pz = 0] = raw.position;
   const [nx = 0, ny = 1, nz = 0] = raw.normal;
 
@@ -61,16 +58,12 @@ export function parseHitTestResult(raw: {
  */
 export function computePlacementTransform(
   hit: ARHitResult,
-  elementSizeM: number,
+  elementSizeM: number
 ): ARPlacementResult {
   // Align the element to the hit surface normal.
   // For a flat floor (normal ~0,1,0) the rotation is identity.
   // We compute the quaternion that rotates Y-up to the surface normal.
-  const [qx, qy, qz, qw] = normalToQuaternion(
-    hit.normalX,
-    hit.normalY,
-    hit.normalZ,
-  );
+  const [qx, qy, qz, qw] = normalToQuaternion(hit.normalX, hit.normalY, hit.normalZ);
 
   const elementId = `ar-${Math.round(hit.worldX * 1000)}-${Math.round(hit.worldY * 1000)}-${Math.round(hit.worldZ * 1000)}`;
 
@@ -88,7 +81,9 @@ export function computePlacementTransform(
 function normalToQuaternion(nx: number, ny: number, nz: number): [number, number, number, number] {
   // up = (0, 1, 0)
   // We need q such that q * up * q^-1 = normal
-  const upX = 0, upY = 1, upZ = 0;
+  const upX = 0,
+    upY = 1,
+    upZ = 0;
 
   const dot = upX * nx + upY * ny + upZ * nz;
 
@@ -107,12 +102,7 @@ function normalToQuaternion(nx: number, ny: number, nz: number): [number, number
   const sinHalf = Math.sqrt((1 - dot) / 2);
   const cosHalf = Math.sqrt((1 + dot) / 2);
 
-  return [
-    (cx / len) * sinHalf,
-    (cy / len) * sinHalf,
-    (cz / len) * sinHalf,
-    cosHalf,
-  ];
+  return [(cx / len) * sinHalf, (cy / len) * sinHalf, (cz / len) * sinHalf, cosHalf];
 }
 
 export function isValidARSurface(hit: ARHitResult, minConfidence: number = 0.5): boolean {
@@ -121,7 +111,7 @@ export function isValidARSurface(hit: ARHitResult, minConfidence: number = 0.5):
 
 export function filterHitResultsByConfidence(
   hits: ARHitResult[],
-  threshold: number,
+  threshold: number
 ): ARHitResult[] {
   return hits.filter((h) => h.confidence >= threshold);
 }

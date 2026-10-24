@@ -8,9 +8,13 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  nextSheetNumber, resolveViewReference, placeOnSheet, removePlacement,
+  nextSheetNumber,
+  resolveViewReference,
+  placeOnSheet,
+  removePlacement,
   pruneDeadPlacements,
-  type DrawingIndex, type Sheet,
+  type DrawingIndex,
+  type Sheet,
 } from './drawingManager';
 
 describe('T-DOC-036: drawing manager', () => {

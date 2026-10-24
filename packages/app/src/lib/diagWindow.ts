@@ -24,9 +24,14 @@ const str = (el: ElementSchema, k: string): string => {
   return typeof v === 'string' ? v : '';
 };
 
-function costAndCarbon(doc: DocumentSchema): { totalCostUSD: number; totalCarbonKgCO2e: number; byMaterial: Record<string, { qty: number; cost: number; carbon: number }> } {
+function costAndCarbon(doc: DocumentSchema): {
+  totalCostUSD: number;
+  totalCarbonKgCO2e: number;
+  byMaterial: Record<string, { qty: number; cost: number; carbon: number }>;
+} {
   const byMaterial: Record<string, { qty: number; cost: number; carbon: number }> = {};
-  let cost = 0, carbon = 0;
+  let cost = 0,
+    carbon = 0;
   const matByName = new Map(BUILT_IN_MATERIALS.map((m) => [m.name, m]));
   for (const el of Object.values(doc.content.elements)) {
     const matName = str(el, 'Material');
@@ -48,7 +53,10 @@ function costAndCarbon(doc: DocumentSchema): { totalCostUSD: number; totalCarbon
         try {
           const p = JSON.parse(pts) as Array<{ x: number; y: number }>;
           if (p.length >= 3) {
-            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            let minX = Infinity,
+              maxX = -Infinity,
+              minY = Infinity,
+              maxY = -Infinity;
             for (const q of p) {
               if (q.x < minX) minX = q.x;
               if (q.x > maxX) maxX = q.x;
@@ -57,7 +65,9 @@ function costAndCarbon(doc: DocumentSchema): { totalCostUSD: number; totalCarbon
             }
             qty = ((maxX - minX) * (maxY - minY)) / 1_000_000; // m²
           }
-        } catch { /* */ }
+        } catch {
+          /* */
+        }
       }
     } else if (el.type === 'column' || el.type === 'beam' || el.type === 'stair') {
       qty = (w * h) / 1_000_000; // m² rough
@@ -65,7 +75,11 @@ function costAndCarbon(doc: DocumentSchema): { totalCostUSD: number; totalCarbon
       qty = (w * h) / 1_000_000;
     }
     const cM = qty * mat.costPerM2;
-    const carbonM = qty * ((mat as { embodiedCarbon?: number }).embodiedCarbon ?? 0) * ((mat as { density?: number }).density ?? 0) * (t / 1000);
+    const carbonM =
+      qty *
+      ((mat as { embodiedCarbon?: number }).embodiedCarbon ?? 0) *
+      ((mat as { density?: number }).density ?? 0) *
+      (t / 1000);
     cost += cM;
     carbon += carbonM;
     const bucket = byMaterial[matName] ?? { qty: 0, cost: 0, carbon: 0 };
@@ -81,7 +95,11 @@ export interface DiagSummary {
   counts: Record<string, number>;
   elementCount: number;
   violations: ComplianceViolation[];
-  cost: { totalCostUSD: number; totalCarbonKgCO2e: number; byMaterial: Record<string, { qty: number; cost: number; carbon: number }> };
+  cost: {
+    totalCostUSD: number;
+    totalCarbonKgCO2e: number;
+    byMaterial: Record<string, { qty: number; cost: number; carbon: number }>;
+  };
   clashes: number;
   quantity: ReturnType<typeof computeTakeoff>;
 }
@@ -97,7 +115,7 @@ interface DiagWindow {
 
 export function installDiagWindow(
   getStoreDocument: () => DocumentSchema | null,
-  setToolParam?: (tool: string, key: string, value: unknown) => void,
+  setToolParam?: (tool: string, key: string, value: unknown) => void
 ): void {
   if (!import.meta.env.DEV) return;
   if (typeof window === 'undefined') return;
@@ -111,12 +129,15 @@ export function installDiagWindow(
     },
     summary: (): DiagSummary => {
       const doc = getStoreDocument();
-      if (!doc) return {
-        counts: {}, elementCount: 0, violations: [],
-        cost: { totalCostUSD: 0, totalCarbonKgCO2e: 0, byMaterial: {} },
-        clashes: 0,
-        quantity: [],
-      };
+      if (!doc)
+        return {
+          counts: {},
+          elementCount: 0,
+          violations: [],
+          cost: { totalCostUSD: 0, totalCarbonKgCO2e: 0, byMaterial: {} },
+          clashes: 0,
+          quantity: [],
+        };
       const counts: Record<string, number> = {};
       for (const el of Object.values(doc.content.elements)) {
         counts[el.type] = (counts[el.type] ?? 0) + 1;
@@ -130,13 +151,20 @@ export function installDiagWindow(
         // explicit allowlist instead of "everything non-structural".
         const STRUCTURAL = new Set(['wall', 'column', 'beam', 'slab', 'roof', 'stair']);
         const MEP = new Set(['duct', 'pipe', 'conduit', 'cable_tray', 'hvac', 'plumbing']);
-        const structural = Object.values(doc.content.elements).filter((el) => STRUCTURAL.has(el.type));
-        const mep        = Object.values(doc.content.elements).filter((el) => MEP.has(el.type));
+        const structural = Object.values(doc.content.elements).filter((el) =>
+          STRUCTURAL.has(el.type)
+        );
+        const mep = Object.values(doc.content.elements).filter((el) => MEP.has(el.type));
         clashes = detectClashes(structural, mep, 0.05).length;
-      } catch { /* element shapes may throw */ }
+      } catch {
+        /* element shapes may throw */
+      }
       let quantity: ReturnType<typeof computeTakeoff>;
-      try { quantity = computeTakeoff(doc); }
-      catch { quantity = []; }
+      try {
+        quantity = computeTakeoff(doc);
+      } catch {
+        quantity = [];
+      }
       return {
         counts,
         elementCount: Object.keys(doc.content.elements).length,

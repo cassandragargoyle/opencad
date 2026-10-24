@@ -22,20 +22,12 @@ describe('T-MOD-028: surfaces', () => {
   });
 
   it('T-MOD-028-002: explicit exterior assignment wins over defaults', () => {
-    const s = resolveSurface(
-      'exterior',
-      { exterior: 'wood-walnut' },
-      'Concrete',
-    );
+    const s = resolveSurface('exterior', { exterior: 'wood-walnut' }, 'Concrete');
     expect(s?.id).toBe('wood-walnut');
   });
 
   it('"both" applies when face-specific is absent', () => {
-    const s = resolveSurface(
-      'exterior',
-      { both: 'stone-slate' },
-      'Concrete',
-    );
+    const s = resolveSurface('exterior', { both: 'stone-slate' }, 'Concrete');
     expect(s?.id).toBe('stone-slate');
   });
 
@@ -49,8 +41,9 @@ describe('T-MOD-028: surfaces', () => {
   });
 
   it('unknown surface id in assignment falls through to default', () => {
-    expect(resolveSurface('exterior', { exterior: 'does-not-exist' }, 'Concrete')?.id)
-      .toBe('stone-limestone');
+    expect(resolveSurface('exterior', { exterior: 'does-not-exist' }, 'Concrete')?.id).toBe(
+      'stone-limestone'
+    );
   });
 
   it('all glazings are low-roughness', () => {

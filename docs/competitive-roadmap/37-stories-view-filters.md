@@ -9,6 +9,7 @@ Multi-story buildings need stories with controlled visibility — a ground-floor
 ## Scope
 
 ### In scope
+
 - **Story** = extended `Level`: adds `storyHeight`, `storyNumber`.
 - Each view (plan / section / elevation / 3D) gets a `visibleStories: 'all' | 'current' | 'current-and-below' | 'current-and-above' | {range}` setting.
 - Plans default to `current` (only show elements on the plan's level).
@@ -17,6 +18,7 @@ Multi-story buildings need stories with controlled visibility — a ground-floor
 - Element "belongs to" a story if its `ElevationOffset` falls within the story's range, OR if it explicitly carries a `LevelId` pointing to that story.
 
 ### Out of scope
+
 - Automatic "ghost" rendering of other stories (faded overlay).
 - Story-scaled dimensions / labels.
 

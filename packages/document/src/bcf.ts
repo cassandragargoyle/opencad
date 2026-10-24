@@ -26,7 +26,11 @@ export interface BCFViewPoint {
     field_of_view: number;
   };
   components?: {
-    selection?: Array<{ ifc_guid: string; originating_system?: string; authoring_tool_instance_id?: string }>;
+    selection?: Array<{
+      ifc_guid: string;
+      originating_system?: string;
+      authoring_tool_instance_id?: string;
+    }>;
     visibility?: {
       default_visibility: boolean;
       exceptions?: Array<{ ifc_guid: string }>;
@@ -36,7 +40,7 @@ export interface BCFViewPoint {
 
 export interface BCFComment {
   guid: string;
-  date: string;     // ISO 8601
+  date: string; // ISO 8601
   author: string;
   comment: string;
   viewpoint_guid?: string;
@@ -65,7 +69,7 @@ export interface BCFTopic {
     snippet_type: string;
     is_external: boolean;
   };
-  related_topics?: string[];   // GUIDs
+  related_topics?: string[]; // GUIDs
   comments: BCFComment[];
   viewpoints: BCFViewPoint[];
 }
@@ -128,32 +132,40 @@ export function addBCFComment(
 
 export function serializeBCF(file: BCFFile): string {
   // BCF JSON serialization (BCF API format)
-  return JSON.stringify({
-    version: file.version,
-    project: file.project,
-    topics: file.topics.map((topic) => ({
-      guid: topic.guid,
-      topic_type: topic.topic_type,
-      topic_status: topic.topic_status,
-      priority: topic.priority,
-      title: topic.title,
-      index: topic.index,
-      labels: topic.labels,
-      creation_date: topic.creation_date,
-      creation_author: topic.creation_author,
-      modified_date: topic.modified_date,
-      modified_author: topic.modified_author,
-      assigned_to: topic.assigned_to,
-      description: topic.description,
-      comments: topic.comments,
-      viewpoints: topic.viewpoints,
-      related_topics: topic.related_topics,
-    })),
-  }, null, 2);
+  return JSON.stringify(
+    {
+      version: file.version,
+      project: file.project,
+      topics: file.topics.map((topic) => ({
+        guid: topic.guid,
+        topic_type: topic.topic_type,
+        topic_status: topic.topic_status,
+        priority: topic.priority,
+        title: topic.title,
+        index: topic.index,
+        labels: topic.labels,
+        creation_date: topic.creation_date,
+        creation_author: topic.creation_author,
+        modified_date: topic.modified_date,
+        modified_author: topic.modified_author,
+        assigned_to: topic.assigned_to,
+        description: topic.description,
+        comments: topic.comments,
+        viewpoints: topic.viewpoints,
+        related_topics: topic.related_topics,
+      })),
+    },
+    null,
+    2
+  );
 }
 
 export function parseBCF(json: string): BCFFile {
-  const raw = JSON.parse(json) as { version?: string; project?: BCFFile['project']; topics?: BCFTopic[] };
+  const raw = JSON.parse(json) as {
+    version?: string;
+    project?: BCFFile['project'];
+    topics?: BCFTopic[];
+  };
   return {
     version: (raw.version as BCFFile['version']) ?? '3.0',
     project: raw.project,
@@ -241,9 +253,53 @@ export interface COBieSpace {
 }
 
 export interface COBieSpreadsheet {
-  Contacts: Array<{ Email: string; CreatedBy: string; CreatedOn: string; Category: string; Company: string; Phone: string; ExternalSystem: string; ExternalObject: string; ExternalIdentifier: string }>;
-  Facilities: Array<{ Name: string; CreatedBy: string; CreatedOn: string; Category: string; ProjectName: string; SiteName: string; LinearUnits: string; AreaUnits: string; VolumeUnits: string; CurrencyUnit: string; AreaMeasurement: string; ExternalSystem: string; ExternalProjectObject: string; ExternalProjectIdentifier: string; ExternalSiteObject: string; ExternalSiteIdentifier: string; ExternalFacilityObject: string; ExternalFacilityIdentifier: string; Description: string; ProjectDescription: string; SiteDescription: string; Phase: string }>;
-  Floors: Array<{ Name: string; CreatedBy: string; CreatedOn: string; Category: string; ExtSystem: string; ExtObject: string; ExtIdentifier: string; Description: string; Elevation: number; Height: number }>;
+  Contacts: Array<{
+    Email: string;
+    CreatedBy: string;
+    CreatedOn: string;
+    Category: string;
+    Company: string;
+    Phone: string;
+    ExternalSystem: string;
+    ExternalObject: string;
+    ExternalIdentifier: string;
+  }>;
+  Facilities: Array<{
+    Name: string;
+    CreatedBy: string;
+    CreatedOn: string;
+    Category: string;
+    ProjectName: string;
+    SiteName: string;
+    LinearUnits: string;
+    AreaUnits: string;
+    VolumeUnits: string;
+    CurrencyUnit: string;
+    AreaMeasurement: string;
+    ExternalSystem: string;
+    ExternalProjectObject: string;
+    ExternalProjectIdentifier: string;
+    ExternalSiteObject: string;
+    ExternalSiteIdentifier: string;
+    ExternalFacilityObject: string;
+    ExternalFacilityIdentifier: string;
+    Description: string;
+    ProjectDescription: string;
+    SiteDescription: string;
+    Phase: string;
+  }>;
+  Floors: Array<{
+    Name: string;
+    CreatedBy: string;
+    CreatedOn: string;
+    Category: string;
+    ExtSystem: string;
+    ExtObject: string;
+    ExtIdentifier: string;
+    Description: string;
+    Elevation: number;
+    Height: number;
+  }>;
   Spaces: COBieSpace[];
   Types: COBieType[];
   Components: COBieComponent[];
@@ -310,8 +366,45 @@ export function documentToCOBie(doc: DocumentSchema, author: string): COBieSprea
   }));
 
   return {
-    Contacts: [{ Email: `${author}@opencad.io`, CreatedBy: author, CreatedOn: now, Category: 'Author', Company: 'OpenCAD', Phone: '', ExternalSystem: 'OpenCAD', ExternalObject: 'IfcPerson', ExternalIdentifier: author }],
-    Facilities: [{ Name: doc.name, CreatedBy: author, CreatedOn: now, Category: 'Facility', ProjectName: doc.name, SiteName: 'Site', LinearUnits: 'millimeters', AreaUnits: 'square meters', VolumeUnits: 'cubic meters', CurrencyUnit: 'USD', AreaMeasurement: 'GrossFloorArea', ExternalSystem: 'OpenCAD', ExternalProjectObject: 'IfcProject', ExternalProjectIdentifier: doc.id, ExternalSiteObject: 'IfcSite', ExternalSiteIdentifier: doc.id + '-site', ExternalFacilityObject: 'IfcBuilding', ExternalFacilityIdentifier: doc.id + '-building', Description: doc.name, ProjectDescription: '', SiteDescription: '', Phase: 'Design' }],
+    Contacts: [
+      {
+        Email: `${author}@opencad.io`,
+        CreatedBy: author,
+        CreatedOn: now,
+        Category: 'Author',
+        Company: 'OpenCAD',
+        Phone: '',
+        ExternalSystem: 'OpenCAD',
+        ExternalObject: 'IfcPerson',
+        ExternalIdentifier: author,
+      },
+    ],
+    Facilities: [
+      {
+        Name: doc.name,
+        CreatedBy: author,
+        CreatedOn: now,
+        Category: 'Facility',
+        ProjectName: doc.name,
+        SiteName: 'Site',
+        LinearUnits: 'millimeters',
+        AreaUnits: 'square meters',
+        VolumeUnits: 'cubic meters',
+        CurrencyUnit: 'USD',
+        AreaMeasurement: 'GrossFloorArea',
+        ExternalSystem: 'OpenCAD',
+        ExternalProjectObject: 'IfcProject',
+        ExternalProjectIdentifier: doc.id,
+        ExternalSiteObject: 'IfcSite',
+        ExternalSiteIdentifier: doc.id + '-site',
+        ExternalFacilityObject: 'IfcBuilding',
+        ExternalFacilityIdentifier: doc.id + '-building',
+        Description: doc.name,
+        ProjectDescription: '',
+        SiteDescription: '',
+        Phase: 'Design',
+      },
+    ],
     Floors: floors,
     Spaces: spaces,
     Types: types,
@@ -328,11 +421,13 @@ export function serializeCOBieCSV(spreadsheet: COBieSpreadsheet): Record<string,
     const csvLines = [
       headers.join(','),
       ...rows.map((row: Record<string, unknown>) =>
-        headers.map((h) => {
-          const val = row[h] ?? '';
-          const str = String(val);
-          return str.includes(',') ? `"${str.replace(/"/g, '""')}"` : str;
-        }).join(',')
+        headers
+          .map((h) => {
+            const val = row[h] ?? '';
+            const str = String(val);
+            return str.includes(',') ? `"${str.replace(/"/g, '""')}"` : str;
+          })
+          .join(',')
       ),
     ];
     sheets[sheetName] = csvLines.join('\n');
@@ -363,9 +458,18 @@ function getCOBieCategory(elementType: string): string {
 
 function isMaintainableElement(el: ElementSchema): boolean {
   const maintainable = new Set([
-    'door', 'window', 'mechanical_equipment', 'plumbing_fixture',
-    'electrical_equipment', 'stair', 'roof', 'column', 'beam',
-    'duct', 'pipe', 'conduit',
+    'door',
+    'window',
+    'mechanical_equipment',
+    'plumbing_fixture',
+    'electrical_equipment',
+    'stair',
+    'roof',
+    'column',
+    'beam',
+    'duct',
+    'pipe',
+    'conduit',
   ]);
   return maintainable.has(el.type);
 }
@@ -381,25 +485,25 @@ function capitalize(s: string): string {
  * Follows the common RFI / submittal lifecycle used in construction.
  */
 export type WorkflowStatus =
-  | 'draft'        // created but not yet submitted
-  | 'submitted'    // submitted for review
-  | 'in_review'    // reviewer is actively working on it
-  | 'approved'     // approved without comments
-  | 'approved_with_comments'  // approved but response attached
-  | 'rejected'     // rejected; re-submission required
-  | 'void'         // withdrawn by submitter
-  | 'closed';      // resolved and archived
+  | 'draft' // created but not yet submitted
+  | 'submitted' // submitted for review
+  | 'in_review' // reviewer is actively working on it
+  | 'approved' // approved without comments
+  | 'approved_with_comments' // approved but response attached
+  | 'rejected' // rejected; re-submission required
+  | 'void' // withdrawn by submitter
+  | 'closed'; // resolved and archived
 
 /** Allowed transitions (from → set of valid to states). */
 export const WORKFLOW_TRANSITIONS: Record<WorkflowStatus, WorkflowStatus[]> = {
-  draft:                   ['submitted', 'void'],
-  submitted:               ['in_review', 'void'],
-  in_review:               ['approved', 'approved_with_comments', 'rejected'],
-  approved:                ['closed'],
-  approved_with_comments:  ['closed'],
-  rejected:                ['draft', 'void'],
-  void:                    [],
-  closed:                  [],
+  draft: ['submitted', 'void'],
+  submitted: ['in_review', 'void'],
+  in_review: ['approved', 'approved_with_comments', 'rejected'],
+  approved: ['closed'],
+  approved_with_comments: ['closed'],
+  rejected: ['draft', 'void'],
+  void: [],
+  closed: [],
 };
 
 export interface WorkflowTransitionRecord {
@@ -433,12 +537,12 @@ export function transitionWorkflow(
   state: WorkflowState,
   to: WorkflowStatus,
   byUserId: string,
-  options: { comment?: string; byUserName?: string; assignedTo?: string } = {},
+  options: { comment?: string; byUserName?: string; assignedTo?: string } = {}
 ): WorkflowState {
   const allowed = WORKFLOW_TRANSITIONS[state.status] ?? [];
   if (!allowed.includes(to)) {
     throw new Error(
-      `Invalid transition: ${state.status} → ${to}. Allowed: [${allowed.join(', ')}]`,
+      `Invalid transition: ${state.status} → ${to}. Allowed: [${allowed.join(', ')}]`
     );
   }
 
@@ -470,10 +574,7 @@ export function allowedTransitions(status: WorkflowStatus): WorkflowStatus[] {
 }
 
 /** Attach a workflow state to a BCF topic by id. */
-export function attachWorkflowToBCF(
-  file: BCFFile,
-  topicId: string,
-): WorkflowState {
+export function attachWorkflowToBCF(file: BCFFile, topicId: string): WorkflowState {
   const topic = file.topics.find((t) => t.guid === topicId);
   if (!topic) throw new Error(`BCF topic ${topicId} not found`);
   return createWorkflowState(topicId);

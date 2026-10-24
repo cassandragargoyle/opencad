@@ -91,10 +91,7 @@ export function parseBluebeamXML(xmlString: string): BluebeamMarkup[] {
  * When a markup exists in both sets with the same id, the one with the higher
  * createdAt timestamp wins.
  */
-export function mergeMarkups(
-  local: BluebeamMarkup[],
-  remote: BluebeamMarkup[],
-): BluebeamMarkup[] {
+export function mergeMarkups(local: BluebeamMarkup[], remote: BluebeamMarkup[]): BluebeamMarkup[] {
   const map = new Map<string, BluebeamMarkup>();
 
   for (const m of local) {
@@ -129,7 +126,7 @@ export function exportToBluebeamXML(markups: BluebeamMarkup[]): string {
     lines.push(
       `  <Markup id="${escapeXml(m.id)}" type="${m.type}" pageId="${escapeXml(m.pageId)}" ` +
         `x="${m.coords.x}" y="${m.coords.y}" width="${m.coords.width}" height="${m.coords.height}" ` +
-        `text="${escapeXml(m.text)}" author="${escapeXml(m.author)}" createdAt="${m.createdAt}" />`,
+        `text="${escapeXml(m.text)}" author="${escapeXml(m.author)}" createdAt="${m.createdAt}" />`
     );
   }
 
@@ -139,7 +136,7 @@ export function exportToBluebeamXML(markups: BluebeamMarkup[]): string {
 
 export function filterMarkupsByType(
   markups: BluebeamMarkup[],
-  type: BluebeamMarkup['type'],
+  type: BluebeamMarkup['type']
 ): BluebeamMarkup[] {
   return markups.filter((m) => m.type === type);
 }

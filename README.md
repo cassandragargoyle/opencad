@@ -15,6 +15,7 @@ OpenCAD combines the accessibility of Figma (browser-native, WASM, real-time col
 ## ✨ Features
 
 ### Core
+
 - 🏗️ **2D Drafting** — Lines, arcs, dimensions, annotations, layers, snapping
 - 🧊 **3D Modeling** — Extrude, boolean, push/pull, parametric BIM elements (walls, slabs, doors, windows, roofs)
 - 🔄 **Real-Time Collaboration** — Multiple users editing simultaneously with CRDT-based conflict resolution
@@ -22,12 +23,14 @@ OpenCAD combines the accessibility of Figma (browser-native, WASM, real-time col
 - 📁 **File Interoperability** — Import/export IFC, DWG, DXF, SKP, PLN, RVT, PDF, glTF, OBJ, STL, STEP
 
 ### AI-Powered
+
 - 🤖 **Prompt-to-Project** — Describe a building in natural language → AI generates the floor plan
 - 📋 **Code Compliance** — Automatic checking against IBC, ADA, Eurocode, and local building codes
 - ✏️ **AI Design Modification** — Natural language edits to existing models ("move the kitchen north")
 - 📝 **Auto-Documentation** — AI-generated annotations, specifications, and construction notes
 
 ### Platform
+
 - 🌐 **Browser App** — Runs in any modern browser, no installation required
 - 🖥️ **Desktop App** — Native app (Tauri v2) with local AI, unlimited storage, native file associations
 - 🔌 **Plugin System** — Extensible SDK for custom tools, workflows, and integrations
@@ -43,22 +46,24 @@ Visit [opencad.archi](https://opencad.archi) — works immediately in Chrome, Fi
 
 Download from [releases](https://github.com/CariHQ/opencad/releases):
 
-| Platform | Format |
-|----------|--------|
-| macOS (Apple Silicon) | `.dmg` |
-| macOS (Intel) | `.dmg` |
-| Windows | `.exe` / `.msi` |
-| Ubuntu/Debian | `.deb` / `.AppImage` |
-| Fedora/RHEL | `.rpm` / `.AppImage` |
+| Platform              | Format               |
+| --------------------- | -------------------- |
+| macOS (Apple Silicon) | `.dmg`               |
+| macOS (Intel)         | `.dmg`               |
+| Windows               | `.exe` / `.msi`      |
+| Ubuntu/Debian         | `.deb` / `.AppImage` |
+| Fedora/RHEL           | `.rpm` / `.AppImage` |
 
 ## 📋 System Requirements
 
 ### Browser
+
 - Chrome 120+, Firefox 125+, Safari 17.4+, Edge 120+
 - WebGPU support (WebGL 2.0 fallback for limited features)
 - 4GB+ RAM recommended
 
 ### Desktop
+
 - **macOS:** 13.0+ (Ventura), Apple Silicon or Intel
 - **Windows:** 10 22H2+ or 11, x86_64 or ARM64
 - **Linux:** Ubuntu 22.04+, Debian 12+, Fedora 38+
@@ -67,26 +72,25 @@ Download from [releases](https://github.com/CariHQ/opencad/releases):
 
 ## 📖 Documentation
 
-| Resource | Link |
-|----------|------|
-| **User Guide** | [docs.opencad.archi](https://docs.opencad.archi) |
-| **API Reference** | [api.opencad.archi](https://api.opencad.archi) |
-| **Contributing Guide** | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| **Product Requirements** | [PRD.md](PRD.md) |
-| **Architecture Docs** | [docs/architecture/](docs/architecture/) |
-
+| Resource                 | Link                                             |
+| ------------------------ | ------------------------------------------------ |
+| **User Guide**           | [docs.opencad.archi](https://docs.opencad.archi) |
+| **API Reference**        | [api.opencad.archi](https://api.opencad.archi)   |
+| **Contributing Guide**   | [CONTRIBUTING.md](CONTRIBUTING.md)               |
+| **Product Requirements** | [PRD.md](PRD.md)                                 |
+| **Architecture Docs**    | [docs/architecture/](docs/architecture/)         |
 
 ## 🛠️ Development
 
 ### Prerequisites
 
-| Tool | Version |
-|------|---------|
-| Node.js | 22+ |
-| pnpm | 10+ |
-| Rust | 1.80+ |
-| wasm-pack | 0.13+ |
-| Tauri CLI | 2.0+ |
+| Tool      | Version |
+| --------- | ------- |
+| Node.js   | 22+     |
+| pnpm      | 10+     |
+| Rust      | 1.80+   |
+| wasm-pack | 0.13+   |
+| Tauri CLI | 2.0+    |
 
 ### Setup
 
@@ -155,11 +159,11 @@ OpenCAD follows a [meritocratic governance model](GOVERNANCE.md). Decisions are 
 
 ## 💬 Community
 
-| Channel | Purpose |
-|---------|---------|
+| Channel                                                             | Purpose                    |
+| ------------------------------------------------------------------- | -------------------------- |
 | [GitHub Discussions](https://github.com/CariHQ/opencad/discussions) | Questions, ideas, showcase |
-| [Discord](https://discord.gg/opencad) | Real-time chat |
-| [Community Calls](https://calendar.opencad.archi) | Monthly video meetup |
+| [Discord](https://discord.gg/opencad)                               | Real-time chat             |
+| [Community Calls](https://calendar.opencad.archi)                   | Monthly video meetup       |
 
 ## 🙏 Acknowledgments
 

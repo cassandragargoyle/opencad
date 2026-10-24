@@ -22,14 +22,15 @@ describe('T-DXF-046: geometry fidelity', () => {
       properties: {
         StartX: { type: 'number', value: 100 },
         StartY: { type: 'number', value: 200 },
-        EndX:   { type: 'number', value: 500 },
-        EndY:   { type: 'number', value: 800 },
+        EndX: { type: 'number', value: 500 },
+        EndY: { type: 'number', value: 800 },
       },
       points: [
         { x: 100, y: 200, z: 0, _type: 'Point3D' },
         { x: 500, y: 800, z: 0, _type: 'Point3D' },
       ],
-      layerId, levelId,
+      layerId,
+      levelId,
     });
 
     const result = importDXF(exportDXF(doc));
@@ -53,9 +54,10 @@ describe('T-DXF-046: geometry fidelity', () => {
       properties: {
         CenterX: { type: 'number', value: 250 },
         CenterY: { type: 'number', value: 400 },
-        Radius:  { type: 'number', value: 123.45 },
+        Radius: { type: 'number', value: 123.45 },
       },
-      layerId, levelId,
+      layerId,
+      levelId,
     });
 
     const result = importDXF(exportDXF(doc));
@@ -74,13 +76,14 @@ describe('T-DXF-046: geometry fidelity', () => {
     addElement(doc, {
       type: 'arc',
       properties: {
-        CenterX:    { type: 'number', value: 0 },
-        CenterY:    { type: 'number', value: 0 },
-        Radius:     { type: 'number', value: 500 },
+        CenterX: { type: 'number', value: 0 },
+        CenterY: { type: 'number', value: 0 },
+        Radius: { type: 'number', value: 500 },
         StartAngle: { type: 'number', value: 45 },
-        EndAngle:   { type: 'number', value: 135 },
+        EndAngle: { type: 'number', value: 135 },
       },
-      layerId, levelId,
+      layerId,
+      levelId,
     });
 
     const result = importDXF(exportDXF(doc));
@@ -110,7 +113,8 @@ describe('T-DXF-046: geometry fidelity', () => {
         Points: { type: 'string', value: JSON.stringify(pts.map((p) => ({ x: p.x, y: p.y }))) },
       },
       points: pts,
-      layerId, levelId,
+      layerId,
+      levelId,
     });
 
     const result = importDXF(exportDXF(doc));
@@ -132,13 +136,14 @@ describe('T-DXF-046: geometry fidelity', () => {
     addElement(doc, {
       type: 'ellipse',
       properties: {
-        CenterX:  { type: 'number', value: 10 },
-        CenterY:  { type: 'number', value: 20 },
-        RadiusX:  { type: 'number', value: 400 },
-        RadiusY:  { type: 'number', value: 200 },
+        CenterX: { type: 'number', value: 10 },
+        CenterY: { type: 'number', value: 20 },
+        RadiusX: { type: 'number', value: 400 },
+        RadiusY: { type: 'number', value: 200 },
         Rotation: { type: 'number', value: 0 },
       },
-      layerId, levelId,
+      layerId,
+      levelId,
     });
 
     const result = importDXF(exportDXF(doc));
@@ -162,13 +167,18 @@ describe('T-DXF-046: text fidelity', () => {
     addElement(doc, {
       type: 'text',
       properties: {
-        X:        { type: 'number', value: 50 },
-        Y:        { type: 'number', value: 75 },
-        Content:  { type: 'string', value: 'Office 101' },
+        X: { type: 'number', value: 50 },
+        Y: { type: 'number', value: 75 },
+        Content: { type: 'string', value: 'Office 101' },
         FontSize: { type: 'number', value: 5 },
       },
-      layerId, levelId,
-      transform: { translation: { x: 50, y: 75, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+      layerId,
+      levelId,
+      transform: {
+        translation: { x: 50, y: 75, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
     });
 
     const result = importDXF(exportDXF(doc));
@@ -193,13 +203,18 @@ describe('T-DXF-046: block reference fidelity', () => {
       type: 'block_ref',
       properties: {
         BlockName: { type: 'string', value: 'DOOR_STD' },
-        Rotation:  { type: 'number', value: 90 },
-        ScaleX:    { type: 'number', value: 1.5 },
-        ScaleY:    { type: 'number', value: 1.5 },
-        ScaleZ:    { type: 'number', value: 1 },
+        Rotation: { type: 'number', value: 90 },
+        ScaleX: { type: 'number', value: 1.5 },
+        ScaleY: { type: 'number', value: 1.5 },
+        ScaleZ: { type: 'number', value: 1 },
       },
-      layerId, levelId,
-      transform: { translation: { x: 100, y: 200, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1.5, y: 1.5, z: 1 } },
+      layerId,
+      levelId,
+      transform: {
+        translation: { x: 100, y: 200, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1.5, y: 1.5, z: 1 },
+      },
     });
 
     const result = importDXF(exportDXF(doc));
@@ -225,7 +240,8 @@ describe('T-DXF-046: layer fidelity', () => {
     for (const name of ['Walls', 'Doors', 'Grid', 'Annotation']) {
       const id = crypto.randomUUID();
       doc.organization.layers[id] = {
-        id, name,
+        id,
+        name,
         color: '#808080',
         visible: true,
         locked: false,
@@ -236,14 +252,15 @@ describe('T-DXF-046: layer fidelity', () => {
         properties: {
           StartX: { type: 'number', value: 0 },
           StartY: { type: 'number', value: 0 },
-          EndX:   { type: 'number', value: 100 },
-          EndY:   { type: 'number', value: 0 },
+          EndX: { type: 'number', value: 100 },
+          EndY: { type: 'number', value: 0 },
         },
         points: [
           { x: 0, y: 0, z: 0, _type: 'Point3D' as const },
           { x: 100, y: 0, z: 0, _type: 'Point3D' as const },
         ],
-        layerId: id, levelId,
+        layerId: id,
+        levelId,
       });
     }
 
@@ -260,7 +277,8 @@ describe('T-DXF-046: layer fidelity', () => {
     const levelId = Object.keys(doc.organization.levels)[0]!;
     const id = crypto.randomUUID();
     doc.organization.layers[id] = {
-      id, name: 'RedLayer',
+      id,
+      name: 'RedLayer',
       color: '#FF0000',
       visible: true,
       locked: false,
@@ -269,14 +287,17 @@ describe('T-DXF-046: layer fidelity', () => {
     addElement(doc, {
       type: 'line',
       properties: {
-        StartX: { type: 'number', value: 0 }, StartY: { type: 'number', value: 0 },
-        EndX:   { type: 'number', value: 1 }, EndY:   { type: 'number', value: 1 },
+        StartX: { type: 'number', value: 0 },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: 1 },
+        EndY: { type: 'number', value: 1 },
       },
       points: [
         { x: 0, y: 0, z: 0, _type: 'Point3D' as const },
         { x: 1, y: 1, z: 0, _type: 'Point3D' as const },
       ],
-      layerId: id, levelId,
+      layerId: id,
+      levelId,
     });
 
     const result = importDXF(exportDXF(doc));
@@ -301,14 +322,17 @@ describe('T-DXF-046: count fidelity', () => {
       addElement(doc, {
         type: 'line',
         properties: {
-          StartX: { type: 'number', value: i * 100 }, StartY: { type: 'number', value: 0 },
-          EndX:   { type: 'number', value: i * 100 + 50 }, EndY: { type: 'number', value: 50 },
+          StartX: { type: 'number', value: i * 100 },
+          StartY: { type: 'number', value: 0 },
+          EndX: { type: 'number', value: i * 100 + 50 },
+          EndY: { type: 'number', value: 50 },
         },
         points: [
           { x: i * 100, y: 0, z: 0, _type: 'Point3D' as const },
           { x: i * 100 + 50, y: 50, z: 0, _type: 'Point3D' as const },
         ],
-        layerId, levelId,
+        layerId,
+        levelId,
       });
     }
 
@@ -327,30 +351,43 @@ describe('T-DXF-046: count fidelity', () => {
 
     addElement(doc, {
       type: 'line',
-      properties: { StartX: { type: 'number', value: 0 }, StartY: { type: 'number', value: 0 }, EndX: { type: 'number', value: 1 }, EndY: { type: 'number', value: 1 } },
+      properties: {
+        StartX: { type: 'number', value: 0 },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: 1 },
+        EndY: { type: 'number', value: 1 },
+      },
       points: [
         { x: 0, y: 0, z: 0, _type: 'Point3D' as const },
         { x: 1, y: 1, z: 0, _type: 'Point3D' as const },
       ],
-      layerId, levelId,
+      layerId,
+      levelId,
     });
     for (let i = 0; i < 5; i++) {
       addElement(doc, {
         type: 'circle',
         properties: {
-          CenterX: { type: 'number', value: i }, CenterY: { type: 'number', value: i }, Radius: { type: 'number', value: 10 },
+          CenterX: { type: 'number', value: i },
+          CenterY: { type: 'number', value: i },
+          Radius: { type: 'number', value: 10 },
         },
-        layerId, levelId,
+        layerId,
+        levelId,
       });
     }
     for (let i = 0; i < 5; i++) {
       addElement(doc, {
         type: 'arc',
         properties: {
-          CenterX: { type: 'number', value: i }, CenterY: { type: 'number', value: i },
-          Radius: { type: 'number', value: 20 }, StartAngle: { type: 'number', value: 0 }, EndAngle: { type: 'number', value: 90 },
+          CenterX: { type: 'number', value: i },
+          CenterY: { type: 'number', value: i },
+          Radius: { type: 'number', value: 20 },
+          StartAngle: { type: 'number', value: 0 },
+          EndAngle: { type: 'number', value: 90 },
         },
-        layerId, levelId,
+        layerId,
+        levelId,
       });
     }
     for (let i = 0; i < 4; i++) {
@@ -361,9 +398,12 @@ describe('T-DXF-046: count fidelity', () => {
       ];
       addElement(doc, {
         type: 'polyline',
-        properties: { Points: { type: 'string', value: JSON.stringify(pts.map((p) => ({ x: p.x, y: p.y }))) } },
+        properties: {
+          Points: { type: 'string', value: JSON.stringify(pts.map((p) => ({ x: p.x, y: p.y }))) },
+        },
         points: pts,
-        layerId, levelId,
+        layerId,
+        levelId,
       });
     }
 

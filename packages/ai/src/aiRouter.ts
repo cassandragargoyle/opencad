@@ -21,7 +21,7 @@ export interface AIRouter {
  */
 export async function createAIRouter(
   cloudGenerate: (prompt: string) => Promise<string>,
-  ollama?: OllamaClient,
+  ollama?: OllamaClient
 ): Promise<AIRouter> {
   if (ollama) {
     const available = await ollama.isAvailable();

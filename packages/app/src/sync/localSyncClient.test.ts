@@ -175,9 +175,7 @@ describe('T-COL-003: remote update handler is called on incoming updates', () =>
     instances[0].open();
 
     const data = JSON.stringify({ elements: { 'wall-1': { type: 'wall' } } });
-    instances[0].receive(
-      JSON.stringify({ type: 'update', data, senderId: 'other-client-id' })
-    );
+    instances[0].receive(JSON.stringify({ type: 'update', data, senderId: 'other-client-id' }));
 
     expect(handler).toHaveBeenCalledWith(data);
   });

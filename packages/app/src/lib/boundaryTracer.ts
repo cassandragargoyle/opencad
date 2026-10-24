@@ -9,7 +9,10 @@
 
 import type { ElementSchema } from '@opencad/document';
 
-export interface Point { x: number; y: number }
+export interface Point {
+  x: number;
+  y: number;
+}
 
 interface WallSeg {
   a: Point;
@@ -20,10 +23,10 @@ function wallSegs(walls: ElementSchema[]): WallSeg[] {
   const out: WallSeg[] = [];
   for (const w of walls) {
     const p = w.properties as Record<string, { value: unknown }>;
-    const sx = typeof p['StartX']?.value === 'number' ? p['StartX']!.value as number : 0;
-    const sy = typeof p['StartY']?.value === 'number' ? p['StartY']!.value as number : 0;
-    const ex = typeof p['EndX']?.value   === 'number' ? p['EndX']!.value   as number : 0;
-    const ey = typeof p['EndY']?.value   === 'number' ? p['EndY']!.value   as number : 0;
+    const sx = typeof p['StartX']?.value === 'number' ? (p['StartX']!.value as number) : 0;
+    const sy = typeof p['StartY']?.value === 'number' ? (p['StartY']!.value as number) : 0;
+    const ex = typeof p['EndX']?.value === 'number' ? (p['EndX']!.value as number) : 0;
+    const ey = typeof p['EndY']?.value === 'number' ? (p['EndY']!.value as number) : 0;
     out.push({ a: { x: sx, y: sy }, b: { x: ex, y: ey } });
   }
   return out;
@@ -34,11 +37,13 @@ function pip(pt: Point, poly: Point[]): boolean {
   let inside = false;
   const n = poly.length;
   for (let i = 0, j = n - 1; i < n; j = i++) {
-    const xi = poly[i]!.x, yi = poly[i]!.y;
-    const xj = poly[j]!.x, yj = poly[j]!.y;
+    const xi = poly[i]!.x,
+      yi = poly[i]!.y;
+    const xj = poly[j]!.x,
+      yj = poly[j]!.y;
     const denom = yj - yi;
     const intersect =
-      ((yi > pt.y) !== (yj > pt.y)) &&
+      yi > pt.y !== yj > pt.y &&
       pt.x < ((xj - xi) * (pt.y - yi)) / (denom === 0 ? 1e-9 : denom) + xi;
     if (intersect) inside = !inside;
   }
@@ -55,10 +60,7 @@ function pip(pt: Point, poly: Point[]): boolean {
  * axis-aligned wall layouts this catches all standard templates. A
  * full half-edge walker is a follow-up.
  */
-export function traceBoundaryFromClick(
-  clickPoint: Point,
-  walls: ElementSchema[],
-): Point[] | null {
+export function traceBoundaryFromClick(clickPoint: Point, walls: ElementSchema[]): Point[] | null {
   const segs = wallSegs(walls);
   if (segs.length < 3) return null;
 
@@ -73,12 +75,14 @@ export function traceBoundaryFromClick(
     const [x1, y1, x2, y2] = [s.a.x, s.a.y, s.b.x, s.b.y];
     // Only handle axis-aligned segments in v1
     if (x1 === x2) {
-      const minY = Math.min(y1, y2), maxY = Math.max(y1, y2);
+      const minY = Math.min(y1, y2),
+        maxY = Math.max(y1, y2);
       for (let i = 0; i < ys.length - 1; i++) {
         if (ys[i]! >= minY && ys[i + 1]! <= maxY) edges.add(`v:${x1}:${ys[i]}`);
       }
     } else if (y1 === y2) {
-      const minX = Math.min(x1, x2), maxX = Math.max(x1, x2);
+      const minX = Math.min(x1, x2),
+        maxX = Math.max(x1, x2);
       // Single-pass registration — the earlier duplicated loop had a
       // dead else-if branch that eslint no-dupe-else-if flagged; drop it.
       for (let i = 0; i < xs.length - 1; i++) {
@@ -89,8 +93,12 @@ export function traceBoundaryFromClick(
 
   // Flood-fill cells to find a connected region containing the click.
   // Cells are indexed by (i, j) where i indexes xs and j indexes ys.
-  const ci = xs.findIndex((x, k) => k < xs.length - 1 && x <= clickPoint.x && clickPoint.x <= xs[k + 1]!);
-  const cj = ys.findIndex((y, k) => k < ys.length - 1 && y <= clickPoint.y && clickPoint.y <= ys[k + 1]!);
+  const ci = xs.findIndex(
+    (x, k) => k < xs.length - 1 && x <= clickPoint.x && clickPoint.x <= xs[k + 1]!
+  );
+  const cj = ys.findIndex(
+    (y, k) => k < ys.length - 1 && y <= clickPoint.y && clickPoint.y <= ys[k + 1]!
+  );
   if (ci < 0 || cj < 0) return null;
 
   const visited = new Set<string>();
@@ -106,15 +114,18 @@ export function traceBoundaryFromClick(
       return;
     }
     const k = `${ni},${nj}`;
-    if (!visited.has(k)) { visited.add(k); stack.push([ni, nj]); }
+    if (!visited.has(k)) {
+      visited.add(k);
+      stack.push([ni, nj]);
+    }
   };
 
   while (stack.length > 0) {
     const [i, j] = stack.pop()!;
-    tryMove(i - 1, j, edges.has(`v:${xs[i]}:${ys[j]}`));          // left
-    tryMove(i + 1, j, edges.has(`v:${xs[i + 1]}:${ys[j]}`));      // right
-    tryMove(i, j - 1, edges.has(`h:${ys[j]}:${xs[i]}`));          // bottom
-    tryMove(i, j + 1, edges.has(`h:${ys[j + 1]}:${xs[i]}`));      // top
+    tryMove(i - 1, j, edges.has(`v:${xs[i]}:${ys[j]}`)); // left
+    tryMove(i + 1, j, edges.has(`v:${xs[i + 1]}:${ys[j]}`)); // right
+    tryMove(i, j - 1, edges.has(`h:${ys[j]}:${xs[i]}`)); // bottom
+    tryMove(i, j + 1, edges.has(`h:${ys[j + 1]}:${xs[i]}`)); // top
   }
 
   if (leaked) return null;
@@ -122,10 +133,14 @@ export function traceBoundaryFromClick(
   // Extract outer boundary: walk the region's cell set and collect
   // edges that are on the boundary (one side in, one side out).
   // For a rectangular bounding box of the region this returns 4 pts.
-  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  let minX = Infinity,
+    maxX = -Infinity,
+    minY = Infinity,
+    maxY = -Infinity;
   for (const key of visited) {
     const [iStr, jStr] = key.split(',');
-    const i = parseInt(iStr!, 10), j = parseInt(jStr!, 10);
+    const i = parseInt(iStr!, 10),
+      j = parseInt(jStr!, 10);
     minX = Math.min(minX, xs[i]!);
     maxX = Math.max(maxX, xs[i + 1]!);
     minY = Math.min(minY, ys[j]!);
@@ -135,8 +150,10 @@ export function traceBoundaryFromClick(
   // here (they'd return a bbox), but for rectangular regions this is
   // correct. Full boundary extraction is tracked as follow-up.
   const poly = [
-    { x: minX, y: minY }, { x: maxX, y: minY },
-    { x: maxX, y: maxY }, { x: minX, y: maxY },
+    { x: minX, y: minY },
+    { x: maxX, y: minY },
+    { x: maxX, y: maxY },
+    { x: minX, y: maxY },
   ];
   if (!pip(clickPoint, poly)) return null;
   return poly;

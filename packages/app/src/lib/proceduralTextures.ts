@@ -20,14 +20,14 @@ import type { Material } from './materials';
 function seed(str: string): number {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
-    h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+    h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
   }
   return h >>> 0;
 }
 
 function mulberry32(s: number) {
   return function () {
-    let t = s += 0x6d2b79f5;
+    let t = (s += 0x6d2b79f5);
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -73,7 +73,11 @@ function solidRoughnessMap(roughness: number): THREE.CanvasTexture {
   return toTex(ctx, 4, 4);
 }
 
-function noisyRoughnessMap(baseRoughness: number, variance: number, rng: () => number): THREE.CanvasTexture {
+function noisyRoughnessMap(
+  baseRoughness: number,
+  variance: number,
+  rng: () => number
+): THREE.CanvasTexture {
   const ctx = makeCtx(SIZE_R);
   const base = clamp255(baseRoughness * 255);
   const d = clamp255(variance * 255);
@@ -96,7 +100,7 @@ function concreteDiffuse(baseColor: string, rng: () => number): THREE.CanvasText
   const img = ctx.createImageData(SIZE_D, SIZE_D);
   for (let i = 0; i < img.data.length; i += 4) {
     const n = (rng() - 0.5) * 40;
-    img.data[i]     = clamp255(r + n);
+    img.data[i] = clamp255(r + n);
     img.data[i + 1] = clamp255(g + n);
     img.data[i + 2] = clamp255(b + n);
     img.data[i + 3] = 255;
@@ -124,7 +128,9 @@ function brickDiffuse(baseColor: string, rng: () => number): THREE.CanvasTexture
   ctx.fillStyle = `rgb(${clamp255(r + 50)},${clamp255(g + 40)},${clamp255(b + 30)})`;
   ctx.fillRect(0, 0, SIZE_D, SIZE_D);
 
-  const brickW = 60, brickH = 26, mortarT = 4;
+  const brickW = 60,
+    brickH = 26,
+    mortarT = 4;
   const cols = Math.ceil(SIZE_D / brickW) + 1;
   const rows = Math.ceil(SIZE_D / (brickH + mortarT)) + 1;
 
@@ -155,7 +161,7 @@ function stoneDiffuse(baseColor: string, rng: () => number): THREE.CanvasTexture
   const img = ctx.createImageData(SIZE_D, SIZE_D);
   for (let i = 0; i < img.data.length; i += 4) {
     const n = (rng() - 0.5) * 50;
-    img.data[i]     = clamp255(r + n);
+    img.data[i] = clamp255(r + n);
     img.data[i + 1] = clamp255(g + n);
     img.data[i + 2] = clamp255(b + n);
     img.data[i + 3] = 255;
@@ -166,9 +172,12 @@ function stoneDiffuse(baseColor: string, rng: () => number): THREE.CanvasTexture
     ctx.beginPath();
     ctx.moveTo(rng() * SIZE_D, rng() * SIZE_D);
     ctx.bezierCurveTo(
-      rng() * SIZE_D, rng() * SIZE_D,
-      rng() * SIZE_D, rng() * SIZE_D,
-      rng() * SIZE_D, rng() * SIZE_D,
+      rng() * SIZE_D,
+      rng() * SIZE_D,
+      rng() * SIZE_D,
+      rng() * SIZE_D,
+      rng() * SIZE_D,
+      rng() * SIZE_D
     );
     ctx.strokeStyle = `rgba(${clamp255(r - 40)},${clamp255(g - 35)},${clamp255(b - 30)},0.25)`;
     ctx.lineWidth = rng() * 1.5 + 0.5;
@@ -183,14 +192,14 @@ function woodDiffuse(baseColor: string, rng: () => number): THREE.CanvasTexture 
   const { r, g, b } = hexToRgb(baseColor);
   const img = ctx.createImageData(SIZE_D, SIZE_D);
   const freq = 0.08 + rng() * 0.04;
-  const amp  = 12 + rng() * 8;
+  const amp = 12 + rng() * 8;
 
   for (let y = 0; y < SIZE_D; y++) {
     for (let x = 0; x < SIZE_D; x++) {
       const grain = Math.sin((y + Math.sin(x * freq) * amp) * 0.25) * 0.5 + 0.5;
       const dk = grain * 55 - 28;
       const i = (y * SIZE_D + x) * 4;
-      img.data[i]     = clamp255(r + dk * 1.1);
+      img.data[i] = clamp255(r + dk * 1.1);
       img.data[i + 1] = clamp255(g + dk * 0.7);
       img.data[i + 2] = clamp255(b + dk * 0.3);
       img.data[i + 3] = 255;
@@ -199,7 +208,8 @@ function woodDiffuse(baseColor: string, rng: () => number): THREE.CanvasTexture 
   ctx.putImageData(img, 0, 0);
   // Knots
   for (let k = 0; k < 2; k++) {
-    const cx = rng() * SIZE_D, cy = rng() * SIZE_D;
+    const cx = rng() * SIZE_D,
+      cy = rng() * SIZE_D;
     for (let ring = 8; ring > 0; ring--) {
       ctx.beginPath();
       ctx.ellipse(cx, cy, ring * 3, ring * 5, rng() * Math.PI, 0, Math.PI * 2);
@@ -212,7 +222,11 @@ function woodDiffuse(baseColor: string, rng: () => number): THREE.CanvasTexture 
 }
 
 /** Metal: brushed horizontal streaks. */
-function metalDiffuse(baseColor: string, roughness: number, rng: () => number): THREE.CanvasTexture {
+function metalDiffuse(
+  baseColor: string,
+  roughness: number,
+  rng: () => number
+): THREE.CanvasTexture {
   const ctx = makeCtx(SIZE_D);
   const { r, g, b } = hexToRgb(baseColor);
   const img = ctx.createImageData(SIZE_D, SIZE_D);
@@ -222,7 +236,7 @@ function metalDiffuse(baseColor: string, roughness: number, rng: () => number): 
     for (let x = 0; x < SIZE_D; x++) {
       const n = (rng() - 0.5) * (roughness < 0.35 ? 12 : 25);
       const i = (y * SIZE_D + x) * 4;
-      img.data[i]     = clamp255(r + streak + n);
+      img.data[i] = clamp255(r + streak + n);
       img.data[i + 1] = clamp255(g + streak + n);
       img.data[i + 2] = clamp255(b + streak + n);
       img.data[i + 3] = 255;
@@ -265,8 +279,14 @@ function tileDiffuse(baseColor: string, gridPx: number, rng: () => number): THRE
   ctx.strokeStyle = `rgb(${clamp255(r - 30)},${clamp255(g - 30)},${clamp255(b - 25)})`;
   ctx.lineWidth = 2;
   for (let i = 0; i <= SIZE_D; i += gridPx) {
-    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, SIZE_D); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(SIZE_D, i); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, SIZE_D);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, i);
+    ctx.lineTo(SIZE_D, i);
+    ctx.stroke();
   }
   return toTex(ctx, 4, 4);
 }
@@ -278,7 +298,7 @@ function plasterDiffuse(baseColor: string, rng: () => number): THREE.CanvasTextu
   const img = ctx.createImageData(SIZE_D, SIZE_D);
   for (let i = 0; i < img.data.length; i += 4) {
     const n = (rng() - 0.5) * 14;
-    img.data[i]     = clamp255(r + n);
+    img.data[i] = clamp255(r + n);
     img.data[i + 1] = clamp255(g + n);
     img.data[i + 2] = clamp255(b + n);
     img.data[i + 3] = 255;
@@ -294,8 +314,10 @@ function insulationDiffuse(baseColor: string, rng: () => number): THREE.CanvasTe
   ctx.fillStyle = `rgb(${r},${g},${b})`;
   ctx.fillRect(0, 0, SIZE_D, SIZE_D);
   for (let k = 0; k < 300; k++) {
-    const x0 = rng() * SIZE_D, y0 = rng() * SIZE_D;
-    const len = rng() * 30 + 5, angle = rng() * Math.PI;
+    const x0 = rng() * SIZE_D,
+      y0 = rng() * SIZE_D;
+    const len = rng() * 30 + 5,
+      angle = rng() * Math.PI;
     ctx.beginPath();
     ctx.moveTo(x0, y0);
     ctx.lineTo(x0 + Math.cos(angle) * len, y0 + Math.sin(angle) * len);
@@ -321,8 +343,8 @@ export interface PBRMaps {
   roughnessMap: THREE.CanvasTexture;
 }
 
-const diffuseCache  = new Map<string, THREE.CanvasTexture>();
-const roughCache    = new Map<string, THREE.CanvasTexture>();
+const diffuseCache = new Map<string, THREE.CanvasTexture>();
+const roughCache = new Map<string, THREE.CanvasTexture>();
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
@@ -333,7 +355,7 @@ const roughCache    = new Map<string, THREE.CanvasTexture>();
 export function getPBRMaps(mat: Material): PBRMaps {
   if (diffuseCache.has(mat.id)) {
     return {
-      map:          diffuseCache.get(mat.id)!,
+      map: diffuseCache.get(mat.id)!,
       roughnessMap: roughCache.get(mat.id)!,
     };
   }
@@ -344,24 +366,33 @@ export function getPBRMaps(mat: Material): PBRMaps {
   let roughnessMap: THREE.CanvasTexture;
 
   const cat = mat.category;
-  const id  = mat.id;
+  const id = mat.id;
 
   // Diffuse map
-  if (cat === 'Concrete')       map = concreteDiffuse(mat.color, rng);
+  if (cat === 'Concrete') map = concreteDiffuse(mat.color, rng);
   else if (id.includes('brick') || id.includes('Brick')) map = brickDiffuse(mat.color, rng);
-  else if (cat === 'Masonry')   map = stoneDiffuse(mat.color, rng);
-  else if (cat === 'Timber')    map = woodDiffuse(mat.color, rng);
-  else if (cat === 'Metal')     map = metalDiffuse(mat.color, mat.roughness, rng);
-  else if (cat === 'Glass')     map = glassDiffuse(mat.color, rng);
-  else if (cat === 'Plaster')   map = plasterDiffuse(mat.color, rng);
-  else if (cat === 'Insulation')map = insulationDiffuse(mat.color, rng);
-  else if (cat === 'Flooring' && (id.includes('tile') || id.includes('ceramic') || id.includes('porcelain')))
-                                map = tileDiffuse(mat.color, 32, rng);
-  else if (cat === 'Flooring' && (id.includes('wood') || id.includes('laminate') || id.includes('solid') || id.includes('engineered')))
-                                map = woodDiffuse(mat.color, rng);
-  else if (cat === 'Tile')      map = tileDiffuse(mat.color, 24, rng);
+  else if (cat === 'Masonry') map = stoneDiffuse(mat.color, rng);
+  else if (cat === 'Timber') map = woodDiffuse(mat.color, rng);
+  else if (cat === 'Metal') map = metalDiffuse(mat.color, mat.roughness, rng);
+  else if (cat === 'Glass') map = glassDiffuse(mat.color, rng);
+  else if (cat === 'Plaster') map = plasterDiffuse(mat.color, rng);
+  else if (cat === 'Insulation') map = insulationDiffuse(mat.color, rng);
+  else if (
+    cat === 'Flooring' &&
+    (id.includes('tile') || id.includes('ceramic') || id.includes('porcelain'))
+  )
+    map = tileDiffuse(mat.color, 32, rng);
+  else if (
+    cat === 'Flooring' &&
+    (id.includes('wood') ||
+      id.includes('laminate') ||
+      id.includes('solid') ||
+      id.includes('engineered'))
+  )
+    map = woodDiffuse(mat.color, rng);
+  else if (cat === 'Tile') map = tileDiffuse(mat.color, 24, rng);
   else if (cat === 'Cladding' && id.includes('timber')) map = woodDiffuse(mat.color, rng);
-  else                          map = solidDiffuse(mat.color);
+  else map = solidDiffuse(mat.color);
 
   // Roughness map — noisy for rough surfaces, smooth gradient for polished
   if (mat.roughness < 0.25) {

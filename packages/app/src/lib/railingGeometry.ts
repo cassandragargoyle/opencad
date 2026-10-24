@@ -9,15 +9,18 @@
  * Compliance R008 is checked in complianceEngine.ts using topRailHeight.
  */
 
-export interface Point2D { x: number; y: number }
+export interface Point2D {
+  x: number;
+  y: number;
+}
 
 export type BalusterProfile = 'square' | 'turned' | 'cable' | 'glass';
 
 export interface RailingParams {
   path: Point2D[];
-  topRailHeight: number;          // mm above the path
-  postSpacing: number;             // mm — posts every N mm
-  balusterSpacing: number;         // mm — balusters between posts
+  topRailHeight: number; // mm above the path
+  postSpacing: number; // mm — posts every N mm
+  balusterSpacing: number; // mm — balusters between posts
   balusterProfile: BalusterProfile;
 }
 
@@ -34,11 +37,14 @@ export function computeRailing(params: RailingParams): RailingGeometry {
   const rails: RailingGeometry['rails'] = [];
 
   for (let i = 0; i < params.path.length - 1; i++) {
-    const a = params.path[i]!, b = params.path[i + 1]!;
-    const dx = b.x - a.x, dy = b.y - a.y;
+    const a = params.path[i]!,
+      b = params.path[i + 1]!;
+    const dx = b.x - a.x,
+      dy = b.y - a.y;
     const len = Math.hypot(dx, dy);
     if (len < 1) continue;
-    const ux = dx / len, uy = dy / len;
+    const ux = dx / len,
+      uy = dy / len;
     const n = Math.max(1, Math.ceil(len / params.postSpacing));
     const step = len / n;
     // Posts at 0..n (endpoints included)

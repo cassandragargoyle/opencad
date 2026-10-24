@@ -69,14 +69,31 @@ export function CommandPalette({ onClose, onExecute }: CommandPaletteProps) {
   const searchQuery = isAiMode ? query.slice(1).trim() : query.trim();
 
   const commands: Command[] = useMemo(
-    () => BUILT_IN_COMMANDS.map((c) => ({ ...c, action: () => onExecute({ ...c, action: () => {} }) })),
+    () =>
+      BUILT_IN_COMMANDS.map((c) => ({ ...c, action: () => onExecute({ ...c, action: () => {} }) })),
     [onExecute]
   );
 
   const results = useMemo(() => {
-    if (isAiMode) return [{ id: '__ai__', label: `AI: ${searchQuery || '…'}`, isAi: true, shortcut: undefined, command: undefined }];
-    const filtered = searchQuery === '' ? commands : commands.filter((c) => fuzzyMatch(searchQuery, c.label));
-    return filtered.map((c) => ({ id: c.id, label: c.label, shortcut: c.shortcut, isAi: false, command: c }));
+    if (isAiMode)
+      return [
+        {
+          id: '__ai__',
+          label: `AI: ${searchQuery || '…'}`,
+          isAi: true,
+          shortcut: undefined,
+          command: undefined,
+        },
+      ];
+    const filtered =
+      searchQuery === '' ? commands : commands.filter((c) => fuzzyMatch(searchQuery, c.label));
+    return filtered.map((c) => ({
+      id: c.id,
+      label: c.label,
+      shortcut: c.shortcut,
+      isAi: false,
+      command: c,
+    }));
   }, [isAiMode, searchQuery, commands]);
 
   const handleKeyDown = useCallback(
@@ -102,14 +119,20 @@ export function CommandPalette({ onClose, onExecute }: CommandPaletteProps) {
   );
 
   return (
-    <div className="command-palette" role="dialog" aria-label={t('commandPalette.ariaLabel', { defaultValue: 'Command Palette' })}>
+    <div
+      className="command-palette"
+      role="dialog"
+      aria-label={t('commandPalette.ariaLabel', { defaultValue: 'Command Palette' })}
+    >
       <input
         role="combobox"
         aria-autocomplete="list"
         aria-controls="command-palette-listbox"
         aria-expanded={results.length > 0}
         className="command-palette-input"
-        placeholder={t('commandPalette.placeholder', { defaultValue: 'Search commands, tools, views…' })}
+        placeholder={t('commandPalette.placeholder', {
+          defaultValue: 'Search commands, tools, views…',
+        })}
         value={query}
         autoFocus
         onChange={(e) => {
@@ -118,13 +141,11 @@ export function CommandPalette({ onClose, onExecute }: CommandPaletteProps) {
         }}
         onKeyDown={handleKeyDown}
       />
-      <ul
-        id="command-palette-listbox"
-        role="listbox"
-        className="command-palette-results"
-      >
+      <ul id="command-palette-listbox" role="listbox" className="command-palette-results">
         {results.length === 0 && !isAiMode && (
-          <li className="command-palette-empty">{t('commandPalette.empty', { defaultValue: 'No commands found' })}</li>
+          <li className="command-palette-empty">
+            {t('commandPalette.empty', { defaultValue: 'No commands found' })}
+          </li>
         )}
         {results.map((item, idx) => (
           <li
@@ -141,9 +162,7 @@ export function CommandPalette({ onClose, onExecute }: CommandPaletteProps) {
             }}
           >
             <span className="command-palette-label">{item.label}</span>
-            {item.shortcut && (
-              <span className="command-palette-shortcut">{item.shortcut}</span>
-            )}
+            {item.shortcut && <span className="command-palette-shortcut">{item.shortcut}</span>}
           </li>
         ))}
       </ul>

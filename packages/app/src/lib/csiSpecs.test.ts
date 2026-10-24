@@ -145,9 +145,7 @@ describe('T-SPEC-001: CSI specifications', () => {
   it('getApplicableSpecs returns steel section for beam element', () => {
     const specs = getApplicableSpecs('beam', 'steel');
     expect(specs.length).toBeGreaterThan(0);
-    const hasMetal = specs.some(
-      (s) => s.division === 5 || s.title.toLowerCase().includes('steel')
-    );
+    const hasMetal = specs.some((s) => s.division === 5 || s.title.toLowerCase().includes('steel'));
     expect(hasMetal).toBe(true);
   });
 

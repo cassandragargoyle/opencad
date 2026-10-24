@@ -4,11 +4,12 @@
 
 ## Why
 
-The current Section tab shows a view but does not *cut* anything — it is a separate mode with no live relationship to the model. Architects need to drop a section line on the plan, see everything beyond the line clipped away, see cut poché on every element the plane crosses, and have the section update the moment the model changes. Without this, detail drawings and construction documents cannot be produced from the model.
+The current Section tab shows a view but does not _cut_ anything — it is a separate mode with no live relationship to the model. Architects need to drop a section line on the plan, see everything beyond the line clipped away, see cut poché on every element the plane crosses, and have the section update the moment the model changes. Without this, detail drawings and construction documents cannot be produced from the model.
 
 ## Scope
 
 ### In scope
+
 - A new `Section` element type: a line on the plan with an `extent` depth behind it and a `viewDirection` vector.
 - Clicking "Create section" drops a two-click section line on the plan. The line immediately becomes a named view in the Navigator.
 - Opening the section view swaps the 3D viewport into an orthographic clipped mode: a `THREE.Plane` clips everything on the near side of the line; a depth clamp clips everything beyond `extent`.
@@ -18,6 +19,7 @@ The current Section tab shows a view but does not *cut* anything — it is a sep
 - Exports as SVG via the existing 2D drawing export path.
 
 ### Out of scope (this issue)
+
 - Multi-segment / stepped sections.
 - Detail callouts inside sections (that's T-DOC-008 layout-book territory).
 - Annotation on sections — lands after the section itself works.

@@ -229,7 +229,13 @@ export function VersionHistoryPanel(): React.ReactElement {
       ) : (
         <ul
           className="change-history-list"
-          style={{ listStyle: 'none', padding: 0, margin: 0, overflowY: 'auto', maxHeight: '300px' }}
+          style={{
+            listStyle: 'none',
+            padding: 0,
+            margin: 0,
+            overflowY: 'auto',
+            maxHeight: '300px',
+          }}
         >
           {recentChanges.map((record) => {
             const time = new Date(record.timestamp).toLocaleTimeString(undefined, {
@@ -247,11 +253,15 @@ export function VersionHistoryPanel(): React.ReactElement {
                   borderBottom: '1px solid var(--border-color, #333)',
                 }}
               >
-                <span className="change-time" style={{ opacity: 0.6 }}>[{time}]</span>{' '}
+                <span className="change-time" style={{ opacity: 0.6 }}>
+                  [{time}]
+                </span>{' '}
                 <span className="change-user">{record.userId}</span>{' '}
                 <span className={`change-verb change-verb-${record.type}`}>{verbFor(record)}</span>{' '}
                 <span className="change-element-type">{record.elementType}</span>{' '}
-                <span className="change-element-id" style={{ opacity: 0.7 }}>({record.elementId})</span>
+                <span className="change-element-id" style={{ opacity: 0.7 }}>
+                  ({record.elementId})
+                </span>
               </li>
             );
           })}

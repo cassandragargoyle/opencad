@@ -28,29 +28,29 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-import enCommon  from './locales/en/common.json';
+import enCommon from './locales/en/common.json';
 import enToolbar from './locales/en/toolbar.json';
-import enPanels  from './locales/en/panels.json';
+import enPanels from './locales/en/panels.json';
 import enDialogs from './locales/en/dialogs.json';
-import enErrors  from './locales/en/errors.json';
+import enErrors from './locales/en/errors.json';
 
 /** Locales the UI actively offers in the language picker.
  *  Ordered by the Top-10 most-spoken languages globally (rough L1+L2
  *  speaker counts, Ethnologue). Arabic is LTR in the menu for now —
  *  RTL layout flipping is tracked separately (v1 out of scope). */
 export const SUPPORTED_LOCALES: { code: string; label: string; native: string }[] = [
-  { code: 'en',    label: 'English',              native: 'English' },
+  { code: 'en', label: 'English', native: 'English' },
   { code: 'zh-CN', label: 'Chinese (Simplified)', native: '简体中文' },
-  { code: 'hi',    label: 'Hindi',                native: 'हिन्दी' },
-  { code: 'es',    label: 'Spanish',              native: 'Español' },
-  { code: 'fr',    label: 'French',               native: 'Français' },
-  { code: 'ar',    label: 'Arabic',               native: 'العربية' },
-  { code: 'he',    label: 'Hebrew',               native: 'עברית' },
-  { code: 'pt-BR', label: 'Portuguese (Brazil)',  native: 'Português (BR)' },
-  { code: 'ru',    label: 'Russian',              native: 'Русский' },
-  { code: 'de',    label: 'German',               native: 'Deutsch' },
-  { code: 'ja',    label: 'Japanese',             native: '日本語' },
-  { code: 'cs',    label: 'Czech',                native: 'Čeština' },
+  { code: 'hi', label: 'Hindi', native: 'हिन्दी' },
+  { code: 'es', label: 'Spanish', native: 'Español' },
+  { code: 'fr', label: 'French', native: 'Français' },
+  { code: 'ar', label: 'Arabic', native: 'العربية' },
+  { code: 'he', label: 'Hebrew', native: 'עברית' },
+  { code: 'pt-BR', label: 'Portuguese (Brazil)', native: 'Português (BR)' },
+  { code: 'ru', label: 'Russian', native: 'Русский' },
+  { code: 'de', label: 'German', native: 'Deutsch' },
+  { code: 'ja', label: 'Japanese', native: '日本語' },
+  { code: 'cs', label: 'Czech', native: 'Čeština' },
 ];
 
 export const DEFAULT_LOCALE = 'en';
@@ -68,11 +68,11 @@ async function loadBundle(lc: string): Promise<void> {
   // Dynamic import keeps non-default locales out of the initial bundle.
   // Each file loads on demand and i18next caches the result internally.
   const loaders: Record<Namespace, () => Promise<{ default: Record<string, unknown> }>> = {
-    common:  () => import(`./locales/${lc}/common.json`),
+    common: () => import(`./locales/${lc}/common.json`),
     toolbar: () => import(`./locales/${lc}/toolbar.json`),
-    panels:  () => import(`./locales/${lc}/panels.json`),
+    panels: () => import(`./locales/${lc}/panels.json`),
     dialogs: () => import(`./locales/${lc}/dialogs.json`),
-    errors:  () => import(`./locales/${lc}/errors.json`),
+    errors: () => import(`./locales/${lc}/errors.json`),
   };
 
   await Promise.all(
@@ -84,7 +84,7 @@ async function loadBundle(lc: string): Promise<void> {
         // Locale may not have this namespace translated yet — silently
         // fall back to English for those keys via i18next's fallbackLng.
       }
-    }),
+    })
   );
 }
 
@@ -101,7 +101,11 @@ export async function setLocale(lc: string): Promise<void> {
   await loadBundle(lc);
   await i18n.changeLanguage(lc);
   applyDir(lc);
-  try { localStorage.setItem('opencad-locale', lc); } catch { /* quota */ }
+  try {
+    localStorage.setItem('opencad-locale', lc);
+  } catch {
+    /* quota */
+  }
 }
 
 // ─── Initialise ──────────────────────────────────────────────────────────────
@@ -128,18 +132,18 @@ void i18n
     // but who still expect to see their language rather than English.
     fallbackLng: {
       // Chinese — all regional variants fall back to Simplified.
-      'zh-TW':    ['zh-CN', 'en'],
-      'zh-HK':    ['zh-CN', 'en'],
-      'zh-SG':    ['zh-CN', 'en'],
+      'zh-TW': ['zh-CN', 'en'],
+      'zh-HK': ['zh-CN', 'en'],
+      'zh-SG': ['zh-CN', 'en'],
       // Portuguese — European Portuguese users get the Brazilian bundle.
-      'pt-PT':    ['pt-BR', 'en'],
-      'pt':       ['pt-BR', 'en'],
+      'pt-PT': ['pt-BR', 'en'],
+      pt: ['pt-BR', 'en'],
       // Spanish regions — en-US/en-GB-style collapse to the base locale.
-      'es-MX':    ['es', 'en'],
-      'es-AR':    ['es', 'en'],
-      'es-ES':    ['es', 'en'],
+      'es-MX': ['es', 'en'],
+      'es-AR': ['es', 'en'],
+      'es-ES': ['es', 'en'],
       // Default fallback when nothing else matches.
-      'default':  [DEFAULT_LOCALE],
+      default: [DEFAULT_LOCALE],
     },
     // load: 'languageOnly' means 'en-US' → 'en', 'de-AT' → 'de' etc.
     // We still honour region codes we explicitly ship (pt-BR, zh-CN).

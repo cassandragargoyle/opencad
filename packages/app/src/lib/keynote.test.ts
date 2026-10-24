@@ -47,7 +47,7 @@ describe('T-VIEW-05: keynote', () => {
   it('filterKeynotesByType returns only model keynotes', () => {
     const table = createKeynoteTable();
     addKeynote(table, { type: 'model', code: 'M-01', text: 'Model note' });
-    addKeynote(table, { type: 'user',  code: 'U-01', text: 'User note'  });
+    addKeynote(table, { type: 'user', code: 'U-01', text: 'User note' });
     const model = filterKeynotesByType(table, 'model');
     expect(model).toHaveLength(1);
     expect(model[0]?.text).toBe('Model note');
@@ -56,7 +56,7 @@ describe('T-VIEW-05: keynote', () => {
   it('filterKeynotesByType returns only user keynotes', () => {
     const table = createKeynoteTable();
     addKeynote(table, { type: 'model', code: 'M-01', text: 'Model note' });
-    addKeynote(table, { type: 'user',  code: 'U-01', text: 'User note'  });
+    addKeynote(table, { type: 'user', code: 'U-01', text: 'User note' });
     const user = filterKeynotesByType(table, 'user');
     expect(user).toHaveLength(1);
     expect(user[0]?.text).toBe('User note');
@@ -74,7 +74,7 @@ describe('T-VIEW-05: keynote', () => {
   it('addKeynote continues incrementing numbers across types', () => {
     const table = createKeynoteTable();
     addKeynote(table, { type: 'model', code: 'M-01', text: 'First' });
-    addKeynote(table, { type: 'user',  code: 'U-01', text: 'Second' });
+    addKeynote(table, { type: 'user', code: 'U-01', text: 'Second' });
     addKeynote(table, { type: 'model', code: 'M-02', text: 'Third' });
     const nums = table.entries.map((e) => e.number);
     expect(nums).toEqual([1, 2, 3]);

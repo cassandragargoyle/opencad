@@ -5,10 +5,18 @@ import { PresenceOverlay, type CollaboratorPresence } from './PresenceOverlay';
 expect.extend(jestDomMatchers);
 
 describe('T-COL-010: PresenceOverlay', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const collaborators: CollaboratorPresence[] = [
-    { userId: 'u1', name: 'Alice', color: '#e74c3c', cursor: { x: 100, y: 200 }, activeTool: 'select' },
+    {
+      userId: 'u1',
+      name: 'Alice',
+      color: '#e74c3c',
+      cursor: { x: 100, y: 200 },
+      activeTool: 'select',
+    },
     { userId: 'u2', name: 'Bob', color: '#3498db', cursor: { x: 300, y: 400 }, activeTool: 'wall' },
   ];
 
@@ -36,7 +44,9 @@ describe('T-COL-010: PresenceOverlay', () => {
   it('positions cursor based on x/y coordinates', () => {
     render(<PresenceOverlay collaborators={[collaborators[0]!]} />);
     const cursor = document.querySelector('.collaborator-cursor') as HTMLElement;
-    expect(cursor.style.left || cursor.style.transform || cursor.getAttribute('style')).toBeTruthy();
+    expect(
+      cursor.style.left || cursor.style.transform || cursor.getAttribute('style')
+    ).toBeTruthy();
   });
 
   it('shows avatar with collaborator color', () => {

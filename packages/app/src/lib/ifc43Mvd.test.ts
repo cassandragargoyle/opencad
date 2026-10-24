@@ -100,9 +100,7 @@ describe('validateAlignment', () => {
   it('returns error for invalid segmentType', () => {
     const bad = {
       ...sampleAlignment,
-      segments: [
-        { ...sampleAlignment.segments[0], segmentType: 'Unknown' as 'Line' },
-      ],
+      segments: [{ ...sampleAlignment.segments[0], segmentType: 'Unknown' as 'Line' }],
     };
     const result = validateAlignment(bad);
     expect(result.valid).toBe(false);
@@ -130,7 +128,17 @@ describe('computeAlignmentLength', () => {
     const single: IFC43HorizontalAlignment = {
       id: 'x',
       name: 'X',
-      segments: [{ id: 's1', segmentType: 'Line', startStation: 0, length: 250, startX: 0, startY: 0, azimuthRad: 0 }],
+      segments: [
+        {
+          id: 's1',
+          segmentType: 'Line',
+          startStation: 0,
+          length: 250,
+          startX: 0,
+          startY: 0,
+          azimuthRad: 0,
+        },
+      ],
     };
     expect(computeAlignmentLength(single)).toBe(250);
   });

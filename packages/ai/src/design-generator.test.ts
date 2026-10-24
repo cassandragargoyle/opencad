@@ -12,9 +12,36 @@ import { aiOrchestrator } from './orchestrator';
 
 const mockLivingRoomPlan = JSON.stringify({
   rooms: [
-    { name: 'Living Room', area: 250, width: 16, depth: 16, x: 0, y: 0, windows: [{ wall: 'south', position: 0.5, width: 6 }], doors: [{ wall: 'east', position: 0.5, type: 'interior' }] },
-    { name: 'Kitchen', area: 120, width: 10, depth: 12, x: 16, y: 0, windows: [{ wall: 'north', position: 0.3, width: 4 }], doors: [{ wall: 'west', position: 0.5, type: 'interior' }] },
-    { name: 'Bedroom', area: 180, width: 13, depth: 14, x: 0, y: 16, windows: [{ wall: 'east', position: 0.5, width: 5 }], doors: [{ wall: 'north', position: 0.5, type: 'interior' }] },
+    {
+      name: 'Living Room',
+      area: 250,
+      width: 16,
+      depth: 16,
+      x: 0,
+      y: 0,
+      windows: [{ wall: 'south', position: 0.5, width: 6 }],
+      doors: [{ wall: 'east', position: 0.5, type: 'interior' }],
+    },
+    {
+      name: 'Kitchen',
+      area: 120,
+      width: 10,
+      depth: 12,
+      x: 16,
+      y: 0,
+      windows: [{ wall: 'north', position: 0.3, width: 4 }],
+      doors: [{ wall: 'west', position: 0.5, type: 'interior' }],
+    },
+    {
+      name: 'Bedroom',
+      area: 180,
+      width: 13,
+      depth: 14,
+      x: 0,
+      y: 16,
+      windows: [{ wall: 'east', position: 0.5, width: 5 }],
+      doors: [{ wall: 'north', position: 0.5, type: 'interior' }],
+    },
   ],
   circulation: [
     { from: 'Living Room', to: 'Kitchen', type: 'direct' },

@@ -67,7 +67,11 @@ describe('T-IO-007: BCF issue roundtrip', () => {
   });
 
   it('should serialize and parse BCF file roundtrip', () => {
-    const topic = createBCFTopic({ title: 'Clash issue', author: 'a@opencad.io', description: 'desc' });
+    const topic = createBCFTopic({
+      title: 'Clash issue',
+      author: 'a@opencad.io',
+      description: 'desc',
+    });
     const bcfFile: BCFFile = {
       version: '3.0',
       project: { project_id: 'proj-001', project_name: 'Test Project' },
@@ -98,7 +102,12 @@ describe('T-IO-007: BCF issue roundtrip', () => {
   it('should roundtrip multiple topics', () => {
     const topics: BCFTopic[] = [
       createBCFTopic({ title: 'Topic 1', author: 'a@opencad.io', type: 'Issue' }),
-      createBCFTopic({ title: 'Topic 2', author: 'b@opencad.io', type: 'Request', status: 'Resolved' }),
+      createBCFTopic({
+        title: 'Topic 2',
+        author: 'b@opencad.io',
+        type: 'Request',
+        status: 'Resolved',
+      }),
       createBCFTopic({ title: 'Topic 3', author: 'c@opencad.io', priority: 'Critical' }),
     ];
     const bcfFile: BCFFile = { version: '3.0', topics };
@@ -182,9 +191,22 @@ describe('T-IO-008: COBie spreadsheet export', () => {
       geometry: { type: 'brep', data: null },
       layerId,
       levelId: null,
-      transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-      boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 1, y: 1, z: 1, _type: 'Point3D' } },
-      metadata: { id: 'door-1', createdBy: 'user-001', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+      transform: {
+        translation: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+        max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
+      },
+      metadata: {
+        id: 'door-1',
+        createdBy: 'user-001',
+        createdAt: 0,
+        updatedAt: 0,
+        version: { clock: {} },
+      },
       visible: true,
       locked: false,
     };
@@ -206,9 +228,22 @@ describe('T-IO-008: COBie spreadsheet export', () => {
       geometry: { type: 'brep', data: null },
       layerId,
       levelId: null,
-      transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-      boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 1, y: 1, z: 1, _type: 'Point3D' } },
-      metadata: { id: 'line-1', createdBy: 'user-001', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+      transform: {
+        translation: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+        max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
+      },
+      metadata: {
+        id: 'line-1',
+        createdBy: 'user-001',
+        createdAt: 0,
+        updatedAt: 0,
+        version: { clock: {} },
+      },
       visible: true,
       locked: false,
     };
@@ -239,12 +274,25 @@ describe('T-IO-008: COBie spreadsheet export', () => {
     const doc = createProject('cobie-test', 'user-001');
     const layerId = Object.keys(doc.organization.layers)[0]!;
     doc.content.elements['w1'] = {
-      id: 'w1', type: 'wall', properties: {}, propertySets: [],
-      geometry: { type: 'brep', data: null }, layerId, levelId: null,
-      transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-      boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 1, y: 1, z: 1, _type: 'Point3D' } },
+      id: 'w1',
+      type: 'wall',
+      properties: {},
+      propertySets: [],
+      geometry: { type: 'brep', data: null },
+      layerId,
+      levelId: null,
+      transform: {
+        translation: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+        max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
+      },
       metadata: { id: 'w1', createdBy: 'u', createdAt: 0, updatedAt: 0, version: { clock: {} } },
-      visible: true, locked: false,
+      visible: true,
+      locked: false,
     };
     const cobie = documentToCOBie(doc, 'fm@opencad.io');
     expect(cobie.Types.some((t) => t.Name === 'wall')).toBe(true);

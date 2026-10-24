@@ -156,8 +156,7 @@ export class IFC4Parser extends IFCParser {
 
   private _parseNURBS(out: ParsedGeometryEntity[]): void {
     // Match IFCRATIONALBSPLINECURVEWITHKNOTS(degree,(#refs),...)
-    const re =
-      /#(\d+)\s*=\s*IFCRATIONALBSPLINECURVEWITHKNOTS\s*\((\d+)\s*,\s*\(([^)]+)\)/gi;
+    const re = /#(\d+)\s*=\s*IFCRATIONALBSPLINECURVEWITHKNOTS\s*\((\d+)\s*,\s*\(([^)]+)\)/gi;
     let m;
     while ((m = re.exec(this.content)) !== null) {
       const [, id, degreeStr, refs] = m;
@@ -195,10 +194,7 @@ export class IFC4Parser extends IFCParser {
   private _getCartesianPoint(ref: string): { x: number; y: number; z: number } | null {
     // Match: #N=IFCCARTESIANPOINT((x.,y.,z.));
     const id = ref.slice(1);
-    const re = new RegExp(
-      `#${id}\\s*=\\s*IFCCARTESIANPOINT\\s*\\(\\s*\\(([^)]+)\\)\\s*\\)`,
-      'i'
-    );
+    const re = new RegExp(`#${id}\\s*=\\s*IFCCARTESIANPOINT\\s*\\(\\s*\\(([^)]+)\\)\\s*\\)`, 'i');
     const m = this.content.match(re);
     if (!m) return null;
     const coords = m[1].split(',').map((s) => parseFloat(s.trim()));
@@ -265,9 +261,7 @@ export class IFCSerializer {
     if (!level) return [];
 
     const lineNum = this.lineNumber++;
-    return [
-      `#${lineNum}=IFCBUILDINGSTOREY('${id}',$,'${level.name}',$,$,#${lineNum + 1},$,$,$);`,
-    ];
+    return [`#${lineNum}=IFCBUILDINGSTOREY('${id}',$,'${level.name}',$,$,#${lineNum + 1},$,$,$);`];
   }
 
   private _serializeElement(element: ElementSchema): string[] {
@@ -497,19 +491,19 @@ export class IFCSerializer {
       wall: 'IFCWALLSTANDARDCASE',
       door: 'IFCDOOR',
       window: 'IFCWINDOW',
-      skylight: 'IFCWINDOW',                   // roof-mounted window
+      skylight: 'IFCWINDOW', // roof-mounted window
       slab: 'IFCSLAB',
       roof: 'IFCROOF',
-      ceiling: 'IFCCOVERING',                  // IfcCovering PredefinedType=CEILING
+      ceiling: 'IFCCOVERING', // IfcCovering PredefinedType=CEILING
       foundation: 'IFCFOOTING',
       column: 'IFCCOLUMN',
       beam: 'IFCBEAM',
-      truss: 'IFCBUILDINGELEMENTPROXY',        // composite member; proxy to preserve
-      brace: 'IFCMEMBER',                      // IfcMember BRACE
+      truss: 'IFCBUILDINGELEMENTPROXY', // composite member; proxy to preserve
+      brace: 'IFCMEMBER', // IfcMember BRACE
       stair: 'IFCSTAIR',
       ramp: 'IFCRAMP',
       railing: 'IFCRAILING',
-      mass: 'IFCBUILDINGELEMENTPROXY',         // schematic-design mass
+      mass: 'IFCBUILDINGELEMENTPROXY', // schematic-design mass
       space: 'IFCSPACE',
       curtain_wall: 'IFCCURTAINWALL',
       // ── MEP ──────────────────────────────────────────────────────────────
@@ -573,8 +567,7 @@ export function parsePropertySets(content: string): IFCPropertySet[] {
 
   // Parse individual property values first: #id=IFCPROPERTYSINGLEVALUE('name',$,value,$)
   const propValues: Record<string, { name: string; value: string | number | boolean }> = {};
-  const propRe =
-    /#(\d+)\s*=\s*IFCPROPERTYSINGLEVALUE\s*\(\s*'([^']+)'\s*,\s*\$\s*,\s*([^,]+)/gi;
+  const propRe = /#(\d+)\s*=\s*IFCPROPERTYSINGLEVALUE\s*\(\s*'([^']+)'\s*,\s*\$\s*,\s*([^,]+)/gi;
   let pm;
   while ((pm = propRe.exec(content)) !== null) {
     const [, id, name, rawVal] = pm;
@@ -604,7 +597,7 @@ export function parsePropertySets(content: string): IFCPropertySet[] {
   let psm;
   while ((psm = psetRe.exec(content)) !== null) {
     const [, id, name, refsStr] = psm;
-    const refs = (refsStr.match(/#\d+/g) ?? []);
+    const refs = refsStr.match(/#\d+/g) ?? [];
     const properties: Record<string, string | number | boolean> = {};
     for (const ref of refs) {
       const pv = propValues[ref];
@@ -624,8 +617,8 @@ export function parsePropertySets(content: string): IFCPropertySet[] {
   let rm;
   while ((rm = relRe.exec(content)) !== null) {
     const [, , objRefsStr, psetRefsStr] = rm;
-    const objRefs = (objRefsStr.match(/#\d+/g) ?? []);
-    const psetRefs = (psetRefsStr.match(/#\d+/g) ?? []);
+    const objRefs = objRefsStr.match(/#\d+/g) ?? [];
+    const psetRefs = psetRefsStr.match(/#\d+/g) ?? [];
     for (const psetRef of psetRefs) {
       const pset = psets.find((p) => p.id === psetRef);
       if (pset) {
@@ -649,7 +642,9 @@ export interface PsetDef {
  * Extracts psets from an element's flat `properties` map.
  * Properties namespaced as `Pset_<Name>.<Key>` are grouped into PsetDef objects.
  */
-export function extractPsets(el: { properties: Record<string, { type: string; value: unknown }> }): PsetDef[] {
+export function extractPsets(el: {
+  properties: Record<string, { type: string; value: unknown }>;
+}): PsetDef[] {
   const map = new Map<string, Record<string, string | number | boolean>>();
 
   for (const [key, propVal] of Object.entries(el.properties)) {
@@ -671,10 +666,18 @@ export function extractPsets(el: { properties: Record<string, { type: string; va
  * `<pset.name>.<key>`. Returns a new element without mutating the original.
  */
 export function applyPset(
-  el: { properties: Record<string, { type: 'string' | 'number' | 'boolean' | 'enum' | 'reference'; value: unknown }> },
-  pset: PsetDef,
+  el: {
+    properties: Record<
+      string,
+      { type: 'string' | 'number' | 'boolean' | 'enum' | 'reference'; value: unknown }
+    >;
+  },
+  pset: PsetDef
 ): typeof el {
-  const added: Record<string, { type: 'string' | 'number' | 'boolean'; value: string | number | boolean }> = {};
+  const added: Record<
+    string,
+    { type: 'string' | 'number' | 'boolean'; value: string | number | boolean }
+  > = {};
 
   for (const [key, value] of Object.entries(pset.properties)) {
     const nsKey = `${pset.name}.${key}`;
@@ -701,10 +704,7 @@ export function extractEntityCoordinates(
 ): { x: number; y: number; z: number } | null {
   try {
     const id = entityRef.replace(/^#/, '');
-    const re = new RegExp(
-      `#${id}\\s*=\\s*IFCCARTESIANPOINT\\s*\\(\\s*\\(([^)]+)\\)\\s*\\)`,
-      'i'
-    );
+    const re = new RegExp(`#${id}\\s*=\\s*IFCCARTESIANPOINT\\s*\\(\\s*\\(([^)]+)\\)\\s*\\)`, 'i');
     const m = content.match(re);
     if (!m) return null;
     const coords = m[1].split(',').map((s) => parseFloat(s.trim()));
@@ -758,10 +758,7 @@ export function extractWallDimensions(
     for (const ref of candidateRefs) {
       const id = ref.replace('#', '');
       // Check if this ref is an IFCLOCALPLACEMENT
-      const placementLineRe = new RegExp(
-        `#${id}\\s*=\\s*IFCLOCALPLACEMENT\\s*\\(([^)]*)\\)`,
-        'i'
-      );
+      const placementLineRe = new RegExp(`#${id}\\s*=\\s*IFCLOCALPLACEMENT\\s*\\(([^)]*)\\)`, 'i');
       const placementMatch = content.match(placementLineRe);
       if (!placementMatch) continue;
 
@@ -771,10 +768,7 @@ export function extractWallDimensions(
 
       for (const aRef of axis2Ref) {
         const aId = aRef.replace('#', '');
-        const axis2Re = new RegExp(
-          `#${aId}\\s*=\\s*IFCAXIS2PLACEMENT3D\\s*\\(([^)]*)\\)`,
-          'i'
-        );
+        const axis2Re = new RegExp(`#${aId}\\s*=\\s*IFCAXIS2PLACEMENT3D\\s*\\(([^)]*)\\)`, 'i');
         const axis2Match = content.match(axis2Re);
         if (!axis2Match) continue;
 
@@ -959,8 +953,7 @@ export function parseIFC(content: string): DocumentSchema {
 
   // Pre-check: skip geometry extraction entirely if the file has no geometry
   // entities — avoids per-entity regex scans on files without IFC geometry.
-  const hasGeometry =
-    /IFCEXTRUDEDAREASOLID/i.test(content) || /IFCLOCALPLACEMENT/i.test(content);
+  const hasGeometry = /IFCEXTRUDEDAREASOLID/i.test(content) || /IFCLOCALPLACEMENT/i.test(content);
 
   entities.forEach((entity) => {
     const elementId = crypto.randomUUID();
@@ -972,10 +965,10 @@ export function parseIFC(content: string): DocumentSchema {
       ? (() => {
           const lineRe = new RegExp(
             String.raw`#\d+=` +
-            entity.type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
-            String.raw`\('` +
-            entity.guid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
-            String.raw`'[^\n]*bbox:([\d.+-]+),([\d.+-]+),([\d.+-]+):([\d.+-]+),([\d.+-]+),([\d.+-]+)`
+              entity.type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
+              String.raw`\('` +
+              entity.guid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
+              String.raw`'[^\n]*bbox:([\d.+-]+),([\d.+-]+),([\d.+-]+):([\d.+-]+),([\d.+-]+),([\d.+-]+)`
           );
           return content.match(lineRe);
         })()
@@ -1002,10 +995,18 @@ export function parseIFC(content: string): DocumentSchema {
 
     // Get psets associated with this entity's IFC id
     const elementPsets = (entityPsets[entity.id] ?? []).map((ps) => {
-      const propRecord: Record<string, { type: 'string' | 'number' | 'boolean'; value: string | number | boolean }> = {};
+      const propRecord: Record<
+        string,
+        { type: 'string' | 'number' | 'boolean'; value: string | number | boolean }
+      > = {};
       for (const [propName, propVal] of Object.entries(ps.properties)) {
         propRecord[propName] = {
-          type: typeof propVal === 'boolean' ? 'boolean' : typeof propVal === 'number' ? 'number' : 'string',
+          type:
+            typeof propVal === 'boolean'
+              ? 'boolean'
+              : typeof propVal === 'number'
+                ? 'number'
+                : 'string',
           value: propVal,
         };
       }
@@ -1013,12 +1014,19 @@ export function parseIFC(content: string): DocumentSchema {
     });
 
     // Build initial properties
-    const elementProperties: Record<string, { type: 'string' | 'number' | 'boolean'; value: string | number | boolean }> = {
+    const elementProperties: Record<
+      string,
+      { type: 'string' | 'number' | 'boolean'; value: string | number | boolean }
+    > = {
       Name: { type: 'string', value: entity.name },
     };
 
     // ── Dimensional extraction for wall/slab elements ────────────────────────
-    if (hasGeometry && (entity.elementType === 'wall' || entity.elementType === 'slab') && entity.rawLine) {
+    if (
+      hasGeometry &&
+      (entity.elementType === 'wall' || entity.elementType === 'slab') &&
+      entity.rawLine
+    ) {
       const dims = extractWallDimensions(content, entity.rawLine);
       if (dims) {
         elementProperties['StartX'] = { type: 'number', value: dims.startX };
@@ -1100,7 +1108,7 @@ export function serializeIFC(document: DocumentSchema, options: SerializeOptions
  *  - ISO-10303-21 envelope with FILE_DESCRIPTION, FILE_NAME, FILE_SCHEMA
  *  - IFCPROJECT, IFCSITE, IFCBUILDING
  *  - IFCBUILDINGSTOREY for every level in doc.organization.levels
-*  - IFCWALL / IFCWALLSTANDARDCASE for every wall element
+ *  - IFCWALL / IFCWALLSTANDARDCASE for every wall element
  */
 export function exportToIFC(doc: DocumentSchema): string {
   const lines: string[] = [];
@@ -1119,29 +1127,33 @@ export function exportToIFC(doc: DocumentSchema): string {
   lines.push('ENDSEC;');
   lines.push('DATA;');
 
-  const idProject  = next();
-  const idSite     = next();
+  const idProject = next();
+  const idSite = next();
   const idBuilding = next();
 
-  lines.push(`#${idProject}=IFCPROJECT('${doc.id}',$,'${projectName}',$,$,$,$,(),#${idProject + 100});`);
+  lines.push(
+    `#${idProject}=IFCPROJECT('${doc.id}',$,'${projectName}',$,$,$,$,(),#${idProject + 100});`
+  );
   lines.push(`#${idSite}=IFCSITE('${doc.id}-site',$,'Site',$,$,$,$,$,.ELEMENT.,$,$,$,$,());`);
-  lines.push(`#${idBuilding}=IFCBUILDING('${doc.id}-bldg',$,'Building',$,$,$,$,$,.ELEMENT.,$,$,());`);
+  lines.push(
+    `#${idBuilding}=IFCBUILDING('${doc.id}-bldg',$,'Building',$,$,$,$,$,.ELEMENT.,$,$,());`
+  );
 
   const levels = Object.values(doc.organization.levels);
   const storeyIds: Record<string, number> = {};
   for (const level of levels) {
     const sid = next();
     storeyIds[level.id] = sid;
-    lines.push(`#${sid}=IFCBUILDINGSTOREY('${level.id}',$,'${level.name}',$,$,$,$,$,.ELEMENT.,${level.elevation}.);`);
+    lines.push(
+      `#${sid}=IFCBUILDINGSTOREY('${level.id}',$,'${level.name}',$,$,$,$,$,.ELEMENT.,${level.elevation}.);`
+    );
   }
 
   const walls = Object.values(doc.content.elements).filter((e) => e.type === 'wall');
   for (const wall of walls) {
     const wid = next();
     const name = (wall.properties['Name']?.value as string) || 'Wall';
-    const storeyRef = wall.levelId && storeyIds[wall.levelId]
-      ? `#${storeyIds[wall.levelId]}`
-      : '$';
+    const storeyRef = wall.levelId && storeyIds[wall.levelId] ? `#${storeyIds[wall.levelId]}` : '$';
     const bbox = wall.boundingBox;
     const bboxComment = ` /* bbox:${bbox.min.x},${bbox.min.y},${bbox.min.z}:${bbox.max.x},${bbox.max.y},${bbox.max.z} */`;
     lines.push(`#${wid}=IFCWALL('${wall.id}',$,'${name}',$,$,${storeyRef},$,$);${bboxComment}`);
@@ -1253,34 +1265,36 @@ export interface IFC43ExportOptions {
  *    railing, roof, space, furniture, planting)
  *  - 22-char base64 GUID preservation for re-imported elements
  */
-export function exportIFC43(
-  doc: DocumentSchema,
-  opts: IFC43ExportOptions = {},
-): string {
+export function exportIFC43(doc: DocumentSchema, opts: IFC43ExportOptions = {}): string {
   const author = opts.author ?? 'OpenCAD';
-  const org    = opts.organisation ?? '';
+  const org = opts.organisation ?? '';
   const lines: string[] = [];
   let nextId = 1;
   const next = (): number => nextId++;
 
-  const now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z/, '');
+  const now = new Date()
+    .toISOString()
+    .replace(/[-:]/g, '')
+    .replace(/\.\d+Z/, '');
   const projectName = doc.name || 'OpenCAD Project';
 
   // ── Header ────────────────────────────────────────────────────────────────
   lines.push('ISO-10303-21;');
   lines.push('HEADER;');
   lines.push(`FILE_DESCRIPTION(('ViewDefinition [ReferenceView_V1.2]'),'2;1');`);
-  lines.push(`FILE_NAME('${escStep(projectName)}','${now}',('${escStep(author)}'),('${escStep(org)}'),'','OpenCAD','');`);
+  lines.push(
+    `FILE_NAME('${escStep(projectName)}','${now}',('${escStep(author)}'),('${escStep(org)}'),'','OpenCAD','');`
+  );
   lines.push(`FILE_SCHEMA(('IFC4X3_ADD2'));`);
   lines.push('ENDSEC;');
   lines.push('DATA;');
 
   // ── Geometry context ──────────────────────────────────────────────────────
-  const idGeomCtx  = next(); // IfcGeometricRepresentationContext
-  const idDirZ     = next(); // IfcDirection (0,0,1)
-  const idDirX     = next(); // IfcDirection (1,0,0)
-  const idOrigin   = next(); // IfcCartesianPoint (0,0,0)
-  const idAxis     = next(); // IfcAxis2Placement3D
+  const idGeomCtx = next(); // IfcGeometricRepresentationContext
+  const idDirZ = next(); // IfcDirection (0,0,1)
+  const idDirX = next(); // IfcDirection (1,0,0)
+  const idOrigin = next(); // IfcCartesianPoint (0,0,0)
+  const idAxis = next(); // IfcAxis2Placement3D
   lines.push(`#${idDirZ}=IFCDIRECTION((0.,0.,1.));`);
   lines.push(`#${idDirX}=IFCDIRECTION((1.,0.,0.));`);
   lines.push(`#${idOrigin}=IFCCARTESIANPOINT((0.,0.,0.));`);
@@ -1288,23 +1302,29 @@ export function exportIFC43(
   lines.push(`#${idGeomCtx}=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.E-05,#${idAxis},$);`);
 
   // ── Unit assignment (SI, millimetres) ─────────────────────────────────────
-  const idLenUnit  = next(); // IfcSIUnit (millimetre)
+  const idLenUnit = next(); // IfcSIUnit (millimetre)
   const idAreaUnit = next(); // IfcSIUnit (square metre – derived)
-  const idVolUnit  = next(); // IfcSIUnit (cubic metre – derived)
-  const idUnitAss  = next(); // IfcUnitAssignment
+  const idVolUnit = next(); // IfcSIUnit (cubic metre – derived)
+  const idUnitAss = next(); // IfcUnitAssignment
   lines.push(`#${idLenUnit}=IFCSIUNIT(*,.LENGTHUNIT.,.MILLI.,.METRE.);`);
   lines.push(`#${idAreaUnit}=IFCSIUNIT(*,.AREAUNIT.,$,.SQUARE_METRE.);`);
   lines.push(`#${idVolUnit}=IFCSIUNIT(*,.VOLUMEUNIT.,$,.CUBIC_METRE.);`);
   lines.push(`#${idUnitAss}=IFCUNITASSIGNMENT((#${idLenUnit},#${idAreaUnit},#${idVolUnit}));`);
 
   // ── Project hierarchy ────────────────────────────────────────────────────
-  const idProject  = next();
-  const idSite     = next();
+  const idProject = next();
+  const idSite = next();
   const idBuilding = next();
   const projectGuid = toIFC43Guid(doc.id);
-  lines.push(`#${idProject}=IFCPROJECT('${projectGuid}',$,'${escStep(projectName)}',$,$,$,$,(#${idGeomCtx}),#${idUnitAss});`);
-  lines.push(`#${idSite}=IFCSITE('${toIFC43Guid(doc.id + '-site')}',$,'Site',$,$,$,$,$,.ELEMENT.,$,$,$,$,());`);
-  lines.push(`#${idBuilding}=IFCBUILDING('${toIFC43Guid(doc.id + '-bldg')}',$,'Building',$,$,$,$,$,.ELEMENT.,$,$,());`);
+  lines.push(
+    `#${idProject}=IFCPROJECT('${projectGuid}',$,'${escStep(projectName)}',$,$,$,$,(#${idGeomCtx}),#${idUnitAss});`
+  );
+  lines.push(
+    `#${idSite}=IFCSITE('${toIFC43Guid(doc.id + '-site')}',$,'Site',$,$,$,$,$,.ELEMENT.,$,$,$,$,());`
+  );
+  lines.push(
+    `#${idBuilding}=IFCBUILDING('${toIFC43Guid(doc.id + '-bldg')}',$,'Building',$,$,$,$,$,.ELEMENT.,$,$,());`
+  );
 
   // Aggregate: project -> site -> building
   const idAgg1 = next();
@@ -1321,7 +1341,9 @@ export function exportIFC43(
     const sid = next();
     storeyEntityId[level.id] = sid;
     storeyElementIds[level.id] = [];
-    lines.push(`#${sid}=IFCBUILDINGSTOREY('${toIFC43Guid(level.id)}',$,'${escStep(level.name)}',$,$,$,$,$,.ELEMENT.,${level.elevation}.);`);
+    lines.push(
+      `#${sid}=IFCBUILDINGSTOREY('${toIFC43Guid(level.id)}',$,'${escStep(level.name)}',$,$,$,$,$,.ELEMENT.,${level.elevation}.);`
+    );
   }
 
   // Aggregate building -> storeys
@@ -1352,21 +1374,24 @@ export function exportIFC43(
 
     // Export propertySets
     for (const pset of el.propertySets ?? []) {
-      const props = Object.entries(pset.properties ?? {})
-        .map(([key, pv]) => {
-          const pid = next();
-          const val = ifcPropValue(pv.type, pv.value);
-          lines.push(`#${pid}=IFCPROPERTYSINGLEVALUE('${escStep(key)}',$,${val},$);`);
-          return `#${pid}`;
-        });
+      const props = Object.entries(pset.properties ?? {}).map(([key, pv]) => {
+        const pid = next();
+        const val = ifcPropValue(pv.type, pv.value);
+        lines.push(`#${pid}=IFCPROPERTYSINGLEVALUE('${escStep(key)}',$,${val},$);`);
+        return `#${pid}`;
+      });
 
       if (props.length > 0) {
         const psetId = next();
-        lines.push(`#${psetId}=IFCPROPERTYSET('${newGuid()}',$,'${escStep(pset.name)}',$,(${props.join(',')}));`);
+        lines.push(
+          `#${psetId}=IFCPROPERTYSET('${newGuid()}',$,'${escStep(pset.name)}',$,(${props.join(',')}));`
+        );
 
         const relId = next();
         psetRelIds.push(relId);
-        lines.push(`#${relId}=IFCRELDEFINESBYPROPERTIES('${newGuid()}',$,$,$,(#${eid}),#${psetId});`);
+        lines.push(
+          `#${relId}=IFCRELDEFINESBYPROPERTIES('${newGuid()}',$,$,$,(#${eid}),#${psetId});`
+        );
       }
     }
   }
@@ -1375,7 +1400,9 @@ export function exportIFC43(
   for (const level of levels) {
     const eids = storeyElementIds[level.id];
     if (eids && eids.length > 0) {
-      lines.push(`#${next()}=IFCRELCONTAINEDINSPATIALSTRUCTURE('${newGuid()}',$,$,$,(${eids.map((i) => `#${i}`).join(',')}),#${storeyEntityId[level.id]});`);
+      lines.push(
+        `#${next()}=IFCRELCONTAINEDINSPATIALSTRUCTURE('${newGuid()}',$,$,$,(${eids.map((i) => `#${i}`).join(',')}),#${storeyEntityId[level.id]});`
+      );
     }
   }
 
@@ -1387,67 +1414,67 @@ export function exportIFC43(
 // ── IFC 4.3 helpers ──────────────────────────────────────────────────────────
 
 const IFC43_TYPE_MAP: Partial<Record<ElementType, string>> = {
-  wall:                 'IFCWALL',
-  slab:                 'IFCSLAB',
-  roof:                 'IFCROOF',
-  column:               'IFCCOLUMN',
-  beam:                 'IFCBEAM',
-  door:                 'IFCDOOR',
-  window:               'IFCWINDOW',
-  stair:                'IFCSTAIR',
-  railing:              'IFCRAILING',
-  space:                'IFCSPACE',
-  curtain_wall:         'IFCCURTAINWALL',
-  ceiling:              'IFCCOVERING',
-  foundation:           'IFCFOOTING',
-  truss:                'IFCBUILDINGELEMENTPROXY',
-  brace:                'IFCMEMBER',
-  ramp:                 'IFCRAMP',
-  mass:                 'IFCBUILDINGELEMENTPROXY',
-  site_furniture:       'IFCFURNISHINGELEMENT',
-  planting:             'IFCGEOGRAPHICELEMENT',
-  rock:                 'IFCGEOGRAPHICELEMENT',
-  topography:           'IFCGEOGRAPHICELEMENT',
-  terrain_contour:      'IFCGEOGRAPHICELEMENT',
-  property_line:        'IFCANNOTATION',
-  duct:                 'IFCDUCTSEGMENT',
-  pipe:                 'IFCPIPESEGMENT',
-  cable_tray:           'IFCCABLECARRIERSEGMENT',
-  conduit:              'IFCCABLESEGMENT',
-  plumbing_fixture:     'IFCFLOWTERMINAL',
+  wall: 'IFCWALL',
+  slab: 'IFCSLAB',
+  roof: 'IFCROOF',
+  column: 'IFCCOLUMN',
+  beam: 'IFCBEAM',
+  door: 'IFCDOOR',
+  window: 'IFCWINDOW',
+  stair: 'IFCSTAIR',
+  railing: 'IFCRAILING',
+  space: 'IFCSPACE',
+  curtain_wall: 'IFCCURTAINWALL',
+  ceiling: 'IFCCOVERING',
+  foundation: 'IFCFOOTING',
+  truss: 'IFCBUILDINGELEMENTPROXY',
+  brace: 'IFCMEMBER',
+  ramp: 'IFCRAMP',
+  mass: 'IFCBUILDINGELEMENTPROXY',
+  site_furniture: 'IFCFURNISHINGELEMENT',
+  planting: 'IFCGEOGRAPHICELEMENT',
+  rock: 'IFCGEOGRAPHICELEMENT',
+  topography: 'IFCGEOGRAPHICELEMENT',
+  terrain_contour: 'IFCGEOGRAPHICELEMENT',
+  property_line: 'IFCANNOTATION',
+  duct: 'IFCDUCTSEGMENT',
+  pipe: 'IFCPIPESEGMENT',
+  cable_tray: 'IFCCABLECARRIERSEGMENT',
+  conduit: 'IFCCABLESEGMENT',
+  plumbing_fixture: 'IFCFLOWTERMINAL',
   electrical_equipment: 'IFCELECTRICAPPLIANCE',
   mechanical_equipment: 'IFCMECHANICALFASTENER',
-  sprinkler:            'IFCFIRESUPPRESSIONTERMINAL',
-  lamp:                 'IFCLIGHTFIXTURE',
-  air_terminal:         'IFCAIRTERMINAL',
-  annotation:           'IFCANNOTATION',
-  dimension:            'IFCANNOTATION',
-  grid:                 'IFCGRID',
-  label:                'IFCANNOTATION',
-  section_mark:         'IFCANNOTATION',
-  elevation_mark:       'IFCANNOTATION',
-  detail_mark:          'IFCANNOTATION',
-  revision_cloud:       'IFCANNOTATION',
-  room_separator:       'IFCVIRTUALELEMENT',
-  model_text:           'IFCTEXTLITERAL',
-  skylight:             'IFCWINDOW',
-  person:               'IFCBUILDINGELEMENTPROXY',
-  vehicle:              'IFCBUILDINGELEMENTPROXY',
-  line:                 'IFCANNOTATION',
-  circle:               'IFCANNOTATION',
-  arc:                  'IFCANNOTATION',
-  polyline:             'IFCANNOTATION',
-  surface:              'IFCANNOTATION',
-  solid:                'IFCBUILDINGELEMENTPROXY',
-  point:                'IFCANNOTATION',
-  hotspot:              'IFCANNOTATION',
-  text:                 'IFCANNOTATION',
-  block_ref:            'IFCANNOTATION',
-  ellipse:              'IFCANNOTATION',
-  rectangle:            'IFCANNOTATION',
-  polygon:              'IFCANNOTATION',
-  component:            'IFCGROUP',
-  group:                'IFCGROUP',
+  sprinkler: 'IFCFIRESUPPRESSIONTERMINAL',
+  lamp: 'IFCLIGHTFIXTURE',
+  air_terminal: 'IFCAIRTERMINAL',
+  annotation: 'IFCANNOTATION',
+  dimension: 'IFCANNOTATION',
+  grid: 'IFCGRID',
+  label: 'IFCANNOTATION',
+  section_mark: 'IFCANNOTATION',
+  elevation_mark: 'IFCANNOTATION',
+  detail_mark: 'IFCANNOTATION',
+  revision_cloud: 'IFCANNOTATION',
+  room_separator: 'IFCVIRTUALELEMENT',
+  model_text: 'IFCTEXTLITERAL',
+  skylight: 'IFCWINDOW',
+  person: 'IFCBUILDINGELEMENTPROXY',
+  vehicle: 'IFCBUILDINGELEMENTPROXY',
+  line: 'IFCANNOTATION',
+  circle: 'IFCANNOTATION',
+  arc: 'IFCANNOTATION',
+  polyline: 'IFCANNOTATION',
+  surface: 'IFCANNOTATION',
+  solid: 'IFCBUILDINGELEMENTPROXY',
+  point: 'IFCANNOTATION',
+  hotspot: 'IFCANNOTATION',
+  text: 'IFCANNOTATION',
+  block_ref: 'IFCANNOTATION',
+  ellipse: 'IFCANNOTATION',
+  rectangle: 'IFCANNOTATION',
+  polygon: 'IFCANNOTATION',
+  component: 'IFCGROUP',
+  group: 'IFCGROUP',
 };
 
 function getIFC43Type(type: ElementType): string {
@@ -1486,9 +1513,12 @@ function escStep(s: string): string {
 
 function ifcPropValue(type: string, value: unknown): string {
   switch (type) {
-    case 'number':    return `IFCREAL(${Number(value)})`;
-    case 'boolean':   return `IFCBOOLEAN(${value ? '.T.' : '.F.'})`;
+    case 'number':
+      return `IFCREAL(${Number(value)})`;
+    case 'boolean':
+      return `IFCBOOLEAN(${value ? '.T.' : '.F.'})`;
     case 'string':
-    default:          return `IFCLABEL('${escStep(String(value))}')`;
+    default:
+      return `IFCLABEL('${escStep(String(value))}')`;
   }
 }

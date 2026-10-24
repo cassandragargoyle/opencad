@@ -10,7 +10,10 @@
 
 import type { ElementSchema } from '@opencad/document';
 
-export interface Point { x: number; y: number }
+export interface Point {
+  x: number;
+  y: number;
+}
 
 export type HotspotKind = 'vertex' | 'edge-midpoint' | 'segment-midpoint';
 
@@ -36,17 +39,23 @@ function str(el: ElementSchema, key: string): string | null {
  */
 export function hotspotsFor(el: ElementSchema): Hotspot[] {
   switch (el.type) {
-    case 'wall':    return wallHotspots(el);
-    case 'beam':    return wallHotspots(el);   // same start/end pattern
+    case 'wall':
+      return wallHotspots(el);
+    case 'beam':
+      return wallHotspots(el); // same start/end pattern
     case 'slab':
-    case 'roof':    return slabHotspots(el);
-    default:        return [];
+    case 'roof':
+      return slabHotspots(el);
+    default:
+      return [];
   }
 }
 
 function wallHotspots(el: ElementSchema): Hotspot[] {
-  const x1 = num(el, 'StartX'), y1 = num(el, 'StartY');
-  const x2 = num(el, 'EndX'),   y2 = num(el, 'EndY');
+  const x1 = num(el, 'StartX'),
+    y1 = num(el, 'StartY');
+  const x2 = num(el, 'EndX'),
+    y2 = num(el, 'EndY');
   return [
     // Start vertex → moves StartX/StartY
     {
@@ -73,8 +82,8 @@ function wallHotspots(el: ElementSchema): Hotspot[] {
       apply: (d) => ({
         StartX: { type: 'number', value: x1 + d.x },
         StartY: { type: 'number', value: y1 + d.y },
-        EndX:   { type: 'number', value: x2 + d.x },
-        EndY:   { type: 'number', value: y2 + d.y },
+        EndX: { type: 'number', value: x2 + d.x },
+        EndY: { type: 'number', value: y2 + d.y },
       }),
     },
   ];
@@ -84,7 +93,11 @@ function slabHotspots(el: ElementSchema): Hotspot[] {
   const raw = str(el, 'Points');
   if (!raw) return [];
   let pts: Point[] = [];
-  try { pts = JSON.parse(raw) as Point[]; } catch { return []; }
+  try {
+    pts = JSON.parse(raw) as Point[];
+  } catch {
+    return [];
+  }
   if (pts.length < 3) return [];
 
   const out: Hotspot[] = [];
@@ -102,7 +115,8 @@ function slabHotspots(el: ElementSchema): Hotspot[] {
   }
   // Each edge midpoint — translates the two endpoints of that edge
   for (let i = 0; i < pts.length; i++) {
-    const a = pts[i]!, b = pts[(i + 1) % pts.length]!;
+    const a = pts[i]!,
+      b = pts[(i + 1) % pts.length]!;
     out.push({
       kind: 'edge-midpoint',
       position: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 },

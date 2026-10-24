@@ -23,12 +23,14 @@ OpenCAD's governance is based on these principles:
 **Who:** Anyone who uses OpenCAD, participates in discussions, or reports issues.
 
 **Rights:**
+
 - Use OpenCAD under the Apache 2.0 license
 - Participate in GitHub Discussions and Discord
 - File issues and feature requests
 - Attend community calls
 
 **Responsibilities:**
+
 - Follow the [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ### Contributor
@@ -36,6 +38,7 @@ OpenCAD's governance is based on these principles:
 **Who:** Anyone who has made a merged contribution (code, docs, design, translation, etc.).
 
 **Rights:**
+
 - All Community Member rights
 - Listed in [CONTRIBUTORS.md](CONTRIBUTORS.md)
 - Eligible to become a Maintainer
@@ -47,6 +50,7 @@ OpenCAD's governance is based on these principles:
 **Who:** Contributors who have demonstrated sustained, high-quality involvement in the project.
 
 **Rights:**
+
 - All Contributor rights
 - Merge pull requests
 - Approve/reject contributions
@@ -55,6 +59,7 @@ OpenCAD's governance is based on these principles:
 - Vote on governance decisions
 
 **Requirements:**
+
 - 10+ merged PRs of good quality
 - Active in code review and community discussions
 - Deep understanding of project architecture and goals
@@ -62,6 +67,7 @@ OpenCAD's governance is based on these principles:
 - No active Code of Conduct violations
 
 **Responsibilities:**
+
 - Review PRs within 48 hours (best effort)
 - Mentor new contributors
 - Uphold the Code of Conduct
@@ -69,6 +75,7 @@ OpenCAD's governance is based on these principles:
 - Maintain documentation and code quality
 
 **Removal:**
+
 - Inactivity for 6+ months (may be reinstated upon return)
 - Code of Conduct violation
 - Resignation
@@ -78,6 +85,7 @@ OpenCAD's governance is based on these principles:
 **Who:** A Maintainer who coordinates overall project direction.
 
 **Rights:**
+
 - All Maintainer rights
 - Coordinates release schedule
 - Represents project in media and partnerships
@@ -95,6 +103,7 @@ OpenCAD's governance is based on these principles:
 **Composition:** 3–7 Maintainers, elected by Maintainer vote.
 
 **Responsibilities:**
+
 - Make architecture decisions (documented as ADRs)
 - Resolve technical disputes when consensus fails
 - Approve new Maintainers
@@ -102,6 +111,7 @@ OpenCAD's governance is based on these principles:
 - Review and approve security policies
 
 **Decision Making:**
+
 - Consensus preferred
 - If consensus fails after 2 weeks of discussion: simple majority vote
 - Lead Maintainer breaks ties
@@ -114,12 +124,12 @@ OpenCAD's governance is based on these principles:
 
 ### Levels of Decisions
 
-| Level | Scope | Process | Example |
-|-------|-------|---------|---------|
-| **Trivial** | Code style, small fixes | Individual contributor | Fix typo in docs |
-| **Normal** | Feature implementation, bug fixes | PR review by Maintainer | Add fillet operation |
-| **Significant** | API changes, new dependencies | TSC discussion + ADR | Switch CRDT library |
-| **Major** | Governance, licensing, partnerships | Maintainer vote | Change license, join foundation |
+| Level           | Scope                               | Process                 | Example                         |
+| --------------- | ----------------------------------- | ----------------------- | ------------------------------- |
+| **Trivial**     | Code style, small fixes             | Individual contributor  | Fix typo in docs                |
+| **Normal**      | Feature implementation, bug fixes   | PR review by Maintainer | Add fillet operation            |
+| **Significant** | API changes, new dependencies       | TSC discussion + ADR    | Switch CRDT library             |
+| **Major**       | Governance, licensing, partnerships | Maintainer vote         | Change license, join foundation |
 
 ### Decision Process
 
@@ -170,6 +180,7 @@ Any Maintainer may nominate a Contributor for Maintainer status by:
 ### Onboarding
 
 New Maintainers receive:
+
 - Merge access to the repository
 - Introduction to other Maintainers
 - Overview of current priorities
@@ -181,10 +192,10 @@ New Maintainers receive:
 
 ### Release Schedule
 
-| Type | Frequency | Purpose |
-|------|-----------|---------|
-| **Patch** | As needed | Bug fixes, security patches |
-| **Minor** | Monthly | New features, improvements |
+| Type      | Frequency | Purpose                      |
+| --------- | --------- | ---------------------------- |
+| **Patch** | As needed | Bug fixes, security patches  |
+| **Minor** | Monthly   | New features, improvements   |
 | **Major** | Quarterly | Breaking changes, milestones |
 
 ### Release Process
@@ -198,6 +209,7 @@ New Maintainers receive:
 ### Release Notes
 
 Every release includes:
+
 - Summary of changes
 - Full changelog (auto-generated from conventional commits)
 - Contributor recognition
@@ -218,6 +230,7 @@ OpenCAD is developed by a commercial entity that offers hosted services. The rel
 ### Revenue Allocation
 
 Revenue from hosted services funds:
+
 - Core development team salaries
 - Infrastructure costs (CI/CD, hosting, CDN)
 - Community programs (events, swag, bounties)
@@ -281,4 +294,4 @@ OpenCAD was founded in April 2026 with the mission to make professional architec
 
 ---
 
-*Last updated: April 12, 2026*
+_Last updated: April 12, 2026_

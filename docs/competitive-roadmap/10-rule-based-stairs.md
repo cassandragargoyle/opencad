@@ -9,6 +9,7 @@ Stairs today render as a single box sized by the user. A stair in a real model n
 ## Scope
 
 ### In scope
+
 - Stair element gains the following parameters:
   - `type: 'straight' | 'L-shape' | 'U-shape' | 'spiral'` (v1: `straight` + `L-shape`)
   - `width` (mm)
@@ -23,6 +24,7 @@ Stairs today render as a single box sized by the user. A stair in a real model n
 - SEO rule: the stair automatically subtracts its footprint from the slab above (T-GEO-001 dependency).
 
 ### Out of scope
+
 - Spiral and U-shape stairs.
 - Handrails on stairs — handled by the Railing tool.
 - Stringer geometry — simplified to a single bounding mass in v1.

@@ -9,12 +9,14 @@ Not every drawing on a sheet is derived from the 3D model. Finish legends, door-
 ## Scope
 
 ### In scope
+
 - **Worksheet** type: a named 2D drawing canvas at any scale (or "no scale") with 2D-only tools (line, rectangle, polygon, text, hatch).
 - Worksheets appear in Navigator alongside plans, sections, elevations.
 - Worksheets can be dragged onto layout sheets as viewports.
 - Symbol library: users can insert pre-made symbols (north arrow, scale bar, detail symbol) — these live in the parametric-object library.
 
 ### Out of scope
+
 - Bidirectional link to model (worksheets are independent).
 - CAD-style raster overlays.
 

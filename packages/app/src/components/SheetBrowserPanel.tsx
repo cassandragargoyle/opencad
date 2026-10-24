@@ -21,20 +21,27 @@ export function SheetBrowserPanel(): React.ReactElement {
   const { t } = useTranslation();
   const isReadOnly = isDocumentReadOnly();
 
-  const [sheets,     setSheets]     = useState<Sheet[]>([]);
-  const [newTitle,   setNewTitle]   = useState('Floor Plan');
-  const [newDisc,    setNewDisc]    = useState<Discipline>('A');
-  const [newAuthor,  setNewAuthor]  = useState('');
+  const [sheets, setSheets] = useState<Sheet[]>([]);
+  const [newTitle, setNewTitle] = useState('Floor Plan');
+  const [newDisc, setNewDisc] = useState<Discipline>('A');
+  const [newAuthor, setNewAuthor] = useState('');
   const [expandedDiscs, setExpandedDiscs] = useState<Set<string>>(new Set(['A']));
   const [status, setStatus] = useState('');
 
   const numbered = autoNumberSheets(sheets);
-  const groups   = groupSheetsByDiscipline(numbered);
+  const groups = groupSheetsByDiscipline(numbered);
   const indexRows = buildSheetIndexRows(numbered);
 
   const addSheet = () => {
     if (!newTitle.trim()) return;
-    setSheets((prev) => [...prev, createSheet({ title: newTitle.trim(), discipline: newDisc, author: newAuthor.trim() || undefined })]);
+    setSheets((prev) => [
+      ...prev,
+      createSheet({
+        title: newTitle.trim(),
+        discipline: newDisc,
+        author: newAuthor.trim() || undefined,
+      }),
+    ]);
     setNewTitle('');
   };
 
@@ -60,7 +67,7 @@ export function SheetBrowserPanel(): React.ReactElement {
         widthMm: 297,
         heightMm: 210,
       })),
-      { includeSheetIndex: true, plotStyle: 'colour' },
+      { includeSheetIndex: true, plotStyle: 'colour' }
     );
     setStatus(`Exported ${numbered.length} sheet(s) as PDF`);
   };
@@ -74,20 +81,40 @@ export function SheetBrowserPanel(): React.ReactElement {
         <div className="field-row">
           <label className="field-label" style={{ width: '60px' }}>
             Disc.
-            <select className="panel-select" value={newDisc} onChange={(e) => setNewDisc(e.target.value as Discipline)} disabled={isReadOnly}>
+            <select
+              className="panel-select"
+              value={newDisc}
+              onChange={(e) => setNewDisc(e.target.value as Discipline)}
+              disabled={isReadOnly}
+            >
               {DISCIPLINES.map((d) => (
-                <option key={d} value={d}>{d} — {DISCIPLINE_LABELS[d] ?? d}</option>
+                <option key={d} value={d}>
+                  {d} — {DISCIPLINE_LABELS[d] ?? d}
+                </option>
               ))}
             </select>
           </label>
           <label className="field-label">
             Title
-            <input type="text" className="panel-input" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Floor Plan" disabled={isReadOnly} />
+            <input
+              type="text"
+              className="panel-input"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              placeholder="Floor Plan"
+              disabled={isReadOnly}
+            />
           </label>
         </div>
         <label className="field-label">
           Author (optional)
-          <input type="text" className="panel-input" value={newAuthor} onChange={(e) => setNewAuthor(e.target.value)} disabled={isReadOnly} />
+          <input
+            type="text"
+            className="panel-input"
+            value={newAuthor}
+            onChange={(e) => setNewAuthor(e.target.value)}
+            disabled={isReadOnly}
+          />
         </label>
         <button className="panel-btn" onClick={addSheet} disabled={isReadOnly || !newTitle.trim()}>
           Add Sheet
@@ -103,7 +130,9 @@ export function SheetBrowserPanel(): React.ReactElement {
                   onClick={() => toggleDisc(disc)}
                   aria-expanded={expandedDiscs.has(disc)}
                 >
-                  <span>{disc} — {DISCIPLINE_LABELS[disc] ?? disc}</span>
+                  <span>
+                    {disc} — {DISCIPLINE_LABELS[disc] ?? disc}
+                  </span>
                   <span>({discSheets.length})</span>
                 </button>
                 {expandedDiscs.has(disc) && (
@@ -118,7 +147,9 @@ export function SheetBrowserPanel(): React.ReactElement {
                             onClick={() => removeSheet(s.id)}
                             title="Remove sheet"
                             aria-label="Remove"
-                          >×</button>
+                          >
+                            ×
+                          </button>
                         )}
                       </li>
                     ))}
@@ -135,14 +166,22 @@ export function SheetBrowserPanel(): React.ReactElement {
           </button>
         )}
 
-        {status && <p className="panel-status" role="status">{status}</p>}
+        {status && (
+          <p className="panel-status" role="status">
+            {status}
+          </p>
+        )}
 
         {indexRows.length > 0 && (
           <div className="sheet-index">
             <h4 className="section-label">Sheet Index</h4>
             <table className="data-table">
               <thead>
-                <tr><th>No.</th><th>Title</th><th>Disc.</th></tr>
+                <tr>
+                  <th>No.</th>
+                  <th>Title</th>
+                  <th>Disc.</th>
+                </tr>
               </thead>
               <tbody>
                 {indexRows.map((row) => (

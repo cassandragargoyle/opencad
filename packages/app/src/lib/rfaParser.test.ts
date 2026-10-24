@@ -2,11 +2,7 @@
  * T-IO-V2-04: RFA Parser tests
  */
 import { describe, it, expect } from 'vitest';
-import {
-  parseRFAManifest,
-  buildFamilyInstanceProps,
-  RFA_PARAMETER_CATEGORIES,
-} from './rfaParser';
+import { parseRFAManifest, buildFamilyInstanceProps, RFA_PARAMETER_CATEGORIES } from './rfaParser';
 
 const validManifest = {
   family: {
@@ -44,7 +40,11 @@ describe('parseRFAManifest', () => {
 
   it('parses family parameters correctly', () => {
     const entry = parseRFAManifest(validManifest);
-    expect(entry.family.parameters[0]).toEqual({ name: 'Width', type: 'Length', defaultValue: 900 });
+    expect(entry.family.parameters[0]).toEqual({
+      name: 'Width',
+      type: 'Length',
+      defaultValue: 900,
+    });
     expect(entry.family.parameters[2].defaultValue).toBe('None');
   });
 
@@ -77,9 +77,7 @@ describe('parseRFAManifest', () => {
   it('throws when type parameterValues contains non-string/number', () => {
     const bad = {
       ...validManifest,
-      types: [
-        { id: 'x', name: 'X', parameterValues: { Width: true } },
-      ],
+      types: [{ id: 'x', name: 'X', parameterValues: { Width: true } }],
     };
     expect(() => parseRFAManifest(bad)).toThrow(/string or number/);
   });
@@ -115,7 +113,10 @@ describe('buildFamilyInstanceProps', () => {
 
   it('applies overrides on top of type values', () => {
     const entry = parseRFAManifest(validManifest);
-    const props = buildFamilyInstanceProps(entry, 'type-900x2100', { FireRating: '60min', Width: 950 });
+    const props = buildFamilyInstanceProps(entry, 'type-900x2100', {
+      FireRating: '60min',
+      Width: 950,
+    });
     expect(props['Width']).toBe(950);
     expect(props['FireRating']).toBe('60min');
   });

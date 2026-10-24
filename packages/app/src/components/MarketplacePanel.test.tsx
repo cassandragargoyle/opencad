@@ -8,12 +8,41 @@ describe('T-MKTPL-001: MarketplacePanel', () => {
   const onInstall = vi.fn();
   const onPublish = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const items: MarketplaceItem[] = [
-    { id: 'pkg-1', name: 'Steel Column Library', author: 'StructuralCo', description: 'Standard steel column profiles.', version: '1.2.0', category: 'Structural', downloads: 1200, installed: false },
-    { id: 'pkg-2', name: 'Door Families Pack', author: 'DoorWorks', description: 'Over 50 parametric door families.', version: '2.0.1', category: 'Architectural', downloads: 890, installed: true },
-    { id: 'pkg-3', name: 'MEP Symbols', author: 'MEPLib', description: 'Complete set of MEP symbols.', version: '1.0.0', category: 'MEP', downloads: 500, installed: false },
+    {
+      id: 'pkg-1',
+      name: 'Steel Column Library',
+      author: 'StructuralCo',
+      description: 'Standard steel column profiles.',
+      version: '1.2.0',
+      category: 'Structural',
+      downloads: 1200,
+      installed: false,
+    },
+    {
+      id: 'pkg-2',
+      name: 'Door Families Pack',
+      author: 'DoorWorks',
+      description: 'Over 50 parametric door families.',
+      version: '2.0.1',
+      category: 'Architectural',
+      downloads: 890,
+      installed: true,
+    },
+    {
+      id: 'pkg-3',
+      name: 'MEP Symbols',
+      author: 'MEPLib',
+      description: 'Complete set of MEP symbols.',
+      version: '1.0.0',
+      category: 'MEP',
+      downloads: 500,
+      installed: false,
+    },
   ];
 
   it('renders Marketplace header', () => {
@@ -65,8 +94,6 @@ describe('T-MKTPL-001: MarketplacePanel', () => {
     render(<MarketplacePanel items={items} onInstall={onInstall} onPublish={onPublish} />);
     // Toggles between "Publish" (default) and "Back to catalogue" (when
     // the publisher panel is open). Either label satisfies presence here.
-    expect(
-      screen.getByRole('button', { name: /publish|back to catalogue/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /publish|back to catalogue/i })).toBeInTheDocument();
   });
 });

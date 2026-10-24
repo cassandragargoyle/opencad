@@ -28,7 +28,7 @@ describe('#451: TOOL_REGISTRY', () => {
     const freeform = TOOL_REGISTRY.filter((t) => t.category === 'freeform');
     expect(freeform.length).toBeGreaterThan(0);
     const allHiddenOrSecondary = freeform.every(
-      (t) => t.defaultTier === 'hidden' || t.defaultTier === 'secondary',
+      (t) => t.defaultTier === 'hidden' || t.defaultTier === 'secondary'
     );
     expect(allHiddenOrSecondary).toBe(true);
   });

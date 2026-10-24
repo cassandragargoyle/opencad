@@ -75,7 +75,10 @@ describe('#453: autoEnclosure()', () => {
   });
 
   it('custom thickness respected', () => {
-    const result = autoEnclosure(makeSquare(), 0, 2700, { floorThickness: 400, roofThickness: 500 });
+    const result = autoEnclosure(makeSquare(), 0, 2700, {
+      floorThickness: 400,
+      roofThickness: 500,
+    });
     expect(result.floor.thickness).toBe(400);
     expect(result.roof.thickness).toBe(500);
   });
@@ -110,7 +113,12 @@ describe('#453: polygonCentroid()', () => {
 });
 
 describe('#453: isPointInPolygon()', () => {
-  const square = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }];
+  const square = [
+    { x: 0, y: 0 },
+    { x: 100, y: 0 },
+    { x: 100, y: 100 },
+    { x: 0, y: 100 },
+  ];
 
   it('centre point is inside', () => {
     expect(isPointInPolygon({ x: 50, y: 50 }, square)).toBe(true);

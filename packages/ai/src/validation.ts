@@ -337,10 +337,7 @@ export function createUndoSnapshot(model: ModelDocument): ModelDocument {
   return JSON.parse(JSON.stringify({ ...model, history: [] })) as ModelDocument;
 }
 
-export function restoreSnapshot(
-  _current: ModelDocument,
-  snapshot: ModelDocument
-): ModelDocument {
+export function restoreSnapshot(_current: ModelDocument, snapshot: ModelDocument): ModelDocument {
   return JSON.parse(JSON.stringify({ ...snapshot, history: [] })) as ModelDocument;
 }
 
@@ -437,18 +434,14 @@ export function validateElement(element: BimElement, doc: BimDoc): ValidationRes
     const heightProp = element.properties['Height'];
     const height = typeof heightProp?.value === 'number' ? heightProp.value : null;
     if (height === null || height <= 0) {
-      errors.push(
-        `Wall "${element.id}" must have a positive Height (got ${height ?? 'none'}).`,
-      );
+      errors.push(`Wall "${element.id}" must have a positive Height (got ${height ?? 'none'}).`);
     }
   }
 
   // ── Rule: door/window must be contained within a wall ────────────────────
   if (element.type === 'door' || element.type === 'window') {
     const walls = Object.values(doc.content.elements).filter((e) => e.type === 'wall');
-    const contained = walls.some((wall) =>
-      _bim3DContains(wall.boundingBox, element.boundingBox),
-    );
+    const contained = walls.some((wall) => _bim3DContains(wall.boundingBox, element.boundingBox));
     if (!contained) {
       const kind = element.type === 'door' ? 'Door' : 'Window';
       warnings.push(`${kind} "${element.id}" is not contained within any wall.`);
@@ -461,22 +454,19 @@ export function validateElement(element: BimElement, doc: BimDoc): ValidationRes
     const hasEnd = 'EndX' in element.properties && 'EndY' in element.properties;
     if (!hasStart || !hasEnd) {
       errors.push(
-        `Beam "${element.id}" must have start and end point properties (StartX/StartY and EndX/EndY) to span between supports.`,
+        `Beam "${element.id}" must have start and end point properties (StartX/StartY and EndX/EndY) to span between supports.`
       );
     }
   }
 
   // ── Rule: overlapping same-type elements on same layer → warning ──────────
   const sameTypeAndLayer = Object.values(doc.content.elements).filter(
-    (e) =>
-      e.id !== element.id &&
-      e.type === element.type &&
-      e.layerId === element.layerId,
+    (e) => e.id !== element.id && e.type === element.type && e.layerId === element.layerId
   );
   for (const other of sameTypeAndLayer) {
     if (_bim3DOverlaps(element.boundingBox, other.boundingBox)) {
       warnings.push(
-        `Element "${element.id}" overlaps with "${other.id}" (same type "${element.type}" on layer "${element.layerId}").`,
+        `Element "${element.id}" overlaps with "${other.id}" (same type "${element.type}" on layer "${element.layerId}").`
       );
       break; // one warning per element is sufficient
     }
@@ -486,12 +476,7 @@ export function validateElement(element: BimElement, doc: BimDoc): ValidationRes
 }
 
 function _bim3DOverlaps(a: BimBBox, b: BimBBox): boolean {
-  return (
-    a.min.x < b.max.x &&
-    a.max.x > b.min.x &&
-    a.min.y < b.max.y &&
-    a.max.y > b.min.y
-  );
+  return a.min.x < b.max.x && a.max.x > b.min.x && a.min.y < b.max.y && a.max.y > b.min.y;
 }
 
 function _bim3DContains(outer: BimBBox, inner: BimBBox): boolean {

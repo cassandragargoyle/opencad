@@ -6,7 +6,11 @@
  * — the interactive edit mode in the viewport consumes these.
  */
 
-export interface Vec3 { x: number; y: number; z: number }
+export interface Vec3 {
+  x: number;
+  y: number;
+  z: number;
+}
 export interface MorphMesh {
   vertices: Vec3[];
   /** Each face lists 3+ vertex indices (CCW from the outside). */
@@ -17,31 +21,34 @@ export interface MorphMesh {
 export function seedBox(size: Vec3 = { x: 1, y: 1, z: 1 }): MorphMesh {
   const { x, y, z } = size;
   const vs: Vec3[] = [
-    { x: 0, y: 0, z: 0 }, { x, y: 0, z: 0 },
-    { x, y,    z: 0 },    { x: 0, y, z: 0 },
-    { x: 0, y: 0, z },    { x, y: 0, z },
-    { x, y,    z },       { x: 0, y, z    },
+    { x: 0, y: 0, z: 0 },
+    { x, y: 0, z: 0 },
+    { x, y, z: 0 },
+    { x: 0, y, z: 0 },
+    { x: 0, y: 0, z },
+    { x, y: 0, z },
+    { x, y, z },
+    { x: 0, y, z },
   ];
   const fs: number[][] = [
-    [0, 3, 2, 1],  // bottom (-z)
-    [4, 5, 6, 7],  // top    (+z)
-    [0, 1, 5, 4],  // front  (-y)
-    [2, 3, 7, 6],  // back   (+y)
-    [0, 4, 7, 3],  // left   (-x)
-    [1, 2, 6, 5],  // right  (+x)
+    [0, 3, 2, 1], // bottom (-z)
+    [4, 5, 6, 7], // top    (+z)
+    [0, 1, 5, 4], // front  (-y)
+    [2, 3, 7, 6], // back   (+y)
+    [0, 4, 7, 3], // left   (-x)
+    [1, 2, 6, 5], // right  (+x)
   ];
   return { vertices: vs, faces: fs };
 }
 
 /** Translate every vertex of one face by `delta`. */
-export function pushPullFace(
-  mesh: MorphMesh, faceIndex: number, delta: Vec3,
-): MorphMesh {
+export function pushPullFace(mesh: MorphMesh, faceIndex: number, delta: Vec3): MorphMesh {
   if (faceIndex < 0 || faceIndex >= mesh.faces.length) return mesh;
   const face = mesh.faces[faceIndex]!;
   const moved = new Set(face);
   const newVertices = mesh.vertices.map((v, i) =>
-    moved.has(i) ? { x: v.x + delta.x, y: v.y + delta.y, z: v.z + delta.z } : v);
+    moved.has(i) ? { x: v.x + delta.x, y: v.y + delta.y, z: v.z + delta.z } : v
+  );
   return { ...mesh, vertices: newVertices };
 }
 
@@ -58,16 +65,19 @@ export function moveVertex(mesh: MorphMesh, vertexIndex: number, delta: Vec3): M
  * faces and replacing the edge with a new face. Approximation valid for
  * axis-aligned cases; covers the common case of a box edge bevel.
  */
-export function bevelEdge(
-  mesh: MorphMesh, edge: [number, number], offset: number,
-): MorphMesh {
+export function bevelEdge(mesh: MorphMesh, edge: [number, number], offset: number): MorphMesh {
   const [a, b] = edge;
-  const va = mesh.vertices[a]; const vb = mesh.vertices[b];
+  const va = mesh.vertices[a];
+  const vb = mesh.vertices[b];
   if (!va || !vb) return mesh;
   // Two new vertices along the edge, offset inward by `offset`.
-  const dx = vb.x - va.x, dy = vb.y - va.y, dz = vb.z - va.z;
+  const dx = vb.x - va.x,
+    dy = vb.y - va.y,
+    dz = vb.z - va.z;
   const len = Math.hypot(dx, dy, dz) || 1;
-  const ux = dx / len, uy = dy / len, uz = dz / len;
+  const ux = dx / len,
+    uy = dy / len,
+    uz = dz / len;
   const na: Vec3 = { x: va.x + ux * offset, y: va.y + uy * offset, z: va.z + uz * offset };
   const nb: Vec3 = { x: vb.x - ux * offset, y: vb.y - uy * offset, z: vb.z - uz * offset };
   const newVerts = [...mesh.vertices, na, nb];
@@ -81,7 +91,7 @@ export function bevelEdge(
     const j = face.indexOf(b);
     if (i < 0 || j < 0) return face;
     // Only rewrite when a and b are adjacent in this face
-    const adjacent = (face[(i + 1) % face.length] === b) || (face[(j + 1) % face.length] === a);
+    const adjacent = face[(i + 1) % face.length] === b || face[(j + 1) % face.length] === a;
     if (!adjacent) return face;
     return face.flatMap((idx) => (idx === a ? [a, nai] : idx === b ? [nbi, b] : [idx]));
   });
@@ -96,17 +106,25 @@ export function bevelEdge(
  * the same face AND not adjacent (i.e., not an existing edge).
  */
 export function splitFace(
-  mesh: MorphMesh, faceIndex: number, fromVertex: number, toVertex: number,
+  mesh: MorphMesh,
+  faceIndex: number,
+  fromVertex: number,
+  toVertex: number
 ): MorphMesh {
   const face = mesh.faces[faceIndex];
   if (!face) return mesh;
   const i = face.indexOf(fromVertex);
   const j = face.indexOf(toVertex);
   if (i < 0 || j < 0) return mesh;
-  if (Math.abs(i - j) <= 1 || (i === 0 && j === face.length - 1) || (j === 0 && i === face.length - 1)) {
+  if (
+    Math.abs(i - j) <= 1 ||
+    (i === 0 && j === face.length - 1) ||
+    (j === 0 && i === face.length - 1)
+  ) {
     return mesh; // already an edge, can't split along it
   }
-  const a = Math.min(i, j), b = Math.max(i, j);
+  const a = Math.min(i, j),
+    b = Math.max(i, j);
   const faceA = face.slice(a, b + 1);
   const faceB = [...face.slice(b), ...face.slice(0, a + 1)];
   const next = mesh.faces.slice();
@@ -119,9 +137,7 @@ export function splitFace(
  * connecting the original edges to the new positions. The original face
  * becomes the new "top" face at the extruded position.
  */
-export function extrudeFace(
-  mesh: MorphMesh, faceIndex: number, delta: Vec3,
-): MorphMesh {
+export function extrudeFace(mesh: MorphMesh, faceIndex: number, delta: Vec3): MorphMesh {
   const face = mesh.faces[faceIndex];
   if (!face) return mesh;
   // Duplicate the face's vertices, translated.

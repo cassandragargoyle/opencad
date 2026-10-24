@@ -4,11 +4,12 @@
 
 ## Why
 
-IFC is *the* open BIM interchange format. Every stakeholder (consultants, contractors, regulators) exchanges IFC files. Our existing `ifc.ts` adapter imports and exports but has never been rigorously verified for round-trip fidelity. Sending a model through OpenCAD → IFC → OpenCAD should return an equivalent model, and the same applies to competitor tools → IFC → OpenCAD.
+IFC is _the_ open BIM interchange format. Every stakeholder (consultants, contractors, regulators) exchanges IFC files. Our existing `ifc.ts` adapter imports and exports but has never been rigorously verified for round-trip fidelity. Sending a model through OpenCAD → IFC → OpenCAD should return an equivalent model, and the same applies to competitor tools → IFC → OpenCAD.
 
 ## Scope
 
 ### In scope
+
 - Establish a test corpus of ~20 IFC files covering the major entities: walls (single + composite), slabs, roofs, columns, beams, doors, windows, spaces, stories, site context, structural members.
 - Golden-image round-trip tests: import → re-export → byte-compare (or entity-equivalence).
 - Fix gaps revealed by the tests:
@@ -21,6 +22,7 @@ IFC is *the* open BIM interchange format. Every stakeholder (consultants, contra
 - Support both IFC 2x3 and IFC 4 exports.
 
 ### Out of scope
+
 - IFC 4.3 (newer schema; defer).
 - IFC-SG extensions.
 

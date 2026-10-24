@@ -26,10 +26,17 @@ export function LayersPanel() {
       <div className="panel-header">
         <span className="panel-title">{t('layers.title', { defaultValue: 'Layers' })}</span>
         <div className="panel-actions">
-          <button className="panel-action-btn" onClick={handleAddLayer} title={t('layers.addLayer', { defaultValue: 'Add Layer' })}>
+          <button
+            className="panel-action-btn"
+            onClick={handleAddLayer}
+            title={t('layers.addLayer', { defaultValue: 'Add Layer' })}
+          >
             <Plus size={14} />
           </button>
-          <button className="panel-action-btn" title={t('layers.settings', { defaultValue: 'Layer Settings' })}>
+          <button
+            className="panel-action-btn"
+            title={t('layers.settings', { defaultValue: 'Layer Settings' })}
+          >
             <Settings size={14} />
           </button>
         </div>
@@ -42,7 +49,11 @@ export function LayersPanel() {
             <button
               className={`layer-visibility ${layer.visible ? '' : 'hidden'}`}
               onClick={() => handleToggleVisibility(layer.id, layer.visible)}
-              title={layer.visible ? t('layers.hideLayerShort', { defaultValue: 'Hide Layer' }) : t('layers.showLayerShort', { defaultValue: 'Show Layer' })}
+              title={
+                layer.visible
+                  ? t('layers.hideLayerShort', { defaultValue: 'Hide Layer' })
+                  : t('layers.showLayerShort', { defaultValue: 'Show Layer' })
+              }
             >
               {layer.visible ? <Eye size={14} /> : <EyeOff size={14} />}
             </button>

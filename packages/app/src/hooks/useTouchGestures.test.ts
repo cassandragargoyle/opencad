@@ -37,7 +37,7 @@ function fireTouchEvent(
   el: HTMLElement,
   type: 'touchstart' | 'touchmove' | 'touchend',
   touches: Touch[],
-  changedTouches?: Touch[],
+  changedTouches?: Touch[]
 ): void {
   // jsdom accepts Touch[] for TouchList slots in TouchEventInit, even though
   // the TypeScript DOM lib types them as TouchList. Cast via unknown.

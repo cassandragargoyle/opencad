@@ -25,7 +25,7 @@ interface ViewRef {
 
 export function createCalloutMarker(
   pos: { x: number; y: number },
-  targetViewId: string,
+  targetViewId: string
 ): CalloutMarker {
   const id = `callout_${Date.now().toString(36)}_${Math.floor(Math.random() * 0xffff).toString(16)}`;
   return { id, x: pos.x, y: pos.y, targetViewId };

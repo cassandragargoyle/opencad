@@ -55,9 +55,7 @@ export function CommentsPanel({
   };
 
   const handleResolve = (commentId: string) => {
-    setComments((prev) =>
-      prev.map((c) => (c.id === commentId ? { ...c, resolved: true } : c))
-    );
+    setComments((prev) => prev.map((c) => (c.id === commentId ? { ...c, resolved: true } : c)));
     onResolve?.(commentId);
   };
 
@@ -71,9 +69,7 @@ export function CommentsPanel({
       createdAt: new Date().toISOString(),
     };
     setComments((prev) =>
-      prev.map((c) =>
-        c.id === commentId ? { ...c, replies: [...c.replies, reply] } : c
-      )
+      prev.map((c) => (c.id === commentId ? { ...c, replies: [...c.replies, reply] } : c))
     );
     onReply?.(commentId, { author: currentUser, text, createdAt: reply.createdAt });
     setReplyText((prev) => ({ ...prev, [commentId]: '' }));
@@ -87,7 +83,9 @@ export function CommentsPanel({
       </div>
 
       {comments.length === 0 ? (
-        <div className="comments-empty">{t('comments.emptyDetail', { defaultValue: 'No comments yet. Add one below.' })}</div>
+        <div className="comments-empty">
+          {t('comments.emptyDetail', { defaultValue: 'No comments yet. Add one below.' })}
+        </div>
       ) : (
         <div className="comments-list">
           {comments.map((c) => (
@@ -95,13 +93,20 @@ export function CommentsPanel({
               <div className="comment-header">
                 <span className="comment-author">{c.author}</span>
                 <span className="comment-date">{new Date(c.createdAt).toLocaleDateString()}</span>
-                {c.resolved && <span className="comment-badge resolved">{t('comments.resolved', { defaultValue: 'Resolved' })}</span>}
+                {c.resolved && (
+                  <span className="comment-badge resolved">
+                    {t('comments.resolved', { defaultValue: 'Resolved' })}
+                  </span>
+                )}
               </div>
               <p className="comment-text">{c.text}</p>
               <div className="comment-actions">
                 {!c.resolved && (
                   <button
-                    aria-label={t('comments.resolveAria', { id: c.id, defaultValue: 'Resolve comment {{id}}' })}
+                    aria-label={t('comments.resolveAria', {
+                      id: c.id,
+                      defaultValue: 'Resolve comment {{id}}',
+                    })}
                     className="btn-resolve"
                     onClick={() => handleResolve(c.id)}
                   >
@@ -127,7 +132,9 @@ export function CommentsPanel({
                   onChange={(e) => setReplyText((prev) => ({ ...prev, [c.id]: e.target.value }))}
                   className="reply-input"
                 />
-                <button onClick={() => handleReply(c.id)} className="btn-reply">{t('comments.reply', { defaultValue: 'Reply' })}</button>
+                <button onClick={() => handleReply(c.id)} className="btn-reply">
+                  {t('comments.reply', { defaultValue: 'Reply' })}
+                </button>
               </div>
             </div>
           ))}
@@ -141,7 +148,9 @@ export function CommentsPanel({
           value={newText}
           onChange={(e) => setNewText(e.target.value)}
           className="new-comment-input"
-          onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleAddComment();
+          }}
         />
         <button
           aria-label={t('comments.addComment', { defaultValue: 'Add comment' })}

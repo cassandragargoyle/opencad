@@ -6,7 +6,13 @@ function makeNode(id: string, type: string, params: Record<string, unknown> = {}
   return { id, type, params, position: { x: 0, y: 0 } };
 }
 
-function makeEdge(id: string, source: string, sourceHandle: string, target: string, targetHandle: string): GraphEdgeData {
+function makeEdge(
+  id: string,
+  source: string,
+  sourceHandle: string,
+  target: string,
+  targetHandle: string
+): GraphEdgeData {
   return { id, source, sourceHandle, target, targetHandle };
 }
 
@@ -17,7 +23,10 @@ function makeGraph(nodes: GraphNodeData[], edges: GraphEdgeData[]): GraphDefinit
 describe('T-EXT-02: topoSort', () => {
   it('sorts a linear chain', () => {
     const nodes = [makeNode('a', 'Point'), makeNode('b', 'Point'), makeNode('c', 'Point')];
-    const edges = [makeEdge('e1', 'a', 'point', 'b', 'start'), makeEdge('e2', 'b', 'point', 'c', 'end')];
+    const edges = [
+      makeEdge('e1', 'a', 'point', 'b', 'start'),
+      makeEdge('e2', 'b', 'point', 'c', 'end'),
+    ];
     const order = topoSort(nodes, edges);
     expect(order).not.toBeNull();
     expect(order!.indexOf('a')).toBeLessThan(order!.indexOf('b'));
@@ -26,10 +35,7 @@ describe('T-EXT-02: topoSort', () => {
 
   it('detects a simple cycle', () => {
     const nodes = [makeNode('a', 'Point'), makeNode('b', 'Point')];
-    const edges = [
-      makeEdge('e1', 'a', 'out', 'b', 'in'),
-      makeEdge('e2', 'b', 'out', 'a', 'in'),
-    ];
+    const edges = [makeEdge('e1', 'a', 'out', 'b', 'in'), makeEdge('e2', 'b', 'out', 'a', 'in')];
     expect(topoSort(nodes, edges)).toBeNull();
   });
 
@@ -42,7 +48,10 @@ describe('T-EXT-02: topoSort', () => {
 
   it('returns all node IDs in the order', () => {
     const nodes = [makeNode('x', 'Box'), makeNode('y', 'Move'), makeNode('z', 'Point')];
-    const edges = [makeEdge('e1', 'z', 'point', 'x', 'origin'), makeEdge('e2', 'x', 'box', 'y', 'geometry')];
+    const edges = [
+      makeEdge('e1', 'z', 'point', 'x', 'origin'),
+      makeEdge('e2', 'x', 'box', 'y', 'geometry'),
+    ];
     const order = topoSort(nodes, edges);
     expect(order).toHaveLength(3);
     expect(new Set(order)).toEqual(new Set(['x', 'y', 'z']));
@@ -51,10 +60,7 @@ describe('T-EXT-02: topoSort', () => {
 
 describe('T-EXT-02: evaluateGraph', () => {
   it('evaluates a NumberSlider node', () => {
-    const graph = makeGraph(
-      [makeNode('s', 'NumberSlider', { value: 42 })],
-      [],
-    );
+    const graph = makeGraph([makeNode('s', 'NumberSlider', { value: 42 })], []);
     const result = evaluateGraph(graph);
     expect(result.errors.size).toBe(0);
     expect(result.timedOut).toBe(false);
@@ -62,10 +68,7 @@ describe('T-EXT-02: evaluateGraph', () => {
   });
 
   it('evaluates a Point node', () => {
-    const graph = makeGraph(
-      [makeNode('p', 'Point', { x: 1, y: 2, z: 3 })],
-      [],
-    );
+    const graph = makeGraph([makeNode('p', 'Point', { x: 1, y: 2, z: 3 })], []);
     const result = evaluateGraph(graph);
     expect(result.values.get('p:point')).toEqual({ x: 1, y: 2, z: 3 });
   });
@@ -101,10 +104,7 @@ describe('T-EXT-02: evaluateGraph', () => {
   });
 
   it('evaluates Range node correctly', () => {
-    const graph = makeGraph(
-      [makeNode('r', 'Range', { from: 0, to: 4, steps: 4 })],
-      [],
-    );
+    const graph = makeGraph([makeNode('r', 'Range', { from: 0, to: 4, steps: 4 })], []);
     const result = evaluateGraph(graph);
     const list = result.values.get('r:list') as number[];
     expect(list).toHaveLength(5);
@@ -113,10 +113,7 @@ describe('T-EXT-02: evaluateGraph', () => {
   });
 
   it('evaluates Expression sandboxed rejection', () => {
-    const graph = makeGraph(
-      [makeNode('e', 'Expression', { expr: 'process.exit(0)' })],
-      [],
-    );
+    const graph = makeGraph([makeNode('e', 'Expression', { expr: 'process.exit(0)' })], []);
     const result = evaluateGraph(graph);
     expect(result.values.get('e:result')).toBeNull();
   });
@@ -136,7 +133,10 @@ describe('T-EXT-02: evaluateGraph', () => {
 describe('T-EXT-02: dirtyPropagate', () => {
   it('marks changed node and all downstream nodes dirty', () => {
     const nodes = [makeNode('a', 'Point'), makeNode('b', 'Line'), makeNode('c', 'Polyline')];
-    const edges = [makeEdge('e1', 'a', 'point', 'b', 'start'), makeEdge('e2', 'b', 'line', 'c', 'points')];
+    const edges = [
+      makeEdge('e1', 'a', 'point', 'b', 'start'),
+      makeEdge('e2', 'b', 'line', 'c', 'points'),
+    ];
     const dirty = dirtyPropagate(makeGraph(nodes, edges), 'a');
     expect(dirty.has('a')).toBe(true);
     expect(dirty.has('b')).toBe(true);
@@ -145,7 +145,10 @@ describe('T-EXT-02: dirtyPropagate', () => {
 
   it('does not mark upstream nodes dirty', () => {
     const nodes = [makeNode('a', 'Point'), makeNode('b', 'Line'), makeNode('c', 'Polyline')];
-    const edges = [makeEdge('e1', 'a', 'point', 'b', 'start'), makeEdge('e2', 'b', 'line', 'c', 'points')];
+    const edges = [
+      makeEdge('e1', 'a', 'point', 'b', 'start'),
+      makeEdge('e2', 'b', 'line', 'c', 'points'),
+    ];
     const dirty = dirtyPropagate(makeGraph(nodes, edges), 'b');
     expect(dirty.has('a')).toBe(false);
     expect(dirty.has('b')).toBe(true);

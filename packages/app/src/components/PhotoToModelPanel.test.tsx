@@ -8,7 +8,9 @@ describe('T-AI-031: PhotoToModelPanel', () => {
   const onUpload = vi.fn();
   const onExtract = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders Photo to Model header', () => {
     render(<PhotoToModelPanel onUpload={onUpload} onExtract={onExtract} />);
@@ -26,12 +28,26 @@ describe('T-AI-031: PhotoToModelPanel', () => {
   });
 
   it('shows Extract Massing button', () => {
-    render(<PhotoToModelPanel onUpload={onUpload} onExtract={onExtract} status="ready" photoUrl="data:image/png;base64,abc" />);
+    render(
+      <PhotoToModelPanel
+        onUpload={onUpload}
+        onExtract={onExtract}
+        status="ready"
+        photoUrl="data:image/png;base64,abc"
+      />
+    );
     expect(screen.getByRole('button', { name: /extract.*massing|analyze/i })).toBeInTheDocument();
   });
 
   it('calls onExtract when Extract Massing clicked', () => {
-    render(<PhotoToModelPanel onUpload={onUpload} onExtract={onExtract} status="ready" photoUrl="data:image/png;base64,abc" />);
+    render(
+      <PhotoToModelPanel
+        onUpload={onUpload}
+        onExtract={onExtract}
+        status="ready"
+        photoUrl="data:image/png;base64,abc"
+      />
+    );
     fireEvent.click(screen.getByRole('button', { name: /extract.*massing|analyze/i }));
     expect(onExtract).toHaveBeenCalled();
   });
@@ -42,7 +58,14 @@ describe('T-AI-031: PhotoToModelPanel', () => {
   });
 
   it('shows result preview when status is done', () => {
-    render(<PhotoToModelPanel onUpload={onUpload} onExtract={onExtract} status="done" extractedGeometry={{ wallCount: 8, estimatedArea: 120 }} />);
+    render(
+      <PhotoToModelPanel
+        onUpload={onUpload}
+        onExtract={onExtract}
+        status="done"
+        extractedGeometry={{ wallCount: 8, estimatedArea: 120 }}
+      />
+    );
     expect(screen.getAllByText(/8|walls|120|m²/i).length).toBeGreaterThan(0);
   });
 

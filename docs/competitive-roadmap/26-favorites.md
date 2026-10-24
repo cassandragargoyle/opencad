@@ -9,6 +9,7 @@ Every office has its "standard" elements: the exterior wall type they always use
 ## Scope
 
 ### In scope
+
 - A Favorites palette (or sub-panel) for each tool-type.
 - "Save as Favorite" action from Properties panel: captures current element's parameters into a named preset.
 - Apply favorite: activates the tool with those parameters loaded.
@@ -17,6 +18,7 @@ Every office has its "standard" elements: the exterior wall type they always use
 - Seed with a small shipped set of favorites per tool.
 
 ### Out of scope
+
 - Organization / team-shared favorites across users.
 - Importing favorites from file.
 

@@ -5,7 +5,7 @@ import { OBJECT_LIBRARY, OBJECT_CATEGORIES, type ObjectDefinition } from '../lib
 
 export function ObjectLibraryPanel() {
   const { t } = useTranslation('panels');
-  const [search,   setSearch]   = useState('');
+  const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
 
   const { document: doc, addElement, pushHistory } = useDocumentStore();
@@ -13,47 +13,56 @@ export function ObjectLibraryPanel() {
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return OBJECT_LIBRARY.filter((obj) => {
-      const matchSearch   = q === '' || obj.name.toLowerCase().includes(q)
-        || obj.subcategory.toLowerCase().includes(q);
+      const matchSearch =
+        q === '' || obj.name.toLowerCase().includes(q) || obj.subcategory.toLowerCase().includes(q);
       const matchCategory = category === 'All' || obj.category === category;
       return matchSearch && matchCategory;
     });
   }, [search, category]);
 
-  const handlePlace = useCallback((obj: ObjectDefinition) => {
-    if (!doc) return;
+  const handlePlace = useCallback(
+    (obj: ObjectDefinition) => {
+      if (!doc) return;
 
-    // Resolve the default layer (first layer in document)
-    const layers     = doc.organization.layers;
-    const layerIds   = Object.keys(layers);
-    const layerId    = layerIds[0] ?? 'default';
+      // Resolve the default layer (first layer in document)
+      const layers = doc.organization.layers;
+      const layerIds = Object.keys(layers);
+      const layerId = layerIds[0] ?? 'default';
 
-    addElement({
-      type:       obj.elementType,
-      layerId,
-      properties: obj.defaultProperties as Record<string, unknown>,
-    });
+      addElement({
+        type: obj.elementType,
+        layerId,
+        properties: obj.defaultProperties as Record<string, unknown>,
+      });
 
-    pushHistory(`Place ${obj.name}`);
-  }, [doc, addElement, pushHistory]);
+      pushHistory(`Place ${obj.name}`);
+    },
+    [doc, addElement, pushHistory]
+  );
 
   return (
     <div className="object-library-panel">
       <div className="panel-header">
-        <span className="panel-title">{t('tool.objectLibrary.title', { defaultValue: 'Object Library' })}</span>
+        <span className="panel-title">
+          {t('tool.objectLibrary.title', { defaultValue: 'Object Library' })}
+        </span>
       </div>
 
       <div className="object-library-controls">
         <input
           type="text"
           className="object-library-search"
-          placeholder={t('tool.objectLibrary.searchPlaceholder', { defaultValue: 'Search objects…' })}
+          placeholder={t('tool.objectLibrary.searchPlaceholder', {
+            defaultValue: 'Search objects…',
+          })}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           aria-label={t('tool.objectLibrary.searchPlaceholder', { defaultValue: 'Search objects' })}
         />
 
-        <label htmlFor="obj-category-select" className="sr-only">{t('tool.objectLibrary.category', { defaultValue: 'Category' })}</label>
+        <label htmlFor="obj-category-select" className="sr-only">
+          {t('tool.objectLibrary.category', { defaultValue: 'Category' })}
+        </label>
         <select
           id="obj-category-select"
           aria-label={t('tool.objectLibrary.category', { defaultValue: 'Category' })}
@@ -61,15 +70,21 @@ export function ObjectLibraryPanel() {
           onChange={(e) => setCategory(e.target.value)}
           className="object-library-category-select"
         >
-          <option value="All">{t('tool.objectLibrary.allCategories', { defaultValue: 'All Categories' })}</option>
+          <option value="All">
+            {t('tool.objectLibrary.allCategories', { defaultValue: 'All Categories' })}
+          </option>
           {OBJECT_CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
       </div>
 
       {filtered.length === 0 ? (
-        <div className="object-library-empty">{t('tool.objectLibrary.noObjects', { defaultValue: 'No objects found' })}</div>
+        <div className="object-library-empty">
+          {t('tool.objectLibrary.noObjects', { defaultValue: 'No objects found' })}
+        </div>
       ) : (
         <div className="object-library-grid">
           {filtered.map((obj) => (

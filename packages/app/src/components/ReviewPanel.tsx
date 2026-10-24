@@ -26,7 +26,11 @@ export function ReviewPanel(): React.ReactElement {
       <div className="review-body">
         {reviewStatus === 'none' && (
           <div className="review-section">
-            <p className="review-hint">{t('review.submitHint', { defaultValue: 'Submit this design for team review before finalizing.' })}</p>
+            <p className="review-hint">
+              {t('review.submitHint', {
+                defaultValue: 'Submit this design for team review before finalizing.',
+              })}
+            </p>
             <button
               className="btn-review btn-request-review"
               onClick={() => setReviewStatus('pending')}
@@ -43,9 +47,15 @@ export function ReviewPanel(): React.ReactElement {
               <span className="review-status-dot review-status-dot--pending" />
               <span>{t('review.status.pending')}</span>
             </div>
-            <p className="review-hint">{t('review.pendingHint', { defaultValue: 'Waiting for reviewers to approve or request changes.' })}</p>
+            <p className="review-hint">
+              {t('review.pendingHint', {
+                defaultValue: 'Waiting for reviewers to approve or request changes.',
+              })}
+            </p>
             <div className="review-reviewer-list">
-              <p className="review-reviewers-label">{t('review.reviewersLabel', { defaultValue: 'Reviewers' })}</p>
+              <p className="review-reviewers-label">
+                {t('review.reviewersLabel', { defaultValue: 'Reviewers' })}
+              </p>
               <ul>
                 <li>Reviewer 1</li>
                 <li>Reviewer 2</li>
@@ -75,16 +85,23 @@ export function ReviewPanel(): React.ReactElement {
             <span
               data-testid="review-approved-badge"
               className="review-approved-badge"
-              style={{ color: '#22c55e', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+              style={{
+                color: '#22c55e',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+              }}
             >
               <CheckCircle size={16} />
               {t('review.status.approved')}
             </span>
-            <p className="review-hint" style={{ marginTop: 8 }}>{t('review.approvedDetail', { defaultValue: 'This design has been approved by reviewers.' })}</p>
-            <button
-              className="btn-review btn-new-review"
-              onClick={() => setReviewStatus('none')}
-            >
+            <p className="review-hint" style={{ marginTop: 8 }}>
+              {t('review.approvedDetail', {
+                defaultValue: 'This design has been approved by reviewers.',
+              })}
+            </p>
+            <button className="btn-review btn-new-review" onClick={() => setReviewStatus('none')}>
               {t('review.newReview', { defaultValue: 'New Review' })}
             </button>
           </div>
@@ -96,7 +113,11 @@ export function ReviewPanel(): React.ReactElement {
               <span className="review-status-dot review-status-dot--changes" />
               <span>{t('review.status.changesRequested')}</span>
             </div>
-            <p className="review-hint">{t('review.changesHint', { defaultValue: 'Reviewers have requested changes before approving.' })}</p>
+            <p className="review-hint">
+              {t('review.changesHint', {
+                defaultValue: 'Reviewers have requested changes before approving.',
+              })}
+            </p>
             <label htmlFor="review-comment" className="review-comment-label">
               {t('review.comment', { defaultValue: 'Comment' })}
             </label>
@@ -104,7 +125,9 @@ export function ReviewPanel(): React.ReactElement {
               id="review-comment"
               aria-label={t('review.commentAria', { defaultValue: 'comment' })}
               className="review-comment-textarea"
-              placeholder={t('review.commentPlaceholder', { defaultValue: 'Describe the changes needed…' })}
+              placeholder={t('review.commentPlaceholder', {
+                defaultValue: 'Describe the changes needed…',
+              })}
               rows={4}
             />
             <button

@@ -28,7 +28,8 @@ export interface PDFUnderlay {
 export function createUnderlay(source: string, pageIndex = 0): PDFUnderlay {
   return {
     id: `pdfu-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 5)}`,
-    source, pageIndex,
+    source,
+    pageIndex,
     opacity: 0.5,
     scale: 1,
     rotation: 0,
@@ -48,7 +49,7 @@ export function createUnderlay(source: string, pageIndex = 0): PDFUnderlay {
 export function calibrateScale(
   p1: { x: number; y: number },
   p2: { x: number; y: number },
-  realWorldMm: number,
+  realWorldMm: number
 ): number {
   const pxDist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
   if (pxDist < 1e-6) return 1;
@@ -59,10 +60,11 @@ export function calibrateScale(
  *  position in world mm. */
 export function pageToWorld(
   underlay: PDFUnderlay,
-  pagePoint: { x: number; y: number },
+  pagePoint: { x: number; y: number }
 ): { x: number; y: number } {
   const rad = (underlay.rotation * Math.PI) / 180;
-  const c = Math.cos(rad), s = Math.sin(rad);
+  const c = Math.cos(rad),
+    s = Math.sin(rad);
   const sx = pagePoint.x * underlay.scale;
   const sy = pagePoint.y * underlay.scale;
   return {

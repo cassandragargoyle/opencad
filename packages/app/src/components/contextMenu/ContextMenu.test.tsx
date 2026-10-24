@@ -59,15 +59,15 @@ describe('computeMenuPosition', () => {
     // TL fan goes RIGHT → panel must go LEFT → uses CSS `right:`
     const pos = computeMenuPosition(100, 100, W, H);
     expect('right' in pos.panelAnchor).toBe(true);
-    expect('top'   in pos.panelAnchor).toBe(true);
-    expect('left'  in pos.panelAnchor).toBe(false);
+    expect('top' in pos.panelAnchor).toBe(true);
+    expect('left' in pos.panelAnchor).toBe(false);
   });
 
   it('TR panel anchor has left and top (panel opposite the fan)', () => {
     // TR fan goes LEFT → panel must go RIGHT → uses CSS `left:`
     const pos = computeMenuPosition(900, 100, W, H);
-    expect('left'  in pos.panelAnchor).toBe(true);
-    expect('top'   in pos.panelAnchor).toBe(true);
+    expect('left' in pos.panelAnchor).toBe(true);
+    expect('top' in pos.panelAnchor).toBe(true);
     expect('right' in pos.panelAnchor).toBe(false);
   });
 
@@ -156,8 +156,10 @@ describe('getContextMenuItems', () => {
 
 describe('ContextMenu component', () => {
   const defaultProps = {
-    x: 300, y: 200,
-    viewportW: 1200, viewportH: 800,
+    x: 300,
+    y: 200,
+    viewportW: 1200,
+    viewportH: 800,
     items: getContextMenuItems('2d', 'wall'),
     onAction: vi.fn(),
     onClose: vi.fn(),
@@ -177,7 +179,7 @@ describe('ContextMenu component', () => {
 
   it('calls onAction and onClose when a radial button is clicked', () => {
     const onAction = vi.fn();
-    const onClose  = vi.fn();
+    const onClose = vi.fn();
     render(<ContextMenu {...defaultProps} onAction={onAction} onClose={onClose} />);
     fireEvent.click(screen.getByRole('menuitem', { name: /add door/i }));
     expect(onAction).toHaveBeenCalledWith('addDoor');
@@ -192,12 +194,7 @@ describe('ContextMenu component', () => {
   });
 
   it('renders empty-space menu for 2D', () => {
-    render(
-      <ContextMenu
-        {...defaultProps}
-        items={getContextMenuItems('2d', 'empty')}
-      />,
-    );
+    render(<ContextMenu {...defaultProps} items={getContextMenuItems('2d', 'empty')} />);
     expect(screen.getByRole('menuitem', { name: /paste/i })).toBeInTheDocument();
   });
 

@@ -21,37 +21,73 @@ import type { DocumentSchema, ElementSchema, ElementType, PropertyValue } from '
 // fails loudly. If you edit the UI list, add/remove the matching id here.
 const TOOLSHELF_TOOLS: readonly string[] = [
   'select',
-  'line', 'rectangle', 'circle', 'arc', 'ellipse', 'polygon', 'polyline',
-  'spline', 'hotspot',
-  'wall', 'curtain_wall', 'column', 'beam', 'slab', 'roof', 'stair', 'ramp',
-  'railing', 'ceiling', 'foundation', 'zone', 'truss', 'brace', 'mass',
-  'door', 'window', 'skylight',
-  'duct', 'pipe', 'cable_tray', 'conduit', 'lamp', 'air_terminal', 'sprinkler',
-  'topo', 'property_line', 'room_separator',
-  'dimension', 'text', 'model_text', 'label', 'section', 'elevation', 'detail',
+  'line',
+  'rectangle',
+  'circle',
+  'arc',
+  'ellipse',
+  'polygon',
+  'polyline',
+  'spline',
+  'hotspot',
+  'wall',
+  'curtain_wall',
+  'column',
+  'beam',
+  'slab',
+  'roof',
+  'stair',
+  'ramp',
+  'railing',
+  'ceiling',
+  'foundation',
+  'zone',
+  'truss',
+  'brace',
+  'mass',
+  'door',
+  'window',
+  'skylight',
+  'duct',
+  'pipe',
+  'cable_tray',
+  'conduit',
+  'lamp',
+  'air_terminal',
+  'sprinkler',
+  'topo',
+  'property_line',
+  'room_separator',
+  'dimension',
+  'text',
+  'model_text',
+  'label',
+  'section',
+  'elevation',
+  'detail',
   'revision_cloud',
 ];
 
 // Tools whose UI id doesn't match the ElementType (or that aren't elements).
 const NON_ELEMENT_TOOLS = new Set<string>([
-  'select',          // not an element — selection mode
-  'spline',          // persisted as polyline with smooth:true
-  'zone',            // persisted as 'space'
-  'topo',            // persisted as 'topography'
-  'section',         // persisted as 'section_mark'
-  'elevation',       // persisted as 'elevation_mark'
-  'detail',          // persisted as 'detail_mark'
+  'select', // not an element — selection mode
+  'spline', // persisted as polyline with smooth:true
+  'zone', // persisted as 'space'
+  'topo', // persisted as 'topography'
+  'section', // persisted as 'section_mark'
+  'elevation', // persisted as 'elevation_mark'
+  'detail', // persisted as 'detail_mark'
 ]);
 
 /** Mapping of UI tool ids that alias to a different ElementType. */
 const TOOL_TO_ELEMENT: Record<string, ElementType | null> = {
-  select:      null,
-  spline:      'polyline',
-  zone:        'space',
-  topo:        'topography',
-  section:     'section_mark',
-  elevation:   'elevation_mark',
-  detail:      'detail_mark',
+  select: null,
+  spline: 'polyline',
+  zone: 'space',
+  topo: 'topography',
+  section: 'section_mark',
+  elevation: 'elevation_mark',
+  detail: 'detail_mark',
 };
 
 function resolveElementType(toolId: string): ElementType | null {
@@ -66,18 +102,33 @@ function stubProps(type: ElementType): Record<string, PropertyValue> {
   const n = (value: number): PropertyValue => ({ value, type: 'number' });
   const s = (value: string): PropertyValue => ({ value, type: 'string' });
   const base: Record<string, PropertyValue> = {
-    X: n(100), Y: n(100),
-    Width: n(1200), Height: n(1200), Depth: n(200), Thickness: n(200),
-    StartX: n(0), StartY: n(0), EndX: n(2000), EndY: n(1000),
-    CenterX: n(500), CenterY: n(500), Radius: n(600),
-    RadiusX: n(800), RadiusY: n(400),
-    Diameter: n(300), SillHeight: n(900), Elevation: n(2800),
-    StartElevation: n(0), EndElevation: n(1000),
+    X: n(100),
+    Y: n(100),
+    Width: n(1200),
+    Height: n(1200),
+    Depth: n(200),
+    Thickness: n(200),
+    StartX: n(0),
+    StartY: n(0),
+    EndX: n(2000),
+    EndY: n(1000),
+    CenterX: n(500),
+    CenterY: n(500),
+    Radius: n(600),
+    RadiusX: n(800),
+    RadiusY: n(400),
+    Diameter: n(300),
+    SillHeight: n(900),
+    Elevation: n(2800),
+    StartElevation: n(0),
+    EndElevation: n(1000),
     Points: s('[{"x":0,"y":0},{"x":4000,"y":0},{"x":4000,"y":3000},{"x":0,"y":3000}]'),
   };
   // Topography needs a Z-aware points array.
   if (type === 'topography') {
-    base['Points'] = s('[{"x":0,"y":0,"z":0},{"x":1000,"y":0,"z":100},{"x":1000,"y":1000,"z":200}]');
+    base['Points'] = s(
+      '[{"x":0,"y":0,"z":0},{"x":1000,"y":0,"z":100},{"x":1000,"y":1000,"z":200}]'
+    );
   }
   return base;
 }
@@ -140,16 +191,34 @@ describe('T-TOOLS-002: every ToolShelf tool exports to a recognised IFC class', 
     // Simplest: scan all IFC lines and look for one that isn't a
     // geometry helper class.
     const geomHelpers = new Set([
-      'IFCCARTESIANPOINT', 'IFCDIRECTION', 'IFCAXIS2PLACEMENT3D',
-      'IFCLOCALPLACEMENT', 'IFCPROJECT', 'IFCSITE', 'IFCBUILDING',
-      'IFCBUILDINGSTOREY', 'IFCRELAGGREGATES', 'IFCOWNERHISTORY',
-      'IFCPERSON', 'IFCORGANIZATION', 'IFCPERSONANDORGANIZATION',
-      'IFCAPPLICATION', 'IFCPOLYLOOP', 'IFCFACEOUTERBOUND',
-      'IFCFACE', 'IFCCLOSEDSHELL', 'IFCFACETEDBREP',
-      'IFCPRODUCTDEFINITIONSHAPE', 'IFCSHAPEREPRESENTATION',
-      'IFCEXTRUDEDAREASOLID', 'IFCARBITRARYCLOSEDPROFILEDEF',
-      'IFCPOLYLINE', 'IFCRELCONTAINEDINSPATIALSTRUCTURE',
-      'IFCUNITASSIGNMENT', 'IFCSIUNIT', 'IFCGEOMETRICREPRESENTATIONCONTEXT',
+      'IFCCARTESIANPOINT',
+      'IFCDIRECTION',
+      'IFCAXIS2PLACEMENT3D',
+      'IFCLOCALPLACEMENT',
+      'IFCPROJECT',
+      'IFCSITE',
+      'IFCBUILDING',
+      'IFCBUILDINGSTOREY',
+      'IFCRELAGGREGATES',
+      'IFCOWNERHISTORY',
+      'IFCPERSON',
+      'IFCORGANIZATION',
+      'IFCPERSONANDORGANIZATION',
+      'IFCAPPLICATION',
+      'IFCPOLYLOOP',
+      'IFCFACEOUTERBOUND',
+      'IFCFACE',
+      'IFCCLOSEDSHELL',
+      'IFCFACETEDBREP',
+      'IFCPRODUCTDEFINITIONSHAPE',
+      'IFCSHAPEREPRESENTATION',
+      'IFCEXTRUDEDAREASOLID',
+      'IFCARBITRARYCLOSEDPROFILEDEF',
+      'IFCPOLYLINE',
+      'IFCRELCONTAINEDINSPATIALSTRUCTURE',
+      'IFCUNITASSIGNMENT',
+      'IFCSIUNIT',
+      'IFCGEOMETRICREPRESENTATIONCONTEXT',
     ]);
     // Element lines look like `#42=IFCWALLSTANDARDCASE(...)` (no space)
     // or `#42 = IFCCOLUMN(...)` depending on the serializer path. Match

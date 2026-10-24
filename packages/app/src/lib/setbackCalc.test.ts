@@ -11,10 +11,10 @@ import {
 } from './setbackCalc';
 
 const SQUARE_10M: Point2D[] = [
-  { x: 0,     y: 0     },
-  { x: 10000, y: 0     },
+  { x: 0, y: 0 },
+  { x: 10000, y: 0 },
   { x: 10000, y: 10000 },
-  { x: 0,     y: 10000 },
+  { x: 0, y: 10000 },
 ];
 
 const UNIFORM: SetbackDistances = { front: 1000, rear: 1000, left: 1000, right: 1000 };
@@ -42,7 +42,13 @@ describe('T-SITE-07: setbackCalc', () => {
   // ── computeSetbackEnvelope ──────────────────────────────────────────────────
 
   it('returns empty polygon for fewer than 3 boundary points', () => {
-    const result = computeSetbackEnvelope([{ x: 0, y: 0 }, { x: 1000, y: 0 }], UNIFORM);
+    const result = computeSetbackEnvelope(
+      [
+        { x: 0, y: 0 },
+        { x: 1000, y: 0 },
+      ],
+      UNIFORM
+    );
     expect(result.polygon).toHaveLength(0);
     expect(result.buildable).toBe(false);
   });
@@ -70,7 +76,7 @@ describe('T-SITE-07: setbackCalc', () => {
     // With 3m front vs 1m rear, inner polygon should have less depth.
     const innerArea = Math.abs(polygonArea(result.polygon));
     const uniformResult = computeSetbackEnvelope(SQUARE_10M, UNIFORM);
-    const uniformArea   = Math.abs(polygonArea(uniformResult.polygon));
+    const uniformArea = Math.abs(polygonArea(uniformResult.polygon));
     expect(innerArea).toBeLessThan(uniformArea);
   });
 

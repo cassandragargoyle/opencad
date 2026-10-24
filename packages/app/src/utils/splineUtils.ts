@@ -45,12 +45,12 @@ export function catmullRomToBezier(points: Point[], tension: number = 0.5): Bezi
     // cp1 = p1 + (p2 - p0) * tension / 3
     // cp2 = p2 - (p3 - p1) * tension / 3
     const cp1: Point = {
-      x: p1.x + (p2.x - p0.x) * tension / 3,
-      y: p1.y + (p2.y - p0.y) * tension / 3,
+      x: p1.x + ((p2.x - p0.x) * tension) / 3,
+      y: p1.y + ((p2.y - p0.y) * tension) / 3,
     };
     const cp2: Point = {
-      x: p2.x - (p3.x - p1.x) * tension / 3,
-      y: p2.y - (p3.y - p1.y) * tension / 3,
+      x: p2.x - ((p3.x - p1.x) * tension) / 3,
+      y: p2.y - ((p3.y - p1.y) * tension) / 3,
     };
 
     segments.push({ cp1, cp2, end: { x: p2.x, y: p2.y } });

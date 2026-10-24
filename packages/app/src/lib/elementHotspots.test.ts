@@ -13,21 +13,29 @@ import { hotspotsFor } from './elementHotspots';
 
 function wall(x1: number, y1: number, x2: number, y2: number): ElementSchema {
   return {
-    id: 'w', type: 'wall', layerId: 'l',
+    id: 'w',
+    type: 'wall',
+    layerId: 'l',
     properties: {
-      StartX: { type: 'number', value: x1 }, StartY: { type: 'number', value: y1 },
-      EndX:   { type: 'number', value: x2 }, EndY:   { type: 'number', value: y2 },
+      StartX: { type: 'number', value: x1 },
+      StartY: { type: 'number', value: y1 },
+      EndX: { type: 'number', value: x2 },
+      EndY: { type: 'number', value: y2 },
     },
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 function slab(points: Array<{ x: number; y: number }>): ElementSchema {
   return {
-    id: 's', type: 'slab', layerId: 'l',
+    id: 's',
+    type: 'slab',
+    layerId: 'l',
     properties: { Points: { type: 'string', value: JSON.stringify(points) } },
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
@@ -39,9 +47,14 @@ describe('T-MOD-027: hotspots', () => {
   });
 
   it('T-MOD-027-002: 4-vertex slab returns 8 hotspots', () => {
-    const h = hotspotsFor(slab([
-      { x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 },
-    ]));
+    const h = hotspotsFor(
+      slab([
+        { x: 0, y: 0 },
+        { x: 100, y: 0 },
+        { x: 100, y: 100 },
+        { x: 0, y: 100 },
+      ])
+    );
     expect(h).toHaveLength(8);
     expect(h.filter((x) => x.kind === 'vertex')).toHaveLength(4);
     expect(h.filter((x) => x.kind === 'edge-midpoint')).toHaveLength(4);
@@ -66,10 +79,15 @@ describe('T-MOD-027: hotspots', () => {
   });
 
   it('T-MOD-027-005: slab edge midpoint apply moves its two endpoints', () => {
-    const h = hotspotsFor(slab([
-      { x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 },
-    ]));
-    const edge = h.filter((x) => x.kind === 'edge-midpoint')[0]!;  // (0,0)→(100,0)
+    const h = hotspotsFor(
+      slab([
+        { x: 0, y: 0 },
+        { x: 100, y: 0 },
+        { x: 100, y: 100 },
+        { x: 0, y: 100 },
+      ])
+    );
+    const edge = h.filter((x) => x.kind === 'edge-midpoint')[0]!; // (0,0)→(100,0)
     const patch = edge.apply({ x: 0, y: -20 });
     const nextPoints = JSON.parse(patch.Points?.value as string);
     expect(nextPoints[0]).toEqual({ x: 0, y: -20 });
@@ -80,10 +98,16 @@ describe('T-MOD-027: hotspots', () => {
   });
 
   it('element types without hotspots return []', () => {
-    expect(hotspotsFor(
-      { id: 'd', type: 'door', layerId: 'l', properties: {},
+    expect(
+      hotspotsFor({
+        id: 'd',
+        type: 'door',
+        layerId: 'l',
+        properties: {},
         boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-        createdAt: 0, updatedAt: 0 } as ElementSchema,
-    )).toEqual([]);
+        createdAt: 0,
+        updatedAt: 0,
+      } as ElementSchema)
+    ).toEqual([]);
   });
 });

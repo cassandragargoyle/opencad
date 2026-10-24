@@ -46,10 +46,7 @@ describe('T-DOC-006: elevations', () => {
   });
 
   it('custom angle 45 places camera NE of centre', () => {
-    const c = cameraParamsFor(
-      { id: 'custom', name: 'NE', compass: 'custom', angleDeg: 45 },
-      bbox,
-    );
+    const c = cameraParamsFor({ id: 'custom', name: 'NE', compass: 'custom', angleDeg: 45 }, bbox);
     expect(c.position.x).toBeGreaterThan(c.target.x);
     expect(c.position.z).toBeLessThan(c.target.z);
   });

@@ -34,10 +34,10 @@ export type LODLevel = 0 | 1 | 2 | 3;
  *   3 = culled (not rendered)
  */
 export const LOD_THRESHOLDS: Record<LODLevel, number> = {
-  0: 0,      // distance 0 – always full detail
-  1: 50,     // > 50 m equivalent
-  2: 200,    // > 200 m equivalent
-  3: 1000,   // > 1000 m equivalent → cull
+  0: 0, // distance 0 – always full detail
+  1: 50, // > 50 m equivalent
+  2: 200, // > 200 m equivalent
+  3: 1000, // > 1000 m equivalent → cull
 };
 
 /**
@@ -84,7 +84,7 @@ function splitNode(node: QuadtreeNode): void {
   const { minX, minY, maxX, maxY } = node.bounds;
   const midX = (minX + maxX) / 2;
   const midY = (minY + maxY) / 2;
-  const d    = node.depth + 1;
+  const d = node.depth + 1;
 
   node.children = [
     { bounds: { minX, minY, maxX: midX, maxY: midY }, entries: [], children: null, depth: d },
@@ -157,10 +157,10 @@ export interface Quadtree {
  */
 export function createQuadtree(worldBounds: AABB2D): Quadtree {
   const root: QuadtreeNode = {
-    bounds:   worldBounds,
-    entries:  [],
+    bounds: worldBounds,
+    entries: [],
     children: null,
-    depth:    0,
+    depth: 0,
   };
   let count = 0;
 
@@ -200,19 +200,19 @@ export interface TileDescriptor {
 export function buildTileDescriptors(
   tree: Quadtree & { _root?: QuadtreeNode },
   visibleBounds: AABB2D,
-  cameraDistanceM: number,
+  cameraDistanceM: number
 ): TileDescriptor[] {
   const entries = tree.query(visibleBounds);
   if (entries.length === 0) return [];
 
   // Group entries by tile (simple grid: 100m × 100m tiles)
   const tileSize = 100;
-  const tileMap  = new Map<string, { bounds: AABB2D; ids: string[] }>();
+  const tileMap = new Map<string, { bounds: AABB2D; ids: string[] }>();
 
   for (const e of entries) {
     const tileX = Math.floor(e.bounds.minX / tileSize);
     const tileY = Math.floor(e.bounds.minY / tileSize);
-    const key   = `${tileX}:${tileY}`;
+    const key = `${tileX}:${tileY}`;
 
     if (!tileMap.has(key)) {
       tileMap.set(key, {
@@ -236,9 +236,9 @@ export function buildTileDescriptors(
 
     descriptors.push({
       tileId,
-      bounds:            tile.bounds,
-      lodLevel:          lod,
-      elementIds:        tile.ids,
+      bounds: tile.bounds,
+      lodLevel: lod,
+      elementIds: tile.ids,
       estimatedVertices: tile.ids.length * vertexFactors[lod],
     });
   }
@@ -252,10 +252,7 @@ export function buildTileDescriptors(
  * Filter tile descriptors to those intersecting the camera frustum.
  * The frustum is approximated as an AABB for 2D plan view.
  */
-export function frustumCull(
-  tiles: TileDescriptor[],
-  frustumBounds: AABB2D,
-): TileDescriptor[] {
+export function frustumCull(tiles: TileDescriptor[], frustumBounds: AABB2D): TileDescriptor[] {
   return tiles.filter((t) => aabbIntersects(t.bounds, frustumBounds));
 }
 

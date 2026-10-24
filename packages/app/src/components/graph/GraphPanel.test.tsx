@@ -26,7 +26,9 @@ function makeGraph(overrides: Partial<GraphDefinition> = {}): GraphDefinition {
 
 describe('T-EXT-02: GraphPanel', () => {
   let onSave: ReturnType<typeof vi.fn>;
-  beforeEach(() => { onSave = vi.fn(); });
+  beforeEach(() => {
+    onSave = vi.fn();
+  });
 
   it('renders the graph panel region', () => {
     render(<GraphPanel graph={makeGraph()} onSave={onSave} />);

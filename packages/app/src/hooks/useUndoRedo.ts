@@ -19,11 +19,20 @@ export function useUndoRedo({ undo, redo, canUndo, canRedo }: UseUndoRedoOptions
       // Shift (or CapsLock) makes browsers report 'Z' rather than 'z'.
       const key = e.key.toLowerCase();
       if (key === 'z' && !e.shiftKey) {
-        if (canUndo) { e.preventDefault(); undo(); }
+        if (canUndo) {
+          e.preventDefault();
+          undo();
+        }
       } else if (key === 'z' && e.shiftKey) {
-        if (canRedo) { e.preventDefault(); redo(); }
+        if (canRedo) {
+          e.preventDefault();
+          redo();
+        }
       } else if (key === 'y') {
-        if (canRedo) { e.preventDefault(); redo(); }
+        if (canRedo) {
+          e.preventDefault();
+          redo();
+        }
       }
     };
 

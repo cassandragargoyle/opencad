@@ -45,14 +45,16 @@ export function bladeColourForAltitude(altM: number): string {
   // Clamp to realistic range 0 – 4000 m
   const t = Math.max(0, Math.min(1, altM / 4000));
   // Interpolate green channel and blue slightly for high altitude
-  const r = Math.round(40 + t * 120);        // 40 → 160
-  const g = Math.round(140 - t * 60);        // 140 → 80
-  const b = Math.round(30 + t * 20);         // 30 → 50
+  const r = Math.round(40 + t * 120); // 40 → 160
+  const g = Math.round(140 - t * 60); // 140 → 80
+  const b = Math.round(30 + t * 20); // 30 → 50
   return `#${_hex2(r)}${_hex2(g)}${_hex2(b)}`;
 }
 
 function _hex2(n: number): string {
-  return Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
+  return Math.max(0, Math.min(255, Math.round(n)))
+    .toString(16)
+    .padStart(2, '0');
 }
 
 /**
@@ -83,7 +85,7 @@ export function generateGrassPatch(
     const normY = (y - bounds.minY) / (height || 1);
     const altM = normY * 2000; // simple 0–2000 m proxy
     const bladeHeight = 0.05 + rng() * 0.15; // 5–20 cm
-    const baseLean = (rng() - 0.5) * 0.2;   // natural variation
+    const baseLean = (rng() - 0.5) * 0.2; // natural variation
     const windLean = windStrength * (rng() * 0.3);
     blades.push({
       x,
@@ -105,11 +107,7 @@ function _makePatchId(bounds: AABB2D): string {
  * Apply wind to a grass field, updating each blade's lean based on wind direction and strength.
  * `windDir` is in radians (0 = +x axis direction).
  */
-export function applyWind(
-  field: GrassField,
-  windDir: number,
-  windStrength: number
-): GrassField {
+export function applyWind(field: GrassField, windDir: number, windStrength: number): GrassField {
   const blades = field.blades.map((b) => ({
     ...b,
     lean: b.lean + windStrength * Math.cos(windDir) * 0.5,

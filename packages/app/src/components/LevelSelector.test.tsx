@@ -86,7 +86,7 @@ describe('T-UI-011: LevelSelector', () => {
   });
 
   it('renders single level', () => {
-    const single = { 'l1': { id: 'l1', name: 'Ground', elevation: 0, height: 3000, order: 0 } };
+    const single = { l1: { id: 'l1', name: 'Ground', elevation: 0, height: 3000, order: 0 } };
     render(<LevelSelector levels={single} selectedLevel="l1" onSelectLevel={onSelectLevel} />);
     expect(screen.getByText('Ground')).toBeInTheDocument();
   });

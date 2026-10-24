@@ -81,7 +81,7 @@ export async function loadDocument(projectId: string): Promise<string | null> {
   const fromOpfs = await opfsRead(opfsKey(projectId));
   if (fromOpfs !== null) return fromOpfs;
   const db = await getDb();
-  const record = await db.get(STORE_NAME, projectId) as OfflineDocRecord | undefined;
+  const record = (await db.get(STORE_NAME, projectId)) as OfflineDocRecord | undefined;
   return record?.data && record.data.length > 0 ? record.data : null;
 }
 
@@ -90,7 +90,7 @@ export async function loadDocument(projectId: string): Promise<string | null> {
  */
 export async function listPendingSync(): Promise<string[]> {
   const db = await getDb();
-  const all = await db.getAll(STORE_NAME) as OfflineDocRecord[];
+  const all = (await db.getAll(STORE_NAME)) as OfflineDocRecord[];
   return all.filter((r) => r.pendingSync).map((r) => r.projectId);
 }
 
@@ -101,7 +101,7 @@ export async function listPendingSync(): Promise<string[]> {
  */
 export async function markSynced(projectId: string): Promise<void> {
   const db = await getDb();
-  const record = await db.get(STORE_NAME, projectId) as OfflineDocRecord | undefined;
+  const record = (await db.get(STORE_NAME, projectId)) as OfflineDocRecord | undefined;
   if (!record) return;
   await db.put(STORE_NAME, { ...record, pendingSync: false });
 }

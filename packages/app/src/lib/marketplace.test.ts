@@ -82,9 +82,39 @@ describe('searchMarketplace', () => {
 
 describe('sortMarketplaceItems', () => {
   const items: MarketplaceItem[] = [
-    { id: 'a', name: 'Zebra Item', authorId: 'u1', price: 50, currency: 'USD', category: 'doors', downloads: 100, rating: 3.5, tags: [] },
-    { id: 'b', name: 'Alpha Item', authorId: 'u2', price: 10, currency: 'USD', category: 'doors', downloads: 5000, rating: 4.9, tags: [] },
-    { id: 'c', name: 'Middle Item', authorId: 'u3', price: 25, currency: 'USD', category: 'windows', downloads: 750, rating: 4.2, tags: [] },
+    {
+      id: 'a',
+      name: 'Zebra Item',
+      authorId: 'u1',
+      price: 50,
+      currency: 'USD',
+      category: 'doors',
+      downloads: 100,
+      rating: 3.5,
+      tags: [],
+    },
+    {
+      id: 'b',
+      name: 'Alpha Item',
+      authorId: 'u2',
+      price: 10,
+      currency: 'USD',
+      category: 'doors',
+      downloads: 5000,
+      rating: 4.9,
+      tags: [],
+    },
+    {
+      id: 'c',
+      name: 'Middle Item',
+      authorId: 'u3',
+      price: 25,
+      currency: 'USD',
+      category: 'windows',
+      downloads: 750,
+      rating: 4.2,
+      tags: [],
+    },
   ];
 
   it('sorts by price ascending', () => {

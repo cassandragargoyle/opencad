@@ -39,7 +39,7 @@ export function createRenderFarm(nodes: RenderNode[]): RenderFarm {
 
 export function submitJob(
   farm: RenderFarm,
-  job: Omit<RenderJob, 'id' | 'status' | 'progress' | 'outputUrls'>,
+  job: Omit<RenderJob, 'id' | 'status' | 'progress' | 'outputUrls'>
 ): RenderFarm {
   const newJob: RenderJob = {
     ...job,
@@ -62,11 +62,11 @@ export function assignJobToNode(farm: RenderFarm, jobId: string): RenderFarm {
   if (nodeIndex === -1) return farm; // no idle nodes
 
   const updatedNodes = farm.nodes.map((node, i) =>
-    i === nodeIndex ? { ...node, status: 'busy' as const } : node,
+    i === nodeIndex ? { ...node, status: 'busy' as const } : node
   );
 
   const updatedJobs = farm.jobs.map((j, i) =>
-    i === jobIndex ? { ...j, status: 'running' as const } : j,
+    i === jobIndex ? { ...j, status: 'running' as const } : j
   );
 
   return { ...farm, nodes: updatedNodes, jobs: updatedJobs };

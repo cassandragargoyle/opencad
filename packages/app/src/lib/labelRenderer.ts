@@ -19,19 +19,16 @@
 
 import type { ElementSchema } from '@opencad/document';
 
-export type LabelFormat =
-  | 'mm->m'
-  | 'mm->ft-in'
-  | 'upper'
-  | 'lower'
-  | `round${number}`;
+export type LabelFormat = 'mm->m' | 'mm->ft-in' | 'upper' | 'lower' | `round${number}`;
 
 function applyFormat(value: unknown, format: string): string {
   if (value == null) return '';
   const str = String(value);
   switch (format) {
-    case 'upper': return str.toUpperCase();
-    case 'lower': return str.toLowerCase();
+    case 'upper':
+      return str.toUpperCase();
+    case 'lower':
+      return str.toLowerCase();
     case 'mm->m': {
       const n = Number(value);
       if (!isFinite(n)) return str;
@@ -59,10 +56,7 @@ function applyFormat(value: unknown, format: string): string {
 }
 
 /** Resolve a template against a host element. */
-export function renderLabelText(
-  template: string,
-  host: ElementSchema | null | undefined,
-): string {
+export function renderLabelText(template: string, host: ElementSchema | null | undefined): string {
   if (!template) return '';
   if (!host) return template.replace(/\{\{[^}]+\}\}/g, '');
 
@@ -72,10 +66,10 @@ export function renderLabelText(
     const [keyRaw, formatRaw] = token.split('|').map((s) => s.trim());
     if (!keyRaw) return '';
     // Autotext tokens that aren't element props
-    if (keyRaw === 'date')     return new Date().toISOString().slice(0, 10);
+    if (keyRaw === 'date') return new Date().toISOString().slice(0, 10);
     if (keyRaw === 'datetime') return new Date().toISOString();
-    if (keyRaw === 'type')     return host.type;
-    if (keyRaw === 'id')       return host.id;
+    if (keyRaw === 'type') return host.type;
+    if (keyRaw === 'id') return host.id;
 
     const value = props[keyRaw]?.value;
     if (value == null) return '';

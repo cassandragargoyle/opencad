@@ -61,9 +61,7 @@ function inferParameterType(name: string, value: string | number): 'String' | 'D
   return 'Double';
 }
 
-export function buildRevitParameterSet(
-  props: Record<string, string | number>,
-): RevitParameter[] {
+export function buildRevitParameterSet(props: Record<string, string | number>): RevitParameter[] {
   return Object.entries(props).map(([name, value]) => ({
     name,
     value,
@@ -71,10 +69,7 @@ export function buildRevitParameterSet(
   }));
 }
 
-export function toRevitJSON(
-  elements: OpenCADElement[],
-  projectName: string,
-): object {
+export function toRevitJSON(elements: OpenCADElement[], projectName: string): object {
   return {
     projectName,
     exportedAt: new Date().toISOString(),

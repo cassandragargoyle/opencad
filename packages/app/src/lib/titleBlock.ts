@@ -14,10 +14,10 @@ export interface LayoutContext {
   sheetTitle?: string;
   sheetNumber?: string;
   sheetCount?: number;
-  date?: string;          // ISO-8601 (YYYY-MM-DD)
+  date?: string; // ISO-8601 (YYYY-MM-DD)
   drawnBy?: string;
   checkedBy?: string;
-  scale?: string;         // "1:100" etc.
+  scale?: string; // "1:100" etc.
   revision?: string;
   notes?: string;
   /** Extra freeform tokens for user-defined title blocks. */
@@ -30,13 +30,13 @@ export function renderTitleBlock(template: string, ctx: LayoutContext): string {
   return template.replace(/\{\{([^}]+)\}\}/g, (_match, raw: string) => {
     const key = raw.trim();
     // Built-in autotext
-    if (key === 'date')       return ctx.date ?? new Date().toISOString().slice(0, 10);
-    if (key === 'datetime')   return new Date().toISOString();
+    if (key === 'date') return ctx.date ?? new Date().toISOString().slice(0, 10);
+    if (key === 'datetime') return new Date().toISOString();
     if (key === 'sheet-count') return ctx.sheetCount !== undefined ? String(ctx.sheetCount) : '';
     // Core fields
     const coreMap: Record<string, string | number | undefined> = {
       project: ctx.project,
-      client:  ctx.client,
+      client: ctx.client,
       'sheet-title': ctx.sheetTitle,
       'sheet-number': ctx.sheetNumber,
       'drawn-by': ctx.drawnBy,
@@ -73,17 +73,17 @@ export const DEFAULT_TITLE_BLOCK_SVG = `
 /** ISO paper sizes in millimetres, landscape orientation. */
 export const ISO_SHEET_SIZES: Record<string, { w: number; h: number }> = {
   A0: { w: 1189, h: 841 },
-  A1: { w: 841,  h: 594 },
-  A2: { w: 594,  h: 420 },
-  A3: { w: 420,  h: 297 },
-  A4: { w: 297,  h: 210 },
+  A1: { w: 841, h: 594 },
+  A2: { w: 594, h: 420 },
+  A3: { w: 420, h: 297 },
+  A4: { w: 297, h: 210 },
 };
 
 /** ANSI paper sizes in millimetres, landscape orientation. */
 export const ANSI_SHEET_SIZES: Record<string, { w: number; h: number }> = {
-  A: { w: 279, h: 216 },   // 11 × 8.5 in
-  B: { w: 432, h: 279 },   // 17 × 11 in
-  C: { w: 559, h: 432 },   // 22 × 17 in
-  D: { w: 864, h: 559 },   // 34 × 22 in
-  E: { w: 1118, h: 864 },  // 44 × 34 in
+  A: { w: 279, h: 216 }, // 11 × 8.5 in
+  B: { w: 432, h: 279 }, // 17 × 11 in
+  C: { w: 559, h: 432 }, // 22 × 17 in
+  D: { w: 864, h: 559 }, // 34 × 22 in
+  E: { w: 1118, h: 864 }, // 44 × 34 in
 };

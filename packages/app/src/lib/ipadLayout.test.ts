@@ -43,7 +43,7 @@ describe('T-FIELD-01: classifyDevice()', () => {
 describe('T-FIELD-01: isTouchDevice()', () => {
   it('iPad-11 is touch', () => expect(isTouchDevice('ipad-11')).toBe(true));
   it('iPad-13 is touch', () => expect(isTouchDevice('ipad-13')).toBe(true));
-  it('iPhone is touch',  () => expect(isTouchDevice('iphone')).toBe(true));
+  it('iPhone is touch', () => expect(isTouchDevice('iphone')).toBe(true));
   it('Desktop is not touch', () => expect(isTouchDevice('desktop')).toBe(false));
 });
 
@@ -122,29 +122,50 @@ describe('T-FIELD-01: pencilPressureToWeight()', () => {
 
 describe('T-FIELD-01: computePinchGesture()', () => {
   it('no movement = scale 1, rotation 0', () => {
-    const p: [any, any] = [{ id: 1, x: 0, y: 0 }, { id: 2, x: 100, y: 0 }];
+    const p: [any, any] = [
+      { id: 1, x: 0, y: 0 },
+      { id: 2, x: 100, y: 0 },
+    ];
     const g = computePinchGesture(p, p);
     expect(g.scaleDelta).toBeCloseTo(1);
     expect(g.rotationDelta).toBeCloseTo(0);
   });
 
   it('spreading fingers doubles scale', () => {
-    const prev: [any, any] = [{ id: 1, x: 0, y: 0 }, { id: 2, x: 100, y: 0 }];
-    const curr: [any, any] = [{ id: 1, x: 0, y: 0 }, { id: 2, x: 200, y: 0 }];
+    const prev: [any, any] = [
+      { id: 1, x: 0, y: 0 },
+      { id: 2, x: 100, y: 0 },
+    ];
+    const curr: [any, any] = [
+      { id: 1, x: 0, y: 0 },
+      { id: 2, x: 200, y: 0 },
+    ];
     const g = computePinchGesture(prev, curr);
     expect(g.scaleDelta).toBeCloseTo(2);
   });
 
   it('rotating 90° gives π/2 rotation delta', () => {
-    const prev: [any, any] = [{ id: 1, x: 0, y: 0 }, { id: 2, x: 100, y: 0 }];
-    const curr: [any, any] = [{ id: 1, x: 0, y: 0 }, { id: 2, x: 0, y: 100 }];
+    const prev: [any, any] = [
+      { id: 1, x: 0, y: 0 },
+      { id: 2, x: 100, y: 0 },
+    ];
+    const curr: [any, any] = [
+      { id: 1, x: 0, y: 0 },
+      { id: 2, x: 0, y: 100 },
+    ];
     const g = computePinchGesture(prev, curr);
     expect(g.rotationDelta).toBeCloseTo(Math.PI / 2);
   });
 
   it('centroid is midpoint of current touches', () => {
-    const prev: [any, any] = [{ id: 1, x: 0, y: 0 }, { id: 2, x: 100, y: 0 }];
-    const curr: [any, any] = [{ id: 1, x: 10, y: 20 }, { id: 2, x: 90, y: 40 }];
+    const prev: [any, any] = [
+      { id: 1, x: 0, y: 0 },
+      { id: 2, x: 100, y: 0 },
+    ];
+    const curr: [any, any] = [
+      { id: 1, x: 10, y: 20 },
+      { id: 2, x: 90, y: 40 },
+    ];
     const g = computePinchGesture(prev, curr);
     expect(g.centroid.x).toBeCloseTo(50);
     expect(g.centroid.y).toBeCloseTo(30);

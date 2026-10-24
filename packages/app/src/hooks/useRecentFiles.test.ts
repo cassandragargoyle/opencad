@@ -14,7 +14,9 @@ describe('Issue #2: Recent files for IFC dialogs', () => {
     mockStorage = new Map();
     store = new RecentFilesStore({
       get: (key: string) => mockStorage.get(key) ?? null,
-      set: (key: string, value: string) => { mockStorage.set(key, value); },
+      set: (key: string, value: string) => {
+        mockStorage.set(key, value);
+      },
     });
   });
 
@@ -32,7 +34,9 @@ describe('Issue #2: Recent files for IFC dialogs', () => {
     store.addFile({ name: 'plan.ifc', path: '/tmp/plan.ifc', format: 'ifc' });
     const reloaded = new RecentFilesStore({
       get: (key: string) => mockStorage.get(key) ?? null,
-      set: (key: string, value: string) => { mockStorage.set(key, value); },
+      set: (key: string, value: string) => {
+        mockStorage.set(key, value);
+      },
     });
     expect(reloaded.getFiles()[0]!.name).toBe('plan.ifc');
   });

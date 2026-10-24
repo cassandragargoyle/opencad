@@ -9,12 +9,14 @@ Every screenshot and walkthrough of the current app shows walls that overlap as 
 ## Scope
 
 ### In scope
+
 - Detect L-, T-, and X-junctions between two or more walls sharing an endpoint or a point along one wall's length (within a 20 mm snap radius).
 - Produce a mitered, butted, or cross-cleaned joint in 3D and 2D that respects each wall's `Width` (and, once T-MOD-004 lands, composite layer priorities).
 - Recompute joints incrementally when a wall is moved, stretched, deleted, or its thickness changes.
 - Ensure openings (doors, windows) near a junction don't cut through the joint cleanly — the joint region should remain solid wall.
 
 ### Out of scope (this issue)
+
 - Composite layer priority matching (handled by T-MOD-004 once composites exist).
 - Sloped-wall junctions (walls today are all vertical).
 - Non-orthogonal junctions where three or more walls meet at arbitrary angles (initial pass handles 2 walls cleanly; the general N-way miter is a follow-up).
@@ -33,7 +35,7 @@ Every screenshot and walkthrough of the current app shows walls that overlap as 
 - [ ] An X-junction (two interior walls crossing) produces four clean quadrants with no duplicated geometry at the crossing.
 - [ ] Moving one wall of a joint by dragging preserves the joint — the other wall's geometry updates within the same frame without visual flicker.
 - [ ] Deleting one wall of a joint restores the other wall's full untrimmed length.
-- [ ] The joint is *not* defeated by a nearby door or window — openings within 100 mm of a junction shift away from the junction automatically, or emit a compliance warning if forced to overlap.
+- [ ] The joint is _not_ defeated by a nearby door or window — openings within 100 mm of a junction shift away from the junction automatically, or emit a compliance warning if forced to overlap.
 - [ ] No performance regression: rendering a 50-wall plan completes a full rebuild in ≤ 16 ms on the harness baseline machine.
 - [ ] All existing unit tests remain green; the new wall-graph module has ≥ 90 % line coverage.
 
@@ -44,7 +46,7 @@ New file `packages/app/src/hooks/wallGraph.test.ts`:
 - `T-MOD-001-001` — `buildWallGraph` returns an empty map when the document has zero walls.
 - `T-MOD-001-002` — two walls sharing an exact endpoint produce an L-junction for both walls.
 - `T-MOD-001-003` — two walls sharing an endpoint within 15 mm but not exactly produce an L-junction (snap tolerance).
-- `T-MOD-001-004` — two walls sharing an endpoint 25 mm apart do *not* form a junction (outside tolerance).
+- `T-MOD-001-004` — two walls sharing an endpoint 25 mm apart do _not_ form a junction (outside tolerance).
 - `T-MOD-001-005` — three walls forming a T produce one T-junction record on the through-wall at `t ≈ 0.5` and two L-junctions on the stub walls.
 - `T-MOD-001-006` — four walls crossing at a point produce an X-junction with exactly four join records at the crossing.
 - `T-MOD-001-007` — wall removed from the doc invalidates only its neighbours in the cached graph, not every wall.

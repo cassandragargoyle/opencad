@@ -31,10 +31,7 @@ function numProp(el: ElementSchema, key: string, fb = 0): number {
 }
 
 /** Pick the story an element belongs to based on its ElevationOffset. */
-export function storyForElement(
-  el: ElementSchema,
-  levels: LevelSchema[],
-): LevelSchema | null {
+export function storyForElement(el: ElementSchema, levels: LevelSchema[]): LevelSchema | null {
   if (levels.length === 0) return null;
   const elev = numProp(el, 'ElevationOffset', 0);
   // Sort by elevation ascending so we can find the topmost level <= elev.
@@ -47,10 +44,7 @@ export function storyForElement(
 }
 
 /** Return the subset of elements visible under the given filter. */
-export function filterElementsByStory(
-  doc: DocumentSchema,
-  filter: StoryFilter,
-): ElementSchema[] {
+export function filterElementsByStory(doc: DocumentSchema, filter: StoryFilter): ElementSchema[] {
   const elements = Object.values(doc.content.elements);
   if (filter.kind === 'all') return elements;
 

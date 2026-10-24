@@ -14,7 +14,7 @@ describe('T-MOD-015: wall edit ops', () => {
   it('T-MOD-015-001: trim [0,0]→[10,0] against cutter at x=5 returns [0,0]→[5,0]', () => {
     const out = trimWall(
       { a: { x: 0, y: 0 }, b: { x: 10, y: 0 } },
-      { a: { x: 5, y: -2 }, b: { x: 5, y: 2 } },
+      { a: { x: 5, y: -2 }, b: { x: 5, y: 2 } }
     );
     expect(out).not.toBeNull();
     expect(out!.b).toEqual({ x: 5, y: 0 });
@@ -23,7 +23,7 @@ describe('T-MOD-015: wall edit ops', () => {
   it('T-MOD-015-002: extend [0,0]→[4,0] toward target at x=10 returns [0,0]→[10,0]', () => {
     const out = extendWall(
       { a: { x: 0, y: 0 }, b: { x: 4, y: 0 } },
-      { a: { x: 10, y: -2 }, b: { x: 10, y: 2 } },
+      { a: { x: 10, y: -2 }, b: { x: 10, y: 2 } }
     );
     expect(out).not.toBeNull();
     expect(out!.b.x).toBeCloseTo(10);
@@ -47,7 +47,7 @@ describe('T-MOD-015: wall edit ops', () => {
   it('T-MOD-015-004: merge two collinear walls sharing endpoint → combined', () => {
     const { merged } = mergeWalls(
       { a: { x: 0, y: 0 }, b: { x: 5, y: 0 } },
-      { a: { x: 5, y: 0 }, b: { x: 10, y: 0 } },
+      { a: { x: 5, y: 0 }, b: { x: 10, y: 0 } }
     );
     expect(merged).not.toBeNull();
     const xs = [merged!.a.x, merged!.b.x].sort((a, b) => a - b);
@@ -57,7 +57,7 @@ describe('T-MOD-015: wall edit ops', () => {
   it('T-MOD-015-005: merge non-collinear walls returns null + reason', () => {
     const { merged, reason } = mergeWalls(
       { a: { x: 0, y: 0 }, b: { x: 10, y: 0 } },
-      { a: { x: 10, y: 0 }, b: { x: 10, y: 10 } },
+      { a: { x: 10, y: 0 }, b: { x: 10, y: 10 } }
     );
     expect(merged).toBeNull();
     expect(reason).toMatch(/collinear/);
@@ -66,16 +66,18 @@ describe('T-MOD-015: wall edit ops', () => {
   it('merge without shared endpoint returns null + reason', () => {
     const { merged, reason } = mergeWalls(
       { a: { x: 0, y: 0 }, b: { x: 5, y: 0 } },
-      { a: { x: 10, y: 0 }, b: { x: 15, y: 0 } },
+      { a: { x: 10, y: 0 }, b: { x: 15, y: 0 } }
     );
     expect(merged).toBeNull();
     expect(reason).toMatch(/endpoint/);
   });
 
   it('lineIntersection of parallel walls returns null', () => {
-    expect(lineIntersection(
-      { a: { x: 0, y: 0 }, b: { x: 10, y: 0 } },
-      { a: { x: 0, y: 5 }, b: { x: 10, y: 5 } },
-    )).toBeNull();
+    expect(
+      lineIntersection(
+        { a: { x: 0, y: 0 }, b: { x: 10, y: 0 } },
+        { a: { x: 0, y: 5 }, b: { x: 10, y: 5 } }
+      )
+    ).toBeNull();
   });
 });

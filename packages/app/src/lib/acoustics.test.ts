@@ -27,7 +27,7 @@ describe('T-ANA-03: material database', () => {
   });
 
   it('carpet has higher absorption at 1000Hz than concrete', () => {
-    const carpet   = MATERIAL_ABSORPTION['carpet-heavy']![1000];
+    const carpet = MATERIAL_ABSORPTION['carpet-heavy']![1000];
     const concrete = MATERIAL_ABSORPTION['concrete-bare']![1000];
     expect(carpet).toBeGreaterThan(concrete!);
   });
@@ -129,7 +129,7 @@ describe('T-ANA-03: STC', () => {
 
 describe('T-ANA-03: noise reduction', () => {
   it('NR increases with more absorption in receiving room', () => {
-    const nr_low  = noiseReduction(50, 5, 10);
+    const nr_low = noiseReduction(50, 5, 10);
     const nr_high = noiseReduction(50, 50, 10);
     expect(nr_high).toBeGreaterThan(nr_low);
   });
@@ -150,20 +150,20 @@ describe('T-ANA-03: noise reduction', () => {
 describe('T-ANA-03: classroom acoustics (ANSI S12.60)', () => {
   it('compliant when T60 at 500 and 1000Hz ≤ 0.6s', () => {
     const t60 = { 125: 1.2, 250: 0.8, 500: 0.5, 1000: 0.5, 2000: 0.4, 4000: 0.4 } as never;
-    const r   = checkClassroomAcoustics(t60);
+    const r = checkClassroomAcoustics(t60);
     expect(r.T60Compliant).toBe(true);
     expect(r.issues).toHaveLength(0);
   });
 
   it('non-compliant when T60 > 0.6s', () => {
     const t60 = { 125: 2, 250: 1.5, 500: 1.2, 1000: 1.0, 2000: 0.8, 4000: 0.7 } as never;
-    const r   = checkClassroomAcoustics(t60);
+    const r = checkClassroomAcoustics(t60);
     expect(r.T60Compliant).toBe(false);
     expect(r.issues.length).toBeGreaterThan(0);
   });
 
   it('checks background noise when provided', () => {
-    const t60  = { 125: 0.4, 250: 0.4, 500: 0.4, 1000: 0.4, 2000: 0.4, 4000: 0.4 } as never;
+    const t60 = { 125: 0.4, 250: 0.4, 500: 0.4, 1000: 0.4, 2000: 0.4, 4000: 0.4 } as never;
     const loud = checkClassroomAcoustics(t60, 40); // exceeds 35 dBA
     expect(loud.noiseCompliant).toBe(false);
     expect(loud.issues.some((i) => i.includes('noise'))).toBe(true);
@@ -171,7 +171,7 @@ describe('T-ANA-03: classroom acoustics (ANSI S12.60)', () => {
 
   it('noise compliance undefined when noise not provided', () => {
     const t60 = { 125: 0.4, 250: 0.4, 500: 0.4, 1000: 0.4, 2000: 0.4, 4000: 0.4 } as never;
-    const r   = checkClassroomAcoustics(t60);
+    const r = checkClassroomAcoustics(t60);
     expect(r.noiseCompliant).toBeUndefined();
   });
 });

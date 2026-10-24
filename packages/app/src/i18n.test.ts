@@ -35,7 +35,11 @@ function flatten(obj: unknown, prefix = ''): string[] {
 
 describe('T-I18N-001..004: i18n infrastructure', () => {
   beforeEach(() => {
-    try { localStorage.removeItem('opencad-locale'); } catch { /* jsdom */ }
+    try {
+      localStorage.removeItem('opencad-locale');
+    } catch {
+      /* jsdom */
+    }
   });
 
   it('T-I18N-001: English baseline is bundled (not async)', () => {
@@ -116,7 +120,10 @@ describe('T-I18N-001..004: i18n infrastructure', () => {
           continue;
         }
         const missing = enKeys.filter((k) => !flatten(bundle).includes(k));
-        expect(missing, `Locale '${lc}' namespace '${ns}' missing keys: ${missing.join(', ')}`).toEqual([]);
+        expect(
+          missing,
+          `Locale '${lc}' namespace '${ns}' missing keys: ${missing.join(', ')}`
+        ).toEqual([]);
       }
     }
   });

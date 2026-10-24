@@ -27,16 +27,29 @@ describe('T-CERT-001: IFC coverage matrix', () => {
   it('every entry has at least one attribute listed when status is full/partial', () => {
     for (const row of IFC_COVERAGE_MATRIX) {
       if (row.status === 'full' || row.status === 'partial') {
-        expect(row.attributes.length, `${row.entity} ${row.status} has no attributes`).toBeGreaterThan(0);
+        expect(
+          row.attributes.length,
+          `${row.entity} ${row.status} has no attributes`
+        ).toBeGreaterThan(0);
       }
     }
   });
 
   it('covers the IFC2x3 CV 2.0 core entity set', () => {
     const required = [
-      'IFCPROJECT', 'IFCSITE', 'IFCBUILDING', 'IFCBUILDINGSTOREY',
-      'IFCWALLSTANDARDCASE', 'IFCSLAB', 'IFCROOF', 'IFCCOLUMN', 'IFCBEAM',
-      'IFCDOOR', 'IFCWINDOW', 'IFCSTAIR', 'IFCSPACE',
+      'IFCPROJECT',
+      'IFCSITE',
+      'IFCBUILDING',
+      'IFCBUILDINGSTOREY',
+      'IFCWALLSTANDARDCASE',
+      'IFCSLAB',
+      'IFCROOF',
+      'IFCCOLUMN',
+      'IFCBEAM',
+      'IFCDOOR',
+      'IFCWINDOW',
+      'IFCSTAIR',
+      'IFCSPACE',
     ];
     const covered = coverageFor('IFC2x3 CV 2.0').map((e) => e.entity);
     for (const ent of required) expect(covered).toContain(ent);
@@ -44,8 +57,15 @@ describe('T-CERT-001: IFC coverage matrix', () => {
 
   it('covers the IFC4 Reference View building-element set', () => {
     const required = [
-      'IFCWALL', 'IFCSLAB', 'IFCROOF', 'IFCCOLUMN', 'IFCBEAM',
-      'IFCDOOR', 'IFCWINDOW', 'IFCSTAIR', 'IFCCURTAINWALL',
+      'IFCWALL',
+      'IFCSLAB',
+      'IFCROOF',
+      'IFCCOLUMN',
+      'IFCBEAM',
+      'IFCDOOR',
+      'IFCWINDOW',
+      'IFCSTAIR',
+      'IFCCURTAINWALL',
     ];
     const covered = coverageFor('IFC4 RV').map((e) => e.entity);
     for (const ent of required) expect(covered).toContain(ent);
@@ -60,8 +80,12 @@ describe('T-CERT-001: IFC coverage matrix', () => {
 
   it('geometry primitives are all fully supported', () => {
     const primitives = [
-      'IFCLOCALPLACEMENT', 'IFCAXIS2PLACEMENT3D', 'IFCCARTESIANPOINT',
-      'IFCDIRECTION', 'IFCEXTRUDEDAREASOLID', 'IFCARBITRARYCLOSEDPROFILEDEF',
+      'IFCLOCALPLACEMENT',
+      'IFCAXIS2PLACEMENT3D',
+      'IFCCARTESIANPOINT',
+      'IFCDIRECTION',
+      'IFCEXTRUDEDAREASOLID',
+      'IFCARBITRARYCLOSEDPROFILEDEF',
       'IFCPOLYLINE',
     ];
     for (const name of primitives) {
@@ -83,7 +107,8 @@ describe('T-CERT-001: IFC coverage matrix', () => {
     for (const mvd of mvds) {
       const rows = coverageFor(mvd);
       const summary = coverageSummary(mvd);
-      const total = summary.full + summary.partial + summary.serialize + summary.parse + summary.none;
+      const total =
+        summary.full + summary.partial + summary.serialize + summary.parse + summary.none;
       expect(total).toBe(rows.length);
     }
   });

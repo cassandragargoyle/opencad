@@ -8,21 +8,21 @@ This document describes how to get help with OpenCAD.
 
 ### For Users
 
-| Resource | Best For | Link |
-|----------|----------|------|
-| **Documentation** | How-to guides, feature reference | [docs.opencad.archi](https://docs.opencad.archi) |
+| Resource               | Best For                         | Link                                                         |
+| ---------------------- | -------------------------------- | ------------------------------------------------------------ |
+| **Documentation**      | How-to guides, feature reference | [docs.opencad.archi](https://docs.opencad.archi)             |
 | **GitHub Discussions** | Questions, discussions, showcase | [Discussions](https://github.com/CariHQ/opencad/discussions) |
-| **Discord** | Real-time chat, quick questions | [discord.gg/opencad](https://discord.gg/opencad) |
-| **Community Calls** | Monthly video meetup, demos | [calendar.opencad.archi](https://calendar.opencad.archi) |
+| **Discord**            | Real-time chat, quick questions  | [discord.gg/opencad](https://discord.gg/opencad)             |
+| **Community Calls**    | Monthly video meetup, demos      | [calendar.opencad.archi](https://calendar.opencad.archi)     |
 
 ### For Contributors
 
-| Resource | Best For | Link |
-|----------|----------|------|
-| **Contributing Guide** | How to contribute | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| **Architecture Docs** | Technical design decisions | [docs/architecture/](docs/architecture/) |
-| **API Documentation** | Code-level reference | [api.opencad.archi](https://api.opencad.archi) |
-| **Good First Issues** | Beginner-friendly tasks | [GitHub Issues](https://github.com/CariHQ/opencad/labels/good%20first%20issue) |
+| Resource               | Best For                   | Link                                                                           |
+| ---------------------- | -------------------------- | ------------------------------------------------------------------------------ |
+| **Contributing Guide** | How to contribute          | [CONTRIBUTING.md](CONTRIBUTING.md)                                             |
+| **Architecture Docs**  | Technical design decisions | [docs/architecture/](docs/architecture/)                                       |
+| **API Documentation**  | Code-level reference       | [api.opencad.archi](https://api.opencad.archi)                                 |
+| **Good First Issues**  | Beginner-friendly tasks    | [GitHub Issues](https://github.com/CariHQ/opencad/labels/good%20first%20issue) |
 
 ---
 
@@ -53,13 +53,13 @@ Use the [Feature Request Template](https://github.com/CariHQ/opencad/issues/new?
 
 ## Response Times
 
-| Channel | Expected Response |
-|---------|-------------------|
-| **GitHub Issues** | Within 48 hours |
-| **GitHub Discussions** | Within 72 hours |
-| **Discord** | Within 24 hours (community-driven) |
-| **Security Reports** | Within 48 hours (see SECURITY.md) |
-| **Community Calls** | Monthly (first Thursday) |
+| Channel                | Expected Response                  |
+| ---------------------- | ---------------------------------- |
+| **GitHub Issues**      | Within 48 hours                    |
+| **GitHub Discussions** | Within 72 hours                    |
+| **Discord**            | Within 24 hours (community-driven) |
+| **Security Reports**   | Within 48 hours (see SECURITY.md)  |
+| **Community Calls**    | Monthly (first Thursday)           |
 
 ---
 

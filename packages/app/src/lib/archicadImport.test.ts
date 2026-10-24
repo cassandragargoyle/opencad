@@ -2,11 +2,7 @@
  * T-IO-V2-03: ArchiCAD import tests
  */
 import { describe, it, expect } from 'vitest';
-import {
-  parseArchiCADJSON,
-  mapArchiCADTypeToOpenCAD,
-  ARCHICAD_TYPE_MAP,
-} from './archicadImport';
+import { parseArchiCADJSON, mapArchiCADTypeToOpenCAD, ARCHICAD_TYPE_MAP } from './archicadImport';
 
 const validProject = {
   elements: [

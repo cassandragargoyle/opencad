@@ -9,6 +9,7 @@ When a user already has one element configured correctly (exterior wall, 300 mm,
 ## Scope
 
 ### In scope
+
 - `Alt+click` on any element → current tool's params are populated with that element's relevant params (thickness, material, composite, wallType, etc., per tool).
 - `Alt+Shift+click` on a target element → inject the currently-held params into that element.
 - Status bar shows "Holding: Wall 300 mm Concrete exterior" when params are held.
@@ -16,6 +17,7 @@ When a user already has one element configured correctly (exterior wall, 300 mm,
 - Clears on `Esc`.
 
 ### Out of scope
+
 - Multi-select inject in one click (use it with marquee + drop).
 - Cross-type injection (inject wall params into a slab) — nonsensical.
 

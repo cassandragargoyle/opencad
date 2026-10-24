@@ -7,7 +7,7 @@ import { defineFamily } from '../defineFamily';
 import type { ParamValue, FamilyGeometry } from '../defineFamily';
 
 function buildSkylightGeometry(width: number, length: number, pitch: number): FamilyGeometry {
-  const w = width / 1000;   // mm → m
+  const w = width / 1000; // mm → m
   const l = length / 1000;
   const pitchRad = (pitch * Math.PI) / 180;
   const ridgeHeight = (w / 2) * Math.tan(pitchRad);
@@ -24,18 +24,30 @@ function buildSkylightGeometry(width: number, length: number, pitch: number): Fa
   //   4: back-right-bottom  (+w/2,  l,    0)
   //   5: back-ridge         (0,     l,    ridgeHeight)
   vertices.push(
-    -w/2, 0, 0,        // 0
-     w/2, 0, 0,        // 1
-     0,   0, ridgeHeight, // 2
-    -w/2, l, 0,        // 3
-     w/2, l, 0,        // 4
-     0,   l, ridgeHeight, // 5
+    -w / 2,
+    0,
+    0, // 0
+    w / 2,
+    0,
+    0, // 1
+    0,
+    0,
+    ridgeHeight, // 2
+    -w / 2,
+    l,
+    0, // 3
+    w / 2,
+    l,
+    0, // 4
+    0,
+    l,
+    ridgeHeight // 5
   );
 
   // Left glass pane: 0-2-5-3
-  faces.push(0, 2, 5,   0, 5, 3);
+  faces.push(0, 2, 5, 0, 5, 3);
   // Right glass pane: 1-4-5-2
-  faces.push(1, 5, 4,   1, 2, 5);
+  faces.push(1, 5, 4, 1, 2, 5);
   // Front gable: 0-1-2
   faces.push(0, 1, 2);
   // Back gable: 3-5-4
@@ -52,22 +64,49 @@ defineFamily({
   category: 'skylight',
   version: '1.0.0',
   parameters: [
-    { id: 'width',         label: 'Width',           type: 'dimension',    default: 1200, min: 400, max: 4000, step: 100, unit: 'mm' },
-    { id: 'length',        label: 'Length',          type: 'dimension',    default: 2400, min: 600, max: 8000, step: 100, unit: 'mm' },
-    { id: 'pitch',         label: 'Pitch',           type: 'dimension',    default: 20,   min: 5,   max: 60,   step: 1,   unit: '°' },
-    { id: 'glassMaterial', label: 'Glass Material',  type: 'material-ref', default: 'Glass' },
+    {
+      id: 'width',
+      label: 'Width',
+      type: 'dimension',
+      default: 1200,
+      min: 400,
+      max: 4000,
+      step: 100,
+      unit: 'mm',
+    },
+    {
+      id: 'length',
+      label: 'Length',
+      type: 'dimension',
+      default: 2400,
+      min: 600,
+      max: 8000,
+      step: 100,
+      unit: 'mm',
+    },
+    {
+      id: 'pitch',
+      label: 'Pitch',
+      type: 'dimension',
+      default: 20,
+      min: 5,
+      max: 60,
+      step: 1,
+      unit: '°',
+    },
+    { id: 'glassMaterial', label: 'Glass Material', type: 'material-ref', default: 'Glass' },
   ],
   geometry: (params: Record<string, ParamValue>) =>
     buildSkylightGeometry(
       params['width'] as number,
       params['length'] as number,
-      params['pitch'] as number,
+      params['pitch'] as number
     ),
   ui: {
     order: ['width', 'length', 'pitch', 'glassMaterial'],
     groups: [
       { id: 'dimensions', label: 'Dimensions', params: ['width', 'length', 'pitch'] },
-      { id: 'materials',  label: 'Materials',  params: ['glassMaterial'] },
+      { id: 'materials', label: 'Materials', params: ['glassMaterial'] },
     ],
   },
 });

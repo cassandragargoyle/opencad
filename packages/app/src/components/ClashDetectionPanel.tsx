@@ -29,17 +29,18 @@ export function ClashDetectionPanel() {
       </div>
 
       <div className="panel-body">
-        <button
-          className="btn-primary clash-run-btn"
-          onClick={runDetection}
-        >
+        <button className="btn-primary clash-run-btn" onClick={runDetection}>
           <Zap size={14} />
           {t('clash.runFull', { defaultValue: 'Run Clash Detection' })}
         </button>
 
         {clashes === null ? (
           <div className="clash-empty">
-            <p>{t('clash.runHint', { defaultValue: 'Run detection to check for clashes between elements.' })}</p>
+            <p>
+              {t('clash.runHint', {
+                defaultValue: 'Run detection to check for clashes between elements.',
+              })}
+            </p>
           </div>
         ) : clashes.length === 0 ? (
           <div className="clash-empty">
@@ -47,7 +48,12 @@ export function ClashDetectionPanel() {
           </div>
         ) : (
           <div className="clash-results">
-            <div className="clash-summary">{t('clash.clashes', { count: clashes.length, defaultValue: '{{count}} clash(es) found' })}</div>
+            <div className="clash-summary">
+              {t('clash.clashes', {
+                count: clashes.length,
+                defaultValue: '{{count}} clash(es) found',
+              })}
+            </div>
             <ul className="clash-list">
               {clashes.map((clash) => (
                 <li
@@ -59,14 +65,17 @@ export function ClashDetectionPanel() {
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && handleClashClick(clash)}
                 >
-                  <span className={`clash-badge ${clash.severity === ClashSeverity.Hard ? 'badge-hard' : 'badge-soft'}`}>
+                  <span
+                    className={`clash-badge ${clash.severity === ClashSeverity.Hard ? 'badge-hard' : 'badge-soft'}`}
+                  >
                     {clash.severity === ClashSeverity.Hard
                       ? t('clash.hard', { defaultValue: 'Hard' })
                       : t('clash.soft', { defaultValue: 'Soft' })}
                   </span>
                   <span className="clash-description">{clash.description}</span>
                   <span className="clash-location">
-                    ({Math.round(clash.location.x)}, {Math.round(clash.location.y)}, {Math.round(clash.location.z)})
+                    ({Math.round(clash.location.x)}, {Math.round(clash.location.y)},{' '}
+                    {Math.round(clash.location.z)})
                   </span>
                 </li>
               ))}

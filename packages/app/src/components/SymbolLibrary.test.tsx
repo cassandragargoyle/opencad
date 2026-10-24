@@ -6,7 +6,9 @@ expect.extend(jestDomMatchers);
 
 describe('T-2D-010: SymbolLibrary', () => {
   const defaultProps = { onInsert: vi.fn() };
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders Symbol Library header', () => {
     render(<SymbolLibrary {...defaultProps} />);
@@ -41,7 +43,9 @@ describe('T-2D-010: SymbolLibrary', () => {
   it('calls onInsert when Insert clicked', () => {
     render(<SymbolLibrary {...defaultProps} />);
     fireEvent.click(screen.getAllByRole('button', { name: /insert/i })[0]!);
-    expect(defaultProps.onInsert).toHaveBeenCalledWith(expect.objectContaining({ id: expect.any(String) }));
+    expect(defaultProps.onInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ id: expect.any(String) })
+    );
   });
 
   it('shows search input', () => {

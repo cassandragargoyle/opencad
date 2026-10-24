@@ -28,7 +28,7 @@ export interface GroupMembership {
 export function createGroup(
   memberIds: string[],
   name: string,
-  existing: Record<string, Group>,
+  existing: Record<string, Group>
 ): { group: Group; membership: GroupMembership } {
   const id = `grp-${crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)}`;
   const group: Group = { id, name, children: memberIds };
@@ -56,10 +56,7 @@ export function createGroup(
  * Flatten a group to its leaf element ids (recursive through any nested
  * groups).
  */
-export function expandGroup(
-  groupId: string,
-  groups: Record<string, Group>,
-): string[] {
+export function expandGroup(groupId: string, groups: Record<string, Group>): string[] {
   const group = groups[groupId];
   if (!group) return [];
   const out: string[] = [];
@@ -79,14 +76,14 @@ export function expandGroup(
  * Return the TOPMOST group that contains the given element/group id, or
  * null when the id is at top level. Walks the parent chain.
  */
-export function topmostGroup(
-  id: string,
-  groups: Record<string, Group>,
-): Group | null {
+export function topmostGroup(id: string, groups: Record<string, Group>): Group | null {
   // Find the group that directly contains this id.
   let current: Group | null = null;
   for (const g of Object.values(groups)) {
-    if (g.children.includes(id)) { current = g; break; }
+    if (g.children.includes(id)) {
+      current = g;
+      break;
+    }
   }
   if (!current) return null;
   // Walk parent chain via parentId
@@ -100,10 +97,7 @@ export function topmostGroup(
  * Ungroup a group — returns the new groups map without the group, with any
  * parent group's children list updated to contain the ungrouped members.
  */
-export function ungroup(
-  groupId: string,
-  groups: Record<string, Group>,
-): Record<string, Group> {
+export function ungroup(groupId: string, groups: Record<string, Group>): Record<string, Group> {
   const target = groups[groupId];
   if (!target) return groups;
   const copy: Record<string, Group> = {};
@@ -131,7 +125,7 @@ export function ungroup(
 export function resolveSelection(
   clickedId: string,
   groups: Record<string, Group>,
-  mode: 'group' | 'individual',
+  mode: 'group' | 'individual'
 ): string[] {
   if (mode === 'individual') return [clickedId];
   const top = topmostGroup(clickedId, groups);

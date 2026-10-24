@@ -134,12 +134,22 @@ describe('T-MEP-002: Pipe creation and geometry', () => {
   });
 
   it('should compute inner diameter = outer - 2 × wall thickness', () => {
-    const pipe = createPipe({ nominalDiameter: 50, outerDiameter: 60, wallThickness: 3, length: 1000 });
+    const pipe = createPipe({
+      nominalDiameter: 50,
+      outerDiameter: 60,
+      wallThickness: 3,
+      length: 1000,
+    });
     expect(pipeInnerDiameter(pipe)).toBeCloseTo(54, 5);
   });
 
   it('should compute pipe flow area = π × (inner_radius)²', () => {
-    const pipe = createPipe({ nominalDiameter: 50, outerDiameter: 60, wallThickness: 3, length: 1000 });
+    const pipe = createPipe({
+      nominalDiameter: 50,
+      outerDiameter: 60,
+      wallThickness: 3,
+      length: 1000,
+    });
     const innerD = 54;
     const expected = Math.PI * (innerD / 2) ** 2;
     expect(pipeFlowArea(pipe)).toBeCloseTo(expected, 0);
@@ -165,11 +175,16 @@ describe('T-MEP-002: Pipe creation and geometry', () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 10, max: 500 }),
-        fc.integer({ min: 1, max: 20 }),  // wall percent (1–20% of OD)
+        fc.integer({ min: 1, max: 20 }), // wall percent (1–20% of OD)
         (nd, wallPercent) => {
           const od = nd * 1.1;
           const wt = od * (wallPercent / 100);
-          const pipe = createPipe({ nominalDiameter: nd, outerDiameter: od, wallThickness: wt, length: 1000 });
+          const pipe = createPipe({
+            nominalDiameter: nd,
+            outerDiameter: od,
+            wallThickness: wt,
+            length: 1000,
+          });
           return pipeInnerDiameter(pipe) < pipe.outerDiameter;
         }
       ),

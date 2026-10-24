@@ -18,8 +18,15 @@ function addWall(doc: ReturnType<typeof makeDoc>) {
     geometry: { type: 'mesh', data: null },
     layerId: 'l0',
     levelId: 'lv0',
-    transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-    boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' } },
+    transform: {
+      translation: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+    },
+    boundingBox: {
+      min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+      max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' },
+    },
     metadata: { id: 'w1', createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
     visible: true,
     locked: false,

@@ -16,23 +16,23 @@ import {
 } from '../lib/dimensions';
 
 const DIM_TYPES: { value: DimensionKind; label: string; desc: string }[] = [
-  { value: 'angular',   label: 'Angular',   desc: 'Angle between two lines' },
-  { value: 'radial',    label: 'Radius',     desc: 'R-value of arc or circle' },
-  { value: 'diameter',  label: 'Diameter',   desc: 'Ø-value of arc or circle' },
-  { value: 'chain',     label: 'Chain',      desc: 'Continuous linear chain' },
-  { value: 'ordinate',  label: 'Ordinate',   desc: 'Baseline offsets from origin' },
+  { value: 'angular', label: 'Angular', desc: 'Angle between two lines' },
+  { value: 'radial', label: 'Radius', desc: 'R-value of arc or circle' },
+  { value: 'diameter', label: 'Diameter', desc: 'Ø-value of arc or circle' },
+  { value: 'chain', label: 'Chain', desc: 'Continuous linear chain' },
+  { value: 'ordinate', label: 'Ordinate', desc: 'Baseline offsets from origin' },
 ];
 
 export function DimensionTypePanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document    = useDocumentStore((s) => s.document);
-  const addElement  = useDocumentStore((s) => s.addElement);
+  const document = useDocumentStore((s) => s.document);
+  const addElement = useDocumentStore((s) => s.addElement);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
-  const isReadOnly  = isDocumentReadOnly();
+  const isReadOnly = isDocumentReadOnly();
 
   const [dimKind, setDimKind] = useState<DimensionKind>('angular');
   const [preview, setPreview] = useState('');
-  const [status,  setStatus]  = useState('');
+  const [status, setStatus] = useState('');
 
   // Angular: input two angles (degrees) and compute the dimension
   const [angle1, setAngle1] = useState('0');
@@ -45,13 +45,13 @@ export function DimensionTypePanel(): React.ReactElement {
   const [chainPos, setChainPos] = useState('0,500,1200,2000');
 
   // Ordinate: origin + target points
-  const [originX, setOriginX]   = useState('0');
-  const [originY, setOriginY]   = useState('0');
-  const [targets, setTargets]   = useState('500,0 1000,0 1500,0');
+  const [originX, setOriginX] = useState('0');
+  const [originY, setOriginY] = useState('0');
+  const [targets, setTargets] = useState('500,0 1000,0 1500,0');
 
   const layers = useMemo(
     () => (document ? Object.values(document.organization.layers) : []),
-    [document],
+    [document]
   );
 
   const computePreview = () => {
@@ -78,7 +78,10 @@ export function DimensionTypePanel(): React.ReactElement {
         const val = diameterDim({ centre: { x: 0, y: 0 }, radius: r });
         setPreview(formatDimension({ kind: 'diameter', value: val, prefix: 'Ø', suffix: ' mm' }));
       } else if (dimKind === 'chain') {
-        const positions = chainPos.split(',').map((s) => parseFloat(s.trim())).filter(isFinite);
+        const positions = chainPos
+          .split(',')
+          .map((s) => parseFloat(s.trim()))
+          .filter(isFinite);
         const segs = chainDim(positions);
         setPreview(segs.map((s) => `${s} mm`).join(' + '));
       } else if (dimKind === 'ordinate') {
@@ -90,7 +93,9 @@ export function DimensionTypePanel(): React.ReactElement {
         const { xs, ys } = ordinateDim(origin, pts);
         setPreview(`X: ${xs.join(', ')} | Y: ${ys.join(', ')}`);
       }
-    } catch { setPreview('—'); }
+    } catch {
+      setPreview('—');
+    }
   };
 
   const placeDimension = () => {
@@ -133,11 +138,23 @@ export function DimensionTypePanel(): React.ReactElement {
           <div className="field-row">
             <label className="field-label half">
               Line 1 angle (°)
-              <input type="number" className="panel-input" value={angle1} onChange={(e) => setAngle1(e.target.value)} disabled={isReadOnly} />
+              <input
+                type="number"
+                className="panel-input"
+                value={angle1}
+                onChange={(e) => setAngle1(e.target.value)}
+                disabled={isReadOnly}
+              />
             </label>
             <label className="field-label half">
               Line 2 angle (°)
-              <input type="number" className="panel-input" value={angle2} onChange={(e) => setAngle2(e.target.value)} disabled={isReadOnly} />
+              <input
+                type="number"
+                className="panel-input"
+                value={angle2}
+                onChange={(e) => setAngle2(e.target.value)}
+                disabled={isReadOnly}
+              />
             </label>
           </div>
         )}
@@ -145,14 +162,27 @@ export function DimensionTypePanel(): React.ReactElement {
         {(dimKind === 'radial' || dimKind === 'diameter') && (
           <label className="field-label">
             Radius (mm)
-            <input type="number" className="panel-input" value={radius} onChange={(e) => setRadius(e.target.value)} disabled={isReadOnly} />
+            <input
+              type="number"
+              className="panel-input"
+              value={radius}
+              onChange={(e) => setRadius(e.target.value)}
+              disabled={isReadOnly}
+            />
           </label>
         )}
 
         {dimKind === 'chain' && (
           <label className="field-label">
             Positions (comma-separated mm)
-            <input type="text" className="panel-input" value={chainPos} onChange={(e) => setChainPos(e.target.value)} disabled={isReadOnly} placeholder="0,500,1200,2000" />
+            <input
+              type="text"
+              className="panel-input"
+              value={chainPos}
+              onChange={(e) => setChainPos(e.target.value)}
+              disabled={isReadOnly}
+              placeholder="0,500,1200,2000"
+            />
           </label>
         )}
 
@@ -161,16 +191,35 @@ export function DimensionTypePanel(): React.ReactElement {
             <div className="field-row">
               <label className="field-label half">
                 Origin X
-                <input type="number" className="panel-input" value={originX} onChange={(e) => setOriginX(e.target.value)} disabled={isReadOnly} />
+                <input
+                  type="number"
+                  className="panel-input"
+                  value={originX}
+                  onChange={(e) => setOriginX(e.target.value)}
+                  disabled={isReadOnly}
+                />
               </label>
               <label className="field-label half">
                 Origin Y
-                <input type="number" className="panel-input" value={originY} onChange={(e) => setOriginY(e.target.value)} disabled={isReadOnly} />
+                <input
+                  type="number"
+                  className="panel-input"
+                  value={originY}
+                  onChange={(e) => setOriginY(e.target.value)}
+                  disabled={isReadOnly}
+                />
               </label>
             </div>
             <label className="field-label">
               Target points (x,y space-separated)
-              <input type="text" className="panel-input" value={targets} onChange={(e) => setTargets(e.target.value)} disabled={isReadOnly} placeholder="500,0 1000,0 1500,0" />
+              <input
+                type="text"
+                className="panel-input"
+                value={targets}
+                onChange={(e) => setTargets(e.target.value)}
+                disabled={isReadOnly}
+                placeholder="500,0 1000,0 1500,0"
+              />
             </label>
           </>
         )}
@@ -190,7 +239,11 @@ export function DimensionTypePanel(): React.ReactElement {
           Place Dimension
         </button>
 
-        {status && <p className="panel-status" role="status">{status}</p>}
+        {status && (
+          <p className="panel-status" role="status">
+            {status}
+          </p>
+        )}
       </div>
     </div>
   );

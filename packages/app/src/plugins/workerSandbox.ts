@@ -18,7 +18,11 @@ export interface PluginElementSchema {
 export interface PluginAPI {
   document: {
     getElements(): PluginElementSchema[];
-    addElement(params: { type: string; layerId: string; properties?: Record<string, unknown> }): string;
+    addElement(params: {
+      type: string;
+      layerId: string;
+      properties?: Record<string, unknown>;
+    }): string;
     updateElement(id: string, updates: Record<string, unknown>): void;
     deleteElement(id: string): void;
   };
@@ -148,7 +152,7 @@ const METHOD_PERMISSION: Readonly<Record<string, SandboxPermission | null>> = {
   'ui.showNotification': 'ui',
   'ui.openPanel': 'ui',
   'ui.registerCommand': 'ui',
-  'log': null, // always allowed — diagnostic output has no blast radius
+  log: null, // always allowed — diagnostic output has no blast radius
 };
 
 /** Thrown from dispatchAPICall when the plugin tries to use an API method
@@ -168,7 +172,7 @@ function dispatchAPICall(
   api: PluginAPI,
   method: string,
   args: unknown[],
-  permissions: readonly SandboxPermission[],
+  permissions: readonly SandboxPermission[]
 ): unknown {
   const required = METHOD_PERMISSION[method];
   if (required !== undefined && required !== null && !permissions.includes(required)) {
@@ -208,7 +212,7 @@ export class WorkerPluginSandbox {
   async load(
     pluginCode: string,
     api: PluginAPI,
-    permissions: readonly SandboxPermission[] = [],
+    permissions: readonly SandboxPermission[] = []
   ): Promise<void> {
     this.permissions = permissions;
     const blob = new Blob([WORKER_BOOTSTRAP], { type: 'application/javascript' });

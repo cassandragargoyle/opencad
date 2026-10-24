@@ -28,7 +28,16 @@ vi.mock('../config/projectTemplates', () => ({
         metadata: { createdAt: 0, updatedAt: 0, createdBy: 'system', schemaVersion: '1.0' },
         content: { elements: { 'el-1': { id: 'el-1', type: 'wall' } }, spaces: {} },
         organization: {
-          layers: { 'layer-1': { id: 'layer-1', name: 'Walls', color: '#333', visible: true, locked: false, order: 0 } },
+          layers: {
+            'layer-1': {
+              id: 'layer-1',
+              name: 'Walls',
+              color: '#333',
+              visible: true,
+              locked: false,
+              order: 0,
+            },
+          },
           levels: {},
         },
         presentation: { views: {}, annotations: {} },
@@ -46,7 +55,16 @@ vi.mock('../config/projectTemplates', () => ({
         metadata: { createdAt: 0, updatedAt: 0, createdBy: 'system', schemaVersion: '1.0' },
         content: { elements: { 'el-1': { id: 'el-1', type: 'wall' } }, spaces: {} },
         organization: {
-          layers: { 'layer-1': { id: 'layer-1', name: 'Walls', color: '#333', visible: true, locked: false, order: 0 } },
+          layers: {
+            'layer-1': {
+              id: 'layer-1',
+              name: 'Walls',
+              color: '#333',
+              visible: true,
+              locked: false,
+              order: 0,
+            },
+          },
           levels: {},
         },
         presentation: { views: {}, annotations: {} },
@@ -64,7 +82,16 @@ vi.mock('../config/projectTemplates', () => ({
         metadata: { createdAt: 0, updatedAt: 0, createdBy: 'system', schemaVersion: '1.0' },
         content: { elements: { 'el-1': { id: 'el-1', type: 'wall' } }, spaces: {} },
         organization: {
-          layers: { 'layer-1': { id: 'layer-1', name: 'Walls', color: '#333', visible: true, locked: false, order: 0 } },
+          layers: {
+            'layer-1': {
+              id: 'layer-1',
+              name: 'Walls',
+              color: '#333',
+              visible: true,
+              locked: false,
+              order: 0,
+            },
+          },
           levels: {},
         },
         presentation: { views: {}, annotations: {} },

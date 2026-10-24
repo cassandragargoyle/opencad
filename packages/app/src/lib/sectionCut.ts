@@ -9,7 +9,10 @@
  */
 import type { ElementSchema } from '@opencad/document';
 
-export interface Point2D { x: number; y: number; }
+export interface Point2D {
+  x: number;
+  y: number;
+}
 
 export interface SectionPlane {
   /** A point on the cut plane in plan (mm). */
@@ -28,8 +31,10 @@ export interface SectionPlane {
 
 /** A single 2D line in section space: x = distance along cut, y = elevation. */
 export interface SectionLine {
-  x1: number; y1: number;
-  x2: number; y2: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
 }
 
 export interface SectionCutResult {
@@ -52,11 +57,7 @@ export interface MarkerOptions {
  * Build a SectionPlane from two points defining the cut line in plan.
  * The normal points 90° left of the cut direction (standard: viewer looks left→right).
  */
-export function sectionPlaneFromMarker(
-  a: Point2D,
-  b: Point2D,
-  opts: MarkerOptions,
-): SectionPlane {
+export function sectionPlaneFromMarker(a: Point2D, b: Point2D, opts: MarkerOptions): SectionPlane {
   const dx = b.x - a.x;
   const dy = b.y - a.y;
   const len = Math.hypot(dx, dy) || 1;
@@ -79,7 +80,7 @@ export function sectionPlaneFromMarker(
  */
 export function computeSectionCut(
   elements: ElementSchema[],
-  plane: SectionPlane,
+  plane: SectionPlane
 ): SectionCutResult[] {
   const results: SectionCutResult[] = [];
 
@@ -95,15 +96,12 @@ export function computeSectionCut(
 
 // ── private helpers ─────────────────────────────────────────────────────────
 
-function cutElement(
-  el: ElementSchema,
-  plane: SectionPlane,
-): SectionCutResult | null {
+function cutElement(el: ElementSchema, plane: SectionPlane): SectionCutResult | null {
   const geom = el.geometry as unknown as Record<string, unknown> | undefined;
   if (!geom) return null;
 
   const zBase = (el.properties?.ZBase as unknown as number | undefined) ?? 0;
-  const zTop  = (el.properties?.ZTop  as unknown as number | undefined) ?? 3000;
+  const zTop = (el.properties?.ZTop as unknown as number | undefined) ?? 3000;
 
   if (geom.type === 'line') {
     return cutLineElement(el, geom, zBase, zTop, plane);
@@ -116,14 +114,12 @@ function cutElement(
 
 /** Signed distance of a 2D point from the plane (positive = viewer side). */
 function signedDist(p: Point2D, plane: SectionPlane): number {
-  return (p.x - plane.origin.x) * plane.normal.x +
-         (p.y - plane.origin.y) * plane.normal.y;
+  return (p.x - plane.origin.x) * plane.normal.x + (p.y - plane.origin.y) * plane.normal.y;
 }
 
 /** Project a plan point onto the cut direction axis (section X coordinate). */
 function projectOnCut(p: Point2D, plane: SectionPlane): number {
-  return (p.x - plane.origin.x) * plane.cutDir.x +
-         (p.y - plane.origin.y) * plane.cutDir.y;
+  return (p.x - plane.origin.x) * plane.cutDir.x + (p.y - plane.origin.y) * plane.cutDir.y;
 }
 
 function cutLineElement(
@@ -131,7 +127,7 @@ function cutLineElement(
   geom: Record<string, unknown>,
   zBase: number,
   zTop: number,
-  plane: SectionPlane,
+  plane: SectionPlane
 ): SectionCutResult | null {
   const x1 = geom.x1 as number;
   const y1 = geom.y1 as number;
@@ -162,7 +158,7 @@ function cutLineElement(
 
   // Check within elevation range
   const z1 = Math.max(zBase, plane.zBottom);
-  const z2 = Math.min(zTop,  plane.zTop);
+  const z2 = Math.min(zTop, plane.zTop);
   if (z2 <= z1) return null;
 
   const sx = projectOnCut(intersect, plane);
@@ -180,7 +176,7 @@ function cutPolygonElement(
   geom: Record<string, unknown>,
   zBase: number,
   zTop: number,
-  plane: SectionPlane,
+  plane: SectionPlane
 ): SectionCutResult | null {
   const rawPts = geom.points as Array<{ x: number; y: number }> | undefined;
   if (!rawPts || rawPts.length < 3) return null;
@@ -190,7 +186,7 @@ function cutPolygonElement(
   const n = rawPts.length;
 
   const z1 = Math.max(zBase, plane.zBottom);
-  const z2 = Math.min(zTop,  plane.zTop);
+  const z2 = Math.min(zTop, plane.zTop);
   if (z2 <= z1) return null;
 
   for (let i = 0; i < n; i++) {

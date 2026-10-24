@@ -42,9 +42,11 @@ export async function opfsWrite(key: string, data: string | Blob): Promise<boole
     const handle = await root.getFileHandle(sanitise(key), { create: true });
     // FileSystemFileHandle.createWritable is present in Chrome/Safari but not
     // in every polyfill — fall back to null-op if missing.
-    const writable = await (handle as FileSystemFileHandle & {
-      createWritable: () => Promise<FileSystemWritableFileStream>;
-    }).createWritable();
+    const writable = await (
+      handle as FileSystemFileHandle & {
+        createWritable: () => Promise<FileSystemWritableFileStream>;
+      }
+    ).createWritable();
     await writable.write(data);
     await writable.close();
     return true;
@@ -84,9 +86,11 @@ export async function opfsList(): Promise<string[]> {
     if (!root) return [];
     const out: string[] = [];
     // AsyncIterable<[name, handle]> — typed loosely for forward compat.
-    const entries = (root as FileSystemDirectoryHandle & {
-      entries?: () => AsyncIterable<[string, FileSystemHandle]>;
-    }).entries?.();
+    const entries = (
+      root as FileSystemDirectoryHandle & {
+        entries?: () => AsyncIterable<[string, FileSystemHandle]>;
+      }
+    ).entries?.();
     if (!entries) return out;
     for await (const [name] of entries) out.push(name);
     return out;

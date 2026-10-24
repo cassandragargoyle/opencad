@@ -37,8 +37,9 @@ export interface UseSubscriptionResult {
 
 export function useSubscription(): UseSubscriptionResult {
   const [tier, setTier] = useState<SubscriptionTier>('free');
-  const [subscriptionStatus, setSubscriptionStatus] =
-    useState<StripeSubscriptionStatus | null>(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<StripeSubscriptionStatus | null>(
+    null
+  );
   const [validUntil, setValidUntil] = useState<number | null>(null);
   const [cancelAtPeriodEnd, setCancelAtPeriodEnd] = useState<boolean>(false);
   // Start optimistic: assume access is granted until the server says

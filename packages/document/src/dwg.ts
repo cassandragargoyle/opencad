@@ -50,20 +50,38 @@ const ACI_COLORS: Record<number, string> = {
 })();
 
 function toHex(v: number): string {
-  return Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0').toUpperCase();
+  return Math.max(0, Math.min(255, Math.round(v)))
+    .toString(16)
+    .padStart(2, '0')
+    .toUpperCase();
 }
 
 function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
   const c = (1 - Math.abs(2 * l - 1)) * s;
   const hh = h / 60;
   const x = c * (1 - Math.abs((hh % 2) - 1));
-  let r = 0, g = 0, b = 0;
-  if (hh < 1) { r = c; g = x; }
-  else if (hh < 2) { r = x; g = c; }
-  else if (hh < 3) { g = c; b = x; }
-  else if (hh < 4) { g = x; b = c; }
-  else if (hh < 5) { r = x; b = c; }
-  else { r = c; b = x; }
+  let r = 0,
+    g = 0,
+    b = 0;
+  if (hh < 1) {
+    r = c;
+    g = x;
+  } else if (hh < 2) {
+    r = x;
+    g = c;
+  } else if (hh < 3) {
+    g = c;
+    b = x;
+  } else if (hh < 4) {
+    g = x;
+    b = c;
+  } else if (hh < 5) {
+    r = x;
+    b = c;
+  } else {
+    r = c;
+    b = x;
+  }
   const m = l - c / 2;
   return { r: (r + m) * 255, g: (g + m) * 255, b: (b + m) * 255 };
 }
@@ -86,7 +104,10 @@ function hexToAci(hex: string): number {
     const g = parseInt(hx.slice(2, 4), 16);
     const b = parseInt(hx.slice(4, 6), 16);
     const d = (r - rr) ** 2 + (g - gg) ** 2 + (b - bb) ** 2;
-    if (d < bestDist) { bestDist = d; bestAci = parseInt(aciStr, 10); }
+    if (d < bestDist) {
+      bestDist = d;
+      bestAci = parseInt(aciStr, 10);
+    }
   }
   return bestAci;
 }
@@ -532,17 +553,33 @@ class DXFSerializer {
     const startAngle = (element.properties.StartAngle?.value as number) ?? 0;
     const endAngle = (element.properties.EndAngle?.value as number) ?? 360;
 
-    lines.push('0', 'ARC',
-      '5', `$${this.handleCounter.toString(16).toUpperCase()}`,
-      '330', '0',
-      '100', 'AcDbEntity',
-      '8', element.layerId || '0',
-      '100', 'AcDbCircle',
-      '10', String(cx), '20', String(cy), '30', String(cz),
-      '40', String(radius),
-      '100', 'AcDbArc',
-      '50', String(startAngle),
-      '51', String(endAngle),
+    lines.push(
+      '0',
+      'ARC',
+      '5',
+      `$${this.handleCounter.toString(16).toUpperCase()}`,
+      '330',
+      '0',
+      '100',
+      'AcDbEntity',
+      '8',
+      element.layerId || '0',
+      '100',
+      'AcDbCircle',
+      '10',
+      String(cx),
+      '20',
+      String(cy),
+      '30',
+      String(cz),
+      '40',
+      String(radius),
+      '100',
+      'AcDbArc',
+      '50',
+      String(startAngle),
+      '51',
+      String(endAngle)
     );
     this.handleCounter++;
     return lines;
@@ -594,12 +631,18 @@ function readUnitScale(content: string): number {
   const code = parseInt(match[1], 10);
   // Common $INSUNITS values:  1=inches  4=mm(default)  5=cm  6=meters
   switch (code) {
-    case 1: return 25.4;   // inches → mm
-    case 2: return 304.8;  // feet → mm
-    case 4: return 1;      // mm (default)
-    case 5: return 10;     // cm → mm
-    case 6: return 1000;   // meters → mm
-    default: return 1;
+    case 1:
+      return 25.4; // inches → mm
+    case 2:
+      return 304.8; // feet → mm
+    case 4:
+      return 1; // mm (default)
+    case 5:
+      return 10; // cm → mm
+    case 6:
+      return 1000; // meters → mm
+    default:
+      return 1;
   }
 }
 
@@ -660,8 +703,8 @@ export function parseDXF(content: string): DocumentSchema {
         properties: {
           StartX: { type: 'number', value: sx },
           StartY: { type: 'number', value: sy },
-          EndX:   { type: 'number', value: ex },
-          EndY:   { type: 'number', value: ey },
+          EndX: { type: 'number', value: ex },
+          EndY: { type: 'number', value: ey },
         },
         points: [
           { x: sx, y: sy, z: sz, _type: 'Point3D' },
@@ -676,36 +719,58 @@ export function parseDXF(content: string): DocumentSchema {
         properties: {
           CenterX: { type: 'number', value: sx },
           CenterY: { type: 'number', value: sy },
-          Radius:  { type: 'number', value: (entity.coordinates.radius || 25) * scale },
+          Radius: { type: 'number', value: (entity.coordinates.radius || 25) * scale },
         },
         layerId,
         levelId,
-        transform: { translation: { x: sx, y: sy, z: sz }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: sx, y: sy, z: sz },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
       });
     } else if (elementType === 'arc') {
       addElement(document, {
         type: 'arc',
         properties: {
-          CenterX:    { type: 'number', value: sx },
-          CenterY:    { type: 'number', value: sy },
-          Radius:     { type: 'number', value: (entity.coordinates.radius || 25) * scale },
+          CenterX: { type: 'number', value: sx },
+          CenterY: { type: 'number', value: sy },
+          Radius: { type: 'number', value: (entity.coordinates.radius || 25) * scale },
           StartAngle: { type: 'number', value: entity.coordinates.startAngle ?? 0 },
-          EndAngle:   { type: 'number', value: entity.coordinates.endAngle ?? 360 },
+          EndAngle: { type: 'number', value: entity.coordinates.endAngle ?? 360 },
         },
         layerId,
         levelId,
-        transform: { translation: { x: sx, y: sy, z: sz }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: sx, y: sy, z: sz },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
       });
     } else if (elementType === 'polyline') {
-      const verts = entity.vertices && entity.vertices.length > 0
-        ? entity.vertices
-        : [{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 10, y: 10 }, { x: 0, y: 10 }];
+      const verts =
+        entity.vertices && entity.vertices.length > 0
+          ? entity.vertices
+          : [
+              { x: 0, y: 0 },
+              { x: 10, y: 0 },
+              { x: 10, y: 10 },
+              { x: 0, y: 10 },
+            ];
       addElement(document, {
         type: 'polyline',
         properties: {
-          Points: { type: 'string', value: JSON.stringify(verts.map((v) => ({ x: v.x * scale, y: v.y * scale }))) },
+          Points: {
+            type: 'string',
+            value: JSON.stringify(verts.map((v) => ({ x: v.x * scale, y: v.y * scale }))),
+          },
         },
-        points: verts.map((v) => ({ x: v.x * scale, y: v.y * scale, z: 0, _type: 'Point3D' as const })),
+        points: verts.map((v) => ({
+          x: v.x * scale,
+          y: v.y * scale,
+          z: 0,
+          _type: 'Point3D' as const,
+        })),
         layerId,
         levelId,
       });
@@ -725,37 +790,45 @@ export function parseDXF(content: string): DocumentSchema {
         },
         layerId,
         levelId,
-        transform: { translation: { x: sx, y: sy, z: sz }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: sx, y: sy, z: sz },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
       });
     } else if (elementType === 'text') {
       addElement(document, {
         type: 'text',
         properties: {
-          Content:  { type: 'string', value: entity.textContent || '' },
-          X:        { type: 'number', value: sx },
-          Y:        { type: 'number', value: sy },
+          Content: { type: 'string', value: entity.textContent || '' },
+          X: { type: 'number', value: sx },
+          Y: { type: 'number', value: sy },
           FontSize: { type: 'number', value: (entity.coordinates.textHeight ?? 2.5) * scale },
           Rotation: { type: 'number', value: entity.coordinates.rotation ?? 0 },
         },
         layerId,
         levelId,
-        transform: { translation: { x: sx, y: sy, z: sz }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: sx, y: sy, z: sz },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
       });
     } else if (elementType === 'block_ref') {
       addElement(document, {
         type: 'block_ref',
         properties: {
           BlockName: { type: 'string', value: entity.blockName || '' },
-          Rotation:  { type: 'number', value: entity.coordinates.rotation ?? 0 },
-          ScaleX:    { type: 'number', value: entity.coordinates.scaleX ?? 1 },
-          ScaleY:    { type: 'number', value: entity.coordinates.scaleY ?? 1 },
-          ScaleZ:    { type: 'number', value: entity.coordinates.scaleZ ?? 1 },
+          Rotation: { type: 'number', value: entity.coordinates.rotation ?? 0 },
+          ScaleX: { type: 'number', value: entity.coordinates.scaleX ?? 1 },
+          ScaleY: { type: 'number', value: entity.coordinates.scaleY ?? 1 },
+          ScaleZ: { type: 'number', value: entity.coordinates.scaleZ ?? 1 },
         },
         layerId,
         levelId,
         transform: {
           translation: { x: sx, y: sy, z: sz },
-          rotation: { x: 0, y: 0, z: (entity.coordinates.rotation ?? 0) * Math.PI / 180 },
+          rotation: { x: 0, y: 0, z: ((entity.coordinates.rotation ?? 0) * Math.PI) / 180 },
           scale: {
             x: entity.coordinates.scaleX ?? 1,
             y: entity.coordinates.scaleY ?? 1,
@@ -768,7 +841,11 @@ export function parseDXF(content: string): DocumentSchema {
         type: elementType as ElementType,
         layerId,
         levelId,
-        transform: { translation: { x: sx, y: sy, z: sz }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: sx, y: sy, z: sz },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
       });
     }
   }
@@ -792,7 +869,6 @@ export function serializeDWG(document: DocumentSchema): ArrayBuffer {
   const encoder = new TextEncoder();
   return encoder.encode(text).buffer;
 }
-
 
 // ─── Result type ──────────────────────────────────────────────────────────────
 
@@ -839,13 +915,20 @@ export function exportDXF(document: DocumentSchema): string {
   for (const layer of docLayers) {
     const aci = String(hexToAci(layer.color));
     lines.push(
-      '0', 'LAYER',
-      '5', nextHandle(),
-      '100', 'AcDbSymbolTableRecord',
-      '100', 'AcDbLayerTableRecord',
-      '2', layer.name,
-      '70', layer.visible ? '0' : '1',
-      '62', String(aci),
+      '0',
+      'LAYER',
+      '5',
+      nextHandle(),
+      '100',
+      'AcDbSymbolTableRecord',
+      '100',
+      'AcDbLayerTableRecord',
+      '2',
+      layer.name,
+      '70',
+      layer.visible ? '0' : '1',
+      '62',
+      String(aci)
     );
   }
 
@@ -865,50 +948,114 @@ export function exportDXF(document: DocumentSchema): string {
       const sx = pts[0]?.x ?? t.x;
       const sy = pts[0]?.y ?? t.y;
       const sz = pts[0]?.z ?? t.z;
-      const ex = pts[1]?.x ?? (element.properties['EndX']?.value as number ?? sx);
-      const ey = pts[1]?.y ?? (element.properties['EndY']?.value as number ?? sy);
+      const ex = pts[1]?.x ?? (element.properties['EndX']?.value as number) ?? sx;
+      const ey = pts[1]?.y ?? (element.properties['EndY']?.value as number) ?? sy;
       const ez = pts[1]?.z ?? sz;
       lines.push(
-        '0', 'LINE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbLine',
-        '10', String(sx), '20', String(sy), '30', String(sz),
-        '11', String(ex), '21', String(ey), '31', String(ez),
+        '0',
+        'LINE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbLine',
+        '10',
+        String(sx),
+        '20',
+        String(sy),
+        '30',
+        String(sz),
+        '11',
+        String(ex),
+        '21',
+        String(ey),
+        '31',
+        String(ez)
       );
     } else if (element.type === 'circle') {
       const cx = (element.properties['CenterX']?.value as number) ?? t.x;
       const cy = (element.properties['CenterY']?.value as number) ?? t.y;
-      const r  = (element.properties['Radius']?.value as number) ?? 25;
+      const r = (element.properties['Radius']?.value as number) ?? 25;
       lines.push(
-        '0', 'CIRCLE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbCircle',
-        '10', String(cx), '20', String(cy), '30', String(t.z),
-        '40', String(r),
+        '0',
+        'CIRCLE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbCircle',
+        '10',
+        String(cx),
+        '20',
+        String(cy),
+        '30',
+        String(t.z),
+        '40',
+        String(r)
       );
     } else if (element.type === 'arc') {
       const cx = (element.properties['CenterX']?.value as number) ?? t.x;
       const cy = (element.properties['CenterY']?.value as number) ?? t.y;
-      const r  = (element.properties['Radius']?.value as number) ?? 25;
+      const r = (element.properties['Radius']?.value as number) ?? 25;
       const sa = (element.properties['StartAngle']?.value as number) ?? 0;
       const ea = (element.properties['EndAngle']?.value as number) ?? 360;
       lines.push(
-        '0', 'ARC', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbCircle',
-        '10', String(cx), '20', String(cy), '30', String(t.z),
-        '40', String(r),
-        '100', 'AcDbArc',
-        '50', String(sa), '51', String(ea),
+        '0',
+        'ARC',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbCircle',
+        '10',
+        String(cx),
+        '20',
+        String(cy),
+        '30',
+        String(t.z),
+        '40',
+        String(r),
+        '100',
+        'AcDbArc',
+        '50',
+        String(sa),
+        '51',
+        String(ea)
       );
     } else if (element.type === 'polyline') {
       const pts = (element as { points?: Array<{ x: number; y: number }> }).points ?? [];
       lines.push(
-        '0', 'LWPOLYLINE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbPolyline',
-        '90', String(pts.length),
-        '70', '0',
+        '0',
+        'LWPOLYLINE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbPolyline',
+        '90',
+        String(pts.length),
+        '70',
+        '0'
       );
       for (const pt of pts) {
         lines.push('10', String(pt.x), '20', String(pt.y));
@@ -920,13 +1067,30 @@ export function exportDXF(document: DocumentSchema): string {
       const height = (element.properties['FontSize']?.value as number) ?? 2.5;
       const rotation = (element.properties['Rotation']?.value as number) ?? 0;
       lines.push(
-        '0', 'TEXT', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbText',
-        '10', String(x), '20', String(y), '30', String(t.z),
-        '40', String(height),
-        '1', content,
-        '50', String(rotation),
+        '0',
+        'TEXT',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbText',
+        '10',
+        String(x),
+        '20',
+        String(y),
+        '30',
+        String(t.z),
+        '40',
+        String(height),
+        '1',
+        content,
+        '50',
+        String(rotation)
       );
     } else if (element.type === 'ellipse') {
       const cx = (element.properties['CenterX']?.value as number) ?? t.x;
@@ -938,13 +1102,36 @@ export function exportDXF(document: DocumentSchema): string {
       const my = Math.sin(rot) * rx;
       const ratio = rx > 0 ? ry / rx : 1;
       lines.push(
-        '0', 'ELLIPSE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbEllipse',
-        '10', String(cx), '20', String(cy), '30', String(t.z),
-        '11', String(mx), '21', String(my), '31', '0',
-        '40', String(ratio),
-        '41', '0', '42', String(2 * Math.PI),
+        '0',
+        'ELLIPSE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbEllipse',
+        '10',
+        String(cx),
+        '20',
+        String(cy),
+        '30',
+        String(t.z),
+        '11',
+        String(mx),
+        '21',
+        String(my),
+        '31',
+        '0',
+        '40',
+        String(ratio),
+        '41',
+        '0',
+        '42',
+        String(2 * Math.PI)
       );
     } else if (element.type === 'block_ref') {
       const blockName = String(element.properties['BlockName']?.value ?? '');
@@ -953,21 +1140,55 @@ export function exportDXF(document: DocumentSchema): string {
       const sy = (element.properties['ScaleY']?.value as number) ?? 1;
       const sz = (element.properties['ScaleZ']?.value as number) ?? 1;
       lines.push(
-        '0', 'INSERT', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbBlockReference',
-        '2', blockName,
-        '10', String(t.x), '20', String(t.y), '30', String(t.z),
-        '41', String(sx), '42', String(sy), '43', String(sz),
-        '50', String(rot),
+        '0',
+        'INSERT',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbBlockReference',
+        '2',
+        blockName,
+        '10',
+        String(t.x),
+        '20',
+        String(t.y),
+        '30',
+        String(t.z),
+        '41',
+        String(sx),
+        '42',
+        String(sy),
+        '43',
+        String(sz),
+        '50',
+        String(rot)
       );
     } else {
       // Generic fallback
       const name = (element.properties['Name']?.value as string) || element.type;
       lines.push(
-        '0', name.toUpperCase(), '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '10', String(t.x), '20', String(t.y), '30', String(t.z),
+        '0',
+        name.toUpperCase(),
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '10',
+        String(t.x),
+        '20',
+        String(t.y),
+        '30',
+        String(t.z)
       );
     }
   }
@@ -1009,66 +1230,158 @@ export function exportToDXF(doc: DocumentSchema): string {
       const ex = (element.properties['EndX']?.value as number) ?? element.boundingBox.max.x;
       const ey = (element.properties['EndY']?.value as number) ?? t.y;
       lines.push(
-        '0', 'LINE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbLine',
-        '10', String(sx), '20', String(sy), '30', String(t.z),
-        '11', String(ex), '21', String(ey), '31', String(t.z),
+        '0',
+        'LINE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbLine',
+        '10',
+        String(sx),
+        '20',
+        String(sy),
+        '30',
+        String(t.z),
+        '11',
+        String(ex),
+        '21',
+        String(ey),
+        '31',
+        String(t.z)
       );
     } else if (element.type === 'column') {
       const cx = (element.properties['CenterX']?.value as number) ?? t.x;
       const cy = (element.properties['CenterY']?.value as number) ?? t.y;
-      const r  = (element.properties['Radius']?.value as number) ?? 100;
+      const r = (element.properties['Radius']?.value as number) ?? 100;
       lines.push(
-        '0', 'CIRCLE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbCircle',
-        '10', String(cx), '20', String(cy), '30', String(t.z),
-        '40', String(r),
+        '0',
+        'CIRCLE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbCircle',
+        '10',
+        String(cx),
+        '20',
+        String(cy),
+        '30',
+        String(t.z),
+        '40',
+        String(r)
       );
     } else if (element.type === 'line') {
       const pts = (element as { points?: Array<{ x: number; y: number; z: number }> }).points ?? [];
       const sx = pts[0]?.x ?? t.x;
       const sy = pts[0]?.y ?? t.y;
       const sz = pts[0]?.z ?? t.z;
-      const ex = pts[1]?.x ?? (element.properties['EndX']?.value as number ?? sx);
-      const ey = pts[1]?.y ?? (element.properties['EndY']?.value as number ?? sy);
+      const ex = pts[1]?.x ?? (element.properties['EndX']?.value as number) ?? sx;
+      const ey = pts[1]?.y ?? (element.properties['EndY']?.value as number) ?? sy;
       const ez = pts[1]?.z ?? sz;
       lines.push(
-        '0', 'LINE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbLine',
-        '10', String(sx), '20', String(sy), '30', String(sz),
-        '11', String(ex), '21', String(ey), '31', String(ez),
+        '0',
+        'LINE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbLine',
+        '10',
+        String(sx),
+        '20',
+        String(sy),
+        '30',
+        String(sz),
+        '11',
+        String(ex),
+        '21',
+        String(ey),
+        '31',
+        String(ez)
       );
     } else if (element.type === 'circle') {
       const cx = (element.properties['CenterX']?.value as number) ?? t.x;
       const cy = (element.properties['CenterY']?.value as number) ?? t.y;
-      const r  = (element.properties['Radius']?.value as number) ?? 25;
+      const r = (element.properties['Radius']?.value as number) ?? 25;
       lines.push(
-        '0', 'CIRCLE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbCircle',
-        '10', String(cx), '20', String(cy), '30', String(t.z),
-        '40', String(r),
+        '0',
+        'CIRCLE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbCircle',
+        '10',
+        String(cx),
+        '20',
+        String(cy),
+        '30',
+        String(t.z),
+        '40',
+        String(r)
       );
     } else if (element.type === 'polyline') {
       const pts = (element as { points?: Array<{ x: number; y: number }> }).points ?? [];
       lines.push(
-        '0', 'LWPOLYLINE', '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '100', 'AcDbPolyline',
-        '90', String(pts.length),
-        '70', '0',
+        '0',
+        'LWPOLYLINE',
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '100',
+        'AcDbPolyline',
+        '90',
+        String(pts.length),
+        '70',
+        '0'
       );
       for (const pt of pts) {
         lines.push('10', String(pt.x), '20', String(pt.y));
       }
     } else {
       lines.push(
-        '0', element.type.toUpperCase(), '5', h, '330', '0',
-        '100', 'AcDbEntity', '8', layerName,
-        '10', String(t.x), '20', String(t.y), '30', String(t.z),
+        '0',
+        element.type.toUpperCase(),
+        '5',
+        h,
+        '330',
+        '0',
+        '100',
+        'AcDbEntity',
+        '8',
+        layerName,
+        '10',
+        String(t.x),
+        '20',
+        String(t.y),
+        '30',
+        String(t.z)
       );
     }
   }
@@ -1100,16 +1413,16 @@ export type DxfLinetype =
 
 export const DXF_LINETYPE_PATTERNS: Record<DxfLinetype, number[]> = {
   CONTINUOUS: [],
-  HIDDEN:     [6.35, -3.175],
-  HIDDEN2:    [3.175, -1.5875],
-  DASHED:     [12.7, -6.35],
-  DASHED2:    [6.35, -3.175],
-  CENTER:     [31.75, -6.35, 6.35, -6.35],
-  CENTER2:    [15.875, -3.175, 3.175, -3.175],
-  PHANTOM:    [31.75, -6.35, 6.35, -6.35, 6.35, -6.35],
-  DOT:        [0, -6.35],
-  DASHDOT:    [12.7, -6.35, 0, -6.35],
-  DIVIDE:     [12.7, -6.35, 0, -6.35, 0, -6.35],
+  HIDDEN: [6.35, -3.175],
+  HIDDEN2: [3.175, -1.5875],
+  DASHED: [12.7, -6.35],
+  DASHED2: [6.35, -3.175],
+  CENTER: [31.75, -6.35, 6.35, -6.35],
+  CENTER2: [15.875, -3.175, 3.175, -3.175],
+  PHANTOM: [31.75, -6.35, 6.35, -6.35, 6.35, -6.35],
+  DOT: [0, -6.35],
+  DASHDOT: [12.7, -6.35, 0, -6.35],
+  DIVIDE: [12.7, -6.35, 0, -6.35, 0, -6.35],
 };
 
 /** Build a LTYPE TABLE entry. */
@@ -1117,16 +1430,26 @@ export function buildLinetypeTableEntry(name: DxfLinetype, handle: string): stri
   const pattern = DXF_LINETYPE_PATTERNS[name];
   const totalLen = pattern.reduce((s, v) => s + Math.abs(v), 0);
   const out = [
-    '0', 'LTYPE',
-    '5', handle,
-    '100', 'AcDbSymbolTableRecord',
-    '100', 'AcDbLinetypeTableRecord',
-    '2', name,
-    '70', '0',
-    '3', name,
-    '72', '65',
-    '73', String(pattern.length),
-    '40', String(totalLen),
+    '0',
+    'LTYPE',
+    '5',
+    handle,
+    '100',
+    'AcDbSymbolTableRecord',
+    '100',
+    'AcDbLinetypeTableRecord',
+    '2',
+    name,
+    '70',
+    '0',
+    '3',
+    name,
+    '72',
+    '65',
+    '73',
+    String(pattern.length),
+    '40',
+    String(totalLen),
   ];
   for (const dash of pattern) {
     out.push('49', String(dash));
@@ -1138,7 +1461,15 @@ export function buildLinetypeTableEntry(name: DxfLinetype, handle: string): stri
 /** Build a complete TABLES section (LTYPE + LAYER). */
 export function buildTablesSection(
   layerList: Array<{ id: string; name: string; color: string; visible: boolean; locked: boolean }>,
-  linetypes: DxfLinetype[] = ['CONTINUOUS', 'HIDDEN', 'DASHED', 'CENTER', 'PHANTOM', 'DOT', 'DASHDOT'],
+  linetypes: DxfLinetype[] = [
+    'CONTINUOUS',
+    'HIDDEN',
+    'DASHED',
+    'CENTER',
+    'PHANTOM',
+    'DOT',
+    'DASHDOT',
+  ]
 ): string {
   const out: string[] = [];
   let h = 0x100;
@@ -1153,12 +1484,24 @@ export function buildTablesSection(
   for (const layer of layerList) {
     const aci = hexToAci(layer.color);
     out.push(
-      '0', 'LAYER', '5', next(),
-      '100', 'AcDbSymbolTableRecord', '100', 'AcDbLayerTableRecord',
-      '2', layer.name,
-      '70', layer.visible ? '0' : '1',
-      '62', String(layer.locked ? -aci : aci),
-      '6', 'CONTINUOUS', '370', '-3',
+      '0',
+      'LAYER',
+      '5',
+      next(),
+      '100',
+      'AcDbSymbolTableRecord',
+      '100',
+      'AcDbLayerTableRecord',
+      '2',
+      layer.name,
+      '70',
+      layer.visible ? '0' : '1',
+      '62',
+      String(layer.locked ? -aci : aci),
+      '6',
+      'CONTINUOUS',
+      '370',
+      '-3'
     );
   }
   out.push('0', 'ENDTAB');
@@ -1187,25 +1530,87 @@ export function hexToTrueColour(hex: string): number {
 export function buildHatchEntity(
   layerName: string,
   handle: string,
-  minX: number, minY: number,
-  maxX: number, maxY: number,
-  patternName = 'SOLID',
+  minX: number,
+  minY: number,
+  maxX: number,
+  maxY: number,
+  patternName = 'SOLID'
 ): string[] {
   return [
-    '0', 'HATCH', '5', handle, '330', '0',
-    '100', 'AcDbEntity', '8', layerName,
-    '100', 'AcDbHatch',
-    '10', '0', '20', '0', '30', '0',
-    '210', '0', '220', '0', '230', '1',
-    '2', patternName,
-    '70', '1', '71', '0',
-    '91', '1', '92', '1', '93', '4',
-    '72', '0', '10', String(minX), '20', String(minY),
-    '72', '0', '10', String(maxX), '20', String(minY),
-    '72', '0', '10', String(maxX), '20', String(maxY),
-    '72', '0', '10', String(minX), '20', String(maxY),
-    '97', '0',
-    '75', '1', '76', '1', '52', '0', '41', '1', '77', '0', '78', '0',
+    '0',
+    'HATCH',
+    '5',
+    handle,
+    '330',
+    '0',
+    '100',
+    'AcDbEntity',
+    '8',
+    layerName,
+    '100',
+    'AcDbHatch',
+    '10',
+    '0',
+    '20',
+    '0',
+    '30',
+    '0',
+    '210',
+    '0',
+    '220',
+    '0',
+    '230',
+    '1',
+    '2',
+    patternName,
+    '70',
+    '1',
+    '71',
+    '0',
+    '91',
+    '1',
+    '92',
+    '1',
+    '93',
+    '4',
+    '72',
+    '0',
+    '10',
+    String(minX),
+    '20',
+    String(minY),
+    '72',
+    '0',
+    '10',
+    String(maxX),
+    '20',
+    String(minY),
+    '72',
+    '0',
+    '10',
+    String(maxX),
+    '20',
+    String(maxY),
+    '72',
+    '0',
+    '10',
+    String(minX),
+    '20',
+    String(maxY),
+    '97',
+    '0',
+    '75',
+    '1',
+    '76',
+    '1',
+    '52',
+    '0',
+    '41',
+    '1',
+    '77',
+    '0',
+    '78',
+    '0',
   ];
 }
 
@@ -1213,22 +1618,49 @@ export function buildHatchEntity(
 export function buildMtextEntity(
   layerName: string,
   handle: string,
-  x: number, y: number,
+  x: number,
+  y: number,
   height: number,
   text: string,
-  rotation = 0,
+  rotation = 0
 ): string[] {
   return [
-    '0', 'MTEXT', '5', handle, '330', '0',
-    '100', 'AcDbEntity', '8', layerName,
-    '100', 'AcDbMText',
-    '10', String(x), '20', String(y), '30', '0',
-    '40', String(height), '41', '0',
-    '71', '1', '72', '5',
-    '1', text,
-    '7', 'STANDARD',
-    '50', String(rotation),
-    '73', '1', '44', '1',
+    '0',
+    'MTEXT',
+    '5',
+    handle,
+    '330',
+    '0',
+    '100',
+    'AcDbEntity',
+    '8',
+    layerName,
+    '100',
+    'AcDbMText',
+    '10',
+    String(x),
+    '20',
+    String(y),
+    '30',
+    '0',
+    '40',
+    String(height),
+    '41',
+    '0',
+    '71',
+    '1',
+    '72',
+    '5',
+    '1',
+    text,
+    '7',
+    'STANDARD',
+    '50',
+    String(rotation),
+    '73',
+    '1',
+    '44',
+    '1',
   ];
 }
 
@@ -1249,17 +1681,43 @@ export interface XrefPlaceholder {
 export function buildXrefInsert(
   layerName: string,
   handle: string,
-  xref: XrefPlaceholder,
+  xref: XrefPlaceholder
 ): string[] {
   return [
-    '0', 'INSERT', '5', handle, '330', '0',
-    '100', 'AcDbEntity', '8', layerName,
-    '100', 'AcDbBlockReference',
-    '2', xref.name,
-    '10', String(xref.x), '20', String(xref.y), '30', String(xref.z),
-    '41', String(xref.scaleX), '42', String(xref.scaleY), '43', String(xref.scaleZ),
-    '50', String(xref.rotation),
-    '1001', 'OpenCAD', '1000', 'xref', '1000', xref.path,
+    '0',
+    'INSERT',
+    '5',
+    handle,
+    '330',
+    '0',
+    '100',
+    'AcDbEntity',
+    '8',
+    layerName,
+    '100',
+    'AcDbBlockReference',
+    '2',
+    xref.name,
+    '10',
+    String(xref.x),
+    '20',
+    String(xref.y),
+    '30',
+    String(xref.z),
+    '41',
+    String(xref.scaleX),
+    '42',
+    String(xref.scaleY),
+    '43',
+    String(xref.scaleZ),
+    '50',
+    String(xref.rotation),
+    '1001',
+    'OpenCAD',
+    '1000',
+    'xref',
+    '1000',
+    xref.path,
   ];
 }
 

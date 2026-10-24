@@ -71,8 +71,7 @@ const rule1208_2: Rule = {
             `Habitable room "${element.id}" has a ceiling height of ${height.toFixed(2)} m, ` +
             `which is below the minimum of ${MIN_CEILING_HEIGHT_M} m (7'6").`,
           severity: 'error',
-          suggestedFix:
-            `Increase the ceiling height of "${element.id}" to at least ${MIN_CEILING_HEIGHT_M} m (7'6").`,
+          suggestedFix: `Increase the ceiling height of "${element.id}" to at least ${MIN_CEILING_HEIGHT_M} m (7'6").`,
         });
       }
     }
@@ -113,8 +112,7 @@ const rule1208_3: Rule = {
             `Habitable room "${element.id}" has a floor area of ${area.toFixed(2)} m², ` +
             `which is below the minimum of ${MIN_HABITABLE_AREA_M2} m² (80 sq ft).`,
           severity: 'error',
-          suggestedFix:
-            `Expand the floor area of "${element.id}" to at least ${MIN_HABITABLE_AREA_M2} m² (80 sq ft).`,
+          suggestedFix: `Expand the floor area of "${element.id}" to at least ${MIN_HABITABLE_AREA_M2} m² (80 sq ft).`,
         });
       }
     }
@@ -156,8 +154,7 @@ const rule1005_1: Rule = {
             `${spaceType} "${element.id}" has a width of ${width.toFixed(2)} m, ` +
             `which is below the minimum of ${MIN_CORRIDOR_WIDTH_M} m (36").`,
           severity: 'error',
-          suggestedFix:
-            `Widen "${element.id}" to at least ${MIN_CORRIDOR_WIDTH_M} m (36") to meet egress requirements.`,
+          suggestedFix: `Widen "${element.id}" to at least ${MIN_CORRIDOR_WIDTH_M} m (36") to meet egress requirements.`,
         });
       }
     }
@@ -197,8 +194,7 @@ const rule1010_1_1: Rule = {
             `Egress door "${element.id}" has a clear width of ${width.toFixed(3)} m, ` +
             `which is below the minimum of ${MIN_EGRESS_DOOR_WIDTH_M} m (32").`,
           severity: 'error',
-          suggestedFix:
-            `Increase the clear width of egress door "${element.id}" to at least ${MIN_EGRESS_DOOR_WIDTH_M} m (32").`,
+          suggestedFix: `Increase the clear width of egress door "${element.id}" to at least ${MIN_EGRESS_DOOR_WIDTH_M} m (32").`,
         });
       }
     }

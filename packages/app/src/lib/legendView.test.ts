@@ -2,10 +2,7 @@
  * T-VIEW-10: Unit tests for legendView — legend view with material/symbol entries.
  */
 import { describe, it, expect } from 'vitest';
-import {
-  createLegendView,
-  addLegendEntry,
-} from './legendView';
+import { createLegendView, addLegendEntry } from './legendView';
 
 describe('T-VIEW-10: legendView', () => {
   it('createLegendView returns a view with type legend', () => {

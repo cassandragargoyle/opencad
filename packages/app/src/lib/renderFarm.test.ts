@@ -131,7 +131,7 @@ describe('estimateRenderTime', () => {
     farm = submitJob(farm, sampleJobSpec);
     const job = farm.jobs[0];
     const timeHigh = estimateRenderTime(job, sampleNodes[0]); // 24 GB
-    const timeLow = estimateRenderTime(job, sampleNodes[1]);  // 10 GB
+    const timeLow = estimateRenderTime(job, sampleNodes[1]); // 10 GB
     expect(timeHigh).toBeLessThan(timeLow);
   });
 
@@ -178,7 +178,7 @@ describe('computeRenderProgress', () => {
     // Manually set one to done
     farm = {
       ...farm,
-      jobs: farm.jobs.map((j, i) => i === 0 ? { ...j, status: 'done' as const } : j),
+      jobs: farm.jobs.map((j, i) => (i === 0 ? { ...j, status: 'done' as const } : j)),
     };
     const progress = computeRenderProgress(farm);
     expect(progress.done).toBe(1);

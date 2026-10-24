@@ -14,13 +14,7 @@ import {
   type TotpSecret,
   type MultiFactorResolver,
 } from 'firebase/auth';
-import {
-  doc,
-  setDoc,
-  getDoc,
-  serverTimestamp,
-  type Timestamp,
-} from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp, type Timestamp } from 'firebase/firestore';
 import { firebaseAuth, firebaseDb, isFirebaseConfigured } from '../lib/firebase';
 import { authApi, registerTokenProvider, isServerAvailable } from '../lib/serverApi';
 import { registerProjectsTokenProvider } from '../lib/projectsApi';
@@ -67,7 +61,7 @@ const TRIAL_DAYS = 14;
 async function upsertProfile(
   user: User,
   name?: string,
-  defaultPlan: UserProfile['plan'] = 'trial',
+  defaultPlan: UserProfile['plan'] = 'trial'
 ): Promise<UserProfile> {
   if (!isFirebaseConfigured) {
     return {
@@ -150,8 +144,10 @@ export const useAuthStore = create<AuthState>((set, _get) => {
       if (serverReachable !== null) return serverReachable;
       serverReachable = await isServerAvailable();
       if (!serverReachable) {
-        console.info('[auth] Backend unreachable — using local profile only. ' +
-          'Start the server with: cd server && cargo run');
+        console.info(
+          '[auth] Backend unreachable — using local profile only. ' +
+            'Start the server with: cd server && cargo run'
+        );
       }
       return serverReachable;
     };
@@ -162,13 +158,11 @@ export const useAuthStore = create<AuthState>((set, _get) => {
           const profile = await upsertProfile(user);
           // Fetch the server-side user profile and merge it into local state.
           // Falls back to the Firestore profile if the backend is unreachable.
-          const serverProfile = (await probeServer())
-            ? await authApi.me().catch(() => null)
-            : null;
+          const serverProfile = (await probeServer()) ? await authApi.me().catch(() => null) : null;
           const mergedProfile: UserProfile = serverProfile
             ? {
                 ...profile,
-                plan: (serverProfile.role === 'admin' ? 'team' : profile.plan),
+                plan: serverProfile.role === 'admin' ? 'team' : profile.plan,
                 trialExpiresAt: serverProfile.trialEndsAt
                   ? new Date(serverProfile.trialEndsAt)
                   : profile.trialExpiresAt,
@@ -290,10 +284,7 @@ export const useAuthStore = create<AuthState>((set, _get) => {
       firebaseAuth();
       const session = await multiFactor(user).getSession();
       const secret = await TotpMultiFactorGenerator.generateSecret(session);
-      const qrCodeUrl = secret.generateQrCodeUrl(
-        user.email ?? 'user',
-        'OpenCAD',
-      );
+      const qrCodeUrl = secret.generateQrCodeUrl(user.email ?? 'user', 'OpenCAD');
       return { secret, qrCodeUrl };
     },
 

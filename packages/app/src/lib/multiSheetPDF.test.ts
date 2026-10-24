@@ -33,12 +33,14 @@ describe('T-VIEW-09: multiSheetPDF', () => {
   });
 
   it('includes sheet numbers in generated HTML', () => {
-    const html = buildMultiSheetHTML([{
-      title: 'Ground Floor',
-      sheetNumber: 'A-101',
-      widthMm: 297,
-      heightMm: 210,
-    }]);
+    const html = buildMultiSheetHTML([
+      {
+        title: 'Ground Floor',
+        sheetNumber: 'A-101',
+        widthMm: 297,
+        heightMm: 210,
+      },
+    ]);
     expect(html).toContain('A-101');
   });
 
@@ -60,13 +62,15 @@ describe('T-VIEW-09: multiSheetPDF', () => {
   });
 
   it('includes SVG content when provided', () => {
-    const html = buildMultiSheetHTML([{
-      title: 'Floor Plan',
-      sheetNumber: 'A-101',
-      widthMm: 297,
-      heightMm: 210,
-      svgContent: '<svg><rect/></svg>',
-    }]);
+    const html = buildMultiSheetHTML([
+      {
+        title: 'Floor Plan',
+        sheetNumber: 'A-101',
+        widthMm: 297,
+        heightMm: 210,
+        svgContent: '<svg><rect/></svg>',
+      },
+    ]);
     expect(html).toContain('<svg><rect/></svg>');
   });
 
@@ -76,12 +80,14 @@ describe('T-VIEW-09: multiSheetPDF', () => {
   });
 
   it('sheet width and height are embedded in inline style', () => {
-    const html = buildMultiSheetHTML([{
-      title: 'Plan',
-      sheetNumber: 'A-101',
-      widthMm: 420,
-      heightMm: 297,
-    }]);
+    const html = buildMultiSheetHTML([
+      {
+        title: 'Plan',
+        sheetNumber: 'A-101',
+        widthMm: 420,
+        heightMm: 297,
+      },
+    ]);
     expect(html).toContain('width:420mm');
     expect(html).toContain('height:297mm');
   });

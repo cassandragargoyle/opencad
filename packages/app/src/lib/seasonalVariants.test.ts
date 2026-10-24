@@ -116,7 +116,8 @@ describe('T-SITE-V2-04: seasonalVariants', () => {
 
   it('t=0.5 yields intermediate canopy density', () => {
     const result = lerpSeason('spring', 'summer', 0.5);
-    const expected = (SEASONAL_SPECS.spring.canopyDensity + SEASONAL_SPECS.summer.canopyDensity) / 2;
+    const expected =
+      (SEASONAL_SPECS.spring.canopyDensity + SEASONAL_SPECS.summer.canopyDensity) / 2;
     expect(result.canopyDensity).toBeCloseTo(expected, 5);
   });
 
@@ -136,6 +137,6 @@ describe('T-SITE-V2-04: seasonalVariants', () => {
     const early = lerpSeason('winter', 'spring', 0.4);
     const late = lerpSeason('winter', 'spring', 0.6);
     expect(early.hasLeaves).toBe(false); // winter side
-    expect(late.hasLeaves).toBe(true);   // spring side
+    expect(late.hasLeaves).toBe(true); // spring side
   });
 });

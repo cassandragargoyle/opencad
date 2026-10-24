@@ -105,9 +105,10 @@ describe('T-DOC-005: useProjectList', () => {
   });
 
   it('refreshProjects loads from storage', () => {
-    localStorage.setItem('opencad-projects', JSON.stringify([
-      { id: 'ext-1', name: 'External', createdAt: 0, updatedAt: 0 },
-    ]));
+    localStorage.setItem(
+      'opencad-projects',
+      JSON.stringify([{ id: 'ext-1', name: 'External', createdAt: 0, updatedAt: 0 }])
+    );
     const { result } = renderHook(() => useProjectList());
     expect(result.current.projects[0]?.name).toBe('External');
   });

@@ -35,8 +35,8 @@ Link to the related issue: "Fixes #123" or "Closes #123"
 
 <!-- Describe the tests you added or modified -->
 
-| Test | Type | Status |
-|------|------|--------|
+| Test        | Type                                | Status     |
+| ----------- | ----------------------------------- | ---------- |
 | `test name` | Unit / Integration / E2E / Property | ✅ Passing |
 | `test name` | Unit / Integration / E2E / Property | ✅ Passing |
 
@@ -77,17 +77,17 @@ Link to the related issue: "Fixes #123" or "Closes #123"
 
 <!-- For UI changes, include before/after screenshots or screen recordings -->
 
-| Before | After |
-|--------|-------|
+| Before              | After               |
+| ------------------- | ------------------- |
 | <!-- screenshot --> | <!-- screenshot --> |
 
 ## Performance Impact
 
 <!-- If this change affects performance, include benchmark results -->
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| e.g., Boolean union time | 45ms | 12ms | -73% |
+| Metric                   | Before | After | Change |
+| ------------------------ | ------ | ----- | ------ |
+| e.g., Boolean union time | 45ms   | 12ms  | -73%   |
 
 ## Additional Notes
 

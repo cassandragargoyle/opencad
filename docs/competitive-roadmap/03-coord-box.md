@@ -4,11 +4,12 @@
 
 ## Why
 
-Professionals draw by typing dimensions, not by eyeballing mouse positions. Every competitive tool offers a floating coordinate tracker during *any* drawing or editing operation — type `4500` + TAB + `Enter` and the element commits at exactly that length. Today OpenCAD only supports drag-to-size, which produces a ~0.5 mm error on every operation and makes it impossible to draw to spec.
+Professionals draw by typing dimensions, not by eyeballing mouse positions. Every competitive tool offers a floating coordinate tracker during _any_ drawing or editing operation — type `4500` + TAB + `Enter` and the element commits at exactly that length. Today OpenCAD only supports drag-to-size, which produces a ~0.5 mm error on every operation and makes it impossible to draw to spec.
 
 ## Scope
 
 ### In scope
+
 - A floating, semi-transparent overlay that appears next to the cursor whenever a drawing or modification operation is in progress (wall, line, rectangle, slab, door, window, column, dimension, plus edit handles on selection).
 - Fields shown depend on the active tool / operation:
   - Point placement: `X`, `Y`, optional `Z`
@@ -24,6 +25,7 @@ Professionals draw by typing dimensions, not by eyeballing mouse positions. Ever
 - Every field pushes state into the same drawing-state ref the viewport already reads so the commit path does not change.
 
 ### Out of scope (this issue)
+
 - Relative-reference drawing (`@4500,0` from previous point) — nice follow-up, not core.
 - Constraint-based parametric drafting (distance constraints, angle constraints). Separate effort.
 - Imperial fraction parsing edge cases (`5 1/16"`) — document as a future refinement.

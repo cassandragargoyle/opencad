@@ -8,12 +8,16 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  resolvePrimitives, validateManifest, BUILT_IN_PARAMETRIC_OBJECTS,
+  resolvePrimitives,
+  validateManifest,
+  BUILT_IN_PARAMETRIC_OBJECTS,
   type ParametricObjectManifest,
 } from './parametricObjects';
 
 const MANIFEST: ParametricObjectManifest = {
-  id: 't-obj', name: 'Test', category: 'furniture',
+  id: 't-obj',
+  name: 'Test',
+  category: 'furniture',
   parameters: [{ name: 'width', type: 'number', default: 800 }],
   primitives: [{ kind: 'box', size: ['{{width}}', 100, 100] }],
 };
@@ -51,9 +55,20 @@ describe('T-PAR-013: parametric object library', () => {
 
   it('revolve primitive resolves profile point parameters', () => {
     const m: ParametricObjectManifest = {
-      id: 'd', name: 'Dome', category: 'fixture',
+      id: 'd',
+      name: 'Dome',
+      category: 'fixture',
       parameters: [{ name: 'r', type: 'number', default: 200 }],
-      primitives: [{ kind: 'revolve', profile: [['{{r}}', 0], [0, '{{r}}']], segments: 8 }],
+      primitives: [
+        {
+          kind: 'revolve',
+          profile: [
+            ['{{r}}', 0],
+            [0, '{{r}}'],
+          ],
+          segments: 8,
+        },
+      ],
     };
     const out = resolvePrimitives(m, { r: 500 });
     expect((out[0]!.profile as [number, number][])[0]).toEqual([500, 0]);

@@ -2,7 +2,12 @@
  * T-BIM-001: Wall Tool tests
  */
 import { describe, it, expect } from 'vitest';
-import { createWallElement, WALL_TYPES, DEFAULT_WALL_HEIGHT, DEFAULT_WALL_THICKNESS } from './wallUtils';
+import {
+  createWallElement,
+  WALL_TYPES,
+  DEFAULT_WALL_HEIGHT,
+  DEFAULT_WALL_THICKNESS,
+} from './wallUtils';
 
 describe('T-BIM-001: Wall Tool', () => {
   it('preserves exact start point', () => {

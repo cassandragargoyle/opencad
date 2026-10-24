@@ -53,9 +53,7 @@ describe('T-COL-005: useEditNotifications', () => {
       send: vi.fn(),
     } as unknown as WebSocket;
 
-    const { result } = renderHook(() =>
-      useEditNotifications({ wsRef: { current: mockWs } })
-    );
+    const { result } = renderHook(() => useEditNotifications({ wsRef: { current: mockWs } }));
 
     act(() => {
       const handler = listeners['message']?.[0];
@@ -81,21 +79,23 @@ describe('T-COL-005: useEditNotifications', () => {
       send: vi.fn(),
     } as unknown as WebSocket;
 
-    const { result } = renderHook(() =>
-      useEditNotifications({ wsRef: { current: mockWs } })
-    );
+    const { result } = renderHook(() => useEditNotifications({ wsRef: { current: mockWs } }));
 
     // Start editing
     act(() => {
       const handler = listeners['message']?.[0];
-      handler?.(new MessageEvent('message', { data: JSON.stringify(makeMessage({ action: 'start' })) }));
+      handler?.(
+        new MessageEvent('message', { data: JSON.stringify(makeMessage({ action: 'start' })) })
+      );
     });
     expect(result.current.editingMap.size).toBe(1);
 
     // Stop editing
     act(() => {
       const handler = listeners['message']?.[0];
-      handler?.(new MessageEvent('message', { data: JSON.stringify(makeMessage({ action: 'stop' })) }));
+      handler?.(
+        new MessageEvent('message', { data: JSON.stringify(makeMessage({ action: 'stop' })) })
+      );
     });
     expect(result.current.editingMap.size).toBe(0);
   });
@@ -115,9 +115,7 @@ describe('T-COL-005: useEditNotifications', () => {
     const startTime = Date.now();
     vi.setSystemTime(startTime);
 
-    const { result } = renderHook(() =>
-      useEditNotifications({ wsRef: { current: mockWs } })
-    );
+    const { result } = renderHook(() => useEditNotifications({ wsRef: { current: mockWs } }));
 
     act(() => {
       const handler = listeners['message']?.[0];
@@ -146,14 +144,24 @@ describe('T-COL-005: useEditNotifications', () => {
       send: vi.fn(),
     } as unknown as WebSocket;
 
-    const { result } = renderHook(() =>
-      useEditNotifications({ wsRef: { current: mockWs } })
-    );
+    const { result } = renderHook(() => useEditNotifications({ wsRef: { current: mockWs } }));
 
     act(() => {
       const handler = listeners['message']?.[0];
-      handler?.(new MessageEvent('message', { data: JSON.stringify(makeMessage({ elementId: 'wall-01', userId: 'user-2', userName: 'Ana' })) }));
-      handler?.(new MessageEvent('message', { data: JSON.stringify(makeMessage({ elementId: 'slab-05', userId: 'user-3', userName: 'Bob' })) }));
+      handler?.(
+        new MessageEvent('message', {
+          data: JSON.stringify(
+            makeMessage({ elementId: 'wall-01', userId: 'user-2', userName: 'Ana' })
+          ),
+        })
+      );
+      handler?.(
+        new MessageEvent('message', {
+          data: JSON.stringify(
+            makeMessage({ elementId: 'slab-05', userId: 'user-3', userName: 'Bob' })
+          ),
+        })
+      );
     });
 
     expect(result.current.editingMap.size).toBe(2);
@@ -173,13 +181,15 @@ describe('T-COL-005: useEditNotifications', () => {
       send: vi.fn(),
     } as unknown as WebSocket;
 
-    const { result } = renderHook(() =>
-      useEditNotifications({ wsRef: { current: mockWs } })
-    );
+    const { result } = renderHook(() => useEditNotifications({ wsRef: { current: mockWs } }));
 
     act(() => {
       const handler = listeners['message']?.[0];
-      handler?.(new MessageEvent('message', { data: JSON.stringify({ type: 'presence', userId: 'user-2' }) }));
+      handler?.(
+        new MessageEvent('message', {
+          data: JSON.stringify({ type: 'presence', userId: 'user-2' }),
+        })
+      );
     });
 
     expect(result.current.editingMap.size).toBe(0);
@@ -204,9 +214,7 @@ describe('T-COL-005: useEditNotifications', () => {
     } as unknown as WebSocket;
 
     const before = Date.now();
-    const { result } = renderHook(() =>
-      useEditNotifications({ wsRef: { current: mockWs } })
-    );
+    const { result } = renderHook(() => useEditNotifications({ wsRef: { current: mockWs } }));
 
     act(() => {
       const handler = listeners['message']?.[0];
@@ -237,9 +245,7 @@ describe('T-COL-005: useEditNotifications', () => {
     );
 
     // send should have been called with a start notification
-    expect(mockSend).toHaveBeenCalledWith(
-      expect.stringContaining('"action":"start"')
-    );
+    expect(mockSend).toHaveBeenCalledWith(expect.stringContaining('"action":"start"'));
   });
 
   it('broadcasts stop event when local user deselects (selectedIds becomes empty)', () => {
@@ -267,9 +273,7 @@ describe('T-COL-005: useEditNotifications', () => {
 
     rerender({ ids: [], tool: 'wall' });
 
-    expect(mockSend).toHaveBeenCalledWith(
-      expect.stringContaining('"action":"stop"')
-    );
+    expect(mockSend).toHaveBeenCalledWith(expect.stringContaining('"action":"stop"'));
   });
 
   it('does not broadcast when activeTool is select', () => {
@@ -291,8 +295,6 @@ describe('T-COL-005: useEditNotifications', () => {
       })
     );
 
-    expect(mockSend).not.toHaveBeenCalledWith(
-      expect.stringContaining('"action":"start"')
-    );
+    expect(mockSend).not.toHaveBeenCalledWith(expect.stringContaining('"action":"start"'));
   });
 });

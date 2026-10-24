@@ -15,7 +15,7 @@ vi.mock('three-mesh-bvh', () => ({
 function makeMesh(x = 0, y = 0, z = 0): THREE.Mesh {
   const geom = new THREE.PlaneGeometry(20000, 20000);
   geom.rotateX(-Math.PI / 2); // horizontal plane
-  const mat  = new THREE.MeshStandardMaterial();
+  const mat = new THREE.MeshStandardMaterial();
   const mesh = new THREE.Mesh(geom, mat);
   mesh.position.set(x, y, z);
   mesh.updateMatrixWorld(true);
@@ -24,10 +24,7 @@ function makeMesh(x = 0, y = 0, z = 0): THREE.Mesh {
 
 function makeRaycasterDown(x = 0, z = 0, fromY = 5000): THREE.Raycaster {
   const rc = new THREE.Raycaster();
-  rc.set(
-    new THREE.Vector3(x, fromY, z),
-    new THREE.Vector3(0, -1, 0)
-  );
+  rc.set(new THREE.Vector3(x, fromY, z), new THREE.Vector3(0, -1, 0));
   return rc;
 }
 
@@ -117,10 +114,9 @@ describe('T-SITE-05: TerrainRaycastSnapper', () => {
   it('sync clears old terrain meshes and adds new ones', () => {
     const snapper = new TerrainRaycastSnapper();
     const mesh1 = makeMesh(0, 500, 0);
-    snapper.syncFromElementMeshes(
-      new Map([['t1', mesh1 as THREE.Object3D]]),
-      { t1: { type: 'topography' } }
-    );
+    snapper.syncFromElementMeshes(new Map([['t1', mesh1 as THREE.Object3D]]), {
+      t1: { type: 'topography' },
+    });
     // Re-sync with no terrain.
     snapper.syncFromElementMeshes(new Map(), {});
     const rc = makeRaycasterDown();

@@ -31,7 +31,11 @@ export const RECENT_PROJECTS_KEY = 'opencad-recent-projects';
 const TEMPLATES: Array<{ id: string; name: string; description: string }> = [
   { id: 'blank', name: 'Blank', description: 'Start from scratch' },
   { id: 'residential', name: 'Residential Unit', description: 'Single-family home layout' },
-  { id: 'commercial', name: 'Commercial Office', description: 'Open-plan office with meeting rooms' },
+  {
+    id: 'commercial',
+    name: 'Commercial Office',
+    description: 'Open-plan office with meeting rooms',
+  },
   { id: 'site-plan', name: 'Site Plan', description: 'Topographic site with building outlines' },
 ];
 
@@ -41,13 +45,19 @@ export function loadRecentProjects(): RecentProject[] {
   try {
     const raw = localStorage.getItem(RECENT_PROJECTS_KEY);
     if (raw) return JSON.parse(raw) as RecentProject[];
-  } catch { /* ignore corrupt data */ }
+  } catch {
+    /* ignore corrupt data */
+  }
   return [];
 }
 
 function formatDate(ts: number): string {
   try {
-    return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    return new Date(ts).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
   } catch {
     return '';
   }
@@ -86,7 +96,9 @@ export function ProjectHomeScreen({ onImport }: ProjectHomeScreenProps): React.J
     ].slice(0, 20);
     try {
       localStorage.setItem(RECENT_PROJECTS_KEY, JSON.stringify(updated));
-    } catch { /* ignore storage errors */ }
+    } catch {
+      /* ignore storage errors */
+    }
   }
 
   function handleOpenRecent(project: RecentProject): void {
@@ -123,7 +135,11 @@ export function ProjectHomeScreen({ onImport }: ProjectHomeScreenProps): React.J
             <Plus size={14} strokeWidth={2.5} />
             {t('home.newProject', { defaultValue: 'New Project' })}
           </button>
-          <button className="toolbar-btn" title={t('home.signIn', { defaultValue: 'Sign In' })} aria-label={t('home.signIn', { defaultValue: 'Sign In' })}>
+          <button
+            className="toolbar-btn"
+            title={t('home.signIn', { defaultValue: 'Sign In' })}
+            aria-label={t('home.signIn', { defaultValue: 'Sign In' })}
+          >
             <User size={15} />
           </button>
         </div>
@@ -131,11 +147,12 @@ export function ProjectHomeScreen({ onImport }: ProjectHomeScreenProps): React.J
 
       {/* ── Body ───────────────────────────────────────────────────────────── */}
       <div className="project-home-body">
-
         {/* Recent Projects */}
         <section className="project-home-section" aria-labelledby="recent-heading">
           <div className="project-home-section-header">
-            <h2 id="recent-heading" className="project-home-section-title">{t('home.recentProjects', { defaultValue: 'Recent Projects' })}</h2>
+            <h2 id="recent-heading" className="project-home-section-title">
+              {t('home.recentProjects', { defaultValue: 'Recent Projects' })}
+            </h2>
             <button
               className="project-home-import-btn"
               title={t('home.importIfcDwgPdf', { defaultValue: 'Import IFC / DWG / PDF' })}
@@ -148,10 +165,16 @@ export function ProjectHomeScreen({ onImport }: ProjectHomeScreenProps): React.J
 
           {recentProjects.length === 0 ? (
             <div className="project-home-empty" data-testid="recent-empty-state">
-              <p className="project-home-empty-text">{t('home.emptyText', { defaultValue: 'Start a new project or import a file' })}</p>
+              <p className="project-home-empty-text">
+                {t('home.emptyText', { defaultValue: 'Start a new project or import a file' })}
+              </p>
               <div className="project-home-empty-actions">
-                <button className="btn-primary" onClick={() => handleNewProject('blank')}>{t('home.newBlankProject', { defaultValue: 'New Blank Project' })}</button>
-                <button className="btn-secondary" onClick={handleImportClick}>{t('home.importFile', { defaultValue: 'Import a File' })}</button>
+                <button className="btn-primary" onClick={() => handleNewProject('blank')}>
+                  {t('home.newBlankProject', { defaultValue: 'New Blank Project' })}
+                </button>
+                <button className="btn-secondary" onClick={handleImportClick}>
+                  {t('home.importFile', { defaultValue: 'Import a File' })}
+                </button>
               </div>
             </div>
           ) : (
@@ -176,7 +199,10 @@ export function ProjectHomeScreen({ onImport }: ProjectHomeScreenProps): React.J
                   <div className="project-card-hover-overlay">
                     <button
                       className="btn-primary project-card-open-btn"
-                      onClick={(e) => { e.stopPropagation(); handleOpenRecent(project); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenRecent(project);
+                      }}
                     >
                       {t('home.open', { defaultValue: 'Open' })}
                     </button>
@@ -189,7 +215,9 @@ export function ProjectHomeScreen({ onImport }: ProjectHomeScreenProps): React.J
 
         {/* Templates */}
         <section className="project-home-section" aria-labelledby="templates-heading">
-          <h2 id="templates-heading" className="project-home-section-title">{t('home.startFromTemplate', { defaultValue: 'Start from a Template' })}</h2>
+          <h2 id="templates-heading" className="project-home-section-title">
+            {t('home.startFromTemplate', { defaultValue: 'Start from a Template' })}
+          </h2>
           <div className="project-home-templates" data-testid="templates-row">
             {TEMPLATES.map((tmpl) => (
               <button

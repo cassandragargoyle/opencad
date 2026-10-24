@@ -53,7 +53,10 @@ export async function activateTool(page: Page, toolName: string): Promise<void> 
     const count = await categoryButtons.count();
     for (let i = 0; i < count; i++) {
       await categoryButtons.nth(i).click();
-      const found = await page.locator(`.tool-btn[title^="${toolName}"]`).isVisible().catch(() => false);
+      const found = await page
+        .locator(`.tool-btn[title^="${toolName}"]`)
+        .isVisible()
+        .catch(() => false);
       if (found) break;
     }
   }
@@ -77,7 +80,7 @@ export async function drawRectangle(
   x1: number,
   y1: number,
   x2: number,
-  y2: number,
+  y2: number
 ): Promise<void> {
   const box = await canvas.boundingBox();
   if (!box) throw new Error('Canvas bounding box is null — is the canvas visible?');
@@ -111,8 +114,8 @@ export async function switchTo3D(page: Page): Promise<void> {
 export async function openRightPanel(page: Page, tabName: string): Promise<void> {
   // Ensure the right panel is visible first
   const rightPanel = page.locator('.app-right-panel');
-  const isPanelCollapsed = await rightPanel.evaluate(
-    (el) => el.classList.contains('panel-collapsed'),
+  const isPanelCollapsed = await rightPanel.evaluate((el) =>
+    el.classList.contains('panel-collapsed')
   );
   if (isPanelCollapsed) {
     await page.locator('[title="Toggle properties (⌘])"]').click();

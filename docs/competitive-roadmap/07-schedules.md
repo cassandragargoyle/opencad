@@ -9,6 +9,7 @@ Schedules are non-negotiable deliverables for permit sets and construction docum
 ## Scope
 
 ### In scope
+
 - A new right-panel tab, **Schedules**, with three tables by default:
   - **Door Schedule** — rows: every door. Columns: tag, width, height, material, host wall, level, fire rating (optional), cost.
   - **Window Schedule** — rows: every window. Columns: tag, width, height, sill height, material, host wall, level, U-value (optional), cost.
@@ -20,6 +21,7 @@ Schedules are non-negotiable deliverables for permit sets and construction docum
 - Custom user-authored columns via the Properties panel — add a property on a door and it appears as a column the next time the schedule renders.
 
 ### Out of scope (this issue)
+
 - Finish Schedule (per-room wall/floor/ceiling finishes) — deferred; depends on composite-wall finish tracking.
 - Window / door hardware sub-schedules.
 - User-authored schedule definitions (new table types) — v1 ships the three fixed types.

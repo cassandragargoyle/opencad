@@ -18,7 +18,8 @@ function setup(overrides: Partial<React.ComponentProps<typeof CoordBox>> = {}) {
   const onCommit = vi.fn();
   const onCancel = vi.fn();
   const defaults: React.ComponentProps<typeof CoordBox> = {
-    x: 0, y: 0,
+    x: 0,
+    y: 0,
     preview: { length: 1000, angle: 0 },
     fields: ['length', 'angle'],
     onCommit,
@@ -47,7 +48,7 @@ describe('T-MOD-003: CoordBox', () => {
   it('T-MOD-003-008: TAB rotates focus between declared fields', () => {
     setup();
     const length = screen.getByLabelText('length') as HTMLInputElement;
-    const angle  = screen.getByLabelText('angle')  as HTMLInputElement;
+    const angle = screen.getByLabelText('angle') as HTMLInputElement;
     fireEvent.keyDown(length, { key: 'Tab' });
     expect(document.activeElement).toBe(angle);
     fireEvent.keyDown(angle, { key: 'Tab' });
@@ -74,7 +75,7 @@ describe('T-MOD-003: CoordBox', () => {
   it('commits both length and angle when both are typed', () => {
     const { onCommit } = setup();
     fireEvent.change(screen.getByLabelText('length'), { target: { value: '3000' } });
-    fireEvent.change(screen.getByLabelText('angle'),  { target: { value: '45' } });
+    fireEvent.change(screen.getByLabelText('angle'), { target: { value: '45' } });
     fireEvent.keyDown(screen.getByLabelText('angle'), { key: 'Enter' });
     expect(onCommit).toHaveBeenCalledWith({ length: 3000, angle: 45 });
   });

@@ -28,7 +28,8 @@ interface PluginConsentModalProps {
 const PERMISSION_INFO: Record<PluginPermission, { title: string; detail: string }> = {
   document: {
     title: 'Read and modify your drawings',
-    detail: 'Can add, update, and delete elements (walls, doors, slabs, etc.) in documents you have open.',
+    detail:
+      'Can add, update, and delete elements (walls, doors, slabs, etc.) in documents you have open.',
   },
   ui: {
     title: 'Show notifications and register commands',
@@ -36,7 +37,8 @@ const PERMISSION_INFO: Record<PluginPermission, { title: string; detail: string 
   },
   network: {
     title: 'Make network requests',
-    detail: 'Can contact external servers. Only install plugins from authors you trust — a plugin with this permission can exfiltrate data it has access to.',
+    detail:
+      'Can contact external servers. Only install plugins from authors you trust — a plugin with this permission can exfiltrate data it has access to.',
   },
   storage: {
     title: 'Store data locally',
@@ -73,14 +75,10 @@ export function PluginConsentModal({
         </div>
 
         {permissions.length === 0 ? (
-          <p className="plugin-consent-noperm">
-            {t('pluginConsent.noPermissions')}
-          </p>
+          <p className="plugin-consent-noperm">{t('pluginConsent.noPermissions')}</p>
         ) : (
           <>
-            <p className="plugin-consent-intro">
-              {t('pluginConsent.permissionsIntro')}
-            </p>
+            <p className="plugin-consent-intro">{t('pluginConsent.permissionsIntro')}</p>
             <ul className="plugin-consent-perms">
               {permissions.map((perm) => (
                 <li key={perm} className="plugin-consent-perm">
@@ -97,19 +95,10 @@ export function PluginConsentModal({
         )}
 
         <div className="plugin-consent-actions">
-          <button
-            type="button"
-            className="plugin-consent-cancel"
-            onClick={onCancel}
-          >
+          <button type="button" className="plugin-consent-cancel" onClick={onCancel}>
             {t('pluginConsent.cancel')}
           </button>
-          <button
-            type="button"
-            className="plugin-consent-accept"
-            onClick={onAccept}
-            autoFocus
-          >
+          <button type="button" className="plugin-consent-accept" onClick={onAccept} autoFocus>
             {t('pluginConsent.accept')}
           </button>
         </div>

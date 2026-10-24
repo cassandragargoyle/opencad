@@ -10,26 +10,29 @@ interface AuthModalProps {
 }
 
 const FIREBASE_ERRORS: Record<string, string> = {
-  'auth/email-already-in-use':        'An account with this email already exists.',
-  'auth/invalid-email':               'Please enter a valid email address.',
-  'auth/weak-password':               'Password must be at least 8 characters.',
-  'auth/wrong-password':              'Incorrect password. Try again.',
-  'auth/user-not-found':              'No account found for this email.',
-  'auth/too-many-requests':           'Too many attempts — wait a moment and retry.',
-  'auth/network-request-failed':      'Network error. Check your connection.',
-  'auth/invalid-credential':          'Invalid email or password.',
-  'auth/invalid-verification-code':   'Incorrect authentication code. Try again.',
-  'auth/code-expired':                'The authentication code has expired. Please retry.',
-  'auth/popup-blocked':               'Pop-up was blocked by your browser. Allow pop-ups and try again.',
-  'auth/popup-closed-by-user':        'Sign-in was cancelled. Please try again.',
-  'auth/cancelled-popup-request':     'Sign-in was cancelled. Please try again.',
-  'auth/account-exists-with-different-credential': 'An account already exists with this email using a different sign-in method.',
+  'auth/email-already-in-use': 'An account with this email already exists.',
+  'auth/invalid-email': 'Please enter a valid email address.',
+  'auth/weak-password': 'Password must be at least 8 characters.',
+  'auth/wrong-password': 'Incorrect password. Try again.',
+  'auth/user-not-found': 'No account found for this email.',
+  'auth/too-many-requests': 'Too many attempts — wait a moment and retry.',
+  'auth/network-request-failed': 'Network error. Check your connection.',
+  'auth/invalid-credential': 'Invalid email or password.',
+  'auth/invalid-verification-code': 'Incorrect authentication code. Try again.',
+  'auth/code-expired': 'The authentication code has expired. Please retry.',
+  'auth/popup-blocked': 'Pop-up was blocked by your browser. Allow pop-ups and try again.',
+  'auth/popup-closed-by-user': 'Sign-in was cancelled. Please try again.',
+  'auth/cancelled-popup-request': 'Sign-in was cancelled. Please try again.',
+  'auth/account-exists-with-different-credential':
+    'An account already exists with this email using a different sign-in method.',
 };
 
 function friendlyError(err: unknown): string {
   if (err && typeof err === 'object' && 'code' in err) {
     const code = (err as { code: string }).code;
-    return FIREBASE_ERRORS[code] ?? (err as { message?: string }).message ?? 'Something went wrong.';
+    return (
+      FIREBASE_ERRORS[code] ?? (err as { message?: string }).message ?? 'Something went wrong.'
+    );
   }
   if (err instanceof Error) return err.message;
   return 'Something went wrong.';
@@ -49,7 +52,8 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const { signIn, signUp, signInWithGoogle, signInWithMicrosoft, resolveMfaChallenge } = useAuthStore();
+  const { signIn, signUp, signInWithGoogle, signInWithMicrosoft, resolveMfaChallenge } =
+    useAuthStore();
 
   const isLogin = mode === 'login';
 
@@ -64,15 +68,18 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
         await signIn(email, password);
         setSuccess('Signed in successfully.');
       } else {
-        if (!name.trim()) { setError('Please enter your name.'); setLoading(false); return; }
+        if (!name.trim()) {
+          setError('Please enter your name.');
+          setLoading(false);
+          return;
+        }
         await signUp(name.trim(), email, password);
         setSuccess('Account created! Your 14-day trial has started.');
       }
       setTimeout(() => onClose?.(), 1000);
     } catch (err) {
-      const code = (err && typeof err === 'object' && 'code' in err)
-        ? (err as { code: string }).code
-        : null;
+      const code =
+        err && typeof err === 'object' && 'code' in err ? (err as { code: string }).code : null;
 
       // MFA required — switch to TOTP challenge step
       if (
@@ -105,9 +112,8 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
       setSuccess('Signed in successfully.');
       setTimeout(() => onClose?.(), 1000);
     } catch (err) {
-      const code = (err && typeof err === 'object' && 'code' in err)
-        ? (err as { code: string }).code
-        : null;
+      const code =
+        err && typeof err === 'object' && 'code' in err ? (err as { code: string }).code : null;
       setErrorCode(code);
       setError(friendlyError(err));
     } finally {
@@ -128,9 +134,8 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
       setSuccess('Signed in successfully.');
       setTimeout(() => onClose?.(), 1000);
     } catch (err) {
-      const code = (err && typeof err === 'object' && 'code' in err)
-        ? (err as { code: string }).code
-        : null;
+      const code =
+        err && typeof err === 'object' && 'code' in err ? (err as { code: string }).code : null;
       setErrorCode(code);
       setError(friendlyError(err));
     } finally {
@@ -153,11 +158,23 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
       role="dialog"
       aria-modal="true"
       aria-label={ariaLabel}
-      onClick={canClose ? (e) => { if (e.target === e.currentTarget) onClose?.(); } : undefined}
+      onClick={
+        canClose
+          ? (e) => {
+              if (e.target === e.currentTarget) onClose?.();
+            }
+          : undefined
+      }
     >
       <div className="auth-modal">
         {canClose && (
-          <button aria-label={tc('action.close', { defaultValue: 'Close' })} className="modal-close" onClick={onClose}>×</button>
+          <button
+            aria-label={tc('action.close', { defaultValue: 'Close' })}
+            className="modal-close"
+            onClick={onClose}
+          >
+            ×
+          </button>
         )}
 
         {/* ── MFA TOTP challenge step ────────────────────────────────── */}
@@ -167,13 +184,21 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
             <p className="auth-subtitle">Enter the 6-digit code from your authenticator app.</p>
 
             {error && (
-              <div className="auth-msg auth-msg--error" role="alert">{error}</div>
+              <div className="auth-msg auth-msg--error" role="alert">
+                {error}
+              </div>
             )}
-            {success && <div className="auth-msg auth-msg--success" role="status">{success}</div>}
+            {success && (
+              <div className="auth-msg auth-msg--success" role="status">
+                {success}
+              </div>
+            )}
 
             <form className="auth-form" onSubmit={handleMfaSubmit} noValidate>
               <div className="form-field">
-                <label htmlFor="auth-totp-code">{t('signIn.mfaCode', { defaultValue: 'Authenticator code' })}</label>
+                <label htmlFor="auth-totp-code">
+                  {t('signIn.mfaCode', { defaultValue: 'Authenticator code' })}
+                </label>
                 <input
                   id="auth-totp-code"
                   type="text"
@@ -190,7 +215,10 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
               </div>
               <button type="submit" className="btn-auth-submit" disabled={loading}>
                 {loading ? (
-                  <span className="auth-spinner" aria-label={tc('action.loading', { defaultValue: 'Loading' })} />
+                  <span
+                    className="auth-spinner"
+                    aria-label={tc('action.loading', { defaultValue: 'Loading' })}
+                  />
                 ) : (
                   'Verify'
                 )}
@@ -200,11 +228,13 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
         ) : (
           /* ── Login / Register step ──────────────────────────────────── */
           <>
-            <h2 className="auth-title">
-              {isLogin ? t('signIn.title') : t('signUp.title')}
-            </h2>
+            <h2 className="auth-title">{isLogin ? t('signIn.title') : t('signUp.title')}</h2>
             {!isLogin && (
-              <p className="auth-subtitle">{t('signUp.passwordHint', { defaultValue: '14-day free trial — no credit card required' })}</p>
+              <p className="auth-subtitle">
+                {t('signUp.passwordHint', {
+                  defaultValue: '14-day free trial — no credit card required',
+                })}
+              </p>
             )}
 
             {error && (
@@ -215,7 +245,11 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
                     {' '}
                     <button
                       className="btn-switch"
-                      onClick={() => { setMode('login'); setError(null); setErrorCode(null); }}
+                      onClick={() => {
+                        setMode('login');
+                        setError(null);
+                        setErrorCode(null);
+                      }}
                     >
                       Log in instead
                     </button>
@@ -223,7 +257,11 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
                 )}
               </div>
             )}
-            {success && <div className="auth-msg auth-msg--success" role="status">{success}</div>}
+            {success && (
+              <div className="auth-msg auth-msg--success" role="status">
+                {success}
+              </div>
+            )}
 
             <form className="auth-form" onSubmit={handleSubmit} noValidate>
               {!isLogin && (
@@ -272,9 +310,14 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
 
               <button type="submit" className="btn-auth-submit" disabled={loading}>
                 {loading ? (
-                  <span className="auth-spinner" aria-label={tc('action.loading', { defaultValue: 'Loading' })} />
+                  <span
+                    className="auth-spinner"
+                    aria-label={tc('action.loading', { defaultValue: 'Loading' })}
+                  />
+                ) : isLogin ? (
+                  t('signIn.submit')
                 ) : (
-                  isLogin ? t('signIn.submit') : t('signUp.submit')
+                  t('signUp.submit')
                 )}
               </button>
             </form>
@@ -306,14 +349,28 @@ export function AuthModal({ onClose, required = false }: AuthModalProps) {
               {isLogin ? (
                 <>
                   {t('signIn.noAccount')}{' '}
-                  <button className="btn-switch" onClick={() => { setMode('register'); setError(null); setErrorCode(null); }}>
+                  <button
+                    className="btn-switch"
+                    onClick={() => {
+                      setMode('register');
+                      setError(null);
+                      setErrorCode(null);
+                    }}
+                  >
                     {t('signIn.createAccount')}
                   </button>
                 </>
               ) : (
                 <>
                   {t('signUp.haveAccount')}{' '}
-                  <button className="btn-switch" onClick={() => { setMode('login'); setError(null); setErrorCode(null); }}>
+                  <button
+                    className="btn-switch"
+                    onClick={() => {
+                      setMode('login');
+                      setError(null);
+                      setErrorCode(null);
+                    }}
+                  >
                     {t('signUp.signIn')}
                   </button>
                 </>

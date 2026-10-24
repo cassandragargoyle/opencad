@@ -111,9 +111,7 @@ export function applyDesignCommand(
 ): Record<string, DesignElement> {
   if (command.type === 'unknown') {
     // Return a copy without modifications
-    return Object.fromEntries(
-      Object.entries(elements).map(([id, el]) => [id, { ...el }])
-    );
+    return Object.fromEntries(Object.entries(elements).map(([id, el]) => [id, { ...el }]));
   }
 
   const result: Record<string, DesignElement> = {};

@@ -69,14 +69,22 @@ describe('totalHorizontalLength', () => {
   });
 
   it('returns 0 for empty segments', () => {
-    const empty: CivicAlignment = { id: 'x', name: 'X', horizontalSegments: [], verticalSegments: [] };
+    const empty: CivicAlignment = {
+      id: 'x',
+      name: 'X',
+      horizontalSegments: [],
+      verticalSegments: [],
+    };
     expect(totalHorizontalLength(empty)).toBe(0);
   });
 
   it('works for single segment', () => {
     const single: CivicAlignment = {
-      id: 'x', name: 'X',
-      horizontalSegments: [{ segmentType: 'Line', startPoint: { x: 0, y: 0 }, direction: 0, length: 150 }],
+      id: 'x',
+      name: 'X',
+      horizontalSegments: [
+        { segmentType: 'Line', startPoint: { x: 0, y: 0 }, direction: 0, length: 150 },
+      ],
       verticalSegments: [],
     };
     expect(totalHorizontalLength(single)).toBe(150);
@@ -116,8 +124,11 @@ describe('computePointOnAlignment', () => {
 
   it('handles zero vertical segments', () => {
     const noVert: CivicAlignment = {
-      id: 'x', name: 'X',
-      horizontalSegments: [{ segmentType: 'Line', startPoint: { x: 0, y: 0 }, direction: 0, length: 100 }],
+      id: 'x',
+      name: 'X',
+      horizontalSegments: [
+        { segmentType: 'Line', startPoint: { x: 0, y: 0 }, direction: 0, length: 100 },
+      ],
       verticalSegments: [],
     };
     const pt = computePointOnAlignment(noVert, 50);
@@ -132,7 +143,12 @@ describe('gradeAtStation', () => {
   });
 
   it('returns 0 for empty vertical segments', () => {
-    const empty: CivicAlignment = { id: 'x', name: 'X', horizontalSegments: [], verticalSegments: [] };
+    const empty: CivicAlignment = {
+      id: 'x',
+      name: 'X',
+      horizontalSegments: [],
+      verticalSegments: [],
+    };
     expect(gradeAtStation(empty, 100)).toBe(0);
   });
 
@@ -199,8 +215,11 @@ describe('buildIFC4x3AlignmentStep', () => {
 
   it('handles alignment with no vertical segments', () => {
     const noVert: CivicAlignment = {
-      id: 'nv', name: 'NoVert',
-      horizontalSegments: [{ segmentType: 'Line', startPoint: { x: 0, y: 0 }, direction: 0, length: 100 }],
+      id: 'nv',
+      name: 'NoVert',
+      horizontalSegments: [
+        { segmentType: 'Line', startPoint: { x: 0, y: 0 }, direction: 0, length: 100 },
+      ],
       verticalSegments: [],
     };
     const step = buildIFC4x3AlignmentStep(noVert);

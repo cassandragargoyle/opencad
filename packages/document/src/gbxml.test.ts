@@ -51,14 +51,30 @@ describe('T-IO-02: gbXML export', () => {
     doc.content.elements['sp1'] = {
       id: 'sp1',
       type: 'space',
-      properties: { Name: { type: 'string', value: 'Living Room' }, Area: { type: 'number', value: 25 } },
+      properties: {
+        Name: { type: 'string', value: 'Living Room' },
+        Area: { type: 'number', value: 25 },
+      },
       propertySets: [],
       geometry: { type: 'point', data: null },
       layerId: 'l0',
       levelId: 'lv0',
-      transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-      boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 5000, y: 5000, z: 2700, _type: 'Point3D' } },
-      metadata: { id: 'sp1', createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+      transform: {
+        translation: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+        max: { x: 5000, y: 5000, z: 2700, _type: 'Point3D' },
+      },
+      metadata: {
+        id: 'sp1',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
+        version: { clock: {} },
+      },
       visible: true,
       locked: false,
     };

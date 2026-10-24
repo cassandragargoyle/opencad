@@ -114,17 +114,28 @@ export function parseRevitJSON(json: unknown): RevitDocument {
   const levels = (json['levels'] as unknown[]).map((lv, i) => {
     if (!isRecord(lv)) throw new Error(`Level at index ${i} is not an object`);
     if (typeof lv['id'] !== 'string') throw new Error(`Level at index ${i} missing string 'id'`);
-    if (typeof lv['elevation'] !== 'number') throw new Error(`Level at index ${i} missing number 'elevation'`);
-    if (typeof lv['name'] !== 'string') throw new Error(`Level at index ${i} missing string 'name'`);
-    return { id: lv['id'] as string, elevation: lv['elevation'] as number, name: lv['name'] as string };
+    if (typeof lv['elevation'] !== 'number')
+      throw new Error(`Level at index ${i} missing number 'elevation'`);
+    if (typeof lv['name'] !== 'string')
+      throw new Error(`Level at index ${i} missing string 'name'`);
+    return {
+      id: lv['id'] as string,
+      elevation: lv['elevation'] as number,
+      name: lv['name'] as string,
+    };
   });
 
   const views = (json['views'] as unknown[]).map((vw, i) => {
     if (!isRecord(vw)) throw new Error(`View at index ${i} is not an object`);
     if (typeof vw['id'] !== 'string') throw new Error(`View at index ${i} missing string 'id'`);
     if (typeof vw['name'] !== 'string') throw new Error(`View at index ${i} missing string 'name'`);
-    if (typeof vw['viewType'] !== 'string') throw new Error(`View at index ${i} missing string 'viewType'`);
-    return { id: vw['id'] as string, name: vw['name'] as string, viewType: vw['viewType'] as string };
+    if (typeof vw['viewType'] !== 'string')
+      throw new Error(`View at index ${i} missing string 'viewType'`);
+    return {
+      id: vw['id'] as string,
+      name: vw['name'] as string,
+      viewType: vw['viewType'] as string,
+    };
   });
 
   return {
@@ -137,7 +148,7 @@ export function parseRevitJSON(json: unknown): RevitDocument {
 
 export function extractRevitParameters(
   el: RevitElement,
-  keys: string[],
+  keys: string[]
 ): Record<string, string | number | undefined> {
   const result: Record<string, string | number | undefined> = {};
   for (const key of keys) {

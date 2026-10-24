@@ -19,14 +19,19 @@ interface PermissionsPanelProps {
 
 const ROLES: ProjectRole[] = ['owner', 'editor', 'viewer'];
 
-export function PermissionsPanel({ members: propMembers = [], onUpdateRole, onInvite, onRemove }: PermissionsPanelProps = {}) {
+export function PermissionsPanel({
+  members: propMembers = [],
+  onUpdateRole,
+  onInvite,
+  onRemove,
+}: PermissionsPanelProps = {}) {
   const { t } = useTranslation('panels');
   const [members, setMembers] = useState<ProjectMember[]>(propMembers);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<ProjectRole>('viewer');
 
   const handleUpdateRole = (userId: string, role: ProjectRole) => {
-    setMembers((prev) => prev.map((m) => m.userId === userId ? { ...m, role } : m));
+    setMembers((prev) => prev.map((m) => (m.userId === userId ? { ...m, role } : m)));
     onUpdateRole?.(userId, role);
   };
 
@@ -94,7 +99,9 @@ export function PermissionsPanel({ members: propMembers = [], onUpdateRole, onIn
       <div className="invite-row">
         <input
           type="email"
-          placeholder={t('settings.permissions.invitePlaceholder', { defaultValue: 'Invite by email…' })}
+          placeholder={t('settings.permissions.invitePlaceholder', {
+            defaultValue: 'Invite by email…',
+          })}
           value={inviteEmail}
           onChange={(e) => setInviteEmail(e.target.value)}
           className="invite-email-input"

@@ -48,14 +48,14 @@ This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating
 
 **Prerequisites:**
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| Node.js | 22+ | JavaScript runtime |
-| pnpm | 10+ | Package manager |
-| Rust | 1.80+ | Geometry kernel, desktop backend |
-| wasm-pack | 0.13+ | WASM builds |
-| Tauri CLI | 2.0+ | Desktop development |
-| Git | 2.40+ | Version control |
+| Tool      | Version | Purpose                          |
+| --------- | ------- | -------------------------------- |
+| Node.js   | 22+     | JavaScript runtime               |
+| pnpm      | 10+     | Package manager                  |
+| Rust      | 1.80+   | Geometry kernel, desktop backend |
+| wasm-pack | 0.13+   | WASM builds                      |
+| Tauri CLI | 2.0+    | Desktop development              |
+| Git       | 2.40+   | Version control                  |
 
 **Quick Start:**
 
@@ -182,13 +182,13 @@ Severity: Blocks workflow (cannot merge overlapping volumes)
 
 #### Finding Work
 
-| Where | What |
-|-------|------|
-| [`good first issue`](https://github.com/CariHQ/opencad/labels/good%20first%20issue) | Beginner-friendly tasks |
-| [`help wanted`](https://github.com/CariHQ/opencad/labels/help%20wanted) | Areas where we need contributors |
-| [`test: missing`](https://github.com/CariHQ/opencad/labels/test:%20missing) | Write tests for existing code |
-| [`docs`](https://github.com/CariHQ/opencad/labels/docs) | Documentation improvements |
-| [PRD.md](PRD.md) | Planned features with test specifications |
+| Where                                                                               | What                                      |
+| ----------------------------------------------------------------------------------- | ----------------------------------------- |
+| [`good first issue`](https://github.com/CariHQ/opencad/labels/good%20first%20issue) | Beginner-friendly tasks                   |
+| [`help wanted`](https://github.com/CariHQ/opencad/labels/help%20wanted)             | Areas where we need contributors          |
+| [`test: missing`](https://github.com/CariHQ/opencad/labels/test:%20missing)         | Write tests for existing code             |
+| [`docs`](https://github.com/CariHQ/opencad/labels/docs)                             | Documentation improvements                |
+| [PRD.md](PRD.md)                                                                    | Planned features with test specifications |
 
 #### Claiming an Issue
 
@@ -247,6 +247,7 @@ OpenCAD follows strict TDD. The workflow for every change is:
 ```
 
 **No exceptions.** Even for bug fixes:
+
 1. Write a test that reproduces the bug (should fail)
 2. Fix the bug (test should pass)
 3. Refactor if needed
@@ -267,42 +268,42 @@ packages/geometry/src/
 
 ```typescript
 // ✅ Good: describes the behavior
-test('union of two overlapping boxes produces a manifold solid')
+test('union of two overlapping boxes produces a manifold solid');
 
 // ❌ Bad: implementation detail
-test('testBooleanUnion')
+test('testBooleanUnion');
 
 // ✅ Good: includes edge case
-test('extrude with zero height returns empty solid')
+test('extrude with zero height returns empty solid');
 
 // ❌ Bad: vague
-test('extrude works')
+test('extrude works');
 ```
 
 ### Test Categories
 
-| Category | Framework | Location | When to Run |
-|----------|-----------|----------|-------------|
-| **Unit Tests** | Vitest (TS) / cargo test (Rust) | `*.test.ts`, `*_test.rs` | Every commit |
-| **Integration Tests** | Vitest + Testing Library | `*.integration.test.ts` | Every PR |
-| **E2E Tests** | Playwright | `e2e/**/*.spec.ts` | Every PR |
-| **Property Tests** | fast-check | Alongside unit tests | Every PR |
-| **Performance Tests** | Custom benchmarks | `benchmarks/**/*.bench.ts` | Nightly |
-| **Visual Regression** | Playwright + Percy | `e2e/visual/**/*.spec.ts` | Every PR |
-| **Accessibility Tests** | axe-core + Playwright | `e2e/a11y/**/*.spec.ts` | Every PR |
+| Category                | Framework                       | Location                   | When to Run  |
+| ----------------------- | ------------------------------- | -------------------------- | ------------ |
+| **Unit Tests**          | Vitest (TS) / cargo test (Rust) | `*.test.ts`, `*_test.rs`   | Every commit |
+| **Integration Tests**   | Vitest + Testing Library        | `*.integration.test.ts`    | Every PR     |
+| **E2E Tests**           | Playwright                      | `e2e/**/*.spec.ts`         | Every PR     |
+| **Property Tests**      | fast-check                      | Alongside unit tests       | Every PR     |
+| **Performance Tests**   | Custom benchmarks               | `benchmarks/**/*.bench.ts` | Nightly      |
+| **Visual Regression**   | Playwright + Percy              | `e2e/visual/**/*.spec.ts`  | Every PR     |
+| **Accessibility Tests** | axe-core + Playwright           | `e2e/a11y/**/*.spec.ts`    | Every PR     |
 
 **Coverage Requirements:**
 
-| Module | Minimum | Critical Paths |
-|--------|---------|----------------|
-| Document Model | 95% | 100% |
-| Geometry Kernel | 90% | 100% (topological ops) |
-| Sync Engine | 95% | 100% (conflict resolution) |
-| Storage Layer | 90% | 100% (data persistence) |
-| AI Services | 80% | 95% (code compliance rules) |
-| UI Components | 85% | 90% |
-| Plugin Runtime | 95% | 100% (sandbox enforcement) |
-| Import/Export | 90% | 95% (IFC schema compliance) |
+| Module          | Minimum | Critical Paths              |
+| --------------- | ------- | --------------------------- |
+| Document Model  | 95%     | 100%                        |
+| Geometry Kernel | 90%     | 100% (topological ops)      |
+| Sync Engine     | 95%     | 100% (conflict resolution)  |
+| Storage Layer   | 90%     | 100% (data persistence)     |
+| AI Services     | 80%     | 95% (code compliance rules) |
+| UI Components   | 85%     | 90%                         |
+| Plugin Runtime  | 95%     | 100% (sandbox enforcement)  |
+| Import/Export   | 90%     | 95% (IFC schema compliance) |
 
 ---
 
@@ -321,14 +322,15 @@ test('extrude works')
 
 ### PR Size
 
-| Size | Lines Changed | Review Time | Guidance |
-|------|---------------|-------------|----------|
-| **Small** | < 200 | < 30 min | ✅ Preferred |
-| **Medium** | 200–500 | 30–60 min | ✅ Acceptable |
-| **Large** | 500–1000 | 60–120 min | ⚠️ Consider splitting |
-| **Very Large** | > 1000 | > 120 min | ❌ Must split |
+| Size           | Lines Changed | Review Time | Guidance              |
+| -------------- | ------------- | ----------- | --------------------- |
+| **Small**      | < 200         | < 30 min    | ✅ Preferred          |
+| **Medium**     | 200–500       | 30–60 min   | ✅ Acceptable         |
+| **Large**      | 500–1000      | 60–120 min  | ⚠️ Consider splitting |
+| **Very Large** | > 1000        | > 120 min   | ❌ Must split         |
 
 **If your PR is large:**
+
 - Split into stacked PRs (each independently reviewable)
 - Use draft PRs for work-in-progress
 - Ask maintainers for guidance early
@@ -416,17 +418,17 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 **Types:**
 
-| Type | When to Use |
-|------|-------------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Code style (formatting, no logic change) |
-| `refactor` | Code refactor (no behavior change) |
-| `perf` | Performance improvement |
-| `test` | Adding or fixing tests |
-| `ci` | CI/CD changes |
-| `chore` | Maintenance tasks |
+| Type       | When to Use                              |
+| ---------- | ---------------------------------------- |
+| `feat`     | New feature                              |
+| `fix`      | Bug fix                                  |
+| `docs`     | Documentation only                       |
+| `style`    | Code style (formatting, no logic change) |
+| `refactor` | Code refactor (no behavior change)       |
+| `perf`     | Performance improvement                  |
+| `test`     | Adding or fixing tests                   |
+| `ci`       | CI/CD changes                            |
+| `chore`    | Maintenance tasks                        |
 
 **Examples:**
 
@@ -469,12 +471,12 @@ Before creating a new ADR, discuss in a GitHub Issue first.
 
 ### Communication Channels
 
-| Channel | Purpose |
-|---------|---------|
+| Channel                                                             | Purpose                    |
+| ------------------------------------------------------------------- | -------------------------- |
 | [GitHub Discussions](https://github.com/CariHQ/opencad/discussions) | Questions, ideas, showcase |
-| [GitHub Issues](https://github.com/CariHQ/opencad/issues) | Bugs, feature requests |
-| [Discord](https://discord.gg/opencad) | Real-time chat |
-| [Community Calls](https://calendar.opencad.archi) | Monthly video meetup |
+| [GitHub Issues](https://github.com/CariHQ/opencad/issues)           | Bugs, feature requests     |
+| [Discord](https://discord.gg/opencad)                               | Real-time chat             |
+| [Community Calls](https://calendar.opencad.archi)                   | Monthly video meetup       |
 
 ### Governance
 
@@ -509,18 +511,18 @@ All contributors are recognized in:
 
 We follow [all-contributors](https://allcontributors.org/) specification to recognize all types of contributions:
 
-| Type | Emoji | Description |
-|------|-------|-------------|
-| Code | 💻 | Code contributions |
-| Tests | 🧪 | Test contributions |
-| Docs | 📖 | Documentation |
-| Design | 🎨 | Visual/UX design |
-| Ideas | 💡 | Feature ideas |
-| Review | 👀 | Pull request reviews |
-| Bug Reports | 🐛 | Bug reports |
-| Question | 💬 | Answering questions |
-| Talk | 📢 | Giving talks about OpenCAD |
-| Infrastructure | 🚇 | CI/CD, devops |
+| Type           | Emoji | Description                |
+| -------------- | ----- | -------------------------- |
+| Code           | 💻    | Code contributions         |
+| Tests          | 🧪    | Test contributions         |
+| Docs           | 📖    | Documentation              |
+| Design         | 🎨    | Visual/UX design           |
+| Ideas          | 💡    | Feature ideas              |
+| Review         | 👀    | Pull request reviews       |
+| Bug Reports    | 🐛    | Bug reports                |
+| Question       | 💬    | Answering questions        |
+| Talk           | 📢    | Giving talks about OpenCAD |
+| Infrastructure | 🚇    | CI/CD, devops              |
 
 ---
 

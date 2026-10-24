@@ -29,9 +29,13 @@ describe('T-PRES-03: equirectUVToDirection()', () => {
   });
 
   it('result is a unit vector', () => {
-    for (const [u, v] of [[0.1, 0.3], [0.7, 0.5], [0.25, 0.8]]) {
+    for (const [u, v] of [
+      [0.1, 0.3],
+      [0.7, 0.5],
+      [0.25, 0.8],
+    ]) {
       const d = equirectUVToDirection(u!, v!);
-      const len = Math.sqrt(d.x**2 + d.y**2 + d.z**2);
+      const len = Math.sqrt(d.x ** 2 + d.y ** 2 + d.z ** 2);
       expect(len).toBeCloseTo(1, 5);
     }
   });
@@ -39,7 +43,12 @@ describe('T-PRES-03: equirectUVToDirection()', () => {
 
 describe('T-PRES-03: directionToEquirectUV()', () => {
   it('round-trips through equirectUVToDirection', () => {
-    for (const [u, v] of [[0.1, 0.3], [0.7, 0.5], [0.25, 0.8], [0.5, 0.5]]) {
+    for (const [u, v] of [
+      [0.1, 0.3],
+      [0.7, 0.5],
+      [0.25, 0.8],
+      [0.5, 0.5],
+    ]) {
       const dir = equirectUVToDirection(u!, v!);
       const [ru, rv] = directionToEquirectUV(dir);
       expect(ru).toBeCloseTo(u!, 4);

@@ -34,7 +34,11 @@ function makePen(id = 'm1'): PenMarkup {
     createdBy: 'user-1',
     createdAt: 0,
     updatedAt: 0,
-    points: [{ x: 0, y: 0 }, { x: 10, y: 20 }, { x: 30, y: 5 }],
+    points: [
+      { x: 0, y: 0 },
+      { x: 10, y: 20 },
+      { x: 30, y: 5 },
+    ],
     strokeWidth: 2,
   };
 }
@@ -50,7 +54,10 @@ function makeTextBox(id = 'm2'): TextBoxMarkup {
     createdBy: 'user-1',
     createdAt: 0,
     updatedAt: 0,
-    x: 50, y: 50, width: 200, height: 100,
+    x: 50,
+    y: 50,
+    width: 200,
+    height: 100,
     text: 'Review this',
     fontSize: 14,
     bold: false,
@@ -162,9 +169,19 @@ describe('T-FIELD-02: markupBBox()', () => {
 
   it('arrow markup bbox covers from→to', () => {
     const arrow: ArrowMarkup = {
-      id: 'a1', tool: 'arrow', viewId: 'v1', colour: '#000', opacity: 1,
-      status: 'open', createdBy: 'u1', createdAt: 0, updatedAt: 0,
-      from: { x: 10, y: 20 }, to: { x: 80, y: 60 }, strokeWidth: 1, arrowHead: 'filled',
+      id: 'a1',
+      tool: 'arrow',
+      viewId: 'v1',
+      colour: '#000',
+      opacity: 1,
+      status: 'open',
+      createdBy: 'u1',
+      createdAt: 0,
+      updatedAt: 0,
+      from: { x: 10, y: 20 },
+      to: { x: 80, y: 60 },
+      strokeWidth: 1,
+      arrowHead: 'filled',
     };
     const box = markupBBox(arrow);
     expect(box.minX).toBe(10);
@@ -195,19 +212,33 @@ describe('T-FIELD-02: buildCloudPath()', () => {
   });
 
   it('generates path starting with M', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 0 },
+      { x: 100, y: 100 },
+      { x: 0, y: 100 },
+    ];
     const path = buildCloudPath(pts, 15);
     expect(path.startsWith('M')).toBe(true);
   });
 
   it('generated path includes arc commands', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 0 },
+      { x: 100, y: 100 },
+      { x: 0, y: 100 },
+    ];
     const path = buildCloudPath(pts, 15);
     expect(path).toContain('A');
   });
 
   it('path is closed with Z', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 50, y: 100 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 0 },
+      { x: 50, y: 100 },
+    ];
     const path = buildCloudPath(pts, 10);
     expect(path.endsWith('Z')).toBe(true);
   });

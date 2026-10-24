@@ -190,7 +190,7 @@ const R004: ComplianceRule = {
 // a warning is emitted.
 // ---------------------------------------------------------------------------
 
-const MIN_WINDOW_RATIO = 0.10;
+const MIN_WINDOW_RATIO = 0.1;
 
 const R005: ComplianceRule = {
   id: 'R005',
@@ -228,9 +228,15 @@ const R005: ComplianceRule = {
 
 const MIN_HABITABLE_AREA_M2 = 7;
 const HABITABLE_TYPES = new Set([
-  'bedroom', 'living', 'living room', 'living_room',
-  'dining', 'dining room', 'dining_room',
-  'study', 'office',
+  'bedroom',
+  'living',
+  'living room',
+  'living_room',
+  'dining',
+  'dining room',
+  'dining_room',
+  'study',
+  'office',
 ]);
 
 const R006: ComplianceRule = {
@@ -281,20 +287,24 @@ function pointInPolygon(
   let inside = false;
   const n = poly.length;
   for (let i = 0, j = n - 1; i < n; j = i++) {
-    const xi = poly[i]!.x, yi = poly[i]!.y;
-    const xj = poly[j]!.x, yj = poly[j]!.y;
+    const xi = poly[i]!.x,
+      yi = poly[i]!.y;
+    const xj = poly[j]!.x,
+      yj = poly[j]!.y;
     // On-edge short-circuit: treat the segment as a thick stripe.
-    const dx = xj - xi, dy = yj - yi;
+    const dx = xj - xi,
+      dy = yj - yi;
     const segLen2 = dx * dx + dy * dy;
     if (segLen2 > 0) {
       const t = Math.max(0, Math.min(1, ((pt.x - xi) * dx + (pt.y - yi) * dy) / segLen2));
-      const projX = xi + t * dx, projY = yi + t * dy;
+      const projX = xi + t * dx,
+        projY = yi + t * dy;
       const dd = Math.hypot(pt.x - projX, pt.y - projY);
       if (dd <= TOL) return true;
     }
     const denom = yj - yi;
     const intersect =
-      ((yi > pt.y) !== (yj > pt.y)) &&
+      yi > pt.y !== yj > pt.y &&
       pt.x < ((xj - xi) * (pt.y - yi)) / (denom === 0 ? 1e-9 : denom) + xi;
     if (intersect) inside = !inside;
   }
@@ -316,7 +326,9 @@ const R007: ComplianceRule = {
       try {
         const parsed = JSON.parse(raw) as Array<{ x: number; y: number }>;
         if (Array.isArray(parsed) && parsed.length >= 3) slabPolys.push(parsed);
-      } catch { /* skip malformed slabs */ }
+      } catch {
+        /* skip malformed slabs */
+      }
     }
     if (slabPolys.length === 0) return violations;
 
@@ -332,16 +344,15 @@ const R007: ComplianceRule = {
         { x: x2, y: y2 },
         { x: (x1 + x2) / 2, y: (y1 + y2) / 2 },
       ];
-      const off = samples.filter(
-        (p) => !slabPolys.some((poly) => pointInPolygon(p, poly))
-      );
+      const off = samples.filter((p) => !slabPolys.some((poly) => pointInPolygon(p, poly)));
       if (off.length > 0) {
         violations.push({
           ruleId: 'R007',
           elementId: el.id,
           message: `Wall "${el.id}" has ${off.length}/3 sample points outside every slab footprint — unsupported span.`,
           severity: 'warning',
-          suggestedFix: 'Extend the slab polygon to cover the wall outer face, or add a foundation slab beneath the wall.',
+          suggestedFix:
+            'Extend the slab polygon to cover the wall outer face, or add a foundation slab beneath the wall.',
         });
       }
     }

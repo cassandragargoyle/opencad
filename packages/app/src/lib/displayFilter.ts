@@ -61,13 +61,25 @@ export function applyFilter(elements: ElementSchema[], filter: DisplayFilter): E
 /** Built-in presets. */
 export const FILTER_PRESETS: FilterPreset[] = [
   { id: 'all', name: 'All', filter: {} },
-  { id: 'structural', name: 'Structural Only', filter: {
-    types: ['wall', 'column', 'beam', 'slab', 'roof', 'stair'],
-  }},
-  { id: 'envelope', name: 'Envelope', filter: {
-    types: ['wall', 'slab', 'roof', 'door', 'window', 'curtain_wall'],
-  }},
-  { id: 'mep', name: 'MEP Only', filter: {
-    types: ['duct', 'pipe', 'conduit', 'cable_tray', 'hvac', 'plumbing'],
-  }},
+  {
+    id: 'structural',
+    name: 'Structural Only',
+    filter: {
+      types: ['wall', 'column', 'beam', 'slab', 'roof', 'stair'],
+    },
+  },
+  {
+    id: 'envelope',
+    name: 'Envelope',
+    filter: {
+      types: ['wall', 'slab', 'roof', 'door', 'window', 'curtain_wall'],
+    },
+  },
+  {
+    id: 'mep',
+    name: 'MEP Only',
+    filter: {
+      types: ['duct', 'pipe', 'conduit', 'cable_tray', 'hvac', 'plumbing'],
+    },
+  },
 ];

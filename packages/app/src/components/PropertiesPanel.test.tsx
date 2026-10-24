@@ -67,7 +67,9 @@ describe('T-UI-003: PropertiesPanel', () => {
   });
 
   it('shows empty state when nothing is selected', () => {
-    mockUseDocumentStore.mockReturnValue(makeStore({ selectedIds: [] }) as ReturnType<typeof useDocumentStore>);
+    mockUseDocumentStore.mockReturnValue(
+      makeStore({ selectedIds: [] }) as ReturnType<typeof useDocumentStore>
+    );
     render(<PropertiesPanel />);
     expect(screen.getByText(/select an element/i)).toBeInTheDocument();
   });
@@ -115,7 +117,7 @@ describe('T-UI-003: PropertiesPanel', () => {
     vi.useFakeTimers();
     vi.mocked(threeViewport.getSharedSelectedCoords).mockReturnValue({
       elementId: 'el-1',
-      x: 500,  // absolute = posX(490) + translation.x(10)
+      x: 500, // absolute = posX(490) + translation.x(10)
       y: 0,
       z: 0,
     });
@@ -131,7 +133,9 @@ describe('T-UI-003: PropertiesPanel', () => {
     mockUseDocumentStore.mockReturnValue(store as ReturnType<typeof useDocumentStore>);
     render(<PropertiesPanel />);
     // Advance time so the 100ms interval fires and sets liveCoords
-    act(() => { vi.advanceTimersByTime(200); });
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
     const xInput = screen.getByDisplayValue('500');
     fireEvent.focus(xInput);
     fireEvent.change(xInput, { target: { value: '600' } });
@@ -182,7 +186,9 @@ describe('T-UI-003: PropertiesPanel', () => {
       },
     };
     mockUseDocumentStore.mockReturnValue(
-      makeStore({ document: multiDoc, selectedIds: ['el-1', 'el-2'] }) as ReturnType<typeof useDocumentStore>
+      makeStore({ document: multiDoc, selectedIds: ['el-1', 'el-2'] }) as ReturnType<
+        typeof useDocumentStore
+      >
     );
     render(<PropertiesPanel />);
     expect(screen.getByText(/2 elements selected/i)).toBeInTheDocument();
@@ -328,7 +334,9 @@ describe('T-BIM-003: PropertiesPanel Psets section', () => {
       },
     };
     mockUseDocumentStore.mockReturnValue(
-      makeStore({ document: multiDoc, selectedIds: ['el-1', 'el-2'] }) as ReturnType<typeof useDocumentStore>
+      makeStore({ document: multiDoc, selectedIds: ['el-1', 'el-2'] }) as ReturnType<
+        typeof useDocumentStore
+      >
     );
     render(<PropertiesPanel />);
     expect(screen.queryByText(/psets/i)).not.toBeInTheDocument();
@@ -363,7 +371,9 @@ describe('T-BIM-003: PropertiesPanel Psets section', () => {
       },
     };
     mockUseDocumentStore.mockReturnValue(
-      makeStore({ document: multiDoc, selectedIds: ['el-1', 'el-2'] }) as ReturnType<typeof useDocumentStore>
+      makeStore({ document: multiDoc, selectedIds: ['el-1', 'el-2'] }) as ReturnType<
+        typeof useDocumentStore
+      >
     );
     render(<PropertiesPanel />);
     expect(screen.queryByRole('button', { name: /add pset/i })).not.toBeInTheDocument();

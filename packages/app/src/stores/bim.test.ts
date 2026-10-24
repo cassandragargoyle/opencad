@@ -27,15 +27,15 @@ describe('T-BIM-001: Wall element', () => {
       type: 'wall',
       layerId: layerId(),
       properties: {
-        Name:      { type: 'string', value: 'Wall' },
-        StartX:    { type: 'number', value: 0 },
-        StartY:    { type: 'number', value: 0 },
-        EndX:      { type: 'number', value: 5000 },
-        EndY:      { type: 'number', value: 0 },
-        Height:    { type: 'number', value: 3000 },
-        Width:     { type: 'number', value: 200 },
-        Material:  { type: 'string', value: 'Concrete' },
-        WallType:  { type: 'string', value: 'exterior' },
+        Name: { type: 'string', value: 'Wall' },
+        StartX: { type: 'number', value: 0 },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: 5000 },
+        EndY: { type: 'number', value: 0 },
+        Height: { type: 'number', value: 3000 },
+        Width: { type: 'number', value: 200 },
+        Material: { type: 'string', value: 'Concrete' },
+        WallType: { type: 'string', value: 'exterior' },
       },
     });
     expect(prop(id, 'EndX')).toBe(5000);
@@ -46,10 +46,13 @@ describe('T-BIM-001: Wall element', () => {
 
   it('wall bounding box spans StartX to EndX', () => {
     const id = useDocumentStore.getState().addElement({
-      type: 'wall', layerId: layerId(),
+      type: 'wall',
+      layerId: layerId(),
       properties: {
-        StartX: { type: 'number', value: 100 }, StartY: { type: 'number', value: 100 },
-        EndX:   { type: 'number', value: 3100 }, EndY:   { type: 'number', value: 100 },
+        StartX: { type: 'number', value: 100 },
+        StartY: { type: 'number', value: 100 },
+        EndX: { type: 'number', value: 3100 },
+        EndY: { type: 'number', value: 100 },
       },
     });
     const bb = useDocumentStore.getState().document!.content.elements[id]!.boundingBox;
@@ -73,13 +76,14 @@ describe('T-BIM-002: Door element', () => {
 
   it('door stores X, Y, Width, Height, Swing', () => {
     const id = useDocumentStore.getState().addElement({
-      type: 'door', layerId: layerId(),
+      type: 'door',
+      layerId: layerId(),
       properties: {
-        X:      { type: 'number', value: 1000 },
-        Y:      { type: 'number', value: 0 },
-        Width:  { type: 'number', value: 900 },
+        X: { type: 'number', value: 1000 },
+        Y: { type: 'number', value: 0 },
+        Width: { type: 'number', value: 900 },
         Height: { type: 'number', value: 2100 },
-        Swing:  { type: 'number', value: 90 },
+        Swing: { type: 'number', value: 90 },
       },
     });
     expect(prop(id, 'Width')).toBe(900);
@@ -89,10 +93,13 @@ describe('T-BIM-002: Door element', () => {
 
   it('door bounding box derived from X, Y, Width, Height', () => {
     const id = useDocumentStore.getState().addElement({
-      type: 'door', layerId: layerId(),
+      type: 'door',
+      layerId: layerId(),
       properties: {
-        X: { type: 'number', value: 500 }, Y: { type: 'number', value: 0 },
-        Width: { type: 'number', value: 900 }, Height: { type: 'number', value: 2100 },
+        X: { type: 'number', value: 500 },
+        Y: { type: 'number', value: 0 },
+        Width: { type: 'number', value: 900 },
+        Height: { type: 'number', value: 2100 },
       },
     });
     const bb = useDocumentStore.getState().document!.content.elements[id]!.boundingBox;
@@ -109,12 +116,13 @@ describe('T-BIM-003: Window element', () => {
 
   it('window stores X, Y, Width, Height, SillHeight', () => {
     const id = useDocumentStore.getState().addElement({
-      type: 'window', layerId: layerId(),
+      type: 'window',
+      layerId: layerId(),
       properties: {
-        X:          { type: 'number', value: 2000 },
-        Y:          { type: 'number', value: 0 },
-        Width:      { type: 'number', value: 1200 },
-        Height:     { type: 'number', value: 1200 },
+        X: { type: 'number', value: 2000 },
+        Y: { type: 'number', value: 0 },
+        Width: { type: 'number', value: 1200 },
+        Height: { type: 'number', value: 1200 },
         SillHeight: { type: 'number', value: 900 },
       },
     });
@@ -130,13 +138,14 @@ describe('T-BIM-004: Slab element', () => {
 
   it('slab stores X, Y, Width, Height, Depth, Material', () => {
     const id = useDocumentStore.getState().addElement({
-      type: 'slab', layerId: layerId(),
+      type: 'slab',
+      layerId: layerId(),
       properties: {
-        X:        { type: 'number', value: 0 },
-        Y:        { type: 'number', value: 0 },
-        Width:    { type: 'number', value: 10000 },
-        Height:   { type: 'number', value: 8000 },
-        Depth:    { type: 'number', value: 250 },
+        X: { type: 'number', value: 0 },
+        Y: { type: 'number', value: 0 },
+        Width: { type: 'number', value: 10000 },
+        Height: { type: 'number', value: 8000 },
+        Depth: { type: 'number', value: 250 },
         Material: { type: 'string', value: 'Concrete C30' },
       },
     });
@@ -153,12 +162,13 @@ describe('T-BIM-005: Column element', () => {
 
   it('column stores X, Y, Diameter, Height', () => {
     const id = useDocumentStore.getState().addElement({
-      type: 'column', layerId: layerId(),
+      type: 'column',
+      layerId: layerId(),
       properties: {
-        X:        { type: 'number', value: 3000 },
-        Y:        { type: 'number', value: 3000 },
+        X: { type: 'number', value: 3000 },
+        Y: { type: 'number', value: 3000 },
         Diameter: { type: 'number', value: 400 },
-        Height:   { type: 'number', value: 3000 },
+        Height: { type: 'number', value: 3000 },
       },
     });
     expect(prop(id, 'Diameter')).toBe(400);
@@ -166,9 +176,11 @@ describe('T-BIM-005: Column element', () => {
 
   it('column bounding box is a square centred on X, Y with side = Diameter', () => {
     const id = useDocumentStore.getState().addElement({
-      type: 'column', layerId: layerId(),
+      type: 'column',
+      layerId: layerId(),
       properties: {
-        X: { type: 'number', value: 1000 }, Y: { type: 'number', value: 1000 },
+        X: { type: 'number', value: 1000 },
+        Y: { type: 'number', value: 1000 },
         Diameter: { type: 'number', value: 400 },
       },
     });
@@ -186,7 +198,9 @@ describe('T-BIM-006: Level operations — elevation and height', () => {
   beforeEach(freshStore);
 
   it('addLevel stores elevation and height', () => {
-    const levelId = useDocumentStore.getState().addLevel({ name: 'Level 2', elevation: 3200, height: 3000 });
+    const levelId = useDocumentStore
+      .getState()
+      .addLevel({ name: 'Level 2', elevation: 3200, height: 3000 });
     const level = useDocumentStore.getState().document!.organization.levels[levelId]!;
     expect(level.elevation).toBe(3200);
     expect(level.height).toBe(3000);
@@ -235,13 +249,14 @@ describe('T-BIM-008: Space element', () => {
 
   it('space element stores bounding coordinates', () => {
     const id = useDocumentStore.getState().addElement({
-      type: 'space', layerId: layerId(),
+      type: 'space',
+      layerId: layerId(),
       properties: {
-        Name:   { type: 'string', value: 'Living Room' },
+        Name: { type: 'string', value: 'Living Room' },
         StartX: { type: 'number', value: 0 },
         StartY: { type: 'number', value: 0 },
-        EndX:   { type: 'number', value: 5000 },
-        EndY:   { type: 'number', value: 4000 },
+        EndX: { type: 'number', value: 5000 },
+        EndY: { type: 'number', value: 4000 },
       },
     });
     const el = useDocumentStore.getState().document!.content.elements[id]!;

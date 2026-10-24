@@ -9,6 +9,7 @@ Every design presentation ends in a client-facing rendering. The Three.js real-t
 ## Scope
 
 ### In scope
+
 - A new **Rendering** view type produced from any 3D / elevation / section view.
 - Uses a path-traced or high-quality rasterized renderer (evaluate: three-gpu-pathtracer, Filament, Babylon.js PBR pipeline).
 - Quality presets: Draft (1 sample / pixel), Preview (16 spp), Final (256+ spp).
@@ -19,6 +20,7 @@ Every design presentation ends in a client-facing rendering. The Three.js real-t
 - Renderings appear in the View Map and can be dropped on layout sheets.
 
 ### Out of scope
+
 - Animation / walk-throughs.
 - Interactive material painting during render.
 - Custom light fixtures with IES profiles.

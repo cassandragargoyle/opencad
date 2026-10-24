@@ -10,9 +10,9 @@ export type StairType = 'straight' | 'L-shape';
 
 export interface StairParams {
   type: StairType;
-  storyHeight: number;   // mm
-  treadDepth: number;    // mm (going)
-  width: number;         // mm
+  storyHeight: number; // mm
+  treadDepth: number; // mm (going)
+  width: number; // mm
   handedness?: 'L' | 'R';
   /** Max riser per building code (IBC 196 mm). */
   maxRiser?: number;
@@ -22,7 +22,11 @@ export interface StairResult {
   riserCount: number;
   riserHeight: number;
   runLength: number;
-  flights: Array<{ origin: { x: number; y: number; z: number }; direction: 'x' | 'y'; treadCount: number }>;
+  flights: Array<{
+    origin: { x: number; y: number; z: number };
+    direction: 'x' | 'y';
+    treadCount: number;
+  }>;
   landings: Array<{ origin: { x: number; y: number; z: number }; width: number; depth: number }>;
 }
 
@@ -32,7 +36,7 @@ export function computeStairGeometry(params: StairParams): StairResult {
   // Smallest riserCount such that riserHeight ≤ maxRiser
   const riserCount = Math.max(2, Math.ceil(params.storyHeight / maxRiser));
   const riserHeight = params.storyHeight / riserCount;
-  const treadCount = riserCount - 1;  // top riser lands on the next level
+  const treadCount = riserCount - 1; // top riser lands on the next level
   const runLength = treadCount * params.treadDepth;
 
   const flights: StairResult['flights'] = [];
@@ -47,7 +51,8 @@ export function computeStairGeometry(params: StairParams): StairResult {
     const landY = halfTreads * params.treadDepth;
     landings.push({
       origin: { x: 0, y: landY, z: halfTreads * riserHeight },
-      width: params.width, depth: params.width,
+      width: params.width,
+      depth: params.width,
     });
     const turnX = params.handedness === 'L' ? -params.width : params.width;
     flights.push({

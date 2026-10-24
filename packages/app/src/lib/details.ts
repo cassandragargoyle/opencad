@@ -35,7 +35,7 @@ export interface DetailMarker {
 export function detailMarkerLabel(
   marker: DetailMarker,
   details: Record<string, Detail>,
-  sheets: Record<string, { sheetNumber: string }>,
+  sheets: Record<string, { sheetNumber: string }>
 ): string {
   const detail = details[marker.detailId];
   if (!detail) return '—';
@@ -47,7 +47,9 @@ export function detailMarkerLabel(
 
 /** Move a detail's placement between sheets; returns new placement. */
 export function assignDetailToSheet(
-  detail: Detail, sheetId: string, viewportNumber: number,
+  detail: Detail,
+  sheetId: string,
+  viewportNumber: number
 ): Detail {
   return { ...detail, placement: { sheetId, viewportNumber } };
 }
@@ -65,12 +67,13 @@ export function unassignDetail(detail: Detail): Detail {
  */
 export function elementsInDetail(
   detail: Detail,
-  elementPositions: Array<{ id: string; x: number; y: number }>,
+  elementPositions: Array<{ id: string; x: number; y: number }>
 ): string[] {
   const r2 = detail.radius * detail.radius;
   return elementPositions
     .filter((p) => {
-      const dx = p.x - detail.centre.x, dy = p.y - detail.centre.y;
+      const dx = p.x - detail.centre.x,
+        dy = p.y - detail.centre.y;
       return dx * dx + dy * dy <= r2;
     })
     .map((p) => p.id);

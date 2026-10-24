@@ -3,8 +3,15 @@
  * Used by useThreeViewport to convert document elements to Three.js geometry descriptors
  */
 
-export interface Vec3 { x: number; y: number; z: number; }
-export interface Vec2 { x: number; y: number; }
+export interface Vec3 {
+  x: number;
+  y: number;
+  z: number;
+}
+export interface Vec2 {
+  x: number;
+  y: number;
+}
 
 export interface MeshDescriptor {
   type: 'box' | 'extrusion' | 'cylinder' | 'custom';
@@ -112,7 +119,13 @@ export function buildColumnMesh(options: ColumnMeshOptions): MeshDescriptor {
       position: { x, y: elevation + height / 2, z: y },
       rotation: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 },
-      geometry: { kind: 'cylinder', radiusTop: width / 2, radiusBottom: width / 2, height, segments: 16 },
+      geometry: {
+        kind: 'cylinder',
+        radiusTop: width / 2,
+        radiusBottom: width / 2,
+        height,
+        segments: 16,
+      },
     };
   }
 

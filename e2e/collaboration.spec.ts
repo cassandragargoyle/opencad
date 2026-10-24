@@ -75,7 +75,7 @@ test.describe('T-COL-002: Offline-first functionality', () => {
     // User should still be able to switch views
     await page.locator('.toolbar-tabs .tab-btn:has-text("Floor Plan")').click();
     await expect(
-      page.locator('.toolbar-tabs .tab-btn.active:has-text("Floor Plan")'),
+      page.locator('.toolbar-tabs .tab-btn.active:has-text("Floor Plan")')
     ).toBeVisible();
 
     // Restore connectivity

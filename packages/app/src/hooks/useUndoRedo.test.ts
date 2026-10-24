@@ -18,43 +18,61 @@ describe('T-DOC-007: useUndoRedo', () => {
   });
 
   it('calls undo on Ctrl+Z when canUndo is true', () => {
-    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: false }));
+    renderHook(() =>
+      useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: false })
+    );
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, bubbles: true }));
     expect(mockUndo).toHaveBeenCalledTimes(1);
   });
 
   it('calls undo on Meta+Z (Mac) when canUndo is true', () => {
-    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: false }));
+    renderHook(() =>
+      useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: false })
+    );
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', metaKey: true, bubbles: true }));
     expect(mockUndo).toHaveBeenCalledTimes(1);
   });
 
   it('does not call undo when canUndo is false', () => {
-    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: false }));
+    renderHook(() =>
+      useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: false })
+    );
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, bubbles: true }));
     expect(mockUndo).not.toHaveBeenCalled();
   });
 
   it('calls redo on Ctrl+Y when canRedo is true', () => {
-    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: true }));
+    renderHook(() =>
+      useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: true })
+    );
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'y', ctrlKey: true, bubbles: true }));
     expect(mockRedo).toHaveBeenCalledTimes(1);
   });
 
   it('calls redo on Ctrl+Shift+Z when canRedo is true', () => {
-    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: true }));
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, shiftKey: true, bubbles: true }));
+    renderHook(() =>
+      useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: true })
+    );
+    window.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, shiftKey: true, bubbles: true })
+    );
     expect(mockRedo).toHaveBeenCalledTimes(1);
   });
 
   it('calls redo on Meta+Shift+Z (Mac) when canRedo is true', () => {
-    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: true }));
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', metaKey: true, shiftKey: true, bubbles: true }));
+    renderHook(() =>
+      useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: true })
+    );
+    window.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'z', metaKey: true, shiftKey: true, bubbles: true })
+    );
     expect(mockRedo).toHaveBeenCalledTimes(1);
   });
 
   it('does not call redo when canRedo is false', () => {
-    renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: false }));
+    renderHook(() =>
+      useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: false, canRedo: false })
+    );
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'y', ctrlKey: true, bubbles: true }));
     expect(mockRedo).not.toHaveBeenCalled();
   });
@@ -77,7 +95,9 @@ describe('T-DOC-007: useUndoRedo', () => {
   // Browsers report e.key as 'Z' when Shift is held (or CapsLock is on).
   it('calls redo on Ctrl+Shift+Z as reported by browsers (key "Z")', () => {
     renderHook(() => useUndoRedo({ undo: mockUndo, redo: mockRedo, canUndo: true, canRedo: true }));
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, shiftKey: true, bubbles: true }));
+    window.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, shiftKey: true, bubbles: true })
+    );
     expect(mockRedo).toHaveBeenCalledOnce();
     expect(mockUndo).not.toHaveBeenCalled();
   });

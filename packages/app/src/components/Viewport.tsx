@@ -10,7 +10,11 @@ import { ViewCube } from './ViewCube';
 import { CoordBox, type CoordField, type CoordBoxValues } from './CoordBox';
 import { RemoteCursors } from './RemoteCursors';
 import { ContextMenu } from './contextMenu/ContextMenu';
-import { getContextMenuItems, type ContextMenuGroup, type ElementContext } from './contextMenu/contextMenuItems';
+import {
+  getContextMenuItems,
+  type ContextMenuGroup,
+  type ElementContext,
+} from './contextMenu/contextMenuItems';
 
 interface ViewportProps {
   viewType?: 'floor-plan' | '3d' | 'section';
@@ -44,7 +48,11 @@ export function Viewport({ viewType = '3d' }: ViewportProps) {
   const coordScreenRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [coordScreen, setCoordScreen] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const DRAG_COORD_TOOLS = new Set(['wall', 'line', 'rectangle', 'beam', 'dimension']);
-  const showCoordBox = !!(drawingState?.isDrawing && drawingState.startPoint && DRAG_COORD_TOOLS.has(activeTool));
+  const showCoordBox = !!(
+    drawingState?.isDrawing &&
+    drawingState.startPoint &&
+    DRAG_COORD_TOOLS.has(activeTool)
+  );
   const coordFields: CoordField[] =
     activeTool === 'rectangle' ? ['width', 'height'] : ['length', 'angle'];
   const coordPreview: CoordBoxValues = (() => {
@@ -54,12 +62,15 @@ export function Viewport({ viewType = '3d' }: ViewportProps) {
     if (activeTool === 'rectangle') {
       return { width: Math.abs(cp.x - sp.x), height: Math.abs(cp.y - sp.y) };
     }
-    const dx = cp.x - sp.x, dy = cp.y - sp.y;
+    const dx = cp.x - sp.x,
+      dy = cp.y - sp.y;
     const length = Math.sqrt(dx * dx + dy * dy);
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
     return { length, angle };
   })();
-  useEffect(() => { if (showCoordBox) setCoordScreen(coordScreenRef.current); }, [drawingState?.currentPoint, showCoordBox]);
+  useEffect(() => {
+    if (showCoordBox) setCoordScreen(coordScreenRef.current);
+  }, [drawingState?.currentPoint, showCoordBox]);
   const {
     containerRef: threeContainerRef,
     setViewPreset,
@@ -77,46 +88,74 @@ export function Viewport({ viewType = '3d' }: ViewportProps) {
   // ─── 2D context menu ────────────────────────────────────────────────────
   // 3D viewport has its own context menu inside useThreeViewport; wire one
   // into the 2D floor-plan canvas so right-click opens the same shell.
-  const [contextMenu2D, setContextMenu2D] = useState<
-    { x: number; y: number; items: ContextMenuGroup } | null
-  >(null);
+  const [contextMenu2D, setContextMenu2D] = useState<{
+    x: number;
+    y: number;
+    items: ContextMenuGroup;
+  } | null>(null);
   const { selectedIds, setActiveTool, undo, redo } = useDocumentStore();
-  const handleCanvas2DContextMenu = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    e.preventDefault();
-    const ctx: ElementContext = selectedIds.length > 1 ? 'multi'
-      : selectedIds.length === 1 ? 'wall' // treat selection as a concrete element; most-common 2D target
-      : 'empty';
-    const items = getContextMenuItems('2d', ctx);
-    setContextMenu2D({ x: e.clientX, y: e.clientY, items });
-  }, [selectedIds]);
+  const handleCanvas2DContextMenu = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      e.preventDefault();
+      const ctx: ElementContext =
+        selectedIds.length > 1
+          ? 'multi'
+          : selectedIds.length === 1
+            ? 'wall' // treat selection as a concrete element; most-common 2D target
+            : 'empty';
+      const items = getContextMenuItems('2d', ctx);
+      setContextMenu2D({ x: e.clientX, y: e.clientY, items });
+    },
+    [selectedIds]
+  );
   const closeContextMenu2D = useCallback(() => setContextMenu2D(null), []);
-  const handleContextMenuAction = useCallback((actionId: string) => {
-    // Tool-switch shortcuts (insert-wall, insert-door, insert-window, insert-slab,
-    // insert-column, insert-beam, insert-roof). Also primitive text/dim/line/rect
-    // tools for plain 2D drafting. Anything else is left to the element-specific
-    // handler down the line; for now swallow unknown actions.
-    const toolForAction: Record<string, string | undefined> = {
-      'insert-wall': 'wall', 'insert-door': 'door', 'insert-window': 'window',
-      'insert-slab': 'slab', 'insert-column': 'column', 'insert-beam': 'beam',
-      'insert-roof': 'roof', 'insert-stair': 'stair', 'insert-text': 'text',
-      'insert-dimension': 'dimension', 'insert-line': 'line',
-      'insert-rectangle': 'rectangle', 'insert-circle': 'circle',
-    };
-    const tool = toolForAction[actionId];
-    if (tool) {
-      setActiveTool(tool as Parameters<typeof setActiveTool>[0]);
-      return;
-    }
-    if (actionId === 'undo')       { undo(); return; }
-    if (actionId === 'redo')       { redo(); return; }
-    if (actionId === 'zoom-fit')   { zoomToFit(); return; }
-    if (actionId === 'select-all') {
-      const st = useDocumentStore.getState();
-      const ids = Object.keys(st.document?.content.elements ?? {});
-      st.setSelectedIds(ids);
-      return;
-    }
-  }, [setActiveTool, undo, redo, zoomToFit]);
+  const handleContextMenuAction = useCallback(
+    (actionId: string) => {
+      // Tool-switch shortcuts (insert-wall, insert-door, insert-window, insert-slab,
+      // insert-column, insert-beam, insert-roof). Also primitive text/dim/line/rect
+      // tools for plain 2D drafting. Anything else is left to the element-specific
+      // handler down the line; for now swallow unknown actions.
+      const toolForAction: Record<string, string | undefined> = {
+        'insert-wall': 'wall',
+        'insert-door': 'door',
+        'insert-window': 'window',
+        'insert-slab': 'slab',
+        'insert-column': 'column',
+        'insert-beam': 'beam',
+        'insert-roof': 'roof',
+        'insert-stair': 'stair',
+        'insert-text': 'text',
+        'insert-dimension': 'dimension',
+        'insert-line': 'line',
+        'insert-rectangle': 'rectangle',
+        'insert-circle': 'circle',
+      };
+      const tool = toolForAction[actionId];
+      if (tool) {
+        setActiveTool(tool as Parameters<typeof setActiveTool>[0]);
+        return;
+      }
+      if (actionId === 'undo') {
+        undo();
+        return;
+      }
+      if (actionId === 'redo') {
+        redo();
+        return;
+      }
+      if (actionId === 'zoom-fit') {
+        zoomToFit();
+        return;
+      }
+      if (actionId === 'select-all') {
+        const st = useDocumentStore.getState();
+        const ids = Object.keys(st.document?.content.elements ?? {});
+        st.setSelectedIds(ids);
+        return;
+      }
+    },
+    [setActiveTool, undo, redo, zoomToFit]
+  );
 
   return (
     <div className="viewport-container" ref={containerRef}>
@@ -204,9 +243,17 @@ export function Viewport({ viewType = '3d' }: ViewportProps) {
         <div className="viewport-corner bottom-left">
           <div className="viewport-info">
             {show3D ? (
-              <span>{t('viewport.info3D', { defaultValue: 'Orbit: drag | Pan: Shift+drag | Zoom: scroll | Fit: 0' })}</span>
+              <span>
+                {t('viewport.info3D', {
+                  defaultValue: 'Orbit: drag | Pan: Shift+drag | Zoom: scroll | Fit: 0',
+                })}
+              </span>
             ) : (
-              <span>{t('viewport.info2D', { defaultValue: 'Zoom: scroll | Pan: middle-drag | Ctrl: snap off' })}</span>
+              <span>
+                {t('viewport.info2D', {
+                  defaultValue: 'Zoom: scroll | Pan: middle-drag | Ctrl: snap off',
+                })}
+              </span>
             )}
           </div>
         </div>
@@ -214,10 +261,18 @@ export function Viewport({ viewType = '3d' }: ViewportProps) {
           <div className="viewport-controls">
             {show3D && (
               <>
-                <button className="viewport-control-btn" onClick={zoomIn} title={t('viewport.zoomInWithShortcut', { defaultValue: 'Zoom In (+)' })}>
+                <button
+                  className="viewport-control-btn"
+                  onClick={zoomIn}
+                  title={t('viewport.zoomInWithShortcut', { defaultValue: 'Zoom In (+)' })}
+                >
                   <ZoomIn size={14} />
                 </button>
-                <button className="viewport-control-btn" onClick={zoomOut} title={t('viewport.zoomOutWithShortcut', { defaultValue: 'Zoom Out (-)' })}>
+                <button
+                  className="viewport-control-btn"
+                  onClick={zoomOut}
+                  title={t('viewport.zoomOutWithShortcut', { defaultValue: 'Zoom Out (-)' })}
+                >
                   <ZoomOut size={14} />
                 </button>
                 <button

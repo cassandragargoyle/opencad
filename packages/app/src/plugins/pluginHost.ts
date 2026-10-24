@@ -29,7 +29,9 @@ const notifListeners = new Set<NotifListener>();
 
 export function onPluginNotification(fn: NotifListener): () => void {
   notifListeners.add(fn);
-  return () => { notifListeners.delete(fn); };
+  return () => {
+    notifListeners.delete(fn);
+  };
 }
 
 /** Emit a notification that isn't coming from a plugin itself — host-level
@@ -37,7 +39,7 @@ export function onPluginNotification(fn: NotifListener): () => void {
  *  toast stream the user already expects for plugin output. */
 export function emitHostPluginNotification(
   message: string,
-  type: 'info' | 'success' | 'error' = 'info',
+  type: 'info' | 'success' | 'error' = 'info'
 ): void {
   const n: PluginNotification = {
     id: crypto.randomUUID(),
@@ -67,7 +69,9 @@ export function listPluginCommands(): PluginCommand[] {
 
 export function onPluginCommandsChange(fn: CommandListener): () => void {
   commandListeners.add(fn);
-  return () => { commandListeners.delete(fn); };
+  return () => {
+    commandListeners.delete(fn);
+  };
 }
 
 function notifyCommands(): void {
@@ -144,7 +148,9 @@ function buildPluginAPI(pluginId: string): PluginAPI {
         return Object.values(doc.content.elements) as unknown as PluginElementSchema[];
       },
       addElement({ type, layerId, properties }): string {
-        const id = useDocumentStore.getState().addElement({ type, layerId, properties: properties ?? {} });
+        const id = useDocumentStore
+          .getState()
+          .addElement({ type, layerId, properties: properties ?? {} });
         return id;
       },
       updateElement(id, updates): void {
@@ -172,7 +178,7 @@ function buildPluginAPI(pluginId: string): PluginAPI {
       registerCommand(command): void {
         // Idempotent: replace if a plugin re-registers the same id.
         const idx = registeredCommands.findIndex(
-          (c) => c.pluginId === pluginId && c.id === command.id,
+          (c) => c.pluginId === pluginId && c.id === command.id
         );
         const entry: PluginCommand = { pluginId, id: command.id, label: command.label };
         if (idx >= 0) registeredCommands[idx] = entry;

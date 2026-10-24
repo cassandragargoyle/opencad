@@ -19,10 +19,10 @@ import { parseLength } from '@opencad/shared';
 export type CoordField = 'length' | 'angle' | 'width' | 'height';
 
 export interface CoordBoxValues {
-  length?: number;  // mm
-  angle?: number;   // degrees
-  width?: number;   // mm
-  height?: number;  // mm
+  length?: number; // mm
+  angle?: number; // degrees
+  width?: number; // mm
+  height?: number; // mm
 }
 
 export interface CoordBoxProps {
@@ -41,15 +41,15 @@ export interface CoordBoxProps {
 
 const FIELD_LABEL: Record<CoordField, string> = {
   length: 'L',
-  angle:  '∠',
-  width:  'W',
+  angle: '∠',
+  width: 'W',
   height: 'H',
 };
 
 const FIELD_SUFFIX: Record<CoordField, string> = {
   length: 'mm',
-  angle:  '°',
-  width:  'mm',
+  angle: '°',
+  width: 'mm',
   height: 'mm',
 };
 
@@ -62,7 +62,10 @@ function formatPreview(field: CoordField, v: number | undefined): string {
 export function CoordBox({ x, y, preview, fields, onCommit, onCancel }: CoordBoxProps) {
   const { t } = useTranslation('common');
   const [values, setValues] = useState<Record<CoordField, string>>(() => ({
-    length: '', angle: '', width: '', height: '',
+    length: '',
+    angle: '',
+    width: '',
+    height: '',
   }));
   const [activeIdx, setActiveIdx] = useState(0);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
@@ -123,7 +126,7 @@ export function CoordBox({ x, y, preview, fields, onCommit, onCancel }: CoordBox
   const style: React.CSSProperties = {
     position: 'absolute',
     left: x + 14,
-    top:  y + 14,
+    top: y + 14,
     zIndex: 30,
     display: 'flex',
     gap: 4,
@@ -139,16 +142,29 @@ export function CoordBox({ x, y, preview, fields, onCommit, onCancel }: CoordBox
   };
 
   return (
-    <div className="coord-box" style={style} role="group" aria-label={t('coord.inputAria', { defaultValue: 'Coordinate input' })}>
+    <div
+      className="coord-box"
+      style={style}
+      role="group"
+      aria-label={t('coord.inputAria', { defaultValue: 'Coordinate input' })}
+    >
       {fields.map((f, i) => (
-        <label key={f} className="coord-box-field" style={{
-          display: 'flex', alignItems: 'center', gap: 3,
-          borderRight: i < fields.length - 1 ? '1px solid var(--border-color, #33343a)' : 'none',
-          paddingRight: i < fields.length - 1 ? 6 : 0,
-        }}>
+        <label
+          key={f}
+          className="coord-box-field"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 3,
+            borderRight: i < fields.length - 1 ? '1px solid var(--border-color, #33343a)' : 'none',
+            paddingRight: i < fields.length - 1 ? 6 : 0,
+          }}
+        >
           <span style={{ fontWeight: 600, opacity: 0.8 }}>{FIELD_LABEL[f]}</span>
           <input
-            ref={(el) => { inputsRef.current[i] = el; }}
+            ref={(el) => {
+              inputsRef.current[i] = el;
+            }}
             type="text"
             value={values[f]}
             placeholder={formatPreview(f, preview[f])}

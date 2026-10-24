@@ -38,10 +38,7 @@ describe('T-RENDER-001: PBR materials', () => {
 
   it('all material IDs in MATERIAL_PBR_PARAMS exist in MATERIAL_CATEGORIES', () => {
     for (const id of Object.keys(MATERIAL_PBR_PARAMS)) {
-      expect(
-        MATERIAL_CATEGORIES,
-        `"${id}" not found in MATERIAL_CATEGORIES`
-      ).toContain(id);
+      expect(MATERIAL_CATEGORIES, `"${id}" not found in MATERIAL_CATEGORIES`).toContain(id);
     }
   });
 

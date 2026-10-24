@@ -3,7 +3,14 @@
  * Validates and executes a node-graph representation of visual programs.
  */
 
-export type NodeType = 'input' | 'output' | 'math' | 'logic' | 'geometry' | 'transform' | 'constant';
+export type NodeType =
+  | 'input'
+  | 'output'
+  | 'math'
+  | 'logic'
+  | 'geometry'
+  | 'transform'
+  | 'constant';
 
 export interface VPNode {
   id: string;
@@ -143,7 +150,7 @@ export function topologicalSort(graph: VPGraph): string[] | null {
  */
 export function executeGraph(
   graph: VPGraph,
-  inputs: Record<string, unknown>,
+  inputs: Record<string, unknown>
 ): Record<string, unknown> {
   const order = topologicalSort(graph);
   if (order === null) {
@@ -194,16 +201,25 @@ export function executeGraph(
         break;
       }
       case 'math': {
-        const a = getInput(nodeId, 'a') as number ?? 0;
-        const b = getInput(nodeId, 'b') as number ?? 0;
+        const a = (getInput(nodeId, 'a') as number) ?? 0;
+        const b = (getInput(nodeId, 'b') as number) ?? 0;
         const op = (node.params['operation'] as string) ?? 'add';
         let result: number;
         switch (op) {
-          case 'add': result = a + b; break;
-          case 'sub': result = a - b; break;
-          case 'mul': result = a * b; break;
-          case 'div': result = b !== 0 ? a / b : 0; break;
-          default: result = a + b;
+          case 'add':
+            result = a + b;
+            break;
+          case 'sub':
+            result = a - b;
+            break;
+          case 'mul':
+            result = a * b;
+            break;
+          case 'div':
+            result = b !== 0 ? a / b : 0;
+            break;
+          default:
+            result = a + b;
         }
         outputs['result'] = result;
         break;

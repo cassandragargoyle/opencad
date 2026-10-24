@@ -2,7 +2,14 @@
  * T-BIM-004: Column & Beam tests
  */
 import { describe, it, expect } from 'vitest';
-import { createColumnElement, createBeamElement, COLUMN_SECTIONS, DEFAULT_COLUMN_WIDTH, DEFAULT_COLUMN_HEIGHT, DEFAULT_BEAM_DEPTH } from './columnBeamUtils';
+import {
+  createColumnElement,
+  createBeamElement,
+  COLUMN_SECTIONS,
+  DEFAULT_COLUMN_WIDTH,
+  DEFAULT_COLUMN_HEIGHT,
+  DEFAULT_BEAM_DEPTH,
+} from './columnBeamUtils';
 
 describe('T-BIM-004: Column Tool', () => {
   it('stores position X and Y', () => {
@@ -11,10 +18,14 @@ describe('T-BIM-004: Column Tool', () => {
     expect(el.properties['Y']?.value).toBe(2000);
   });
   it('defaults width to 400mm', () => {
-    expect(createColumnElement({ x: 0, y: 0 }).properties['Width']?.value).toBe(DEFAULT_COLUMN_WIDTH);
+    expect(createColumnElement({ x: 0, y: 0 }).properties['Width']?.value).toBe(
+      DEFAULT_COLUMN_WIDTH
+    );
   });
   it('defaults height to 3000mm', () => {
-    expect(createColumnElement({ x: 0, y: 0 }).properties['Height']?.value).toBe(DEFAULT_COLUMN_HEIGHT);
+    expect(createColumnElement({ x: 0, y: 0 }).properties['Height']?.value).toBe(
+      DEFAULT_COLUMN_HEIGHT
+    );
   });
   it('defaults material to Concrete', () => {
     expect(createColumnElement({ x: 0, y: 0 }).properties['Material']?.value).toBe('Concrete');
@@ -49,10 +60,14 @@ describe('T-BIM-004: Beam Tool', () => {
     expect(el.properties['EndX']?.value).toBe(100);
   });
   it('defaults depth to 500mm', () => {
-    expect(createBeamElement({ x: 0, y: 0 }, { x: 1000, y: 0 }).properties['Depth']?.value).toBe(DEFAULT_BEAM_DEPTH);
+    expect(createBeamElement({ x: 0, y: 0 }, { x: 1000, y: 0 }).properties['Depth']?.value).toBe(
+      DEFAULT_BEAM_DEPTH
+    );
   });
   it('defaults material to Steel', () => {
-    expect(createBeamElement({ x: 0, y: 0 }, { x: 1000, y: 0 }).properties['Material']?.value).toBe('Steel');
+    expect(createBeamElement({ x: 0, y: 0 }, { x: 1000, y: 0 }).properties['Material']?.value).toBe(
+      'Steel'
+    );
   });
   it('sets type to beam', () => {
     expect(createBeamElement({ x: 0, y: 0 }, { x: 1000, y: 0 }).type).toBe('beam');

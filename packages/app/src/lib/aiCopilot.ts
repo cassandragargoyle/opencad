@@ -44,17 +44,18 @@ interface Rule {
 const RULES: Rule[] = [
   // "add a 20m² meeting room" / "add meeting room 30 square meters"
   {
-    kind:    'add-room',
-    pattern: /add\s+(?:a\s+)?(?:(\d+(?:\.\d+)?)\s*(?:m²|sqm|sq\.?m|square\s+meters?)?\s+)?(.+?)\s+(?:room|space|office)/i,
+    kind: 'add-room',
+    pattern:
+      /add\s+(?:a\s+)?(?:(\d+(?:\.\d+)?)\s*(?:m²|sqm|sq\.?m|square\s+meters?)?\s+)?(.+?)\s+(?:room|space|office)/i,
     extract: (m) => ({
-      area:  m[1] ? parseFloat(m[1]) : 0,
-      name:  (m[2] ?? '').trim(),
+      area: m[1] ? parseFloat(m[1]) : 0,
+      name: (m[2] ?? '').trim(),
     }),
     confidence: 0.85,
   },
   // "change the floor material to oak" / "set wall material to concrete"
   {
-    kind:    'change-material',
+    kind: 'change-material',
     pattern: /(?:change|set|make)\s+(?:the\s+)?(\w+)\s+material\s+to\s+(.+)/i,
     extract: (m) => ({
       category: (m[1] ?? '').toLowerCase(),
@@ -64,39 +65,39 @@ const RULES: Rule[] = [
   },
   // "resize wall W1 to 5m" / "make the window 1.2 wide"
   {
-    kind:    'resize-element',
+    kind: 'resize-element',
     pattern: /(?:resize|make|set)\s+(?:the\s+)?(\w+)\s+(?:(\w+)\s+)?to\s+(\d+(?:\.\d+)?)\s*m?/i,
     extract: (m) => ({
       elementType: (m[1] ?? '').toLowerCase(),
-      elementId:   (m[2] ?? '').trim(),
-      valueMm:     parseFloat(m[3] ?? '0') * 1000,
+      elementId: (m[2] ?? '').trim(),
+      valueMm: parseFloat(m[3] ?? '0') * 1000,
     }),
     confidence: 0.8,
   },
   // "hide walls" / "hide mep-duct category"
   {
-    kind:    'hide-category',
+    kind: 'hide-category',
     pattern: /hide\s+(?:all\s+)?(?:the\s+)?(\w[\w-]*)\s*(?:category|elements?)?/i,
     extract: (m) => ({ category: (m[1] ?? '').toLowerCase() }),
     confidence: 0.9,
   },
   // "show floors" / "show all windows"
   {
-    kind:    'show-category',
+    kind: 'show-category',
     pattern: /show\s+(?:all\s+)?(?:the\s+)?(\w[\w-]*)\s*(?:category|elements?)?/i,
     extract: (m) => ({ category: (m[1] ?? '').toLowerCase() }),
     confidence: 0.9,
   },
   // "delete element E42" / "remove wall W1"
   {
-    kind:    'delete-element',
+    kind: 'delete-element',
     pattern: /(?:delete|remove)\s+(?:the\s+)?(?:\w+\s+)?(\w+[-_]?\w*\d+)/i,
     extract: (m) => ({ elementId: (m[1] ?? '').trim() }),
     confidence: 0.85,
   },
   // "set wall height to 3000mm" / "set ceiling height to 2.7m"
   {
-    kind:    'set-property',
+    kind: 'set-property',
     pattern: /set\s+(\w[\w\s-]*?)\s+to\s+(\d+(?:\.\d+)?)\s*(mm|m|cm)?/i,
     extract: (m) => {
       const raw = parseFloat(m[2] ?? '0');
@@ -125,10 +126,10 @@ export function parseCommand(utterance: string): ActionIntent {
     const m = cleaned.match(rule.pattern);
     if (m) {
       return {
-        kind:       rule.kind,
+        kind: rule.kind,
         confidence: rule.confidence,
-        params:     rule.extract(m),
-        utterance:  cleaned,
+        params: rule.extract(m),
+        utterance: cleaned,
       };
     }
   }
@@ -167,7 +168,11 @@ export function suggestCompletions(partial: string, limit = 5): string[] {
 
   const lower = partial.toLowerCase();
   return templates
-    .filter((t) => t.toLowerCase().startsWith(lower) || lower.split(' ').some((w) => t.toLowerCase().includes(w)))
+    .filter(
+      (t) =>
+        t.toLowerCase().startsWith(lower) ||
+        lower.split(' ').some((w) => t.toLowerCase().includes(w))
+    )
     .slice(0, limit);
 }
 

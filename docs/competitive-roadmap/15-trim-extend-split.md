@@ -9,6 +9,7 @@ Drawing without these four tools is exhausting — every correction turns into a
 ## Scope
 
 ### In scope
+
 - Four tool-shelf buttons (`T`, `E`, plus two context-sensitive ones under an "Edit" menu — existing `t` key is used for Stair, so pick new shortcuts: `Shift+T` / `Shift+E` / `Shift+X` / `Shift+M`).
 - **Trim**: hover a wall, second-click the cutting element; the wall is shortened up to the intersection.
 - **Extend**: hover a wall, second-click the target element; the wall's nearer endpoint moves until it touches the target.
@@ -16,6 +17,7 @@ Drawing without these four tools is exhausting — every correction turns into a
 - **Merge**: select two adjacent collinear walls of the same type; they merge into one.
 
 ### Out of scope (this issue)
+
 - Non-wall elements (lines, polygons, etc.) — walls only in v1.
 - N-way trim (trim to multiple cutters at once).
 

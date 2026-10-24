@@ -142,56 +142,84 @@ export function addElement(document: DocumentSchema, params: AddElementParams): 
  */
 export function computeBoundingBox(
   elementType: string,
-  properties: Record<string, PropertyValue>,
+  properties: Record<string, PropertyValue>
 ): BoundingBox3D {
   const num = (key: string, fallback = 0): number => {
     const v = properties[key]?.value;
     return typeof v === 'number' ? v : fallback;
   };
 
-  let minX = 0, minY = 0, minZ = 0;
-  let maxX = 0, maxY = 0, maxZ = 0;
+  let minX = 0,
+    minY = 0,
+    minZ = 0;
+  let maxX = 0,
+    maxY = 0,
+    maxZ = 0;
 
   switch (elementType) {
     case 'wall': {
-      const sx = num('StartX'), sy = num('StartY');
-      const ex = num('EndX'), ey = num('EndY');
-      minX = Math.min(sx, ex); maxX = Math.max(sx, ex);
-      minY = Math.min(sy, ey); maxY = Math.max(sy, ey);
-      minZ = 0; maxZ = num('Height', 3000);
+      const sx = num('StartX'),
+        sy = num('StartY');
+      const ex = num('EndX'),
+        ey = num('EndY');
+      minX = Math.min(sx, ex);
+      maxX = Math.max(sx, ex);
+      minY = Math.min(sy, ey);
+      maxY = Math.max(sy, ey);
+      minZ = 0;
+      maxZ = num('Height', 3000);
       break;
     }
     case 'curtain_wall': {
-      const sx = num('StartX'), sy = num('StartY');
-      const ex = num('EndX'), ey = num('EndY');
-      minX = Math.min(sx, ex); maxX = Math.max(sx, ex);
-      minY = Math.min(sy, ey); maxY = Math.max(sy, ey);
-      minZ = 0; maxZ = num('Height', 3000);
+      const sx = num('StartX'),
+        sy = num('StartY');
+      const ex = num('EndX'),
+        ey = num('EndY');
+      minX = Math.min(sx, ex);
+      maxX = Math.max(sx, ex);
+      minY = Math.min(sy, ey);
+      maxY = Math.max(sy, ey);
+      minZ = 0;
+      maxZ = num('Height', 3000);
       break;
     }
     case 'beam': {
-      const sx = num('StartX'), sy = num('StartY');
-      const ex = num('EndX'), ey = num('EndY');
-      minX = Math.min(sx, ex); maxX = Math.max(sx, ex);
-      minY = Math.min(sy, ey); maxY = Math.max(sy, ey);
-      minZ = 0; maxZ = 300; // beam depth ~ 300mm
+      const sx = num('StartX'),
+        sy = num('StartY');
+      const ex = num('EndX'),
+        ey = num('EndY');
+      minX = Math.min(sx, ex);
+      maxX = Math.max(sx, ex);
+      minY = Math.min(sy, ey);
+      maxY = Math.max(sy, ey);
+      minZ = 0;
+      maxZ = 300; // beam depth ~ 300mm
       break;
     }
     case 'line':
     case 'dimension': {
-      const sx = num('StartX'), sy = num('StartY');
-      const ex = num('EndX'), ey = num('EndY');
-      minX = Math.min(sx, ex); maxX = Math.max(sx, ex);
-      minY = Math.min(sy, ey); maxY = Math.max(sy, ey);
+      const sx = num('StartX'),
+        sy = num('StartY');
+      const ex = num('EndX'),
+        ey = num('EndY');
+      minX = Math.min(sx, ex);
+      maxX = Math.max(sx, ex);
+      minY = Math.min(sy, ey);
+      maxY = Math.max(sy, ey);
       break;
     }
     case 'rectangle': {
-      const x = num('X'), y = num('Y');
-      const w = num('Width'), h = num('Height');
+      const x = num('X'),
+        y = num('Y');
+      const w = num('Width'),
+        h = num('Height');
       const depth = num('Depth', num('Thickness', 200));
-      minX = x; maxX = x + w;
-      minY = y; maxY = y + h;
-      minZ = 0; maxZ = depth;
+      minX = x;
+      maxX = x + w;
+      minY = y;
+      maxY = y + h;
+      minZ = 0;
+      maxZ = depth;
       break;
     }
     case 'slab': {
@@ -207,31 +235,48 @@ export function computeBoundingBox(
             minY = Math.min(...pts.map((p) => p.y));
             maxY = Math.max(...pts.map((p) => p.y));
           }
-        } catch { /* fall through */ }
+        } catch {
+          /* fall through */
+        }
       }
       if (minX === 0 && maxX === 0) {
-        const x = num('X'), y = num('Y');
-        const w = num('Width'), h = num('Height');
-        minX = x; maxX = x + w;
-        minY = y; maxY = y + h;
+        const x = num('X'),
+          y = num('Y');
+        const w = num('Width'),
+          h = num('Height');
+        minX = x;
+        maxX = x + w;
+        minY = y;
+        maxY = y + h;
       }
-      minZ = 0; maxZ = num('Thickness', 250);
+      minZ = 0;
+      maxZ = num('Thickness', 250);
       break;
     }
     case 'space': {
       if ('StartX' in properties) {
-        const sx = num('StartX'), sy = num('StartY');
-        const ex = num('EndX'), ey = num('EndY');
-        minX = sx; maxX = ex;
-        minY = sy; maxY = ey;
+        const sx = num('StartX'),
+          sy = num('StartY');
+        const ex = num('EndX'),
+          ey = num('EndY');
+        minX = sx;
+        maxX = ex;
+        minY = sy;
+        maxY = ey;
       } else if ('MinX' in properties) {
-        minX = num('MinX'); maxX = num('MaxX');
-        minY = num('MinY'); maxY = num('MaxY');
+        minX = num('MinX');
+        maxX = num('MaxX');
+        minY = num('MinY');
+        maxY = num('MaxY');
       } else {
-        const x = num('X'), y = num('Y');
-        const w = num('Width'), h = num('Height');
-        minX = x; maxX = x + w;
-        minY = y; maxY = y + h;
+        const x = num('X'),
+          y = num('Y');
+        const w = num('Width'),
+          h = num('Height');
+        minX = x;
+        maxX = x + w;
+        minY = y;
+        maxY = y + h;
       }
       break;
     }
@@ -248,52 +293,77 @@ export function computeBoundingBox(
             maxY = Math.max(...pts.map((p) => p.y));
             break;
           }
-        } catch { /* fall through to ensureMin */ }
+        } catch {
+          /* fall through to ensureMin */
+        }
       }
-      minX = num('X'); minY = num('Y');
-      maxX = minX; maxY = minY;
+      minX = num('X');
+      minY = num('Y');
+      maxX = minX;
+      maxY = minY;
       break;
     }
     case 'circle':
     case 'arc': {
-      const cx = num('CenterX'), cy = num('CenterY');
+      const cx = num('CenterX'),
+        cy = num('CenterY');
       const r = num('Radius', 25);
-      minX = cx - r; maxX = cx + r;
-      minY = cy - r; maxY = cy + r;
+      minX = cx - r;
+      maxX = cx + r;
+      minY = cy - r;
+      maxY = cy + r;
       break;
     }
     case 'column': {
-      const x = num('X'), y = num('Y');
+      const x = num('X'),
+        y = num('Y');
       const d = num('Diameter', 400);
-      minX = x - d / 2; maxX = x + d / 2;
-      minY = y - d / 2; maxY = y + d / 2;
-      minZ = 0; maxZ = num('Height', 3000);
+      minX = x - d / 2;
+      maxX = x + d / 2;
+      minY = y - d / 2;
+      maxY = y + d / 2;
+      minZ = 0;
+      maxZ = num('Height', 3000);
       break;
     }
     case 'door': {
-      const x = num('X'), y = num('Y');
-      const w = num('Width', 900), h = num('Height', 2100);
-      minX = x; maxX = x + w;
-      minY = y - 50; maxY = y + 200; // thin in plan
-      minZ = 0; maxZ = h;
+      const x = num('X'),
+        y = num('Y');
+      const w = num('Width', 900),
+        h = num('Height', 2100);
+      minX = x;
+      maxX = x + w;
+      minY = y - 50;
+      maxY = y + 200; // thin in plan
+      minZ = 0;
+      maxZ = h;
       break;
     }
     case 'window': {
-      const x = num('X'), y = num('Y');
-      const w = num('Width', 1200), h = num('Height', 1200);
+      const x = num('X'),
+        y = num('Y');
+      const w = num('Width', 1200),
+        h = num('Height', 1200);
       const sill = num('SillHeight', 900);
-      minX = x; maxX = x + w;
-      minY = y - 50; maxY = y + 200;
-      minZ = sill; maxZ = sill + h;
+      minX = x;
+      maxX = x + w;
+      minY = y - 50;
+      maxY = y + 200;
+      minZ = sill;
+      maxZ = sill + h;
       break;
     }
     case 'stair': {
-      const x = num('X'), y = num('Y');
+      const x = num('X'),
+        y = num('Y');
       const w = num('Width2D', num('Width', 1200));
       const l = num('Length', 3000);
-      minX = x; maxX = x + w;
-      minY = y; maxY = y + l;
-      minZ = 0; maxZ = num('TotalRise', 3000);
+      minX = x;
+      maxX = x + w;
+      minY = y;
+      maxY = y + l;
+      minZ = 0;
+      maxZ = num('TotalRise', 3000);
       break;
     }
     case 'railing': {
@@ -307,9 +377,12 @@ export function computeBoundingBox(
             minY = Math.min(...pts.map((p) => p.y));
             maxY = Math.max(...pts.map((p) => p.y));
           }
-        } catch { /* fall through */ }
+        } catch {
+          /* fall through */
+        }
       }
-      minZ = 0; maxZ = num('Height', 1000);
+      minZ = 0;
+      maxZ = num('Height', 1000);
       break;
     }
     case 'roof': {
@@ -323,17 +396,23 @@ export function computeBoundingBox(
             minY = Math.min(...pts.map((p) => p.y));
             maxY = Math.max(...pts.map((p) => p.y));
           }
-        } catch { /* fall through */ }
+        } catch {
+          /* fall through */
+        }
       }
-      minZ = 0; maxZ = num('Thickness', 300);
+      minZ = 0;
+      maxZ = num('Thickness', 300);
       break;
     }
     case 'text':
     case 'model_text':
     case 'label': {
-      const x = num('X'), y = num('Y');
-      minX = x; maxX = x + 100;
-      minY = y; maxY = y + 20;
+      const x = num('X'),
+        y = num('Y');
+      minX = x;
+      maxX = x + 100;
+      minY = y;
+      maxY = y + 20;
       // model_text gets a z extent matching text height so the 3D viewport
       // can draw it at a real elevation; label is 2D but keep a tiny z so
       // the existing minimum-extent logic doesn't collapse it.
@@ -344,11 +423,13 @@ export function computeBoundingBox(
       // Roof-mounted window. Uses the same footprint-and-height layout
       // as 'window' but placed at the Elevation prop instead of
       // SillHeight — roof opening, not wall opening.
-      minX = num('X'); minY = num('Y');
+      minX = num('X');
+      minY = num('Y');
       maxX = minX + num('Width', 1200);
       maxY = minY + num('Height', 1200);
       const elev = num('Elevation', 3000);
-      minZ = elev; maxZ = elev + num('Height', 1200);
+      minZ = elev;
+      maxZ = elev + num('Height', 1200);
       break;
     }
     case 'ceiling':
@@ -365,9 +446,12 @@ export function computeBoundingBox(
             minY = Math.min(...pts.map((p) => p.y));
             maxY = Math.max(...pts.map((p) => p.y));
           }
-        } catch { /* fall through */ }
+        } catch {
+          /* fall through */
+        }
       } else {
-        minX = num('X'); minY = num('Y');
+        minX = num('X');
+        minY = num('Y');
         maxX = minX + num('Width', 4000);
         maxY = minY + num('Depth', 4000);
       }
@@ -388,18 +472,24 @@ export function computeBoundingBox(
     case 'truss':
     case 'brace': {
       // Beam-shaped member between two endpoints.
-      const sx = num('StartX'), sy = num('StartY');
-      const ex = num('EndX', sx + 2000), ey = num('EndY', sy);
-      minX = Math.min(sx, ex); maxX = Math.max(sx, ex);
-      minY = Math.min(sy, ey); maxY = Math.max(sy, ey);
+      const sx = num('StartX'),
+        sy = num('StartY');
+      const ex = num('EndX', sx + 2000),
+        ey = num('EndY', sy);
+      minX = Math.min(sx, ex);
+      maxX = Math.max(sx, ex);
+      minY = Math.min(sy, ey);
+      maxY = Math.max(sy, ey);
       minZ = num('Elevation', 0);
       maxZ = minZ + num('Depth', elementType === 'truss' ? 800 : 200);
       break;
     }
     case 'mass': {
       // Conceptual box volume (schematic design).
-      const x = num('X'), y = num('Y');
-      minX = x; minY = y;
+      const x = num('X'),
+        y = num('Y');
+      minX = x;
+      minY = y;
       maxX = x + num('Width', 4000);
       maxY = y + num('Depth', 4000);
       minZ = num('Elevation', 0);
@@ -409,10 +499,14 @@ export function computeBoundingBox(
     case 'cable_tray':
     case 'conduit': {
       // Linear run like duct/pipe.
-      const sx = num('StartX'), sy = num('StartY');
-      const ex = num('EndX', sx + 1000), ey = num('EndY', sy);
-      minX = Math.min(sx, ex); maxX = Math.max(sx, ex);
-      minY = Math.min(sy, ey); maxY = Math.max(sy, ey);
+      const sx = num('StartX'),
+        sy = num('StartY');
+      const ex = num('EndX', sx + 1000),
+        ey = num('EndY', sy);
+      minX = Math.min(sx, ex);
+      maxX = Math.max(sx, ex);
+      minY = Math.min(sy, ey);
+      maxY = Math.max(sy, ey);
       const diameter = num('Width', elementType === 'cable_tray' ? 300 : 50);
       minZ = num('Elevation', 3000);
       maxZ = minZ + diameter;
@@ -422,10 +516,13 @@ export function computeBoundingBox(
     case 'lamp':
     case 'air_terminal': {
       // Point-placed MEP fixture.
-      const x = num('X'), y = num('Y');
+      const x = num('X'),
+        y = num('Y');
       const size = num('Width', 200);
-      minX = x - size / 2; maxX = x + size / 2;
-      minY = y - size / 2; maxY = y + size / 2;
+      minX = x - size / 2;
+      maxX = x + size / 2;
+      minY = y - size / 2;
+      maxY = y + size / 2;
       minZ = num('Elevation', 2800);
       maxZ = minZ + num('Height', 100);
       break;
@@ -442,9 +539,12 @@ export function computeBoundingBox(
             minY = Math.min(...pts.map((p) => p.y));
             maxY = Math.max(...pts.map((p) => p.y));
             const zs = pts.map((p) => p.z ?? 0);
-            minZ = Math.min(...zs); maxZ = Math.max(...zs);
+            minZ = Math.min(...zs);
+            maxZ = Math.max(...zs);
           }
-        } catch { /* fall through */ }
+        } catch {
+          /* fall through */
+        }
       }
       break;
     }
@@ -454,31 +554,45 @@ export function computeBoundingBox(
     case 'person':
     case 'vehicle': {
       // Landscape / entourage: centred on placement point, scale from Scale property.
-      const x = num('X'), y = num('Y'), z = num('Z');
+      const x = num('X'),
+        y = num('Y'),
+        z = num('Z');
       const halfSize = num('Scale', 1.0) * 500; // default ~1 m radius
       const height = num('Height', 1000);
-      minX = x - halfSize; maxX = x + halfSize;
-      minY = y - halfSize; maxY = y + halfSize;
-      minZ = z; maxZ = z + height;
+      minX = x - halfSize;
+      maxX = x + halfSize;
+      minY = y - halfSize;
+      maxY = y + halfSize;
+      minZ = z;
+      maxZ = z + height;
       break;
     }
     case 'terrain_contour': {
       // Contour line: linear annotation at a given elevation.
-      const sx = num('StartX'), sy = num('StartY');
-      const ex = num('EndX', sx + 1000), ey = num('EndY', sy);
-      minX = Math.min(sx, ex); maxX = Math.max(sx, ex);
-      minY = Math.min(sy, ey); maxY = Math.max(sy, ey);
+      const sx = num('StartX'),
+        sy = num('StartY');
+      const ex = num('EndX', sx + 1000),
+        ey = num('EndY', sy);
+      minX = Math.min(sx, ex);
+      maxX = Math.max(sx, ex);
+      minY = Math.min(sy, ey);
+      maxY = Math.max(sy, ey);
       const elev = num('Elevation');
-      minZ = elev; maxZ = elev;
+      minZ = elev;
+      maxZ = elev;
       break;
     }
     case 'property_line':
     case 'room_separator': {
       // Zero-thickness linear annotation.
-      const sx = num('StartX'), sy = num('StartY');
-      const ex = num('EndX', sx + 1000), ey = num('EndY', sy);
-      minX = Math.min(sx, ex); maxX = Math.max(sx, ex);
-      minY = Math.min(sy, ey); maxY = Math.max(sy, ey);
+      const sx = num('StartX'),
+        sy = num('StartY');
+      const ex = num('EndX', sx + 1000),
+        ey = num('EndY', sy);
+      minX = Math.min(sx, ex);
+      maxX = Math.max(sx, ex);
+      minY = Math.min(sy, ey);
+      maxY = Math.max(sy, ey);
       // Keep it planar — min/max Z collapse to 0 and the post-case
       // clamp will expand to 1 unit for selection-highlight purposes.
       break;
@@ -488,27 +602,43 @@ export function computeBoundingBox(
     case 'detail_mark':
     case 'revision_cloud': {
       // View reference marker — point + small symbol bounds.
-      const x = num('X'), y = num('Y');
+      const x = num('X'),
+        y = num('Y');
       const r = num('Width', elementType === 'revision_cloud' ? 1500 : 300);
-      minX = x - r; maxX = x + r;
-      minY = y - r; maxY = y + r;
+      minX = x - r;
+      maxX = x + r;
+      minY = y - r;
+      maxY = y + r;
       break;
     }
     case 'hotspot': {
-      const x = num('X'), y = num('Y');
-      minX = x - 50; maxX = x + 50;
-      minY = y - 50; maxY = y + 50;
+      const x = num('X'),
+        y = num('Y');
+      minX = x - 50;
+      maxX = x + 50;
+      minY = y - 50;
+      maxY = y + 50;
       break;
     }
     default: {
-      minX = num('X'); minY = num('Y');
-      maxX = minX; maxY = minY;
+      minX = num('X');
+      minY = num('Y');
+      maxX = minX;
+      maxY = minY;
     }
   }
 
   // Ensure minimum bounding box size of 1 unit in each planar axis
-  if (maxX - minX < 1) { const cx = (minX + maxX) / 2; minX = cx - 0.5; maxX = cx + 0.5; }
-  if (maxY - minY < 1) { const cy = (minY + maxY) / 2; minY = cy - 0.5; maxY = cy + 0.5; }
+  if (maxX - minX < 1) {
+    const cx = (minX + maxX) / 2;
+    minX = cx - 0.5;
+    maxX = cx + 0.5;
+  }
+  if (maxY - minY < 1) {
+    const cy = (minY + maxY) / 2;
+    minY = cy - 0.5;
+    maxY = cy + 0.5;
+  }
   if (maxZ - minZ < 1) maxZ = minZ + 1;
 
   return {
@@ -564,8 +694,12 @@ export class DocumentModel {
     for (const element of Object.values(this.document.content.elements)) {
       const bb = element.boundingBox;
       const isDegenerate =
-        bb.min.x === 0 && bb.min.y === 0 && bb.min.z === 0 &&
-        bb.max.x === 0 && bb.max.y === 0 && bb.max.z === 0;
+        bb.min.x === 0 &&
+        bb.min.y === 0 &&
+        bb.min.z === 0 &&
+        bb.max.x === 0 &&
+        bb.max.y === 0 &&
+        bb.max.z === 0;
       if (isDegenerate) {
         element.boundingBox = computeBoundingBox(element.type, element.properties);
       }
@@ -752,7 +886,11 @@ export class DocumentModel {
   }
 
   getVersionList(): Array<{ version: number; timestamp: number; message?: string }> {
-    return this.versions.map(({ version, timestamp, message }) => ({ version, timestamp, message }));
+    return this.versions.map(({ version, timestamp, message }) => ({
+      version,
+      timestamp,
+      message,
+    }));
   }
 
   getVersion(versionNumber: number): DocumentSchema {

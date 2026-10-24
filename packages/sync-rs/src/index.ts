@@ -31,7 +31,7 @@ export async function initSync(): Promise<void> {
 export function createDocumentCrdt(peerId: string): IDocumentCrdt {
   if (!_wasm) {
     throw new Error(
-      'WASM not initialized. Call initSync() first, or run: wasm-pack build --target web',
+      'WASM not initialized. Call initSync() first, or run: wasm-pack build --target web'
     );
   }
   return new _wasm.DocumentCrdt(peerId);

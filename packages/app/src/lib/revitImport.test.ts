@@ -88,7 +88,13 @@ describe('parseRevitJSON', () => {
     const bad = {
       ...validRevitDoc,
       elements: [
-        { id: 'x', revitCategory: 'Walls', revitFamily: 'F', revitType: 'T', parameters: { bad: true } },
+        {
+          id: 'x',
+          revitCategory: 'Walls',
+          revitFamily: 'F',
+          revitType: 'T',
+          parameters: { bad: true },
+        },
       ],
     };
     expect(() => parseRevitJSON(bad)).toThrow(/string or number/);

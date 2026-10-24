@@ -9,30 +9,41 @@
 import { describe, it, expect } from 'vitest';
 import type { ElementSchema } from '@opencad/document';
 import {
-  visibleLayerIds, resolveStyle, DEFAULT_COMBINATIONS,
-  type LayerCombination, type GraphicOverride,
+  visibleLayerIds,
+  resolveStyle,
+  DEFAULT_COMBINATIONS,
+  type LayerCombination,
+  type GraphicOverride,
 } from './layerCombinations';
 
 let __id = 0;
-function mk(type: ElementSchema['type'], props: Record<string, string | number> = {}): ElementSchema {
+function mk(
+  type: ElementSchema['type'],
+  props: Record<string, string | number> = {}
+): ElementSchema {
   const p: Record<string, { type: string; value: unknown }> = {};
-  for (const [k, v] of Object.entries(props)) p[k] = { type: typeof v === 'number' ? 'number' : 'string', value: v };
+  for (const [k, v] of Object.entries(props))
+    p[k] = { type: typeof v === 'number' ? 'number' : 'string', value: v };
   return {
-    id: `e-${++__id}`, type, layerId: 'l',
+    id: `e-${++__id}`,
+    type,
+    layerId: 'l',
     properties: p,
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
 describe('T-VIZ-014: layer combos + overrides', () => {
   it('T-VIZ-014-001: visibleLayerIds returns only visible layers', () => {
     const combo: LayerCombination = {
-      id: 'c', name: 't',
+      id: 'c',
+      name: 't',
       layers: {
-        a: { visible: true,  locked: false },
+        a: { visible: true, locked: false },
         b: { visible: false, locked: false },
-        c: { visible: true,  locked: true },
+        c: { visible: true, locked: true },
       },
     };
     expect(visibleLayerIds(combo)).toEqual(['a', 'c']);
@@ -41,7 +52,9 @@ describe('T-VIZ-014: layer combos + overrides', () => {
   it('T-VIZ-014-003: resolveStyle on matching type returns override style', () => {
     const w = mk('wall');
     const override: GraphicOverride = {
-      id: 'o', name: 'structural-red', priority: 1,
+      id: 'o',
+      name: 'structural-red',
+      priority: 1,
       filter: { types: ['wall'] },
       style: { strokeColor: '#ff0000' },
       enabled: true,
@@ -52,8 +65,22 @@ describe('T-VIZ-014: layer combos + overrides', () => {
   it('T-VIZ-014-004: multiple overrides merge in priority order', () => {
     const w = mk('wall', { Material: 'Concrete' });
     const overrides: GraphicOverride[] = [
-      { id: 'a', name: 'walls red',     priority: 1, filter: { types: ['wall'] }, style: { strokeColor: '#ff0000', opacity: 0.5 }, enabled: true },
-      { id: 'b', name: 'concrete blue', priority: 2, filter: { materials: ['Concrete'] }, style: { strokeColor: '#0000ff' }, enabled: true },
+      {
+        id: 'a',
+        name: 'walls red',
+        priority: 1,
+        filter: { types: ['wall'] },
+        style: { strokeColor: '#ff0000', opacity: 0.5 },
+        enabled: true,
+      },
+      {
+        id: 'b',
+        name: 'concrete blue',
+        priority: 2,
+        filter: { materials: ['Concrete'] },
+        style: { strokeColor: '#0000ff' },
+        enabled: true,
+      },
     ];
     const s = resolveStyle(w, overrides);
     // Higher-priority override wins for conflicting strokeColor
@@ -65,7 +92,9 @@ describe('T-VIZ-014: layer combos + overrides', () => {
   it('T-VIZ-014-005: element matching no override returns empty style', () => {
     const d = mk('door');
     const override: GraphicOverride = {
-      id: 'o', name: 'walls', priority: 1,
+      id: 'o',
+      name: 'walls',
+      priority: 1,
       filter: { types: ['wall'] },
       style: { strokeColor: '#ff0000' },
       enabled: true,
@@ -76,7 +105,9 @@ describe('T-VIZ-014: layer combos + overrides', () => {
   it('disabled override is ignored', () => {
     const w = mk('wall');
     const override: GraphicOverride = {
-      id: 'o', name: 'x', priority: 1,
+      id: 'o',
+      name: 'x',
+      priority: 1,
       filter: { types: ['wall'] },
       style: { strokeColor: '#ff0000' },
       enabled: false,
@@ -88,7 +119,9 @@ describe('T-VIZ-014: layer combos + overrides', () => {
     const tall = mk('wall', { Height: 4500 });
     const short = mk('wall', { Height: 2400 });
     const override: GraphicOverride = {
-      id: 'o', name: 'tall-only', priority: 1,
+      id: 'o',
+      name: 'tall-only',
+      priority: 1,
       filter: { where: [{ key: 'Height', op: '>', value: 3000 }] },
       style: { strokeColor: '#ffff00' },
       enabled: true,

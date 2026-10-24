@@ -16,7 +16,9 @@ vi.mock('./ThreeViewportInner', () => ({
 describe('Issue #6: Three.js code splitting', () => {
   it('should render a Suspense fallback while Three.js loads', () => {
     render(
-      React.createElement(ThreeViewportLoader, { fallback: React.createElement('div', { 'data-testid': 'loading' }, 'Loading 3D...') })
+      React.createElement(ThreeViewportLoader, {
+        fallback: React.createElement('div', { 'data-testid': 'loading' }, 'Loading 3D...'),
+      })
     );
     // Suspense fallback should be shown while lazy component resolves
     // (In tests with mock, component renders synchronously, but fallback should still be wrapped)

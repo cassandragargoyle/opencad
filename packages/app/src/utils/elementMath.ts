@@ -10,22 +10,35 @@ import type { ElementSchema, PropertyValue } from '@opencad/document';
 
 // ─── Shared types ─────────────────────────────────────────────────────────────
 
-export interface Point { x: number; y: number; }
+export interface Point {
+  x: number;
+  y: number;
+}
 
 /** Which part of an element the user grabbed. */
 export type HandleKind =
   // Endpoint handles (walls, lines, beams, dimensions)
-  | 'p0' | 'p1'
+  | 'p0'
+  | 'p1'
   // Rectangle corner handles
-  | 'nw' | 'ne' | 'se' | 'sw'
+  | 'nw'
+  | 'ne'
+  | 'se'
+  | 'sw'
   // Rectangle edge handles
-  | 'n' | 'e' | 's' | 'w'
+  | 'n'
+  | 'e'
+  | 's'
+  | 'w'
   // Circle/arc radius handles
-  | 'r0' | 'r1' | 'r2' | 'r3';
+  | 'r0'
+  | 'r1'
+  | 'r2'
+  | 'r3';
 
 export interface Handle {
   kind: HandleKind;
-  x: number;     // world-space centre of handle square
+  x: number; // world-space centre of handle square
   y: number;
   cursor: string; // CSS cursor for this handle
 }
@@ -46,7 +59,11 @@ function polygonPoints(raw: unknown): Point[] {
   if (!raw) return [];
   let arr: unknown = raw;
   if (typeof raw === 'string') {
-    try { arr = JSON.parse(raw); } catch { return []; }
+    try {
+      arr = JSON.parse(raw);
+    } catch {
+      return [];
+    }
   }
   if (!Array.isArray(arr)) return [];
   const out: Point[] = [];
@@ -71,8 +88,10 @@ export function getHandles(element: ElementSchema): Handle[] {
   const t = element.type;
 
   if (t === 'wall' || t === 'annotation' || t === 'beam' || t === 'dimension') {
-    const x1 = pv(props, 'StartX', 0), y1 = pv(props, 'StartY', 0);
-    const x2 = pv(props, 'EndX', x1 + 1000), y2 = pv(props, 'EndY', y1);
+    const x1 = pv(props, 'StartX', 0),
+      y1 = pv(props, 'StartY', 0);
+    const x2 = pv(props, 'EndX', x1 + 1000),
+      y2 = pv(props, 'EndY', y1);
     return [
       { kind: 'p0', x: x1, y: y1, cursor: 'crosshair' },
       { kind: 'p1', x: x2, y: y2, cursor: 'crosshair' },
@@ -80,8 +99,12 @@ export function getHandles(element: ElementSchema): Handle[] {
   }
 
   if (
-    t === 'rectangle' || t === 'slab' || t === 'roof' ||
-    t === 'polygon'   || t === 'polyline' || t === 'space'
+    t === 'rectangle' ||
+    t === 'slab' ||
+    t === 'roof' ||
+    t === 'polygon' ||
+    t === 'polyline' ||
+    t === 'space'
   ) {
     // These element types are typically drawn as polygons — their geometry
     // lives in the `Points` property, not X/Y/Width/Height. Derive the
@@ -92,38 +115,47 @@ export function getHandles(element: ElementSchema): Handle[] {
     const rawPoints = (props['Points']?.value ?? props['points']?.value) as unknown;
     const pts = polygonPoints(rawPoints);
     if (pts.length >= 2) {
-      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      let minX = Infinity,
+        minY = Infinity,
+        maxX = -Infinity,
+        maxY = -Infinity;
       for (const p of pts) {
         if (p.x < minX) minX = p.x;
         if (p.x > maxX) maxX = p.x;
         if (p.y < minY) minY = p.y;
         if (p.y > maxY) maxY = p.y;
       }
-      x = minX; y = minY; w = maxX - minX; h = maxY - minY;
+      x = minX;
+      y = minY;
+      w = maxX - minX;
+      h = maxY - minY;
     } else {
-      x = pv(props, 'X', 0); y = pv(props, 'Y', 0);
-      w = pv(props, 'Width', 1000); h = pv(props, 'Height', 1000);
+      x = pv(props, 'X', 0);
+      y = pv(props, 'Y', 0);
+      w = pv(props, 'Width', 1000);
+      h = pv(props, 'Height', 1000);
     }
     return [
-      { kind: 'nw', x,         y,         cursor: 'nw-resize' },
-      { kind: 'n',  x: x+w/2,  y,         cursor: 'n-resize'  },
-      { kind: 'ne', x: x+w,    y,         cursor: 'ne-resize' },
-      { kind: 'e',  x: x+w,    y: y+h/2,  cursor: 'e-resize'  },
-      { kind: 'se', x: x+w,    y: y+h,    cursor: 'se-resize' },
-      { kind: 's',  x: x+w/2,  y: y+h,    cursor: 's-resize'  },
-      { kind: 'sw', x,         y: y+h,    cursor: 'sw-resize' },
-      { kind: 'w',  x,         y: y+h/2,  cursor: 'w-resize'  },
+      { kind: 'nw', x, y, cursor: 'nw-resize' },
+      { kind: 'n', x: x + w / 2, y, cursor: 'n-resize' },
+      { kind: 'ne', x: x + w, y, cursor: 'ne-resize' },
+      { kind: 'e', x: x + w, y: y + h / 2, cursor: 'e-resize' },
+      { kind: 'se', x: x + w, y: y + h, cursor: 'se-resize' },
+      { kind: 's', x: x + w / 2, y: y + h, cursor: 's-resize' },
+      { kind: 'sw', x, y: y + h, cursor: 'sw-resize' },
+      { kind: 'w', x, y: y + h / 2, cursor: 'w-resize' },
     ];
   }
 
   if (t === 'circle' || t === 'arc') {
-    const cx = pv(props, 'CenterX', 0), cy = pv(props, 'CenterY', 0);
-    const r  = pv(props, 'Radius', 500);
+    const cx = pv(props, 'CenterX', 0),
+      cy = pv(props, 'CenterY', 0);
+    const r = pv(props, 'Radius', 500);
     return [
-      { kind: 'r0', x: cx,   y: cy-r, cursor: 'n-resize' },
-      { kind: 'r1', x: cx+r, y: cy,   cursor: 'e-resize' },
-      { kind: 'r2', x: cx,   y: cy+r, cursor: 's-resize' },
-      { kind: 'r3', x: cx-r, y: cy,   cursor: 'w-resize' },
+      { kind: 'r0', x: cx, y: cy - r, cursor: 'n-resize' },
+      { kind: 'r1', x: cx + r, y: cy, cursor: 'e-resize' },
+      { kind: 'r2', x: cx, y: cy + r, cursor: 's-resize' },
+      { kind: 'r3', x: cx - r, y: cy, cursor: 'w-resize' },
     ];
   }
 
@@ -131,14 +163,9 @@ export function getHandles(element: ElementSchema): Handle[] {
 }
 
 /** Hit-test a handle at world-space `point`. Returns handle or null. */
-export function hitHandle(
-  point: Point,
-  handles: Handle[],
-  toleranceWorld: number
-): Handle | null {
+export function hitHandle(point: Point, handles: Handle[], toleranceWorld: number): Handle | null {
   for (const h of handles) {
-    if (Math.abs(h.x - point.x) <= toleranceWorld &&
-        Math.abs(h.y - point.y) <= toleranceWorld) {
+    if (Math.abs(h.x - point.x) <= toleranceWorld && Math.abs(h.y - point.y) <= toleranceWorld) {
       return h;
     }
   }
@@ -148,8 +175,16 @@ export function hitHandle(
 // ─── Element hit test ─────────────────────────────────────────────────────────
 
 /** Point-to-segment distance (for line/wall hit testing). */
-function segmentDist(px: number, py: number, ax: number, ay: number, bx: number, by: number): number {
-  const dx = bx - ax, dy = by - ay;
+function segmentDist(
+  px: number,
+  py: number,
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number
+): number {
+  const dx = bx - ax,
+    dy = by - ay;
   const len2 = dx * dx + dy * dy;
   if (len2 === 0) return Math.sqrt((px - ax) ** 2 + (py - ay) ** 2);
   const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / len2));
@@ -170,15 +205,18 @@ export function hitTestElement(
   const { x, y } = worldPoint;
 
   if (t === 'wall' || t === 'annotation' || t === 'beam' || t === 'dimension') {
-    const x1 = pv(props, 'StartX', 0), y1 = pv(props, 'StartY', 0);
-    const x2 = pv(props, 'EndX', x1+1000), y2 = pv(props, 'EndY', y1);
+    const x1 = pv(props, 'StartX', 0),
+      y1 = pv(props, 'StartY', 0);
+    const x2 = pv(props, 'EndX', x1 + 1000),
+      y2 = pv(props, 'EndY', y1);
     return segmentDist(x, y, x1, y1, x2, y2) <= toleranceWorld;
   }
 
   if (t === 'circle' || t === 'arc') {
-    const cx = pv(props, 'CenterX', 0), cy = pv(props, 'CenterY', 0);
-    const r  = pv(props, 'Radius', 500);
-    const d  = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+    const cx = pv(props, 'CenterX', 0),
+      cy = pv(props, 'CenterY', 0);
+    const r = pv(props, 'Radius', 500);
+    const d = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
     return Math.abs(d - r) <= toleranceWorld || d <= r + toleranceWorld;
   }
 
@@ -188,16 +226,23 @@ export function hitTestElement(
     try {
       const pts = JSON.parse(v.value as string) as Point[];
       for (let i = 0; i < pts.length - 1; i++) {
-        if (segmentDist(x, y, pts[i]!.x, pts[i]!.y, pts[i+1]!.x, pts[i+1]!.y) <= toleranceWorld) return true;
+        if (segmentDist(x, y, pts[i]!.x, pts[i]!.y, pts[i + 1]!.x, pts[i + 1]!.y) <= toleranceWorld)
+          return true;
       }
       return false;
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   }
 
   // Filled shapes — bounding-box test
   const bb = element.boundingBox;
-  return x >= bb.min.x - toleranceWorld && x <= bb.max.x + toleranceWorld &&
-         y >= bb.min.y - toleranceWorld && y <= bb.max.y + toleranceWorld;
+  return (
+    x >= bb.min.x - toleranceWorld &&
+    x <= bb.max.x + toleranceWorld &&
+    y >= bb.min.y - toleranceWorld &&
+    y <= bb.max.y + toleranceWorld
+  );
 }
 
 // ─── Move ─────────────────────────────────────────────────────────────────────
@@ -211,7 +256,10 @@ export function moveElementProps(
   dx: number,
   dy: number
 ): Record<string, PropertyValue> {
-  const props = element.properties as Record<string, { value: unknown; type: string; unit?: string }>;
+  const props = element.properties as Record<
+    string,
+    { value: unknown; type: string; unit?: string }
+  >;
   const t = element.type;
   const upd: Record<string, PropertyValue> = {};
 
@@ -223,17 +271,28 @@ export function moveElementProps(
   };
 
   if (t === 'wall' || t === 'annotation' || t === 'beam' || t === 'dimension') {
-    shift('StartX', 'x'); shift('StartY', 'y');
-    shift('EndX',   'x'); shift('EndY',   'y');
+    shift('StartX', 'x');
+    shift('StartY', 'y');
+    shift('EndX', 'x');
+    shift('EndY', 'y');
     return upd;
   }
-  if (t === 'rectangle' || t === 'slab' || t === 'roof' ||
-      t === 'door'      || t === 'window' || t === 'column' || t === 'stair') {
-    shift('X', 'x'); shift('Y', 'y');
+  if (
+    t === 'rectangle' ||
+    t === 'slab' ||
+    t === 'roof' ||
+    t === 'door' ||
+    t === 'window' ||
+    t === 'column' ||
+    t === 'stair'
+  ) {
+    shift('X', 'x');
+    shift('Y', 'y');
     return upd;
   }
   if (t === 'circle' || t === 'arc') {
-    shift('CenterX', 'x'); shift('CenterY', 'y');
+    shift('CenterX', 'x');
+    shift('CenterY', 'y');
     return upd;
   }
   if (t === 'polygon' || t === 'polyline' || t === 'railing') {
@@ -245,7 +304,9 @@ export function moveElementProps(
           ...v,
           value: JSON.stringify(pts.map((p) => ({ x: p.x + dx, y: p.y + dy }))),
         } as PropertyValue;
-      } catch { /* skip */ }
+      } catch {
+        /* skip */
+      }
     }
     return upd;
   }
@@ -264,7 +325,10 @@ export function resizeElementProps(
   handle: HandleKind,
   worldPoint: Point
 ): Record<string, PropertyValue> {
-  const props = element.properties as Record<string, { value: unknown; type: string; unit?: string }>;
+  const props = element.properties as Record<
+    string,
+    { value: unknown; type: string; unit?: string }
+  >;
   const t = element.type;
   const upd: Record<string, PropertyValue> = {};
 
@@ -275,42 +339,70 @@ export function resizeElementProps(
 
   // ── Line-like endpoints ─────────────────────────────────────────────────────
   if (t === 'wall' || t === 'annotation' || t === 'beam' || t === 'dimension') {
-    if (handle === 'p0') { set('StartX', worldPoint.x); set('StartY', worldPoint.y); }
-    if (handle === 'p1') { set('EndX',   worldPoint.x); set('EndY',   worldPoint.y); }
+    if (handle === 'p0') {
+      set('StartX', worldPoint.x);
+      set('StartY', worldPoint.y);
+    }
+    if (handle === 'p1') {
+      set('EndX', worldPoint.x);
+      set('EndY', worldPoint.y);
+    }
     return upd;
   }
 
   // ── Box shapes ──────────────────────────────────────────────────────────────
   if (t === 'rectangle' || t === 'slab' || t === 'roof') {
-    const x  = pv(props, 'X', 0),     y  = pv(props, 'Y', 0);
-    const w  = pv(props, 'Width', 1000), h  = pv(props, 'Height', 1000);
-    const r  = x + w, b = y + h;
+    const x = pv(props, 'X', 0),
+      y = pv(props, 'Y', 0);
+    const w = pv(props, 'Width', 1000),
+      h = pv(props, 'Height', 1000);
+    const r = x + w,
+      b = y + h;
 
     switch (handle) {
-      case 'nw': set('X', worldPoint.x); set('Y', worldPoint.y);
-                 set('Width',  Math.max(MIN_DIM, r - worldPoint.x));
-                 set('Height', Math.max(MIN_DIM, b - worldPoint.y)); break;
-      case 'n':  set('Y', worldPoint.y);
-                 set('Height', Math.max(MIN_DIM, b - worldPoint.y)); break;
-      case 'ne': set('Y', worldPoint.y);
-                 set('Width',  Math.max(MIN_DIM, worldPoint.x - x));
-                 set('Height', Math.max(MIN_DIM, b - worldPoint.y)); break;
-      case 'e':  set('Width',  Math.max(MIN_DIM, worldPoint.x - x)); break;
-      case 'se': set('Width',  Math.max(MIN_DIM, worldPoint.x - x));
-                 set('Height', Math.max(MIN_DIM, worldPoint.y - y)); break;
-      case 's':  set('Height', Math.max(MIN_DIM, worldPoint.y - y)); break;
-      case 'sw': set('X', worldPoint.x); set('Width', Math.max(MIN_DIM, r - worldPoint.x));
-                 set('Height', Math.max(MIN_DIM, worldPoint.y - y)); break;
-      case 'w':  set('X', worldPoint.x);
-                 set('Width',  Math.max(MIN_DIM, r - worldPoint.x)); break;
+      case 'nw':
+        set('X', worldPoint.x);
+        set('Y', worldPoint.y);
+        set('Width', Math.max(MIN_DIM, r - worldPoint.x));
+        set('Height', Math.max(MIN_DIM, b - worldPoint.y));
+        break;
+      case 'n':
+        set('Y', worldPoint.y);
+        set('Height', Math.max(MIN_DIM, b - worldPoint.y));
+        break;
+      case 'ne':
+        set('Y', worldPoint.y);
+        set('Width', Math.max(MIN_DIM, worldPoint.x - x));
+        set('Height', Math.max(MIN_DIM, b - worldPoint.y));
+        break;
+      case 'e':
+        set('Width', Math.max(MIN_DIM, worldPoint.x - x));
+        break;
+      case 'se':
+        set('Width', Math.max(MIN_DIM, worldPoint.x - x));
+        set('Height', Math.max(MIN_DIM, worldPoint.y - y));
+        break;
+      case 's':
+        set('Height', Math.max(MIN_DIM, worldPoint.y - y));
+        break;
+      case 'sw':
+        set('X', worldPoint.x);
+        set('Width', Math.max(MIN_DIM, r - worldPoint.x));
+        set('Height', Math.max(MIN_DIM, worldPoint.y - y));
+        break;
+      case 'w':
+        set('X', worldPoint.x);
+        set('Width', Math.max(MIN_DIM, r - worldPoint.x));
+        break;
     }
     return upd;
   }
 
   // ── Circle / arc ────────────────────────────────────────────────────────────
   if (t === 'circle' || t === 'arc') {
-    const cx = pv(props, 'CenterX', 0), cy = pv(props, 'CenterY', 0);
-    const r  = Math.max(MIN_DIM, Math.sqrt((worldPoint.x - cx) ** 2 + (worldPoint.y - cy) ** 2));
+    const cx = pv(props, 'CenterX', 0),
+      cy = pv(props, 'CenterY', 0);
+    const r = Math.max(MIN_DIM, Math.sqrt((worldPoint.x - cx) ** 2 + (worldPoint.y - cy) ** 2));
     set('Radius', r);
     return upd;
   }
@@ -325,15 +417,24 @@ export function getElementCenter(element: ElementSchema): Point {
   const t = element.type;
 
   if (t === 'wall' || t === 'annotation' || t === 'beam' || t === 'dimension') {
-    const x1 = pv(props, 'StartX', 0), y1 = pv(props, 'StartY', 0);
-    const x2 = pv(props, 'EndX', x1+1000), y2 = pv(props, 'EndY', y1);
-    return { x: (x1+x2)/2, y: (y1+y2)/2 };
+    const x1 = pv(props, 'StartX', 0),
+      y1 = pv(props, 'StartY', 0);
+    const x2 = pv(props, 'EndX', x1 + 1000),
+      y2 = pv(props, 'EndY', y1);
+    return { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
   }
   if (t === 'circle' || t === 'arc') {
     return { x: pv(props, 'CenterX', 0), y: pv(props, 'CenterY', 0) };
   }
-  if (t === 'rectangle' || t === 'slab' || t === 'roof' ||
-      t === 'door'      || t === 'window' || t === 'column' || t === 'stair') {
+  if (
+    t === 'rectangle' ||
+    t === 'slab' ||
+    t === 'roof' ||
+    t === 'door' ||
+    t === 'window' ||
+    t === 'column' ||
+    t === 'stair'
+  ) {
     return { x: pv(props, 'X', 0), y: pv(props, 'Y', 0) };
   }
   const bb = element.boundingBox;

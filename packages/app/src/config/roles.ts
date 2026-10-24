@@ -1,11 +1,4 @@
-export type RoleId =
-  | 'architect'
-  | 'structural'
-  | 'mep'
-  | 'contractor'
-  | 'owner'
-  | 'pm'
-  | 'admin';
+export type RoleId = 'architect' | 'structural' | 'mep' | 'contractor' | 'owner' | 'pm' | 'admin';
 
 /** Alias used by AdminPanel component */
 export type RoleName = RoleId;
@@ -27,32 +20,90 @@ export const ROLE_CONFIGS: Record<RoleId, RoleConfig> = {
       // Selection
       'select',
       // 2D drafting
-      'line', 'rectangle', 'circle', 'arc', 'ellipse', 'polygon', 'polyline', 'spline', 'hotspot',
+      'line',
+      'rectangle',
+      'circle',
+      'arc',
+      'ellipse',
+      'polygon',
+      'polyline',
+      'spline',
+      'hotspot',
       // Structural / BIM
-      'wall', 'curtain_wall', 'column', 'beam', 'slab', 'roof', 'stair', 'ramp', 'railing',
-      'ceiling', 'foundation', 'zone', 'truss', 'brace', 'mass',
+      'wall',
+      'curtain_wall',
+      'column',
+      'beam',
+      'slab',
+      'roof',
+      'stair',
+      'ramp',
+      'railing',
+      'ceiling',
+      'foundation',
+      'zone',
+      'truss',
+      'brace',
+      'mass',
       // Openings
-      'door', 'window', 'skylight',
+      'door',
+      'window',
+      'skylight',
       // MEP
-      'duct', 'pipe', 'cable_tray', 'conduit', 'lamp', 'air_terminal', 'sprinkler',
+      'duct',
+      'pipe',
+      'cable_tray',
+      'conduit',
+      'lamp',
+      'air_terminal',
+      'sprinkler',
       // Site
-      'topo', 'property_line', 'room_separator',
+      'topo',
+      'property_line',
+      'room_separator',
       // Documentation / annotation
-      'dimension', 'text', 'model_text', 'label', 'section', 'elevation', 'detail', 'revision_cloud',
+      'dimension',
+      'text',
+      'model_text',
+      'label',
+      'section',
+      'elevation',
+      'detail',
+      'revision_cloud',
       // Misc
-      'hatch', 'compliance', 'ai',
+      'hatch',
+      'compliance',
+      'ai',
     ],
     panels: [
       // core
-      'navigator', 'levels', 'layers', 'properties',
+      'navigator',
+      'levels',
+      'layers',
+      'properties',
       // design tools
-      'schedule', 'spaces', 'render', 'sheets', 'hatch', 'symbols', 'shadow', 'section', 'site', 'photo',
+      'schedule',
+      'spaces',
+      'render',
+      'sheets',
+      'hatch',
+      'symbols',
+      'shadow',
+      'section',
+      'site',
+      'photo',
       // analysis
-      'compliance', 'carbon', 'cost', 'wind',
+      'compliance',
+      'carbon',
+      'cost',
+      'wind',
       // collaboration
-      'comments', 'bcf',
+      'comments',
+      'bcf',
       // materials & content
-      'materials', 'specs', 'marketplace',
+      'materials',
+      'specs',
+      'marketplace',
       // ai
       'ai',
     ],
@@ -66,8 +117,16 @@ export const ROLE_CONFIGS: Record<RoleId, RoleConfig> = {
     label: 'Structural Engineer',
     tools: ['select', 'dimension', 'section', 'compliance', 'annotation'],
     panels: [
-      'navigator', 'levels', 'layers', 'properties',
-      'schedule', 'section', 'compliance', 'bcf', 'comments', 'specs',
+      'navigator',
+      'levels',
+      'layers',
+      'properties',
+      'schedule',
+      'section',
+      'compliance',
+      'bcf',
+      'comments',
+      'specs',
     ],
     writableLayers: ['structural', 'grids', 'foundations'],
     viewportMode: 'interactive',
@@ -78,8 +137,16 @@ export const ROLE_CONFIGS: Record<RoleId, RoleConfig> = {
     label: 'MEP Engineer',
     tools: ['select', 'dimension', 'section', 'annotation'],
     panels: [
-      'navigator', 'levels', 'layers', 'properties',
-      'schedule', 'section', 'clash', 'bcf', 'comments', 'specs',
+      'navigator',
+      'levels',
+      'layers',
+      'properties',
+      'schedule',
+      'section',
+      'clash',
+      'bcf',
+      'comments',
+      'specs',
     ],
     writableLayers: ['mechanical', 'electrical', 'plumbing'],
     viewportMode: 'interactive',
@@ -90,8 +157,16 @@ export const ROLE_CONFIGS: Record<RoleId, RoleConfig> = {
     label: 'Contractor / Builder',
     tools: ['select', 'dimension', 'section', 'compliance', 'annotation'],
     panels: [
-      'navigator', 'levels', 'layers',
-      'schedule', 'compliance', 'cost', 'bcf', 'comments', 'specs', 'marketplace',
+      'navigator',
+      'levels',
+      'layers',
+      'schedule',
+      'compliance',
+      'cost',
+      'bcf',
+      'comments',
+      'specs',
+      'marketplace',
     ],
     writableLayers: [],
     viewportMode: 'interactive',

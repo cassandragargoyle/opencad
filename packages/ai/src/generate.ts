@@ -169,14 +169,14 @@ function buildFallbackTemplate(prompt: string): GenerateProjectResult['document'
   // Walls in mm: perimeter + two interior partitions
   const walls: Array<{ id: string; x1: number; y1: number; x2: number; y2: number }> = [
     // Perimeter
-    { id: 'wall-s',  x1: 0,     y1: 0,     x2: 12000, y2: 0 },
-    { id: 'wall-e',  x1: 12000, y1: 0,     x2: 12000, y2: 9000 },
-    { id: 'wall-n',  x1: 0,     y1: 9000,  x2: 12000, y2: 9000 },
-    { id: 'wall-w',  x1: 0,     y1: 0,     x2: 0,     y2: 9000 },
+    { id: 'wall-s', x1: 0, y1: 0, x2: 12000, y2: 0 },
+    { id: 'wall-e', x1: 12000, y1: 0, x2: 12000, y2: 9000 },
+    { id: 'wall-n', x1: 0, y1: 9000, x2: 12000, y2: 9000 },
+    { id: 'wall-w', x1: 0, y1: 0, x2: 0, y2: 9000 },
     // Interior — corridor / room dividers
-    { id: 'wall-i1', x1: 0,     y1: 4500,  x2: 7500,  y2: 4500 },
-    { id: 'wall-i2', x1: 7500,  y1: 0,     x2: 7500,  y2: 9000 },
-    { id: 'wall-i3', x1: 0,     y1: 4500,  x2: 0,     y2: 4500 }, // stub — kitchen/living divider
+    { id: 'wall-i1', x1: 0, y1: 4500, x2: 7500, y2: 4500 },
+    { id: 'wall-i2', x1: 7500, y1: 0, x2: 7500, y2: 9000 },
+    { id: 'wall-i3', x1: 0, y1: 4500, x2: 0, y2: 4500 }, // stub — kitchen/living divider
   ];
 
   const elementMap: Record<string, WallElement> = {};
@@ -187,11 +187,11 @@ function buildFallbackTemplate(prompt: string): GenerateProjectResult['document'
       properties: {
         StartX: { type: 'number', value: w.x1 },
         StartY: { type: 'number', value: w.y1 },
-        EndX:   { type: 'number', value: w.x2 },
-        EndY:   { type: 'number', value: w.y2 },
+        EndX: { type: 'number', value: w.x2 },
+        EndY: { type: 'number', value: w.y2 },
         Height: { type: 'number', value: 3000 },
-        Width:  { type: 'number', value: 200 },
-        Name:   { type: 'string', value: w.id },
+        Width: { type: 'number', value: 200 },
+        Name: { type: 'string', value: w.id },
       },
       propertySets: [],
       geometry: { type: 'curve', data: null },
@@ -233,13 +233,46 @@ function buildFallbackTemplate(prompt: string): GenerateProjectResult['document'
     content: { elements: elementMap, spaces: {} },
     organization: {
       layers: {
-        'layer-walls': { id: 'layer-walls', name: 'Walls', color: '#4a90d9', visible: true, locked: false, order: 0 },
-        'layer-doors': { id: 'layer-doors', name: 'Doors', color: '#e67e22', visible: true, locked: false, order: 1 },
-        'layer-windows': { id: 'layer-windows', name: 'Windows', color: '#27ae60', visible: true, locked: false, order: 2 },
+        'layer-walls': {
+          id: 'layer-walls',
+          name: 'Walls',
+          color: '#4a90d9',
+          visible: true,
+          locked: false,
+          order: 0,
+        },
+        'layer-doors': {
+          id: 'layer-doors',
+          name: 'Doors',
+          color: '#e67e22',
+          visible: true,
+          locked: false,
+          order: 1,
+        },
+        'layer-windows': {
+          id: 'layer-windows',
+          name: 'Windows',
+          color: '#27ae60',
+          visible: true,
+          locked: false,
+          order: 2,
+        },
       },
       levels: {
-        'level-ground': { id: 'level-ground', name: 'Ground Floor', elevation: 0, height: 3000, order: 0 },
-        'level-first':  { id: 'level-first', name: 'First Floor', elevation: 3000, height: 3000, order: 1 },
+        'level-ground': {
+          id: 'level-ground',
+          name: 'Ground Floor',
+          elevation: 0,
+          height: 3000,
+          order: 0,
+        },
+        'level-first': {
+          id: 'level-first',
+          name: 'First Floor',
+          elevation: 3000,
+          height: 3000,
+          order: 1,
+        },
       },
     },
     presentation: { views: {}, annotations: {} },
@@ -269,7 +302,9 @@ function extractJson(text: string): Record<string, unknown> | null {
   // Try raw parse first
   try {
     return JSON.parse(text) as Record<string, unknown>;
-  } catch { /* fall through */ }
+  } catch {
+    /* fall through */
+  }
 
   // Scan for first { ... } block
   const start = text.indexOf('{');
@@ -300,7 +335,7 @@ function isValidDocumentSchema(obj: unknown): obj is GenerateProjectResult['docu
  * expected BimElement interface (duck typing).
  */
 function validateGeneratedDocument(
-  doc: GenerateProjectResult['document'],
+  doc: GenerateProjectResult['document']
 ): ElementValidationSummary[] {
   const elements = Object.values(doc.content?.elements ?? {});
   if (elements.length === 0) return [];
@@ -313,19 +348,17 @@ function validateGeneratedDocument(
   const minimalDoc = {
     organization: { layers },
     content: {
-      elements: doc.content?.elements as unknown as Record<
-        string,
-        Parameters<typeof validateElement>[0]
-      > ?? {},
+      elements:
+        (doc.content?.elements as unknown as Record<
+          string,
+          Parameters<typeof validateElement>[0]
+        >) ?? {},
     },
   };
 
   return elements.map((el) => ({
     elementId: el.id,
-    result: validateElement(
-      el as unknown as Parameters<typeof validateElement>[0],
-      minimalDoc,
-    ),
+    result: validateElement(el as unknown as Parameters<typeof validateElement>[0], minimalDoc),
   }));
 }
 
@@ -339,7 +372,9 @@ export async function generateProject(
 
   // ── No API key — return template immediately ──────────────────────────────
   if (!apiKey || apiKey.trim() === '') {
-    warnings.push('No API key provided — using fallback template. Set an Anthropic API key for AI-generated plans.');
+    warnings.push(
+      'No API key provided — using fallback template. Set an Anthropic API key for AI-generated plans.'
+    );
     const doc = buildFallbackTemplate(prompt);
     const elementCount = Object.keys(doc.content?.elements ?? {}).length;
     return {
@@ -413,11 +448,15 @@ export async function generateProject(
           } else if (json.type === 'message_stop') {
             break;
           }
-        } catch { /* skip malformed SSE lines */ }
+        } catch {
+          /* skip malformed SSE lines */
+        }
       }
     }
   } catch (err) {
-    warnings.push(`Network error: ${err instanceof Error ? err.message : String(err)} — using fallback template.`);
+    warnings.push(
+      `Network error: ${err instanceof Error ? err.message : String(err)} — using fallback template.`
+    );
     const doc = buildFallbackTemplate(prompt);
     return {
       document: doc,

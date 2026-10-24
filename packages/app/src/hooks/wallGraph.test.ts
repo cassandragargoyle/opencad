@@ -26,16 +26,17 @@ function wall(x1: number, y1: number, x2: number, y2: number): ElementSchema {
     properties: {
       StartX: { type: 'number', value: x1 },
       StartY: { type: 'number', value: y1 },
-      EndX:   { type: 'number', value: x2 },
-      EndY:   { type: 'number', value: y2 },
-      Width:  { type: 'number', value: 200 },
+      EndX: { type: 'number', value: x2 },
+      EndY: { type: 'number', value: y2 },
+      Width: { type: 'number', value: 200 },
       Height: { type: 'number', value: 3000 },
     },
     boundingBox: {
       min: { x: Math.min(x1, x2), y: Math.min(y1, y2), z: 0 },
       max: { x: Math.max(x1, x2), y: Math.max(y1, y2), z: 3000 },
     },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
@@ -52,8 +53,8 @@ describe('T-MOD-001: wall graph', () => {
   });
 
   it('T-MOD-001-002: two walls sharing an exact endpoint form an L on each', () => {
-    const a = wall(0, 0, 5000, 0);        // east wall
-    const b = wall(5000, 0, 5000, 3000);  // south wall sharing (5000,0)
+    const a = wall(0, 0, 5000, 0); // east wall
+    const b = wall(5000, 0, 5000, 3000); // south wall sharing (5000,0)
     const g = buildWallGraph(docFromWalls([a, b]));
 
     const aJoins = g.get(a.id) ?? [];
@@ -83,9 +84,9 @@ describe('T-MOD-001: wall graph', () => {
   });
 
   it('T-MOD-001-005: T-junction has one T-record on the through-wall and two L-records on the stub walls', () => {
-    const through = wall(0, 0, 10000, 0);   // east-west
-    const stub1   = wall(5000, 0, 5000, 3000); // south stub at midpoint
-    const stub2   = wall(2000, 0, 2000, 3000); // another south stub — second T
+    const through = wall(0, 0, 10000, 0); // east-west
+    const stub1 = wall(5000, 0, 5000, 3000); // south stub at midpoint
+    const stub2 = wall(2000, 0, 2000, 3000); // another south stub — second T
     const g = buildWallGraph(docFromWalls([through, stub1, stub2]));
 
     const throughJoins = g.get(through.id) ?? [];
@@ -130,18 +131,24 @@ describe('T-MOD-001: wall graph', () => {
     const b = wall(5000, 0, 5000, 3000);
 
     // Sub-mm move — b's start is still at 5000 (within tolerance)
-    const bTiny = { ...b, properties: {
-      ...b.properties,
-      StartX: { type: 'number' as const, value: 5000.4 },
-    }};
+    const bTiny = {
+      ...b,
+      properties: {
+        ...b.properties,
+        StartX: { type: 'number' as const, value: 5000.4 },
+      },
+    };
     const g1 = buildWallGraph(docFromWalls([a, bTiny]));
     expect(g1.get(a.id)?.[0]?.kind).toBe('L');
 
     // 50 mm move — past tolerance, detaches
-    const bFar = { ...b, properties: {
-      ...b.properties,
-      StartX: { type: 'number' as const, value: 5050 },
-    }};
+    const bFar = {
+      ...b,
+      properties: {
+        ...b.properties,
+        StartX: { type: 'number' as const, value: 5050 },
+      },
+    };
     const g2 = buildWallGraph(docFromWalls([a, bFar]));
     expect(g2.get(a.id) ?? []).toHaveLength(0);
     expect(g2.get(bFar.id) ?? []).toHaveLength(0);

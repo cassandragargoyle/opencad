@@ -8,7 +8,9 @@ describe('T-AI-030: SpecWritingPanel', () => {
   const onGenerate = vi.fn();
   const onExport = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const sheets: RoomDataSheet[] = [
     {

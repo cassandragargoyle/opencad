@@ -28,7 +28,9 @@ export function CostPanel({ items = [], onExport, currency = '$' }: CostPanelPro
   return (
     <div className="cost-panel">
       <div className="panel-header">
-        <span className="panel-title">{t('cost.estimateTitle', { defaultValue: 'Cost Estimate' })}</span>
+        <span className="panel-title">
+          {t('cost.estimateTitle', { defaultValue: 'Cost Estimate' })}
+        </span>
         <button
           aria-label={t('cost.exportEstimate', { defaultValue: 'Export cost estimate' })}
           className="btn-export"
@@ -40,7 +42,11 @@ export function CostPanel({ items = [], onExport, currency = '$' }: CostPanelPro
       </div>
 
       {items.length === 0 ? (
-        <div className="cost-empty">{t('cost.emptyDetail', { defaultValue: 'No cost items. Add elements to generate an estimate.' })}</div>
+        <div className="cost-empty">
+          {t('cost.emptyDetail', {
+            defaultValue: 'No cost items. Add elements to generate an estimate.',
+          })}
+        </div>
       ) : (
         <>
           <table className="cost-table">
@@ -68,8 +74,12 @@ export function CostPanel({ items = [], onExport, currency = '$' }: CostPanelPro
             </tbody>
             <tfoot>
               <tr className="cost-grand-total">
-                <td colSpan={5}><strong>{t('cost.total')}</strong></td>
-                <td><strong>{formatCurrency(grandTotal, currency)}</strong></td>
+                <td colSpan={5}>
+                  <strong>{t('cost.total')}</strong>
+                </td>
+                <td>
+                  <strong>{formatCurrency(grandTotal, currency)}</strong>
+                </td>
               </tr>
             </tfoot>
           </table>

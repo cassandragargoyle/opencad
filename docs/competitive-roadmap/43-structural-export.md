@@ -9,6 +9,7 @@ Structural engineers run finite-element analysis in specialist software (SAP2000
 ## Scope
 
 ### In scope
+
 - **Analytical model generation**: walk the architectural elements, emit a simplified graph:
   - Columns → line elements at their axis.
   - Beams → line elements at their axis.
@@ -21,6 +22,7 @@ Structural engineers run finite-element analysis in specialist software (SAP2000
 - Preview in 3D viewport: toggle "Structural model" overlay.
 
 ### Out of scope
+
 - Live bi-directional sync with structural software.
 - Actual FE analysis in-app.
 

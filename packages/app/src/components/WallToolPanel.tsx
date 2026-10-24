@@ -70,7 +70,6 @@ export function WallToolPanel() {
           </select>
         </div>
       </div>
-
     </div>
   );
 }

@@ -11,10 +11,14 @@ import { serializeOBJ, serializeMTL, type MeshGroup } from './objExport';
 function cube(name: string, size = 1): MeshGroup {
   const s = size / 2;
   const vertices = [
-    { x: -s, y: -s, z: -s }, { x:  s, y: -s, z: -s },
-    { x:  s, y:  s, z: -s }, { x: -s, y:  s, z: -s },
-    { x: -s, y: -s, z:  s }, { x:  s, y: -s, z:  s },
-    { x:  s, y:  s, z:  s }, { x: -s, y:  s, z:  s },
+    { x: -s, y: -s, z: -s },
+    { x: s, y: -s, z: -s },
+    { x: s, y: s, z: -s },
+    { x: -s, y: s, z: -s },
+    { x: -s, y: -s, z: s },
+    { x: s, y: -s, z: s },
+    { x: s, y: s, z: s },
+    { x: -s, y: s, z: s },
   ];
   const faces = [
     { indices: [0, 1, 2, 3] }, // bottom
@@ -39,7 +43,7 @@ describe('T-IO-049: objExport', () => {
   it('T-IO-049-002: MTL file lists every material with Kd', () => {
     const mtl = serializeMTL([
       { name: 'Concrete', Kd: [0.6, 0.6, 0.6] },
-      { name: 'Wood',     Kd: [0.6, 0.45, 0.3] },
+      { name: 'Wood', Kd: [0.6, 0.45, 0.3] },
     ]);
     expect(mtl).toContain('newmtl Concrete');
     expect(mtl).toContain('Kd 0.6000 0.6000 0.6000');
@@ -48,7 +52,9 @@ describe('T-IO-049: objExport', () => {
 
   it('T-IO-049-003: Z-up swaps Y and negates Z', () => {
     const one: MeshGroup = {
-      name: 'Point', vertices: [{ x: 0, y: 1, z: 2 }], faces: [],
+      name: 'Point',
+      vertices: [{ x: 0, y: 1, z: 2 }],
+      faces: [],
     };
     const y = serializeOBJ([one], { coordSystem: 'y-up' });
     const z = serializeOBJ([one], { coordSystem: 'z-up' });
@@ -81,7 +87,9 @@ describe('T-IO-049: objExport', () => {
 
   it('unitScale 0.001 converts mm → m', () => {
     const g: MeshGroup = {
-      name: 'P', vertices: [{ x: 1000, y: 2000, z: 3000 }], faces: [],
+      name: 'P',
+      vertices: [{ x: 1000, y: 2000, z: 3000 }],
+      faces: [],
     };
     const obj = serializeOBJ([g], { unitScale: 0.001 });
     expect(obj).toContain('v 1.000000 2.000000 3.000000');

@@ -35,10 +35,14 @@ const T_ENDPOINT_EPS = 0.02;
 
 interface WallSeg {
   id: string;
-  x1: number; y1: number; x2: number; y2: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
   len: number;
   /** Unit direction. */
-  ux: number; uy: number;
+  ux: number;
+  uy: number;
 }
 
 function numProp(el: ElementSchema, k: string, fallback: number): number {
@@ -49,9 +53,10 @@ function numProp(el: ElementSchema, k: string, fallback: number): number {
 function toSeg(el: ElementSchema): WallSeg | null {
   const x1 = numProp(el, 'StartX', 0);
   const y1 = numProp(el, 'StartY', 0);
-  const x2 = numProp(el, 'EndX',   x1 + 1);
-  const y2 = numProp(el, 'EndY',   y1);
-  const dx = x2 - x1, dy = y2 - y1;
+  const x2 = numProp(el, 'EndX', x1 + 1);
+  const y2 = numProp(el, 'EndY', y1);
+  const dx = x2 - x1,
+    dy = y2 - y1;
   const len = Math.sqrt(dx * dx + dy * dy);
   if (len < 1e-3) return null;
   return { id: el.id, x1, y1, x2, y2, len, ux: dx / len, uy: dy / len };
@@ -71,8 +76,10 @@ void _perpDist; // kept as a reference helper; exported via the wallGraph geomet
 /** Intersect two infinite lines defined by walls; null when parallel. */
 function intersectLines(a: WallSeg, b: WallSeg): { x: number; y: number } | null {
   // Solve a.x1 + t*(a.x2-a.x1) = b.x1 + s*(b.x2-b.x1)
-  const d1x = a.x2 - a.x1, d1y = a.y2 - a.y1;
-  const d2x = b.x2 - b.x1, d2y = b.y2 - b.y1;
+  const d1x = a.x2 - a.x1,
+    d1y = a.y2 - a.y1;
+  const d2x = b.x2 - b.x1,
+    d2y = b.y2 - b.y1;
   const denom = d1x * d2y - d1y * d2x;
   if (Math.abs(denom) < 1e-6) return null;
   const t = ((b.x1 - a.x1) * d2y - (b.y1 - a.y1) * d2x) / denom;
@@ -97,9 +104,7 @@ function isAtEndpoint(t: number): 'start' | 'end' | 'middle' {
  * Returns a Map from wall id → list of junctions that wall participates in.
  * Walls with no junctions get an empty list; absent walls aren't keyed.
  */
-export function buildWallGraph(
-  elements: Record<string, ElementSchema>
-): Map<string, JoinInfo[]> {
+export function buildWallGraph(elements: Record<string, ElementSchema>): Map<string, JoinInfo[]> {
   const result = new Map<string, JoinInfo[]>();
 
   const segs: WallSeg[] = [];
@@ -141,21 +146,30 @@ export function buildWallGraph(
       // perspective: an L if its end meets an endpoint, a T if the wall is
       // the one whose BODY is being hit, an X when both hits are mid-span.
       const angle = unsignedAngle(a, b);
-      const kindFor = (ownPos: 'start' | 'end' | 'middle', otherPos: 'start' | 'end' | 'middle'): JoinKind => {
+      const kindFor = (
+        ownPos: 'start' | 'end' | 'middle',
+        otherPos: 'start' | 'end' | 'middle'
+      ): JoinKind => {
         if (ownPos === 'middle' && otherPos === 'middle') return 'X';
-        if (ownPos === 'middle') return 'T';      // I'm the through-wall
-        return 'L';                               // My end meets something (L or stub of T)
+        if (ownPos === 'middle') return 'T'; // I'm the through-wall
+        return 'L'; // My end meets something (L or stub of T)
       };
 
       result.get(a.id)!.push({
         otherWallId: b.id,
         kind: kindFor(posA, posB),
-        t: clampedTA, u: clampedTB, point: hit, angle,
+        t: clampedTA,
+        u: clampedTB,
+        point: hit,
+        angle,
       });
       result.get(b.id)!.push({
         otherWallId: a.id,
         kind: kindFor(posB, posA),
-        t: clampedTB, u: clampedTA, point: hit, angle,
+        t: clampedTB,
+        u: clampedTA,
+        point: hit,
+        angle,
       });
     }
   }
@@ -191,7 +205,7 @@ export function wallEndOffsets(
     // either butting in or passing through).
     if (j.kind === 'L') {
       if (atStart) startOffset = Math.max(startOffset, halfOther);
-      else         endOffset   = Math.max(endOffset,   halfOther);
+      else endOffset = Math.max(endOffset, halfOther);
     }
   }
   return { startOffset, endOffset };

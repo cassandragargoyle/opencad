@@ -12,10 +12,10 @@ import type { Composite } from '@opencad/document';
 
 export interface ThermalProperties {
   name: string;
-  density: number;              // kg/m³
-  thermalConductivity: number;  // λ (W/m·K)
-  specificHeat: number;         // c (J/kg·K)
-  embodiedCarbon: number;       // kgCO₂e/kg
+  density: number; // kg/m³
+  thermalConductivity: number; // λ (W/m·K)
+  specificHeat: number; // c (J/kg·K)
+  embodiedCarbon: number; // kgCO₂e/kg
   /** Sound Transmission Class contribution at this density. */
   stc?: number;
   /** Fire resistance rating in hours. */
@@ -26,49 +26,81 @@ export interface ThermalProperties {
 export const THERMAL_TABLE: Record<string, ThermalProperties> = {
   Concrete: {
     name: 'Concrete',
-    density: 2400, thermalConductivity: 1.7, specificHeat: 880,
-    embodiedCarbon: 0.13, stc: 55, fireRating: 4,
+    density: 2400,
+    thermalConductivity: 1.7,
+    specificHeat: 880,
+    embodiedCarbon: 0.13,
+    stc: 55,
+    fireRating: 4,
   },
   Brick: {
     name: 'Brick',
-    density: 1800, thermalConductivity: 0.77, specificHeat: 850,
-    embodiedCarbon: 0.24, stc: 50, fireRating: 4,
+    density: 1800,
+    thermalConductivity: 0.77,
+    specificHeat: 850,
+    embodiedCarbon: 0.24,
+    stc: 50,
+    fireRating: 4,
   },
   'Mineral Wool': {
     name: 'Mineral Wool',
-    density: 80, thermalConductivity: 0.038, specificHeat: 1030,
-    embodiedCarbon: 1.28, stc: 40, fireRating: 2,
+    density: 80,
+    thermalConductivity: 0.038,
+    specificHeat: 1030,
+    embodiedCarbon: 1.28,
+    stc: 40,
+    fireRating: 2,
   },
   Plasterboard: {
     name: 'Plasterboard',
-    density: 900, thermalConductivity: 0.21, specificHeat: 1090,
-    embodiedCarbon: 0.39, stc: 35, fireRating: 1,
+    density: 900,
+    thermalConductivity: 0.21,
+    specificHeat: 1090,
+    embodiedCarbon: 0.39,
+    stc: 35,
+    fireRating: 1,
   },
   Timber: {
     name: 'Timber',
-    density: 500, thermalConductivity: 0.13, specificHeat: 1600,
-    embodiedCarbon: 0.41, stc: 30, fireRating: 0.5,
+    density: 500,
+    thermalConductivity: 0.13,
+    specificHeat: 1600,
+    embodiedCarbon: 0.41,
+    stc: 30,
+    fireRating: 0.5,
   },
   'Air Cavity': {
     name: 'Air Cavity',
-    density: 1.2, thermalConductivity: 0.17, specificHeat: 1005,
-    embodiedCarbon: 0, stc: 5, fireRating: 0,
+    density: 1.2,
+    thermalConductivity: 0.17,
+    specificHeat: 1005,
+    embodiedCarbon: 0,
+    stc: 5,
+    fireRating: 0,
   },
   'Clear Glass': {
     name: 'Clear Glass',
-    density: 2500, thermalConductivity: 1.0, specificHeat: 840,
-    embodiedCarbon: 0.91, stc: 28, fireRating: 0.5,
+    density: 2500,
+    thermalConductivity: 1.0,
+    specificHeat: 840,
+    embodiedCarbon: 0.91,
+    stc: 28,
+    fireRating: 0.5,
   },
   'Clay Roof Tiles': {
     name: 'Clay Roof Tiles',
-    density: 2000, thermalConductivity: 0.96, specificHeat: 900,
-    embodiedCarbon: 0.22, stc: 45, fireRating: 3,
+    density: 2000,
+    thermalConductivity: 0.96,
+    specificHeat: 900,
+    embodiedCarbon: 0.22,
+    stc: 45,
+    fireRating: 3,
   },
 };
 
 /** Surface heat-transfer coefficients (W/m²·K) per ISO 6946. */
-const H_IN = 7.69;   // interior
-const H_OUT = 25;    // exterior
+const H_IN = 7.69; // interior
+const H_OUT = 25; // exterior
 
 /**
  * Compute the U-value of a composite (W/m²·K) using sum of thermal
@@ -89,7 +121,8 @@ export function uValue(composite: Pick<Composite, 'layers'>): number {
 /** STC rating of a composite — use the maximum layer STC weighted by
  *  mass fraction. Simplified model. */
 export function stcRating(composite: Pick<Composite, 'layers'>): number {
-  let totalMass = 0, weightedStc = 0;
+  let totalMass = 0,
+    weightedStc = 0;
   for (const layer of composite.layers) {
     const mat = THERMAL_TABLE[layer.material];
     if (!mat) continue;
@@ -147,23 +180,24 @@ export function computeEnergyDemand(inputs: EnergyInputs): EnergyResult {
   // Envelope conduction loss per degree-day:
   //   Σ(U·A) * 24h * (1 kWh / 1000 Wh) = kWh per degree-day
   const uaW = inputs.envelope.reduce((acc, e) => acc + e.uValue * e.areaM2, 0);
-  const conductionKWhPerDD = uaW * 24 / 1000;
+  const conductionKWhPerDD = (uaW * 24) / 1000;
 
   // Infiltration: c_p * ρ * V * ACH per degree-day
-  const rho = 1.2, cp = 1005; // J/m³·K
-  const infiltrationW_K = (inputs.volume * inputs.airChangesPerHour / 3600) * rho * cp;
-  const infiltrationKWhPerDD = infiltrationW_K * 24 / 1000;
+  const rho = 1.2,
+    cp = 1005; // J/m³·K
+  const infiltrationW_K = ((inputs.volume * inputs.airChangesPerHour) / 3600) * rho * cp;
+  const infiltrationKWhPerDD = (infiltrationW_K * 24) / 1000;
 
   const totalPerDD = conductionKWhPerDD + infiltrationKWhPerDD;
 
   const grossHeating = totalPerDD * inputs.heatingDegreeDays;
-  const solar   = inputs.annualSolarGainKWh   ?? 0;
-  const internal = inputs.internalGainsKWh    ?? 0;
+  const solar = inputs.annualSolarGainKWh ?? 0;
+  const internal = inputs.internalGainsKWh ?? 0;
   const heating = Math.max(0, grossHeating - solar - internal * 0.7);
   const cooling = totalPerDD * inputs.coolingDegreeDays + solar * 0.8;
 
   // Peak heating at -10 °C outdoors / 20 °C indoors = 30 K ΔT
-  const peakKW = (uaW + infiltrationW_K) * 30 / 1000;
+  const peakKW = ((uaW + infiltrationW_K) * 30) / 1000;
 
   // Grid-average emission factor 0.23 kgCO2/kWh (a rough Western average)
   const annualCO2 = (heating + cooling) * 0.23;

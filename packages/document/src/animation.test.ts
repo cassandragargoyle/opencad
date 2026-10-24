@@ -21,7 +21,7 @@ function kf(id: string, time: number, x = 0): CameraKeyframe {
     id,
     time,
     position: { x, y: 0, z: 0 },
-    target:   { x: 0, y: 0, z: 0 },
+    target: { x: 0, y: 0, z: 0 },
     fov: 60,
   };
 }
@@ -168,7 +168,13 @@ describe('T-PRES-01: generatePresetKeyframes()', () => {
   });
 
   it('all preset keyframes are sorted by time', () => {
-    for (const preset of ['orbit', 'fly-through', 'dolly-zoom', 'top-down-reveal', 'elevation-sweep'] as const) {
+    for (const preset of [
+      'orbit',
+      'fly-through',
+      'dolly-zoom',
+      'top-down-reveal',
+      'elevation-sweep',
+    ] as const) {
       const kfs = generatePresetKeyframes(preset, centre, 10);
       const times = kfs.map((k) => k.time);
       expect(times).toEqual([...times].sort((a, b) => a - b));
@@ -186,21 +192,41 @@ describe('T-PRES-01: frame count + timestamps', () => {
   };
 
   it('totalFrameCount is durationSeconds × fps', () => {
-    expect(totalFrameCount(anim, { fps: 30, width: 1920, height: 1080, codec: 'h264', pathtrace: false })).toBe(150);
+    expect(
+      totalFrameCount(anim, { fps: 30, width: 1920, height: 1080, codec: 'h264', pathtrace: false })
+    ).toBe(150);
   });
 
   it('frameTimestamps has correct length', () => {
-    const ts = frameTimestamps(anim, { fps: 30, width: 1920, height: 1080, codec: 'h264', pathtrace: false });
+    const ts = frameTimestamps(anim, {
+      fps: 30,
+      width: 1920,
+      height: 1080,
+      codec: 'h264',
+      pathtrace: false,
+    });
     expect(ts).toHaveLength(150);
   });
 
   it('first timestamp is 0', () => {
-    const ts = frameTimestamps(anim, { fps: 30, width: 1920, height: 1080, codec: 'h264', pathtrace: false });
+    const ts = frameTimestamps(anim, {
+      fps: 30,
+      width: 1920,
+      height: 1080,
+      codec: 'h264',
+      pathtrace: false,
+    });
     expect(ts[0]).toBe(0);
   });
 
   it('frame timestamps increment by 1/fps', () => {
-    const ts = frameTimestamps(anim, { fps: 30, width: 1920, height: 1080, codec: 'h264', pathtrace: false });
+    const ts = frameTimestamps(anim, {
+      fps: 30,
+      width: 1920,
+      height: 1080,
+      codec: 'h264',
+      pathtrace: false,
+    });
     expect(ts[1]).toBeCloseTo(1 / 30);
   });
 });

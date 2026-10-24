@@ -14,10 +14,7 @@ import { SUPPORTED_LOCALES, DEFAULT_LOCALE, setLocale } from '../i18n';
  *  that matches one of SUPPORTED_LOCALES (or 'en' if nothing matches). */
 function detectSystemLocale(): string {
   const supported = new Set(SUPPORTED_LOCALES.map((l) => l.code));
-  const candidates = [
-    ...(navigator.languages ?? []),
-    navigator.language,
-  ].filter(Boolean);
+  const candidates = [...(navigator.languages ?? []), navigator.language].filter(Boolean);
   for (const raw of candidates) {
     if (supported.has(raw)) return raw;
     const base = raw.split('-')[0];
@@ -33,13 +30,19 @@ export function LanguageSettingsPanel(): React.ReactElement {
   const { t, i18n: hook } = useTranslation('common');
   const [current, setCurrent] = useState<string>(() => hook.language || DEFAULT_LOCALE);
   const [hasOverride, setHasOverride] = useState<boolean>(() => {
-    try { return !!localStorage.getItem('opencad-locale'); } catch { return false; }
+    try {
+      return !!localStorage.getItem('opencad-locale');
+    } catch {
+      return false;
+    }
   });
 
   useEffect(() => {
     const onChange = (lc: string): void => setCurrent(lc);
     hook.on('languageChanged', onChange);
-    return () => { hook.off('languageChanged', onChange); };
+    return () => {
+      hook.off('languageChanged', onChange);
+    };
   }, [hook]);
 
   const systemLocale = useMemo(detectSystemLocale, []);
@@ -50,7 +53,11 @@ export function LanguageSettingsPanel(): React.ReactElement {
   };
 
   const resetToSystem = async (): Promise<void> => {
-    try { localStorage.removeItem('opencad-locale'); } catch { /* quota */ }
+    try {
+      localStorage.removeItem('opencad-locale');
+    } catch {
+      /* quota */
+    }
     setHasOverride(false);
     await setLocale(systemLocale);
   };
@@ -72,15 +79,22 @@ export function LanguageSettingsPanel(): React.ReactElement {
             <button
               type="button"
               className="language-settings-clear"
-              onClick={() => { void resetToSystem(); }}
+              onClick={() => {
+                void resetToSystem();
+              }}
             >
-              Use system language ({SUPPORTED_LOCALES.find((l) => l.code === systemLocale)?.native ?? systemLocale})
+              Use system language (
+              {SUPPORTED_LOCALES.find((l) => l.code === systemLocale)?.native ?? systemLocale})
             </button>
           )}
         </div>
       </div>
 
-      <ul className="language-settings-list" role="radiogroup" aria-label={t('language.aria', { defaultValue: 'Language' })}>
+      <ul
+        className="language-settings-list"
+        role="radiogroup"
+        aria-label={t('language.aria', { defaultValue: 'Language' })}
+      >
         {SUPPORTED_LOCALES.map((l) => {
           const active = l.code === current;
           const isSystem = l.code === systemLocale;
@@ -91,15 +105,18 @@ export function LanguageSettingsPanel(): React.ReactElement {
                 role="radio"
                 aria-checked={active}
                 className={`language-settings-row${active ? ' is-active' : ''}`}
-                onClick={() => { void pick(l.code); }}
+                onClick={() => {
+                  void pick(l.code);
+                }}
               >
-                <span className="language-settings-check">
-                  {active && <Check size={14} />}
-                </span>
+                <span className="language-settings-check">{active && <Check size={14} />}</span>
                 <span className="language-settings-native">{l.native}</span>
                 <span className="language-settings-label">{l.label}</span>
                 {isSystem && (
-                  <span className="language-settings-system" title={t('language.detected', { defaultValue: 'Detected from your system' })}>
+                  <span
+                    className="language-settings-system"
+                    title={t('language.detected', { defaultValue: 'Detected from your system' })}
+                  >
                     System
                   </span>
                 )}

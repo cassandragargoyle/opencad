@@ -33,7 +33,7 @@ export function createWorksheet(name: string, opts?: Partial<Worksheet>): Worksh
  *  elements entirely when id === null). */
 export function filterByWorksheet<T extends { properties?: Record<string, { value: unknown }> }>(
   elements: T[],
-  worksheetId: string | null,
+  worksheetId: string | null
 ): T[] {
   if (worksheetId === null) {
     return elements.filter((e) => {

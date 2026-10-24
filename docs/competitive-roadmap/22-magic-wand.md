@@ -9,6 +9,7 @@ Architects constantly draw a slab, roof, or zone whose outline should exactly ma
 ## Scope
 
 ### In scope
+
 - A new tool `Magic Wand` (shortcut: `Shift+W`).
 - When the user clicks inside any closed region formed by walls, lines, or polylines, the tool traces the region's boundary polygon and commits it.
 - Commit target is driven by the currently-active tool: if Slab tool active, commit a slab; if Roof active, a roof; if Zone active, a zone; if Polygon active, a raw polygon.
@@ -16,6 +17,7 @@ Architects constantly draw a slab, roof, or zone whose outline should exactly ma
 - Handles walls with doors/windows (treats them as continuous).
 
 ### Out of scope
+
 - Magic wand on 3D faces.
 - Partial-boundary selection (ceiling-lift style); v1 full-boundary only.
 

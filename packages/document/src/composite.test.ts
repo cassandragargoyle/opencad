@@ -19,7 +19,14 @@ import {
 
 describe('T-MOD-004: composite', () => {
   it('T-MOD-004-001: compositeThickness sums layer thicknesses', () => {
-    expect(compositeThickness({ layers: [{ material: 'x', thickness: 100 }, { material: 'y', thickness: 50 }] })).toBe(150);
+    expect(
+      compositeThickness({
+        layers: [
+          { material: 'x', thickness: 100 },
+          { material: 'y', thickness: 50 },
+        ],
+      })
+    ).toBe(150);
   });
 
   it('T-MOD-004-002: validator rejects zero layers', () => {
@@ -31,7 +38,10 @@ describe('T-MOD-004: composite', () => {
   it('T-MOD-004-003: validator rejects non-positive layer thickness', () => {
     const reasons = validateComposite({
       name: 'Bad',
-      layers: [{ material: 'x', thickness: 0 }, { material: 'y', thickness: -5 }],
+      layers: [
+        { material: 'x', thickness: 0 },
+        { material: 'y', thickness: -5 },
+      ],
     });
     expect(reasons.filter((r) => r.includes('thickness')).length).toBe(2);
   });
@@ -49,7 +59,7 @@ describe('T-MOD-004: composite', () => {
 
   it('T-MOD-004-004: migrateLegacyWallToComposite produces a single-layer composite', () => {
     const result = migrateLegacyWallToComposite({
-      Width:    { type: 'number', value: 300 },
+      Width: { type: 'number', value: 300 },
       Material: { type: 'string', value: 'Concrete' },
     });
     expect(result).not.toBeNull();
@@ -61,11 +71,11 @@ describe('T-MOD-004: composite', () => {
 
   it('T-MOD-004-005: migration id is deterministic across identical inputs', () => {
     const a = migrateLegacyWallToComposite({
-      Width:    { type: 'number', value: 150 },
+      Width: { type: 'number', value: 150 },
       Material: { type: 'string', value: 'Plasterboard' },
     });
     const b = migrateLegacyWallToComposite({
-      Width:    { type: 'number', value: 150 },
+      Width: { type: 'number', value: 150 },
       Material: { type: 'string', value: 'Plasterboard' },
     });
     expect(a!.compositeId).toBe(b!.compositeId);
@@ -73,8 +83,8 @@ describe('T-MOD-004: composite', () => {
 
   it('migrateLegacyWallToComposite is a no-op when CompositeId already set', () => {
     const result = migrateLegacyWallToComposite({
-      Width:       { type: 'number', value: 300 },
-      Material:    { type: 'string', value: 'Concrete' },
+      Width: { type: 'number', value: 300 },
+      Material: { type: 'string', value: 'Concrete' },
       CompositeId: { type: 'string', value: 'already-set' },
     });
     expect(result).toBeNull();

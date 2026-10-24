@@ -45,10 +45,14 @@ describe('T-IO-04: Rhino 3DM adapter', () => {
         objectType: 32,
         vertices: () => ({
           count: 0,
-          add(x: number, y: number, z: number) { verts.push([x, y, z]); },
+          add(x: number, y: number, z: number) {
+            verts.push([x, y, z]);
+          },
         }),
         faces: () => ({
-          addFace(a: number, b: number, c: number) { faces.push([a, b, c]); },
+          addFace(a: number, b: number, c: number) {
+            faces.push([a, b, c]);
+          },
         }),
         normals: () => ({ computeNormals() {} }),
       };
@@ -59,19 +63,33 @@ describe('T-IO-04: Rhino 3DM adapter', () => {
         objects() {
           return {
             count: 0,
-            get(_i: number) { return null; },
-            add(geo: unknown, attr: unknown) { addedObjects.push({ geo, attr }); },
+            get(_i: number) {
+              return null;
+            },
+            add(geo: unknown, attr: unknown) {
+              addedObjects.push({ geo, attr });
+            },
           };
         },
-        toByteArray() { return new Uint8Array([0x33, 0x44]); },
+        toByteArray() {
+          return new Uint8Array([0x33, 0x44]);
+        },
         dispose() {},
         _addedObjects: addedObjects,
       };
 
       return {
-        File3dm: class { constructor() { return mockFile; } } as unknown,
+        File3dm: class {
+          constructor() {
+            return mockFile;
+          }
+        } as unknown,
         File3dmFromByteArray: (_bytes: Uint8Array) => mockFile,
-        Mesh: class { constructor() { return mockMesh; } } as unknown,
+        Mesh: class {
+          constructor() {
+            return mockMesh;
+          }
+        } as unknown,
         Point3d: (x: number, y: number, z: number) => ({ x, y, z }),
         _mockFile: mockFile,
       } as unknown;
@@ -87,9 +105,22 @@ describe('T-IO-04: Rhino 3DM adapter', () => {
         geometry: { type: 'mesh', data: null },
         layerId: 'l0',
         levelId: 'lv0',
-        transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-        boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' } },
-        metadata: { id: 'wall1', createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+        transform: {
+          translation: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
+        boundingBox: {
+          min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+          max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' },
+        },
+        metadata: {
+          id: 'wall1',
+          createdBy: 'test',
+          createdAt: 0,
+          updatedAt: 0,
+          version: { clock: {} },
+        },
         visible: true,
         locked: false,
       };
@@ -110,9 +141,19 @@ describe('T-IO-04: Rhino 3DM adapter', () => {
         geometry: { type: 'mesh', data: null },
         layerId: 'l0',
         levelId: null,
-        transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
+        transform: {
+          translation: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        },
         boundingBox: null as unknown as never,
-        metadata: { id: 'nobb', createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+        metadata: {
+          id: 'nobb',
+          createdBy: 'test',
+          createdAt: 0,
+          updatedAt: 0,
+          version: { clock: {} },
+        },
         visible: true,
         locked: false,
       };

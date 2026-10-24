@@ -20,8 +20,12 @@ describe('T-DSK-012: checkForUpdate', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: vi.fn().mockResolvedValue({ version: '1.1.0', notes: 'Bug fixes', downloadUrl: 'https://example.com/download' }),
-      }),
+        json: vi.fn().mockResolvedValue({
+          version: '1.1.0',
+          notes: 'Bug fixes',
+          downloadUrl: 'https://example.com/download',
+        }),
+      })
     );
 
     const result = await checkForUpdate('1.0.0');
@@ -39,7 +43,7 @@ describe('T-DSK-012: checkForUpdate', () => {
       vi.fn().mockResolvedValue({
         ok: true,
         json: vi.fn().mockResolvedValue({ version: '1.0.0', notes: '', downloadUrl: '' }),
-      }),
+      })
     );
 
     const result = await checkForUpdate('1.0.0');
@@ -54,7 +58,7 @@ describe('T-DSK-012: checkForUpdate', () => {
       vi.fn().mockResolvedValue({
         ok: true,
         json: vi.fn().mockResolvedValue({ version: '0.9.0', notes: '', downloadUrl: '' }),
-      }),
+      })
     );
 
     const result = await checkForUpdate('1.0.0');
@@ -91,7 +95,7 @@ describe('T-DSK-012: checkForUpdate', () => {
       vi.fn().mockResolvedValue({
         ok: true,
         json: vi.fn().mockResolvedValue({ version: '1.10.0', notes: '', downloadUrl: '' }),
-      }),
+      })
     );
 
     // 1.10.0 should be newer than 1.2.3

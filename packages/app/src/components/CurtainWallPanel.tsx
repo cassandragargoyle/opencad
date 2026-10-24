@@ -17,12 +17,16 @@ export function CurtainWallPanel() {
   return (
     <div className="placement-panel">
       <div className="placement-header">
-        <span className="placement-title">{t('tool.curtainWall.title', { defaultValue: 'Curtain Wall' })}</span>
+        <span className="placement-title">
+          {t('tool.curtainWall.title', { defaultValue: 'Curtain Wall' })}
+        </span>
       </div>
 
       <div className="placement-params">
         <div className="placement-param">
-          <label htmlFor="cw-height">{t('tool.curtainWall.height', { defaultValue: 'Height (mm)' })}</label>
+          <label htmlFor="cw-height">
+            {t('tool.curtainWall.height', { defaultValue: 'Height (mm)' })}
+          </label>
           <input
             id="cw-height"
             type="number"
@@ -35,7 +39,9 @@ export function CurtainWallPanel() {
         </div>
 
         <div className="placement-param">
-          <label htmlFor="cw-frame-depth">{t('tool.curtainWall.frameDepth', { defaultValue: 'Frame Depth (mm)' })}</label>
+          <label htmlFor="cw-frame-depth">
+            {t('tool.curtainWall.frameDepth', { defaultValue: 'Frame Depth (mm)' })}
+          </label>
           <input
             id="cw-frame-depth"
             type="number"
@@ -48,7 +54,9 @@ export function CurtainWallPanel() {
         </div>
 
         <div className="placement-param">
-          <label htmlFor="cw-glazing">{t('tool.curtainWall.glazingType', { defaultValue: 'Glazing Type' })}</label>
+          <label htmlFor="cw-glazing">
+            {t('tool.curtainWall.glazingType', { defaultValue: 'Glazing Type' })}
+          </label>
           <select
             id="cw-glazing"
             value={params.glazingType ?? 'double'}
@@ -63,7 +71,9 @@ export function CurtainWallPanel() {
         </div>
 
         <div className="placement-param">
-          <label htmlFor="cw-frame-color">{t('tool.curtainWall.frameColor', { defaultValue: 'Frame Color' })}</label>
+          <label htmlFor="cw-frame-color">
+            {t('tool.curtainWall.frameColor', { defaultValue: 'Frame Color' })}
+          </label>
           <input
             id="cw-frame-color"
             type="color"

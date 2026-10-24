@@ -8,11 +8,11 @@ services:
       POSTGRES_USER: opencad
       POSTGRES_PASSWORD: opencad
     ports:
-      - "5434:5432"
+      - '5434:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U opencad"]
+      test: ['CMD-SHELL', 'pg_isready -U opencad']
       interval: 5s
       timeout: 5s
       retries: 10
@@ -29,11 +29,11 @@ services:
       DATABASE_URL: postgres://opencad:opencad@postgres:5432/opencad
       STORAGE_BACKEND: local
       STORAGE_PATH: /data/files
-      PORT: "8081"
-      AUTH_ENABLED: "false"
+      PORT: '8081'
+      AUTH_ENABLED: 'false'
       RUST_LOG: opencad_server=debug,tower_http=info
     ports:
-      - "8081:8081"
+      - '8081:8081'
     volumes:
       - server_files:/data/files
     depends_on:

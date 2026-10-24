@@ -15,28 +15,28 @@ import {
 
 export function KeynotePanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document    = useDocumentStore((s) => s.document);
-  const addElement  = useDocumentStore((s) => s.addElement);
+  const document = useDocumentStore((s) => s.document);
+  const addElement = useDocumentStore((s) => s.addElement);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
-  const isReadOnly  = isDocumentReadOnly();
+  const isReadOnly = isDocumentReadOnly();
 
   const tableRef = useRef<KeynoteTable>(createKeynoteTable());
   const [, forceUpdate] = useState(0);
 
-  const [code,     setCode]    = useState('');
-  const [text,     setText]    = useState('');
-  const [knType,   setKnType]  = useState<KeynoteType>('model');
+  const [code, setCode] = useState('');
+  const [text, setText] = useState('');
+  const [knType, setKnType] = useState<KeynoteType>('model');
   const [selectedId, setSelectedId] = useState<string>('');
-  const [status,   setStatus]  = useState('');
+  const [status, setStatus] = useState('');
 
   const layers = useMemo(
     () => (document ? Object.values(document.organization.layers) : []),
-    [document],
+    [document]
   );
 
   const _modelKeys = filterKeynotesByType(tableRef.current, 'model');
-  const _userKeys  = filterKeynotesByType(tableRef.current, 'user');
-  const allKeys   = tableRef.current.entries;
+  const _userKeys = filterKeynotesByType(tableRef.current, 'user');
+  const allKeys = tableRef.current.entries;
 
   const addKey = () => {
     if (!code.trim() || !text.trim()) return;
@@ -73,21 +73,44 @@ export function KeynotePanel(): React.ReactElement {
         <div className="field-row">
           <label className="field-label" style={{ width: '80px' }}>
             Type
-            <select className="panel-select" value={knType} onChange={(e) => setKnType(e.target.value as KeynoteType)} disabled={isReadOnly}>
+            <select
+              className="panel-select"
+              value={knType}
+              onChange={(e) => setKnType(e.target.value as KeynoteType)}
+              disabled={isReadOnly}
+            >
               <option value="model">Model</option>
               <option value="user">User</option>
             </select>
           </label>
           <label className="field-label" style={{ width: '80px' }}>
             Code
-            <input type="text" className="panel-input" value={code} onChange={(e) => setCode(e.target.value)} placeholder="M-01" disabled={isReadOnly} />
+            <input
+              type="text"
+              className="panel-input"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="M-01"
+              disabled={isReadOnly}
+            />
           </label>
         </div>
         <label className="field-label">
           Text
-          <input type="text" className="panel-input" value={text} onChange={(e) => setText(e.target.value)} placeholder="Cast-in-place concrete" disabled={isReadOnly} />
+          <input
+            type="text"
+            className="panel-input"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Cast-in-place concrete"
+            disabled={isReadOnly}
+          />
         </label>
-        <button className="panel-btn" onClick={addKey} disabled={isReadOnly || !code.trim() || !text.trim()}>
+        <button
+          className="panel-btn"
+          onClick={addKey}
+          disabled={isReadOnly || !code.trim() || !text.trim()}
+        >
           Add Keynote
         </button>
 
@@ -95,7 +118,14 @@ export function KeynotePanel(): React.ReactElement {
           <>
             <h4 className="section-label">Keynote Table ({allKeys.length})</h4>
             <table className="data-table">
-              <thead><tr><th>#</th><th>Code</th><th>Description</th><th>Type</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Code</th>
+                  <th>Description</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
               <tbody>
                 {allKeys.map((kn) => (
                   <tr
@@ -123,7 +153,11 @@ export function KeynotePanel(): React.ReactElement {
           </>
         )}
 
-        {status && <p className="panel-status" role="status">{status}</p>}
+        {status && (
+          <p className="panel-status" role="status">
+            {status}
+          </p>
+        )}
       </div>
     </div>
   );

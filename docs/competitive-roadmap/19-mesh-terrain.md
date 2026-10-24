@@ -9,6 +9,7 @@ Every site starts with ground. Today the 3D viewport has an infinite flat grid â
 ## Scope
 
 ### In scope
+
 - Terrain schema: triangulated mesh of `Point3D[]` and `FaceIndex[][]`.
 - Import sources:
   - CSV of `x, y, z` survey points â†’ Delaunay triangulation.
@@ -20,6 +21,7 @@ Every site starts with ground. Today the 3D viewport has an infinite flat grid â
 - Contour line generator: given the mesh, produce lines at every `contourInterval` (1 m default) for plan overlay.
 
 ### Out of scope
+
 - GeoTIFF DEM import (separate follow-up).
 - OpenStreetMap site import (already partial via `osmApi.ts`; expand later).
 - Retaining wall auto-generation from topo.

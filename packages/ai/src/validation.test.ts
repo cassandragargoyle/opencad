@@ -505,7 +505,10 @@ describe('T-AI-024: Offline Code Compliance', () => {
 
 // ─── BIM Element Validation Fixtures ─────────────────────────────────────────
 
-type PropValue = { type: 'string' | 'number' | 'boolean' | 'enum' | 'reference'; value: string | number | boolean | string[] };
+type PropValue = {
+  type: 'string' | 'number' | 'boolean' | 'enum' | 'reference';
+  value: string | number | boolean | string[];
+};
 
 function makeTestDoc(elements: Record<string, ReturnType<typeof makeTestWall>> = {}) {
   return {
@@ -519,7 +522,12 @@ function makeTestDoc(elements: Record<string, ReturnType<typeof makeTestWall>> =
   };
 }
 
-function makeTestWall(id: string, heightMm: number, layerId = 'layer-walls', extraProps: Record<string, PropValue> = {}) {
+function makeTestWall(
+  id: string,
+  heightMm: number,
+  layerId = 'layer-walls',
+  extraProps: Record<string, PropValue> = {}
+) {
   return {
     id,
     type: 'wall' as const,
@@ -539,7 +547,14 @@ function makeTestWall(id: string, heightMm: number, layerId = 'layer-walls', ext
   };
 }
 
-function makeTestDoor(id: string, x: number, y: number, w: number, h: number, layerId = 'layer-walls') {
+function makeTestDoor(
+  id: string,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  layerId = 'layer-walls'
+) {
   return {
     id,
     type: 'door' as const,
@@ -700,18 +715,26 @@ describe('BIM validation: beam must have start/end points', () => {
     const doc = makeTestDoc();
     const result = validateElement(beam, doc);
     expect(result.valid).toBe(false);
-    expect(result.errors.some((e) =>
-      e.toLowerCase().includes('start') || e.toLowerCase().includes('end') || e.toLowerCase().includes('span')
-    )).toBe(true);
+    expect(
+      result.errors.some(
+        (e) =>
+          e.toLowerCase().includes('start') ||
+          e.toLowerCase().includes('end') ||
+          e.toLowerCase().includes('span')
+      )
+    ).toBe(true);
   });
 
   it('should pass when beam has start and end point properties', () => {
     const beam = makeTestBeam('beam-ok', true);
     const doc = makeTestDoc();
     const result = validateElement(beam, doc);
-    expect(result.errors.filter((e) =>
-      e.toLowerCase().includes('span') ||
-      (e.toLowerCase().includes('start') && e.toLowerCase().includes('end'))
-    )).toHaveLength(0);
+    expect(
+      result.errors.filter(
+        (e) =>
+          e.toLowerCase().includes('span') ||
+          (e.toLowerCase().includes('start') && e.toLowerCase().includes('end'))
+      )
+    ).toHaveLength(0);
   });
 });

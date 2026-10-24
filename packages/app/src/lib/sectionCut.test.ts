@@ -2,14 +2,17 @@
  * T-VIEW-01: Unit tests for sectionCut — cut-plane → 2D cross-section geometry.
  */
 import { describe, it, expect } from 'vitest';
-import {
-  computeSectionCut,
-  sectionPlaneFromMarker,
-  type SectionPlane,
-} from './sectionCut';
+import { computeSectionCut, sectionPlaneFromMarker, type SectionPlane } from './sectionCut';
 import type { ElementSchema } from '@opencad/document';
 
-function makeWall(x1: number, y1: number, x2: number, y2: number, zBase = 0, zTop = 3000): ElementSchema {
+function makeWall(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  zBase = 0,
+  zTop = 3000
+): ElementSchema {
   return {
     id: `wall-${x1}-${y1}`,
     type: 'wall',
@@ -40,7 +43,8 @@ describe('T-VIEW-01: sectionCut', () => {
 
   it('creates a section plane from two marker points (X-axis cut)', () => {
     const plane = sectionPlaneFromMarker(
-      { x: 0, y: 5000 }, { x: 10000, y: 5000 },
+      { x: 0, y: 5000 },
+      { x: 10000, y: 5000 },
       { zBottom: 0, zTop: 4000, depth: 6000 }
     );
     expect(plane.origin.x).toBe(0);
@@ -51,7 +55,8 @@ describe('T-VIEW-01: sectionCut', () => {
 
   it('creates a section plane from two marker points (diagonal)', () => {
     const plane = sectionPlaneFromMarker(
-      { x: 0, y: 0 }, { x: 1000, y: 1000 },
+      { x: 0, y: 0 },
+      { x: 1000, y: 1000 },
       { zBottom: 0, zTop: 3000, depth: 5000 }
     );
     // Normal is perpendicular to the cut direction (rotated 90°)
@@ -182,12 +187,16 @@ describe('T-VIEW-01: sectionCut', () => {
   });
 
   it('slab polygon intersected by cut plane produces cut lines', () => {
-    const slab = makeSlab([
-      { x: 0, y: 0 },
-      { x: 10000, y: 0 },
-      { x: 10000, y: 10000 },
-      { x: 0, y: 10000 },
-    ], 0, 300);
+    const slab = makeSlab(
+      [
+        { x: 0, y: 0 },
+        { x: 10000, y: 0 },
+        { x: 10000, y: 10000 },
+        { x: 0, y: 10000 },
+      ],
+      0,
+      300
+    );
     const plane: SectionPlane = {
       origin: { x: 0, y: 5000 },
       normal: { x: 0, y: 1 },

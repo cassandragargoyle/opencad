@@ -13,8 +13,14 @@
  *     existing segment beyond one of its endpoints, snap to the line.
  */
 
-export interface Point { x: number; y: number }
-export interface Segment { a: Point; b: Point }
+export interface Point {
+  x: number;
+  y: number;
+}
+export interface Segment {
+  a: Point;
+  b: Point;
+}
 
 export type AxisLock = 'x' | 'y' | 'free';
 
@@ -22,13 +28,11 @@ export type AxisLock = 'x' | 'y' | 'free';
  * Pick the axis to lock based on drag dominance + Shift modifier.
  * Returns 'free' when shift is not held.
  */
-export function computeAxisLock(
-  start: Point, current: Point, shift: boolean,
-): AxisLock {
+export function computeAxisLock(start: Point, current: Point, shift: boolean): AxisLock {
   if (!shift) return 'free';
   const dx = Math.abs(current.x - start.x);
   const dy = Math.abs(current.y - start.y);
-  return dx >= dy ? 'y' : 'x';  // Lock the SECONDARY axis
+  return dx >= dy ? 'y' : 'x'; // Lock the SECONDARY axis
 }
 
 /** Apply an axis lock to a candidate point. */
@@ -43,9 +47,9 @@ export interface InferenceGuide {
    *  'y' means a horizontal guide at this y. 'extension' means snap along
    *  the extension of a segment. */
   kind: 'x' | 'y' | 'extension';
-  value: number;           // For 'x' and 'y': the coordinate. For 'extension': meaningless.
-  fromPointId?: string;    // Optional source reference id
-  segment?: Segment;       // For 'extension'
+  value: number; // For 'x' and 'y': the coordinate. For 'extension': meaningless.
+  fromPointId?: string; // Optional source reference id
+  segment?: Segment; // For 'extension'
 }
 
 /**
@@ -56,7 +60,7 @@ export interface InferenceGuide {
 export function inferFromReferencePoints(
   current: Point,
   refs: Array<Point & { id?: string }>,
-  tolerance: number,
+  tolerance: number
 ): InferenceGuide | null {
   let best: { guide: InferenceGuide; dist: number } | null = null;
   for (const r of refs) {
@@ -80,19 +84,22 @@ export function inferFromReferencePoints(
 export function inferExtension(
   current: Point,
   segment: Segment,
-  tolerance: number,
+  tolerance: number
 ): { point: Point; guide: InferenceGuide } | null {
   const { a, b } = segment;
-  const dx = b.x - a.x, dy = b.y - a.y;
+  const dx = b.x - a.x,
+    dy = b.y - a.y;
   const len = Math.hypot(dx, dy);
   if (len < 1e-6) return null;
-  const ux = dx / len, uy = dy / len;
+  const ux = dx / len,
+    uy = dy / len;
 
   // Project current onto the line
   const t = (current.x - a.x) * ux + (current.y - a.y) * uy;
   // Must be beyond one of the endpoints (t < 0 or t > len)
   if (t >= 0 && t <= len) return null;
-  const projX = a.x + t * ux, projY = a.y + t * uy;
+  const projX = a.x + t * ux,
+    projY = a.y + t * uy;
   const perp = Math.hypot(current.x - projX, current.y - projY);
   if (perp > tolerance) return null;
   return {
@@ -104,11 +111,7 @@ export function inferExtension(
 /**
  * Snap current to the midpoint of a segment if within tolerance.
  */
-export function inferMidpoint(
-  current: Point,
-  segment: Segment,
-  tolerance: number,
-): Point | null {
+export function inferMidpoint(current: Point, segment: Segment, tolerance: number): Point | null {
   const mid = { x: (segment.a.x + segment.b.x) / 2, y: (segment.a.y + segment.b.y) / 2 };
   return Math.hypot(current.x - mid.x, current.y - mid.y) <= tolerance ? mid : null;
 }
@@ -119,10 +122,11 @@ export function inferMidpoint(
 export function inferPerpendicularFoot(
   current: Point,
   segment: Segment,
-  tolerance: number,
+  tolerance: number
 ): Point | null {
   const { a, b } = segment;
-  const dx = b.x - a.x, dy = b.y - a.y;
+  const dx = b.x - a.x,
+    dy = b.y - a.y;
   const len = Math.hypot(dx, dy);
   if (len < 1e-6) return null;
   const t = ((current.x - a.x) * dx + (current.y - a.y) * dy) / (len * len);

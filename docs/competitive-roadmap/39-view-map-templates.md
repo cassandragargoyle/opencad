@@ -9,6 +9,7 @@ A project's drawings are dozens of views — every plan per level, every section
 ## Scope
 
 ### In scope
+
 - **View Map** tab in Navigator (sibling to Layers, Levels).
 - Folder tree: Plans / Sections / Elevations / Details / 3D / Renderings / Worksheets.
 - **View Template**: saved bundle of `{ scale, visibleStories, layerCombination, graphicOverride, annotationLayer }`.
@@ -16,6 +17,7 @@ A project's drawings are dozens of views — every plan per level, every section
 - Seed templates: "Working Plan 1:100", "Presentation Plan 1:50", "Detail 1:10", "Construction Section 1:100".
 
 ### Out of scope
+
 - Multi-user shared templates (v1 per-project).
 
 ## Proposed approach

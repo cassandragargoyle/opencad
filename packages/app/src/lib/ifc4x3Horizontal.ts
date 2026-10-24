@@ -54,7 +54,7 @@ function horizontalStations(alignment: CivicAlignment): number[] {
  */
 function computeHorizontalPoint(
   alignment: CivicAlignment,
-  station: number,
+  station: number
 ): { x: number; y: number; direction: number } {
   const stations = horizontalStations(alignment);
 
@@ -119,9 +119,15 @@ function computeElevation(alignment: CivicAlignment, station: number): number {
 
   for (const seg of alignment.verticalSegments) {
     const segEnd = seg.startStation + seg.length;
-    if (station >= seg.startStation && (station <= segEnd || seg === alignment.verticalSegments[alignment.verticalSegments.length - 1])) {
+    if (
+      station >= seg.startStation &&
+      (station <= segEnd ||
+        seg === alignment.verticalSegments[alignment.verticalSegments.length - 1])
+    ) {
       const x = Math.min(station, segEnd) - seg.startStation;
-      return seg.startElevation + seg.grade1 * x + ((seg.grade2 - seg.grade1) / (2 * seg.length)) * x * x;
+      return (
+        seg.startElevation + seg.grade1 * x + ((seg.grade2 - seg.grade1) / (2 * seg.length)) * x * x
+      );
     }
   }
 
@@ -132,7 +138,7 @@ function computeElevation(alignment: CivicAlignment, station: number): number {
 
 export function computePointOnAlignment(
   alignment: CivicAlignment,
-  station: number,
+  station: number
 ): { x: number; y: number; z: number } {
   const horizontal = computeHorizontalPoint(alignment, station);
   const z = computeElevation(alignment, station);
@@ -144,7 +150,11 @@ export function gradeAtStation(alignment: CivicAlignment, station: number): numb
 
   for (const seg of alignment.verticalSegments) {
     const segEnd = seg.startStation + seg.length;
-    if (station >= seg.startStation && (station <= segEnd || seg === alignment.verticalSegments[alignment.verticalSegments.length - 1])) {
+    if (
+      station >= seg.startStation &&
+      (station <= segEnd ||
+        seg === alignment.verticalSegments[alignment.verticalSegments.length - 1])
+    ) {
       const x = Math.min(station, segEnd) - seg.startStation;
       // Derivative of parabola: g1 + (g2-g1)/L * x
       return seg.grade1 + ((seg.grade2 - seg.grade1) / seg.length) * x;
@@ -179,16 +189,24 @@ export function buildIFC4x3AlignmentStep(alignment: CivicAlignment): string {
 
     switch (seg.segmentType) {
       case 'Line':
-        lines.push(`#${id}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${x},${y})),${dirDeg},0.,${len},.LINE.,$,$);`);
+        lines.push(
+          `#${id}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${x},${y})),${dirDeg},0.,${len},.LINE.,$,$);`
+        );
         break;
       case 'CircularArc':
-        lines.push(`#${id}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${x},${y})),${dirDeg},${(seg.radius ?? 0).toFixed(3)},${len},.CIRCULARARC.,$,$);`);
+        lines.push(
+          `#${id}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${x},${y})),${dirDeg},${(seg.radius ?? 0).toFixed(3)},${len},.CIRCULARARC.,$,$);`
+        );
         break;
       case 'Clothoid':
-        lines.push(`#${id}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${x},${y})),${dirDeg},$,${len},.CLOTHOID.,${(seg.clothoidConstant ?? 0).toFixed(3)},$);`);
+        lines.push(
+          `#${id}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${x},${y})),${dirDeg},$,${len},.CLOTHOID.,${(seg.clothoidConstant ?? 0).toFixed(3)},$);`
+        );
         break;
       case 'Cubic':
-        lines.push(`#${id}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${x},${y})),${dirDeg},$,${len},.CUBIC.,$,$);`);
+        lines.push(
+          `#${id}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${x},${y})),${dirDeg},$,${len},.CUBIC.,$,$);`
+        );
         break;
     }
   }
@@ -198,7 +216,9 @@ export function buildIFC4x3AlignmentStep(alignment: CivicAlignment): string {
   for (const seg of alignment.verticalSegments) {
     const id = entityId++;
     vSegIds.push(id);
-    lines.push(`#${id}=IFCALIGNMENTVERTICALSEGMENT($,$,${seg.startStation.toFixed(3)},${seg.length.toFixed(3)},${seg.startElevation.toFixed(3)},${seg.grade1.toFixed(6)},${seg.grade2.toFixed(6)},.PARABOLICARC.,$);`);
+    lines.push(
+      `#${id}=IFCALIGNMENTVERTICALSEGMENT($,$,${seg.startStation.toFixed(3)},${seg.length.toFixed(3)},${seg.startElevation.toFixed(3)},${seg.grade1.toFixed(6)},${seg.grade2.toFixed(6)},.PARABOLICARC.,$);`
+    );
   }
 
   const segRefs = segIds.map((id) => `#${id}`).join(',');
@@ -208,9 +228,13 @@ export function buildIFC4x3AlignmentStep(alignment: CivicAlignment): string {
     const vCurveId = entityId++;
     const vRefs = vSegIds.map((id) => `#${id}`).join(',');
     lines.push(`#${vCurveId}=IFCALIGNMENTVERTICAL($,(${vRefs}));`);
-    lines.push(`#${alignId}=IFCALIGNMENT('${alignment.id}',$,'${alignment.name}',$,$,$,#${hCurveId},#${vCurveId});`);
+    lines.push(
+      `#${alignId}=IFCALIGNMENT('${alignment.id}',$,'${alignment.name}',$,$,$,#${hCurveId},#${vCurveId});`
+    );
   } else {
-    lines.push(`#${alignId}=IFCALIGNMENT('${alignment.id}',$,'${alignment.name}',$,$,$,#${hCurveId},$);`);
+    lines.push(
+      `#${alignId}=IFCALIGNMENT('${alignment.id}',$,'${alignment.name}',$,$,$,#${hCurveId},$);`
+    );
   }
 
   lines.push('ENDSEC;');

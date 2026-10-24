@@ -1,11 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import {
-  createInvite, revoke, accept, findPendingForEmail,
-} from './invites';
+import { createInvite, revoke, accept, findPendingForEmail } from './invites';
 
 describe('T-INVITE-001: invite queue', () => {
   it('createInvite normalises email and sets pending status', () => {
-    const i = createInvite({ orgId: 'o1', email: '  User@Example.com ', role: 'architect', invitedBy: 'admin' });
+    const i = createInvite({
+      orgId: 'o1',
+      email: '  User@Example.com ',
+      role: 'architect',
+      invitedBy: 'admin',
+    });
     expect(i.email).toBe('user@example.com');
     expect(i.status).toBe('pending');
   });

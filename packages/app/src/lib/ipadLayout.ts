@@ -65,7 +65,7 @@ export function expandToHIGMinimum(target: HitTarget): HitTarget {
   if (meetsHIGMinimum(target)) return target;
   const scale = HIG_MIN_HIT_TARGET / Math.min(target.width, target.height);
   return {
-    width:  Math.max(target.width  * scale, HIG_MIN_HIT_TARGET),
+    width: Math.max(target.width * scale, HIG_MIN_HIT_TARGET),
     height: Math.max(target.height * scale, HIG_MIN_HIT_TARGET),
   };
 }
@@ -140,7 +140,7 @@ export interface PinchGesture {
  */
 export function computePinchGesture(
   prev: [TouchPoint, TouchPoint],
-  curr: [TouchPoint, TouchPoint],
+  curr: [TouchPoint, TouchPoint]
 ): PinchGesture {
   const prevDist = distance(prev[0], prev[1]);
   const currDist = distance(curr[0], curr[1]);
@@ -187,11 +187,9 @@ export function computePalettePosition(
   paletteW: number,
   paletteH: number,
   preferSide: 'left' | 'right' = 'right',
-  margin = 16,
+  margin = 16
 ): PaletteLayout {
-  const x = preferSide === 'right'
-    ? vp.width  - paletteW - margin
-    : margin;
+  const x = preferSide === 'right' ? vp.width - paletteW - margin : margin;
   const y = vp.height - paletteH - margin;
   return { x, y, side: preferSide };
 }

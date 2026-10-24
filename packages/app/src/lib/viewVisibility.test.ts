@@ -48,8 +48,10 @@ describe('T-VIS-V2-01: resolveElementVisibility()', () => {
   });
 
   it('global opacity multiplies with category opacity', () => {
-    const v: typeof createViewVisibility extends (...a: any[]) => infer R ? R : never =
-      { ...createViewVisibility('v1'), globalOpacity: 0.5 };
+    const v: typeof createViewVisibility extends (...a: any[]) => infer R ? R : never = {
+      ...createViewVisibility('v1'),
+      globalOpacity: 0.5,
+    };
     const r = resolveElementVisibility('el-1', 'walls', v);
     expect(r.opacity).toBeCloseTo(0.5);
   });

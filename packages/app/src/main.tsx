@@ -33,7 +33,7 @@ void initSyncCrdt();
 // without re-parsing persisted JSON. No-op in production.
 installDiagWindow(
   () => useDocumentStore.getState().document,
-  (tool, key, value) => useDocumentStore.getState().setToolParam(tool, key, value),
+  (tool, key, value) => useDocumentStore.getState().setToolParam(tool, key, value)
 );
 
 const container = document.getElementById('root');

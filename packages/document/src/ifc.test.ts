@@ -58,7 +58,7 @@ function ifc4Fixture(): string {
     '#12=IFCCARTESIANPOINT((50.,100.,0.));',
     '#13=IFCCARTESIANPOINT((100.,0.,0.));',
     // CSG solid
-    "#20=IFCBOOLEANRESULT(.DIFFERENCE.,#21,#22);",
+    '#20=IFCBOOLEANRESULT(.DIFFERENCE.,#21,#22);',
     '#21=IFCEXTRUDEDAREASOLID(#23,#24,#25,3000.);',
     '#22=IFCEXTRUDEDAREASOLID(#26,#27,#28,1000.);',
     "#30=IFCWALL('w4',$,'IFC4 Wall',$,$,$,$,$,$);",
@@ -440,17 +440,9 @@ describe('T-IFC-006: IFC Property Sets', () => {
 
 describe('T-IFC-007: Large IFC Import Performance', () => {
   function generateLargeIFC(entityCount: number): string {
-    const lines = [
-      'ISO-10303-21;',
-      'HEADER;',
-      "FILE_SCHEMA(('IFC2X3'));",
-      'ENDSEC;',
-      'DATA;',
-    ];
+    const lines = ['ISO-10303-21;', 'HEADER;', "FILE_SCHEMA(('IFC2X3'));", 'ENDSEC;', 'DATA;'];
     for (let i = 1; i <= entityCount; i++) {
-      lines.push(
-        `#${i}=IFCWALL('wall${i}',$,'Wall ${i}',$,$,$,$,$,$);`
-      );
+      lines.push(`#${i}=IFCWALL('wall${i}',$,'Wall ${i}',$,$,$,$,$,$);`);
     }
     lines.push('ENDSEC;', 'END-ISO-10303-21;');
     return lines.join('\n');
@@ -492,17 +484,36 @@ describe('T-BIM-003: IFC Pset Editing', () => {
       properties: Object.fromEntries(
         Object.entries(props).map(([k, v]) => [
           k,
-          { type: (typeof v === 'boolean' ? 'boolean' : typeof v === 'number' ? 'number' : 'string') as 'string' | 'number' | 'boolean',
-            value: v },
+          {
+            type: (typeof v === 'boolean'
+              ? 'boolean'
+              : typeof v === 'number'
+                ? 'number'
+                : 'string') as 'string' | 'number' | 'boolean',
+            value: v,
+          },
         ])
       ),
       propertySets: [],
       geometry: { type: 'brep' as const, data: null },
       layerId: 'layer-0',
       levelId: 'level-0',
-      transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-      boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' as const }, max: { x: 1, y: 1, z: 1, _type: 'Point3D' as const } },
-      metadata: { id: 'el-test', createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+      transform: {
+        translation: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0, _type: 'Point3D' as const },
+        max: { x: 1, y: 1, z: 1, _type: 'Point3D' as const },
+      },
+      metadata: {
+        id: 'el-test',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
+        version: { clock: {} },
+      },
       visible: true,
       locked: false,
     };
@@ -671,14 +682,16 @@ describe('T-IO-01: IFC 4.3 ADD2 Reference View export', () => {
       levelId: level,
     });
     // addElement ignores propertySets — set them directly on the element
-    doc.content.elements[eid].propertySets = [{
-      id: 'pset1',
-      name: 'Pset_SlabCommon',
-      properties: {
-        Combustible: { type: 'boolean', value: false },
-        ThermalTransmittance: { type: 'number', value: 0.25 },
+    doc.content.elements[eid].propertySets = [
+      {
+        id: 'pset1',
+        name: 'Pset_SlabCommon',
+        properties: {
+          Combustible: { type: 'boolean', value: false },
+          ThermalTransmittance: { type: 'number', value: 0.25 },
+        },
       },
-    }];
+    ];
     const ifc = exportIFC43(doc);
     expect(ifc).toContain('IFCPROPERTYSET');
     expect(ifc).toContain('Pset_SlabCommon');

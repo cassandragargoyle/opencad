@@ -9,6 +9,7 @@ The current clash detector is a simple structural-vs-MEP pass with a hard-coded 
 ## Scope
 
 ### In scope
+
 - **Clash Rule**: `{ name, setA: ElementFilter, setB: ElementFilter, tolerance, severity }`.
 - Multiple rules run in parallel; results grouped by rule.
 - **Clash set**: snapshot of clashes at a moment; saved with status per clash (`new | active | approved | resolved`).
@@ -18,6 +19,7 @@ The current clash detector is a simple structural-vs-MEP pass with a hard-coded 
 - Navigation: click a clash → fly 3D camera to the region, highlight both elements.
 
 ### Out of scope
+
 - Scheduled / automated runs on CRDT sync.
 - Dashboards that aggregate across multiple projects.
 

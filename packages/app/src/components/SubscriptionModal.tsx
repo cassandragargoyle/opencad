@@ -48,7 +48,11 @@ export function SubscriptionModal({ onClose }: SubscriptionModalProps) {
       }}
     >
       <div className="subscription-modal">
-        <button aria-label={t('subscription.close', { defaultValue: 'Close' })} className="modal-close" onClick={onClose}>
+        <button
+          aria-label={t('subscription.close', { defaultValue: 'Close' })}
+          className="modal-close"
+          onClick={onClose}
+        >
           ×
         </button>
 
@@ -58,13 +62,13 @@ export function SubscriptionModal({ onClose }: SubscriptionModalProps) {
         <div className="subscription-plans">
           {PLAN_TIERS.map(({ tier, badge }) => {
             const isCurrent = tier === (currentTier as PlanKey);
-            const showUpgrade =
-              !isCurrent && tier !== 'free' && currentTier !== 'business';
+            const showUpgrade = !isCurrent && tier !== 'free' && currentTier !== 'business';
             const planLabel = t(`subscription.plans.${tier}.label`);
             const price = t(`subscription.plans.${tier}.price`);
-            const priceDetail = tier === 'free'
-              ? t(`subscription.plans.free.priceDetail`)
-              : t('subscription.perUserMonth');
+            const priceDetail =
+              tier === 'free'
+                ? t(`subscription.plans.free.priceDetail`)
+                : t('subscription.perUserMonth');
             const features = [
               t(`subscription.plans.${tier}.features.f1`),
               t(`subscription.plans.${tier}.features.f2`),
@@ -115,11 +119,17 @@ export function SubscriptionModal({ onClose }: SubscriptionModalProps) {
                       setLoadingTier(tier);
                       upgrade(tier as 'pro' | 'business').catch((err: unknown) => {
                         setLoadingTier(null);
-                        setCheckoutError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+                        setCheckoutError(
+                          err instanceof Error
+                            ? err.message
+                            : 'Something went wrong. Please try again.'
+                        );
                       });
                     }}
                   >
-                    {loadingTier === tier ? 'Redirecting…' : t('subscription.upgradeTo', { plan: planLabel })}
+                    {loadingTier === tier
+                      ? 'Redirecting…'
+                      : t('subscription.upgradeTo', { plan: planLabel })}
                   </button>
                 )}
               </div>
@@ -128,7 +138,14 @@ export function SubscriptionModal({ onClose }: SubscriptionModalProps) {
         </div>
 
         {checkoutError && (
-          <p style={{ marginTop: 16, color: 'var(--accent-danger)', fontSize: 13, textAlign: 'center' }}>
+          <p
+            style={{
+              marginTop: 16,
+              color: 'var(--accent-danger)',
+              fontSize: 13,
+              textAlign: 'center',
+            }}
+          >
             {checkoutError}
           </p>
         )}

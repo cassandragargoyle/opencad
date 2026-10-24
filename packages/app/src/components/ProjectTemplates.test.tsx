@@ -6,7 +6,9 @@ expect.extend(jestDomMatchers);
 
 describe('T-SYNC-011: ProjectTemplates', () => {
   const onSelect = vi.fn();
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders Project Templates header', () => {
     render(<ProjectTemplates onSelect={onSelect} />);
@@ -30,7 +32,9 @@ describe('T-SYNC-011: ProjectTemplates', () => {
 
   it('shows at least 3 templates', () => {
     render(<ProjectTemplates onSelect={onSelect} />);
-    expect(screen.getAllByRole('button', { name: /use template/i }).length).toBeGreaterThanOrEqual(3);
+    expect(screen.getAllByRole('button', { name: /use template/i }).length).toBeGreaterThanOrEqual(
+      3
+    );
   });
 
   it('calls onSelect when Use Template clicked', () => {

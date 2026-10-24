@@ -9,6 +9,7 @@ Every door and window in the current document is a flat `Width × Height × 50 m
 ## Scope
 
 ### In scope
+
 - New parametric structures for doors and windows:
   - **Door**: `frame` (material, thickness, profile), `leaf` (count 1/2, material, panel layout `flush | 2-panel | 4-panel | glass`, handing `L / R`), `threshold` (material).
   - **Window**: `frame` (material, thickness, profile), `panes` (grid: rows × cols), `sill` (material, depth), `operation` (`fixed | casement | awning | double-hung | sliding`).
@@ -19,6 +20,7 @@ Every door and window in the current document is a flat `Width × Height × 50 m
 - A small library of default door/window types is seeded on new projects: `int-door-single-flush-900`, `ext-door-single-4panel-900`, `window-casement-1200x1200-2x1`, etc.
 
 ### Out of scope (this issue)
+
 - User-authored custom symbol libraries via drag-and-drop (T-PAR-013).
 - Sliding doors with rail / floor detail.
 - Revolving doors.

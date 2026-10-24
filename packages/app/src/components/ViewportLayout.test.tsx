@@ -15,7 +15,7 @@ describe('T-VP-001: ViewportLayout', () => {
     render(
       <ViewportLayout count={1}>
         {(index) => <div data-testid={`pane-${index}`}>Pane {index}</div>}
-      </ViewportLayout>,
+      </ViewportLayout>
     );
     expect(screen.getAllByTestId(/^pane-/)).toHaveLength(1);
   });
@@ -24,7 +24,7 @@ describe('T-VP-001: ViewportLayout', () => {
     render(
       <ViewportLayout count={2}>
         {(index) => <div data-testid={`pane-${index}`}>Pane {index}</div>}
-      </ViewportLayout>,
+      </ViewportLayout>
     );
     expect(screen.getAllByTestId(/^pane-/)).toHaveLength(2);
   });
@@ -33,7 +33,7 @@ describe('T-VP-001: ViewportLayout', () => {
     render(
       <ViewportLayout count={4}>
         {(index) => <div data-testid={`pane-${index}`}>Pane {index}</div>}
-      </ViewportLayout>,
+      </ViewportLayout>
     );
     expect(screen.getAllByTestId(/^pane-/)).toHaveLength(4);
   });
@@ -42,7 +42,7 @@ describe('T-VP-001: ViewportLayout', () => {
     render(
       <ViewportLayout count={4}>
         {(index) => <div data-testid={`pane-${index}`}>Pane {index}</div>}
-      </ViewportLayout>,
+      </ViewportLayout>
     );
     expect(screen.getByTestId('pane-0')).toBeInTheDocument();
     expect(screen.getByTestId('pane-1')).toBeInTheDocument();

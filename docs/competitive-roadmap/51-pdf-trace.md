@@ -9,6 +9,7 @@ Architects are handed existing-conditions drawings as PDF constantly: survey, as
 ## Scope
 
 ### In scope
+
 - Import a PDF page as a reference overlay in plan view.
 - Scale calibration: pick two points, enter their real-world distance, PDF is scaled.
 - Transparency / opacity slider.
@@ -18,6 +19,7 @@ Architects are handed existing-conditions drawings as PDF constantly: survey, as
 - OCR-based text extraction (future) — not in v1.
 
 ### Out of scope
+
 - Editable extraction of PDF vectors (convert PDF lines into OpenCAD lines) — hard, defer.
 - Automatic scale detection from a scale bar.
 

@@ -6,10 +6,7 @@
  */
 import * as jestDomMatchers from '@testing-library/jest-dom/matchers';
 import { describe, it, expect } from 'vitest';
-import {
-  runComplianceCheck,
-  COMPLIANCE_RULES,
-} from './complianceEngine';
+import { runComplianceCheck, COMPLIANCE_RULES } from './complianceEngine';
 import type { DocumentSchema, ElementSchema } from '@opencad/document';
 expect.extend(jestDomMatchers);
 
@@ -41,7 +38,7 @@ function makeElement(
   type: ElementSchema['type'],
   numProps: Record<string, number> = {},
   boolProps: Record<string, boolean> = {},
-  strProps: Record<string, string> = {},
+  strProps: Record<string, string> = {}
 ): ElementSchema {
   const properties: ElementSchema['properties'] = {};
   for (const [k, v] of Object.entries(numProps)) {
@@ -69,7 +66,20 @@ function makeElement(
   };
 }
 
-function makeDoc(elements: ElementSchema[] = [], spaces: Record<string, { id: string; name: string; area: number; volume: number; levelId: string; boundaries: string[] }> = {}): DocumentSchema {
+function makeDoc(
+  elements: ElementSchema[] = [],
+  spaces: Record<
+    string,
+    {
+      id: string;
+      name: string;
+      area: number;
+      volume: number;
+      levelId: string;
+      boundaries: string[];
+    }
+  > = {}
+): DocumentSchema {
   const elMap: Record<string, ElementSchema> = {};
   for (const el of elements) {
     elMap[el.id] = el;

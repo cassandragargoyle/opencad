@@ -16,7 +16,13 @@ interface PhotoToModelPanelProps {
   extractedGeometry?: ExtractedGeometry;
 }
 
-export function PhotoToModelPanel({ onUpload, onExtract, status = 'idle', photoUrl, extractedGeometry }: PhotoToModelPanelProps = {}) {
+export function PhotoToModelPanel({
+  onUpload,
+  onExtract,
+  status = 'idle',
+  photoUrl,
+  extractedGeometry,
+}: PhotoToModelPanelProps = {}) {
   const { t } = useTranslation('panels');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,11 +40,16 @@ export function PhotoToModelPanel({ onUpload, onExtract, status = 'idle', photoU
   return (
     <div className="photo-to-model-panel">
       <div className="panel-header">
-        <span className="panel-title">{t('photo.fullTitle', { defaultValue: 'Photo-to-Model' })}</span>
+        <span className="panel-title">
+          {t('photo.fullTitle', { defaultValue: 'Photo-to-Model' })}
+        </span>
       </div>
 
       <p className="photo-instructions">
-        {t('photo.instructions', { defaultValue: 'Upload a site photo to extract massing geometry and generate a 3D model. AI analyzes the photo to identify walls, floors, and openings.' })}
+        {t('photo.instructions', {
+          defaultValue:
+            'Upload a site photo to extract massing geometry and generate a 3D model. AI analyzes the photo to identify walls, floors, and openings.',
+        })}
       </p>
 
       <div
@@ -49,9 +60,16 @@ export function PhotoToModelPanel({ onUpload, onExtract, status = 'idle', photoU
         aria-label={t('photo.uploadZone', { defaultValue: 'Photo upload zone' })}
       >
         {photoUrl ? (
-          <img src={photoUrl} alt={t('photo.uploadedAlt', { defaultValue: 'Uploaded site photo' })} className="photo-preview" style={{ maxWidth: '100%', maxHeight: 200 }} />
+          <img
+            src={photoUrl}
+            alt={t('photo.uploadedAlt', { defaultValue: 'Uploaded site photo' })}
+            className="photo-preview"
+            style={{ maxWidth: '100%', maxHeight: 200 }}
+          />
         ) : (
-          <span className="drop-hint">{t('photo.dropHint', { defaultValue: 'Drop a photo here or click Upload to browse' })}</span>
+          <span className="drop-hint">
+            {t('photo.dropHint', { defaultValue: 'Drop a photo here or click Upload to browse' })}
+          </span>
         )}
       </div>
 
@@ -95,7 +113,12 @@ export function PhotoToModelPanel({ onUpload, onExtract, status = 'idle', photoU
           <h4>{t('photo.extractedHeading', { defaultValue: 'Extracted Geometry' })}</h4>
           <div className="result-row">
             <span>{t('photo.wallsDetected', { defaultValue: 'Walls detected:' })}</span>
-            <span>{t('photo.wallsCount', { count: extractedGeometry.wallCount, defaultValue: '{{count}} walls' })}</span>
+            <span>
+              {t('photo.wallsCount', {
+                count: extractedGeometry.wallCount,
+                defaultValue: '{{count}} walls',
+              })}
+            </span>
           </div>
           <div className="result-row">
             <span>{t('photo.estimatedArea', { defaultValue: 'Estimated area:' })}</span>
