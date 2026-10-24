@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Override when 5173 is taken by another dev server, e.g. E2E_PORT=5180.
+const PORT = Number(process.env.E2E_PORT ?? 5173);
+
 export default defineConfig({
   testDir: '.',
   // house-build.spec.ts is an experiment harness, run explicitly with ITER=<id>
@@ -16,14 +19,14 @@ export default defineConfig({
   webServer: {
     // In CI: serve the pre-built dist; locally: use the Vite dev server
     command: process.env.CI
-      ? 'pnpm --filter=@opencad/app exec vite preview --port 5173 --strictPort'
-      : 'pnpm --filter=@opencad/app dev',
-    url: 'http://localhost:5173',
+      ? `pnpm --filter=@opencad/app exec vite preview --port ${PORT} --strictPort`
+      : `pnpm --filter=@opencad/app dev --port ${PORT} --strictPort`,
+    url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: `http://localhost:${PORT}`,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
