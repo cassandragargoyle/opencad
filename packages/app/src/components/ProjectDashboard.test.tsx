@@ -219,6 +219,43 @@ describe('T-SYNC-010: ProjectDashboard', () => {
     expect(store.starProject).toHaveBeenCalledWith('p1');
   });
 
+  // INT-002: rename via a pencil button, not a double-click on the name
+  it('starts the inline rename from the pencil button without opening the project', () => {
+    const store = makeStore();
+    vi.mocked(useProjectStore).mockReturnValue(store);
+    const { container } = render(
+      <MemoryRouter>
+        <ProjectDashboard />
+      </MemoryRouter>
+    );
+    fireEvent.click(screen.getAllByRole('button', { name: 'Rename project' })[0]);
+    expect(container.querySelector('.project-name-input')).toHaveValue('My House');
+    expect(store.openProject).not.toHaveBeenCalled();
+  });
+
+  it('starts the inline rename on F2 on the focused project name', () => {
+    const store = makeStore();
+    vi.mocked(useProjectStore).mockReturnValue(store);
+    const { container } = render(
+      <MemoryRouter>
+        <ProjectDashboard />
+      </MemoryRouter>
+    );
+    fireEvent.keyDown(screen.getByText('My House'), { key: 'F2' });
+    expect(container.querySelector('.project-name-input')).toHaveValue('My House');
+    expect(store.openProject).not.toHaveBeenCalled();
+  });
+
+  it('does not start the rename on double-click of the project name', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <ProjectDashboard />
+      </MemoryRouter>
+    );
+    fireEvent.doubleClick(screen.getByText('My House'));
+    expect(container.querySelector('.project-name-input')).toBeNull();
+  });
+
   it('calls createProject when New Project button clicked', async () => {
     const store = makeStore();
     vi.mocked(useProjectStore).mockReturnValue(store);

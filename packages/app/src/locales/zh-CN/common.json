@@ -200,7 +200,8 @@
       "orTemplate": "或从模板开始"
     },
     "card": {
-      "clickToOpen": "单击打开 · 双击重命名",
+      "clickToOpen": "单击打开",
+      "rename": "重命名项目",
       "star": "收藏项目",
       "unstar": "取消收藏",
       "delete": "删除项目"

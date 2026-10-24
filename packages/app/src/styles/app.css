@@ -2451,6 +2451,13 @@ input[type='range']::-moz-range-track {
   gap: 8px;
 }
 
+.project-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
 .project-name-inline {
   flex: 1;
   min-width: 0;
@@ -2476,6 +2483,7 @@ input[type='range']::-moz-range-track {
   cursor: pointer;
 }
 
+.rename-btn,
 .star-btn {
   background: none;
   border: none;

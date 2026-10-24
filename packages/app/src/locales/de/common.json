@@ -200,7 +200,8 @@
       "orTemplate": "Oder mit einer Vorlage starten"
     },
     "card": {
-      "clickToOpen": "Klicken zum Öffnen · Doppelklick zum Umbenennen",
+      "clickToOpen": "Klicken zum Öffnen",
+      "rename": "Projekt umbenennen",
       "star": "Projekt markieren",
       "unstar": "Markierung entfernen",
       "delete": "Projekt löschen"

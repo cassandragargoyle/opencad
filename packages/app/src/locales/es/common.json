@@ -200,7 +200,8 @@
       "orTemplate": "O empieza desde una plantilla"
     },
     "card": {
-      "clickToOpen": "Clic para abrir · Doble clic para renombrar",
+      "clickToOpen": "Clic para abrir",
+      "rename": "Renombrar proyecto",
       "star": "Marcar como destacado",
       "unstar": "Quitar de destacados",
       "delete": "Eliminar proyecto"
