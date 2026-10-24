@@ -1838,9 +1838,8 @@ export function useViewport() {
       dirtyRef.current = true;
     }
 
-    // ── Undo / redo / save ──────────────────────────────────────────────────
-    if (ctrl && event.key === 'z' && !event.shiftKey) { event.preventDefault(); getStoreActions().undo(); return; }
-    if (ctrl && (event.key === 'y' || (event.key === 'z' && event.shiftKey))) { event.preventDefault(); getStoreActions().redo(); return; }
+    // ── Save ────────────────────────────────────────────────────────────────
+    // Undo/redo shortcuts are handled globally by useUndoRedo (AppLayout).
     if (ctrl && event.key === 's') { event.preventDefault(); getStoreActions().pushHistory('Manual save'); return; }
 
     // ── Select all ──────────────────────────────────────────────────────────

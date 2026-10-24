@@ -53,6 +53,68 @@ describe('T-DOC-007: Undo history is capped at MAX_HISTORY (50)', () => {
   });
 });
 
+describe('T-DOC-007: Undo/redo after opening a project', () => {
+  const elementCount = () =>
+    Object.keys(useDocumentStore.getState().document!.content.elements).length;
+  const addLine = (x: number): string => {
+    const layerId = Object.keys(useDocumentStore.getState().document!.organization.layers)[0]!;
+    return useDocumentStore.getState().addElement({
+      type: 'annotation',
+      layerId,
+      properties: {
+        StartX: { type: 'number', value: x },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: x + 100 },
+        EndY: { type: 'number', value: 0 },
+      },
+    });
+  };
+
+  it.each([
+    ['loadProject', () => useDocumentStore.getState().loadProject('undo-test', 'user-001')],
+    ['initProject', () => useDocumentStore.getState().initProject('undo-test', 'user-001')],
+  ])('first action after %s can be undone', (_name, open) => {
+    open();
+    const before = elementCount();
+
+    addLine(0);
+    useDocumentStore.getState().pushHistory('Add line');
+    expect(useDocumentStore.getState().canUndo).toBe(true);
+
+    useDocumentStore.getState().undo();
+    expect(elementCount()).toBe(before);
+  });
+
+  it('an edit after undo does not resurrect the undone change', () => {
+    useDocumentStore.getState().loadProject('undo-test', 'user-001');
+
+    const undoneId = addLine(0);
+    useDocumentStore.getState().pushHistory('Add line A');
+    useDocumentStore.getState().undo();
+
+    const keptId = addLine(500);
+    useDocumentStore.getState().pushHistory('Add line B');
+
+    const elements = useDocumentStore.getState().document!.content.elements;
+    expect(elements[keptId]).toBeDefined();
+    expect(elements[undoneId]).toBeUndefined();
+  });
+
+  it('an edit after redo keeps the redone change', () => {
+    useDocumentStore.getState().loadProject('undo-test', 'user-001');
+
+    const redoneId = addLine(0);
+    useDocumentStore.getState().pushHistory('Add line A');
+    useDocumentStore.getState().undo();
+    useDocumentStore.getState().redo();
+
+    addLine(500);
+    useDocumentStore.getState().pushHistory('Add line B');
+
+    expect(useDocumentStore.getState().document!.content.elements[redoneId]).toBeDefined();
+  });
+});
+
 describe('T-BIM-006: Level operations', () => {
   beforeEach(() => {
     useDocumentStore.getState().loadProject('test-project', 'user-001');

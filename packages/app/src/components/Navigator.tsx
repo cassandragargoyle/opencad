@@ -57,6 +57,7 @@ export function Navigator() {
     setSelectedIds,
     updateLayer,
     addLayer,
+    pushHistory,
     deleteRendering,
     hideElement,
     unhideElement,
@@ -253,6 +254,7 @@ export function Navigator() {
                 e.stopPropagation();
                 const colors = ['#808080', '#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
                 addLayer({ name: `Layer ${layers.length + 1}`, color: colors[layers.length % colors.length] });
+                pushHistory('Add layer');
               }}
             >
               <Plus size={11} />
@@ -282,7 +284,11 @@ export function Navigator() {
                           title={layer.visible
                             ? t('layers.hideLayer', { defaultValue: 'Hide layer' })
                             : t('layers.showLayer', { defaultValue: 'Show layer' })}
-                          onClick={(e) => { e.stopPropagation(); updateLayer(layer.id, { visible: !layer.visible }); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateLayer(layer.id, { visible: !layer.visible });
+                            pushHistory(layer.visible ? 'Hide layer' : 'Show layer');
+                          }}
                         >
                           {layer.visible ? <Eye size={12} /> : <EyeOff size={12} />}
                         </button>
@@ -291,7 +297,11 @@ export function Navigator() {
                           title={layer.locked
                             ? t('layers.unlockLayer', { defaultValue: 'Unlock layer' })
                             : t('layers.lockLayer', { defaultValue: 'Lock layer' })}
-                          onClick={(e) => { e.stopPropagation(); updateLayer(layer.id, { locked: !layer.locked }); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateLayer(layer.id, { locked: !layer.locked });
+                            pushHistory(layer.locked ? 'Unlock layer' : 'Lock layer');
+                          }}
                         >
                           {layer.locked ? <Lock size={12} /> : <Unlock size={12} />}
                         </button>

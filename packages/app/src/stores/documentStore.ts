@@ -87,6 +87,22 @@ interface HistoryEntry {
   description: string;
 }
 
+/** Undo state for a freshly opened document: one baseline snapshot, so the
+ *  first edit (snapshotted by pushHistory after the change) can be undone. */
+function historyBaseline(document: DocumentSchema): Pick<
+  DocumentState,
+  'history' | 'historyIndex' | 'canUndo' | 'canRedo'
+> {
+  return {
+    history: [
+      { document: JSON.parse(JSON.stringify(document)), timestamp: Date.now(), description: 'Open project' },
+    ],
+    historyIndex: 0,
+    canUndo: false,
+    canRedo: false,
+  };
+}
+
 /** T-HIST-001: A record of a single document change for the history panel. */
 export interface ChangeRecord {
   id: string;
@@ -311,10 +327,7 @@ export const useDocumentStore = create<DocumentState>()(
           document,
           model,
           lastSaved: Date.now(),
-          history: [],
-          historyIndex: -1,
-          canUndo: false,
-          canRedo: false,
+          ...historyBaseline(document),
         });
 
         // Initialise the CRDT WASM module (no-op if already loaded) then
@@ -342,10 +355,7 @@ export const useDocumentStore = create<DocumentState>()(
           document,
           model,
           lastSaved: Date.now(),
-          history: [],
-          historyIndex: -1,
-          canUndo: false,
-          canRedo: false,
+          ...historyBaseline(document),
         });
 
         // Initialise the CRDT WASM module (no-op if already loaded) then
@@ -918,11 +928,14 @@ export const useDocumentStore = create<DocumentState>()(
       },
 
       undo: () => {
-        const { history, historyIndex } = get();
+        const { history, historyIndex, model } = get();
         if (historyIndex <= 0) return;
 
         const newIndex = historyIndex - 1;
         const doc = JSON.parse(JSON.stringify(history[newIndex].document)) as DocumentSchema;
+        // Edits go through model.documentData — keep it in step with the
+        // restored snapshot or the next edit resurrects the undone change.
+        model?.loadDocument(doc);
         set({
           document: doc,
           historyIndex: newIndex,
@@ -934,11 +947,12 @@ export const useDocumentStore = create<DocumentState>()(
       },
 
       redo: () => {
-        const { history, historyIndex } = get();
+        const { history, historyIndex, model } = get();
         if (historyIndex >= history.length - 1) return;
 
         const newIndex = historyIndex + 1;
         const doc = JSON.parse(JSON.stringify(history[newIndex].document)) as DocumentSchema;
+        model?.loadDocument(doc);
         set({
           document: doc,
           historyIndex: newIndex,
@@ -985,10 +999,7 @@ export const useDocumentStore = create<DocumentState>()(
           document: doc,
           model: newModel,
           lastSaved: Date.now(),
-          history: [],
-          historyIndex: -1,
-          canUndo: false,
-          canRedo: false,
+          ...historyBaseline(doc),
         });
         persistDocument(doc);
       },

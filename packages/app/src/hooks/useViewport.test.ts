@@ -273,3 +273,31 @@ describe.skip('T-ROLE-005: viewport read-only mode', () => {
     expect(result.current.drawingState.isDrawing).toBe(false);
   });
 });
+
+describe('T-DOC-007: useViewport leaves undo/redo shortcuts to useUndoRedo', () => {
+  beforeEach(() => {
+    useDocumentStore.getState().initProject('vp-test', 'user-1');
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  // AppLayout mounts the global useUndoRedo handler; handling the same keys
+  // here too made a single Ctrl+Z undo two steps in the 2D view.
+  it.each([
+    ['Ctrl+Z', { key: 'z', ctrlKey: true }],
+    ['Ctrl+Shift+Z', { key: 'Z', ctrlKey: true, shiftKey: true }],
+    ['Ctrl+Y', { key: 'y', ctrlKey: true }],
+  ])('does not handle %s', (_label, init) => {
+    const undo = vi.fn();
+    const redo = vi.fn();
+    useDocumentStore.setState({ undo, redo });
+    renderHook(() => useViewport());
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { ...init, bubbles: true }));
+
+    expect(undo).not.toHaveBeenCalled();
+    expect(redo).not.toHaveBeenCalled();
+  });
+});

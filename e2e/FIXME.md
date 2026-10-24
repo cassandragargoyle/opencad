@@ -2,7 +2,7 @@
 
 These E2E tests never actually ran in CI: `@opencad/e2e` ran Playwright from `e2e/` while the config lived at the repo root (where `@playwright/test` is not installed), so there was no webServer/baseURL — 60/62 failed and `continue-on-error: true` hid it. On Node 26 the job hangs until the 35 min timeout.
 
-After fixing the config (moved to `e2e/playwright.config.ts`), a real run on Chromium gives **29 passed, 1 skipped, 31 failed** (+ `house-build.spec.ts`, which is an experiment harness and is now excluded unless `ITER` is set).
+After fixing the config (moved to `e2e/playwright.config.ts`), a real run on Chromium gives **29 passed, 1 skipped, 31 failed — 6 since fixed** (+ `house-build.spec.ts`, which is an experiment harness and is now excluded unless `ITER` is set).
 
 The failing tests are marked `test.fixme` pointing here so the passing ones can gate CI. Fix them and remove the `fixme`:
 
@@ -10,13 +10,10 @@ The failing tests are marked `test.fixme` pointing here so the passing ones can 
 
 - **`visual.spec.ts`** — no snapshot baselines are committed (and baselines are OS-specific); needs baselines generated in CI's environment (e.g. Playwright Docker image).
 - **`smoke.spec.ts`** — targets the old pre-app UI (`h1 OpenCAD`, `.project-section`).
-- **`document.spec.ts`** — selectors / globals from older UI; undo/redo and layer panel tests may be real regressions — verify.
-- **`accessibility.spec.ts:126`** (W shortcut → wall tool), **`core-flows.spec.ts:133`** (viewport context menu) — verify whether behavior changed or regressed.
+- **`document.spec.ts`** — selectors / globals from older UI.
 
 ### Failing tests
 
-- [ ] `accessibility.spec.ts:126:3` › T-A11Y-002: App shell accessibility › keyboard shortcut W activates wall tool
-- [ ] `core-flows.spec.ts:133:3` › T-E2E-001: Core flows › T-E2E-001-006: context menu appears on right-click in viewport
 - [ ] `document.spec.ts:14:5` › Document Model E2E Tests › T-DOC-001: Create project → verify document model initialized with correct schema › should create a document with corre
 - [ ] `document.spec.ts:26:5` › Document Model E2E Tests › T-DOC-001: Create project → verify document model initialized with correct schema › should create a default layer named
 - [ ] `document.spec.ts:36:5` › Document Model E2E Tests › T-DOC-001: Create project → verify document model initialized with correct schema › should create a default level with
@@ -26,10 +23,6 @@ The failing tests are marked `test.fixme` pointing here so the passing ones can 
 - [ ] `document.spec.ts:91:5` › Document Model E2E Tests › T-DOC-004: Import IFC › should map IFC types to OpenCAD element types
 - [ ] `document.spec.ts:118:5` › Document Model E2E Tests › T-DOC-005: Export IFC › should export to valid IFC format
 - [ ] `document.spec.ts:188:5` › Document Model E2E Tests › T-DOC-006: Version history › should restore version correctly
-- [ ] `document.spec.ts:340:3` › T-E2E-001: Layer management › layer panel is accessible from the right panel
-- [ ] `document.spec.ts:345:3` › T-E2E-001: Layer management › default layer "Default" exists
-- [ ] `document.spec.ts:397:3` › T-E2E-001: Undo / Redo keyboard shortcuts › Ctrl+Z undoes the last action
-- [ ] `document.spec.ts:419:3` › T-E2E-001: Undo / Redo keyboard shortcuts › Ctrl+Shift+Z redoes the last undone action
 - [ ] `smoke.spec.ts:10:3` › Smoke Tests › should load the application
 - [ ] `smoke.spec.ts:16:3` › Smoke Tests › should display project section
 - [ ] `smoke.spec.ts:23:3` › Smoke Tests › should have functional layer creation
