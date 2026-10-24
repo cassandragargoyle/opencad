@@ -13,6 +13,9 @@
     "test:webkit": "playwright test --project=webkit",
     "test:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
     "test:smoke": "playwright test --project=chromium smoke.spec.ts",
+    "test:container": "scripts/in-playwright-container.sh --project=chromium",
+    "test:visual": "scripts/in-playwright-container.sh --project=chromium visual.spec.ts",
+    "test:visual:update": "scripts/in-playwright-container.sh --project=chromium visual.spec.ts --update-snapshots",
     "report": "playwright show-report",
     "clean": "rm -rf playwright-report playwright-results.json test-results"
   },

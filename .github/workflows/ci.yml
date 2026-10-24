@@ -269,11 +269,12 @@ jobs:
       - name: Build browser app
         run: pnpm build:browser
 
-      - name: Install Playwright browsers
-        run: pnpm --filter=@opencad/e2e exec playwright install --with-deps chromium
-
+      # Runs in the official Playwright image (browsers preinstalled) — the
+      # same environment the visual baselines are rendered in.
       - name: Run E2E tests
-        run: pnpm --filter=@opencad/e2e test:chromium
+        env:
+          CONTAINER_ENGINE: docker
+        run: pnpm --filter=@opencad/e2e test:container
 
       - name: Upload test results
         if: always()
