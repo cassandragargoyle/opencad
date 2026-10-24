@@ -7,9 +7,7 @@
  *   T-MOD-018-005 — extrude face creates 1 side face per edge
  */
 import { describe, it, expect } from 'vitest';
-import {
-  seedBox, pushPullFace, moveVertex, bevelEdge, splitFace, extrudeFace,
-} from './morphOps';
+import { seedBox, pushPullFace, moveVertex, bevelEdge, splitFace, extrudeFace } from './morphOps';
 
 describe('T-MOD-018: morph ops', () => {
   it('T-MOD-018-001: seed box has 8 vertices and 6 faces', () => {
@@ -20,7 +18,8 @@ describe('T-MOD-018: morph ops', () => {
     const edges = new Set<string>();
     for (const f of m.faces) {
       for (let i = 0; i < f.length; i++) {
-        const a = f[i]!, b = f[(i + 1) % f.length]!;
+        const a = f[i]!,
+          b = f[(i + 1) % f.length]!;
         edges.add(`${Math.min(a, b)}-${Math.max(a, b)}`);
       }
     }
@@ -71,7 +70,7 @@ describe('T-MOD-018: morph ops', () => {
 
   it('T-MOD-018-005: extrudeFace creates 1 side face per edge of the extruded face', () => {
     const m = seedBox();
-    const out = extrudeFace(m, 1, { x: 0, y: 0, z: 1 });   // extrude top
+    const out = extrudeFace(m, 1, { x: 0, y: 0, z: 1 }); // extrude top
     // Original 6 faces + 4 side faces = 10
     expect(out.faces.length).toBe(m.faces.length + 4);
     // Added 4 new vertices (duplicates of the top face)

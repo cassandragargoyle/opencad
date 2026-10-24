@@ -38,7 +38,7 @@ function makeWallElement(
   sx: number,
   sy: number,
   ex: number,
-  ey: number,
+  ey: number
 ): ElementSchema {
   return {
     id,
@@ -88,7 +88,11 @@ describe('T-SPACE-001: Room detection', () => {
   });
 
   it('polygonArea returns 0 for degenerate (collinear) polygon', () => {
-    const line: Point2D[] = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }];
+    const line: Point2D[] = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+    ];
     expect(polygonArea(line)).toBe(0);
   });
 
@@ -111,7 +115,11 @@ describe('T-SPACE-001: Room detection', () => {
   });
 
   it('polygonCentroid handles triangle', () => {
-    const tri: Point2D[] = [{ x: 0, y: 0 }, { x: 6, y: 0 }, { x: 3, y: 6 }];
+    const tri: Point2D[] = [
+      { x: 0, y: 0 },
+      { x: 6, y: 0 },
+      { x: 3, y: 6 },
+    ];
     const c = polygonCentroid(tri);
     expect(c.x).toBeCloseTo(3, 5);
     expect(c.y).toBeCloseTo(2, 5);
@@ -257,7 +265,11 @@ describe('T-SPACE-001: Room detection', () => {
   });
 
   it('polygonArea returns correct area for right triangle', () => {
-    const tri: Point2D[] = [{ x: 0, y: 0 }, { x: 3, y: 0 }, { x: 0, y: 4 }];
+    const tri: Point2D[] = [
+      { x: 0, y: 0 },
+      { x: 3, y: 0 },
+      { x: 0, y: 4 },
+    ];
     expect(polygonArea(tri)).toBeCloseTo(6, 10);
   });
 });

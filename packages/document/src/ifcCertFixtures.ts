@@ -33,12 +33,15 @@ export interface CertFixture {
 
 // ─── Source document builders ────────────────────────────────────────────────
 
-function addElement(doc: DocumentSchema, spec: {
-  type: ElementType;
-  name: string;
-  bbox: { min: [number, number, number]; max: [number, number, number] };
-  properties?: ElementSchema['properties'];
-}): void {
+function addElement(
+  doc: DocumentSchema,
+  spec: {
+    type: ElementType;
+    name: string;
+    bbox: { min: [number, number, number]; max: [number, number, number] };
+    properties?: ElementSchema['properties'];
+  }
+): void {
   const id = crypto.randomUUID();
   const layerId = Object.keys(doc.organization.layers)[0]!;
   const levelId = Object.keys(doc.organization.levels)[0]!;
@@ -83,9 +86,12 @@ function fixtureWalls(): CertFixture {
     name: 'North Wall',
     bbox: { min: [0, 0, 0], max: [5000, 200, 3000] },
     properties: {
-      StartX: { type: 'number', value: 0 },    StartY: { type: 'number', value: 0 },
-      EndX:   { type: 'number', value: 5000 }, EndY:   { type: 'number', value: 0 },
-      Height: { type: 'number', value: 3000 }, Thickness: { type: 'number', value: 200 },
+      StartX: { type: 'number', value: 0 },
+      StartY: { type: 'number', value: 0 },
+      EndX: { type: 'number', value: 5000 },
+      EndY: { type: 'number', value: 0 },
+      Height: { type: 'number', value: 3000 },
+      Thickness: { type: 'number', value: 200 },
     },
   });
   addElement(doc, {
@@ -93,9 +99,12 @@ function fixtureWalls(): CertFixture {
     name: 'East Wall',
     bbox: { min: [5000, 0, 0], max: [5200, 4000, 3000] },
     properties: {
-      StartX: { type: 'number', value: 5000 }, StartY: { type: 'number', value: 0 },
-      EndX:   { type: 'number', value: 5000 }, EndY:   { type: 'number', value: 4000 },
-      Height: { type: 'number', value: 3000 }, Thickness: { type: 'number', value: 200 },
+      StartX: { type: 'number', value: 5000 },
+      StartY: { type: 'number', value: 0 },
+      EndX: { type: 'number', value: 5000 },
+      EndY: { type: 'number', value: 4000 },
+      Height: { type: 'number', value: 3000 },
+      Thickness: { type: 'number', value: 200 },
     },
   });
   return {
@@ -103,7 +112,8 @@ function fixtureWalls(): CertFixture {
     ifc: serializeIFC(doc, { schema: 'IFC4' }),
     manifest: {
       name: 'cert-walls',
-      description: 'Two-wall L-junction exercising IfcWall + IfcLocalPlacement + IfcExtrudedAreaSolid.',
+      description:
+        'Two-wall L-junction exercising IfcWall + IfcLocalPlacement + IfcExtrudedAreaSolid.',
       entities: ['IFCWALL', 'IFCLOCALPLACEMENT', 'IFCAXIS2PLACEMENT3D', 'IFCEXTRUDEDAREASOLID'],
       elementCount: 2,
       mvd: 'IFC4 RV',
@@ -138,9 +148,12 @@ function fixtureOpenings(): CertFixture {
     name: 'Host Wall',
     bbox: { min: [0, 0, 0], max: [5000, 200, 3000] },
     properties: {
-      StartX: { type: 'number', value: 0 },    StartY: { type: 'number', value: 0 },
-      EndX:   { type: 'number', value: 5000 }, EndY:   { type: 'number', value: 0 },
-      Height: { type: 'number', value: 3000 }, Thickness: { type: 'number', value: 200 },
+      StartX: { type: 'number', value: 0 },
+      StartY: { type: 'number', value: 0 },
+      EndX: { type: 'number', value: 5000 },
+      EndY: { type: 'number', value: 0 },
+      Height: { type: 'number', value: 3000 },
+      Thickness: { type: 'number', value: 200 },
     },
   });
   addElement(doc, {
@@ -171,9 +184,15 @@ function fixtureMultiStorey(): CertFixture {
   const l1 = Object.keys(doc.organization.levels)[0]!;
   doc.organization.levels[l1]!.name = 'Ground';
   const l2 = crypto.randomUUID();
-  doc.organization.levels[l2] = { id: l2, name: 'Level 1', elevation: 3000, height: 3000, order: 1 };
+  doc.organization.levels[l2] = {
+    id: l2,
+    name: 'Level 1',
+    elevation: 3000,
+    height: 3000,
+    order: 1,
+  };
   const l3 = crypto.randomUUID();
-  doc.organization.levels[l3] = { id: l3, name: 'Roof',    elevation: 6000, height: 3000, order: 2 };
+  doc.organization.levels[l3] = { id: l3, name: 'Roof', elevation: 6000, height: 3000, order: 2 };
 
   for (let i = 0; i < 3; i++) {
     addElement(doc, {
@@ -212,9 +231,7 @@ export interface CertSubmission {
 
 export function buildCertSubmission(): CertSubmission {
   const fixtures = buildCertFixtureSet();
-  const entitiesCovered = Array.from(
-    new Set(fixtures.flatMap((f) => f.manifest.entities)),
-  ).sort();
+  const entitiesCovered = Array.from(new Set(fixtures.flatMap((f) => f.manifest.entities))).sort();
   return {
     producedAt: Date.now(),
     mvd: 'IFC4 RV',

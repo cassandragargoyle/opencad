@@ -34,7 +34,12 @@ export class ErrorBoundary extends React.Component<Props, State> {
       return (
         <div className="error-boundary-fallback">
           <div className="error-boundary-icon">⚠</div>
-          <div className="error-boundary-title">{i18n.t('error.somethingWentWrong', { ns: 'common', defaultValue: 'Something went wrong' })}</div>
+          <div className="error-boundary-title">
+            {i18n.t('error.somethingWentWrong', {
+              ns: 'common',
+              defaultValue: 'Something went wrong',
+            })}
+          </div>
           <div className="error-boundary-message">
             {this.state.error?.message ?? 'An unexpected error occurred.'}
           </div>
@@ -57,7 +62,9 @@ export function PanelErrorBoundary({ children }: { children: React.ReactNode }) 
     <ErrorBoundary
       fallback={
         <div className="panel-error">
-          <span>{i18n.t('error.panelFailed', { ns: 'common', defaultValue: 'Panel failed to load.' })}</span>
+          <span>
+            {i18n.t('error.panelFailed', { ns: 'common', defaultValue: 'Panel failed to load.' })}
+          </span>
         </div>
       }
     >

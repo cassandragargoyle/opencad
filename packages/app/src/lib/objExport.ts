@@ -8,12 +8,18 @@
  * is the no-dependency baseline.
  */
 
-export interface Vertex { x: number; y: number; z: number }
-export interface Face   { /** 0-indexed vertex indices, 3+ per face. */ indices: number[] }
+export interface Vertex {
+  x: number;
+  y: number;
+  z: number;
+}
+export interface Face {
+  /** 0-indexed vertex indices, 3+ per face. */ indices: number[];
+}
 
 export interface MeshGroup {
   name: string;
-  material?: string;   // MTL material reference
+  material?: string; // MTL material reference
   vertices: Vertex[];
   faces: Face[];
   /** Optional vertex normals (indices parallel to `vertices`). */
@@ -45,7 +51,7 @@ export function serializeOBJ(
     mtlFileName?: string;
     /** Scale factor applied to every vertex. Use 0.001 to convert mm → m. */
     unitScale?: number;
-  } = {},
+  } = {}
 ): string {
   const coord = opts.coordSystem ?? 'y-up';
   const scale = opts.unitScale ?? 1;
@@ -58,9 +64,7 @@ export function serializeOBJ(
     lines.push(`o ${group.name}`);
     if (group.material) lines.push(`usemtl ${group.material}`);
     for (const v of group.vertices) {
-      const [x, y, z] = coord === 'y-up'
-        ? [v.x, v.y, v.z]
-        : [v.x, v.z, -v.y];
+      const [x, y, z] = coord === 'y-up' ? [v.x, v.y, v.z] : [v.x, v.z, -v.y];
       lines.push(`v ${(x * scale).toFixed(6)} ${(y * scale).toFixed(6)} ${(z * scale).toFixed(6)}`);
     }
     if (group.normals) {
@@ -70,9 +74,11 @@ export function serializeOBJ(
     }
     for (const f of group.faces) {
       // OBJ is 1-indexed + file-wide, so offset by prior groups' vertex count.
-      const idxs = f.indices.map((i) => group.normals
-        ? `${i + 1 + vertexOffset}//${i + 1 + normalOffset}`
-        : `${i + 1 + vertexOffset}`);
+      const idxs = f.indices.map((i) =>
+        group.normals
+          ? `${i + 1 + vertexOffset}//${i + 1 + normalOffset}`
+          : `${i + 1 + vertexOffset}`
+      );
       lines.push(`f ${idxs.join(' ')}`);
     }
     vertexOffset += group.vertices.length;

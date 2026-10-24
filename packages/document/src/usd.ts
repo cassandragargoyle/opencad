@@ -20,17 +20,14 @@ export interface USDExportOptions {
 }
 
 /** Export a DocumentSchema as USDA text. */
-export function exportUSDA(
-  doc: DocumentSchema,
-  opts: USDExportOptions = {},
-): string {
-  const scale       = opts.cmPerUnit         ?? 0.1;  // mm → cm
-  const materials   = opts.includeMaterials  ?? true;
-  const upAxis      = opts.upAxis            ?? 'Y';
+export function exportUSDA(doc: DocumentSchema, opts: USDExportOptions = {}): string {
+  const scale = opts.cmPerUnit ?? 0.1; // mm → cm
+  const materials = opts.includeMaterials ?? true;
+  const upAxis = opts.upAxis ?? 'Y';
 
-  const elements    = Object.values(doc.content.elements ?? {});
-  const physTypes   = new Set(['wall', 'slab', 'roof', 'column', 'beam', 'stair', 'door', 'window']);
-  const physical    = elements.filter((e) => physTypes.has(e.type));
+  const elements = Object.values(doc.content.elements ?? {});
+  const physTypes = new Set(['wall', 'slab', 'roof', 'column', 'beam', 'stair', 'door', 'window']);
+  const physical = elements.filter((e) => physTypes.has(e.type));
 
   const matDefs = materials ? buildMaterialDefs() : '';
   const primDefs = physical.map((el) => buildMeshPrim(el, scale, materials)).join('\n');
@@ -61,10 +58,7 @@ export interface USDZPayload {
   assets: string[];
 }
 
-export function buildUSDZPayload(
-  doc: DocumentSchema,
-  opts: USDExportOptions = {},
-): USDZPayload {
+export function buildUSDZPayload(doc: DocumentSchema, opts: USDExportOptions = {}): USDZPayload {
   const usda = exportUSDA(doc, opts);
   const safeName = doc.name.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
   return {
@@ -82,7 +76,7 @@ function buildMeshPrim(el: ElementSchema, scale: number, includeMaterial: boolea
 
   const { min, max } = bb;
   const sx = (max.x - min.x) * scale;
-  const sy = (max.z - min.z) * scale;  // z in mm → y in USD (up)
+  const sy = (max.z - min.z) * scale; // z in mm → y in USD (up)
   const sz = (max.y - min.y) * scale;
 
   // origin in USD space
@@ -97,18 +91,18 @@ function buildMeshPrim(el: ElementSchema, scale: number, includeMaterial: boolea
 
   return `    def Mesh "${primName}"
     {
-        float3[] extent = [(${(-sx/2).toFixed(4)}, ${(-sy/2).toFixed(4)}, ${(-sz/2).toFixed(4)}), (${(sx/2).toFixed(4)}, ${(sy/2).toFixed(4)}, ${(sz/2).toFixed(4)})]
+        float3[] extent = [(${(-sx / 2).toFixed(4)}, ${(-sy / 2).toFixed(4)}, ${(-sz / 2).toFixed(4)}), (${(sx / 2).toFixed(4)}, ${(sy / 2).toFixed(4)}, ${(sz / 2).toFixed(4)})]
         int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]
         int[] faceVertexIndices = [0, 1, 2, 3, 4, 5, 6, 7, 0, 4, 7, 3, 1, 5, 6, 2, 0, 1, 5, 4, 2, 6, 7, 3]
         point3f[] points = [
-            (${(-sx/2).toFixed(4)}, ${(-sy/2).toFixed(4)}, ${(-sz/2).toFixed(4)}),
-            (${(sx/2).toFixed(4)}, ${(-sy/2).toFixed(4)}, ${(-sz/2).toFixed(4)}),
-            (${(sx/2).toFixed(4)}, ${(sy/2).toFixed(4)}, ${(-sz/2).toFixed(4)}),
-            (${(-sx/2).toFixed(4)}, ${(sy/2).toFixed(4)}, ${(-sz/2).toFixed(4)}),
-            (${(-sx/2).toFixed(4)}, ${(-sy/2).toFixed(4)}, ${(sz/2).toFixed(4)}),
-            (${(sx/2).toFixed(4)}, ${(-sy/2).toFixed(4)}, ${(sz/2).toFixed(4)}),
-            (${(sx/2).toFixed(4)}, ${(sy/2).toFixed(4)}, ${(sz/2).toFixed(4)}),
-            (${(-sx/2).toFixed(4)}, ${(sy/2).toFixed(4)}, ${(sz/2).toFixed(4)})
+            (${(-sx / 2).toFixed(4)}, ${(-sy / 2).toFixed(4)}, ${(-sz / 2).toFixed(4)}),
+            (${(sx / 2).toFixed(4)}, ${(-sy / 2).toFixed(4)}, ${(-sz / 2).toFixed(4)}),
+            (${(sx / 2).toFixed(4)}, ${(sy / 2).toFixed(4)}, ${(-sz / 2).toFixed(4)}),
+            (${(-sx / 2).toFixed(4)}, ${(sy / 2).toFixed(4)}, ${(-sz / 2).toFixed(4)}),
+            (${(-sx / 2).toFixed(4)}, ${(-sy / 2).toFixed(4)}, ${(sz / 2).toFixed(4)}),
+            (${(sx / 2).toFixed(4)}, ${(-sy / 2).toFixed(4)}, ${(sz / 2).toFixed(4)}),
+            (${(sx / 2).toFixed(4)}, ${(sy / 2).toFixed(4)}, ${(sz / 2).toFixed(4)}),
+            (${(-sx / 2).toFixed(4)}, ${(sy / 2).toFixed(4)}, ${(sz / 2).toFixed(4)})
         ]
         double3 xformOp:translate = (${ox.toFixed(4)}, ${oy.toFixed(4)}, ${oz.toFixed(4)})
         uniform token[] xformOpOrder = ["xformOp:translate"]
@@ -118,18 +112,20 @@ function buildMeshPrim(el: ElementSchema, scale: number, includeMaterial: boolea
 }
 
 const MATERIAL_COLORS: Record<string, string> = {
-  wall:    '(0.8, 0.8, 0.75)',
-  slab:    '(0.6, 0.6, 0.6)',
-  roof:    '(0.5, 0.4, 0.35)',
-  column:  '(0.7, 0.7, 0.65)',
-  beam:    '(0.65, 0.65, 0.6)',
-  door:    '(0.55, 0.4, 0.3)',
-  window:  '(0.5, 0.7, 0.9)',
-  stair:   '(0.6, 0.55, 0.5)',
+  wall: '(0.8, 0.8, 0.75)',
+  slab: '(0.6, 0.6, 0.6)',
+  roof: '(0.5, 0.4, 0.35)',
+  column: '(0.7, 0.7, 0.65)',
+  beam: '(0.65, 0.65, 0.6)',
+  door: '(0.55, 0.4, 0.3)',
+  window: '(0.5, 0.7, 0.9)',
+  stair: '(0.6, 0.55, 0.5)',
 };
 
 function buildMaterialDefs(): string {
-  const defs = Object.entries(MATERIAL_COLORS).map(([type, color]) => `
+  const defs = Object.entries(MATERIAL_COLORS)
+    .map(
+      ([type, color]) => `
     def Material "${type}"
     {
         token outputs:surface.connect = </World/Materials/${type}/PBRShader.outputs:surface>
@@ -141,7 +137,9 @@ function buildMaterialDefs(): string {
             float inputs:metallic = 0.0
             token outputs:surface
         }
-    }`).join('');
+    }`
+    )
+    .join('');
 
   return `    def Scope "Materials"
     {${defs}

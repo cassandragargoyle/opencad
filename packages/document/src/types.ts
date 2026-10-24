@@ -81,20 +81,20 @@ export type ElementType =
   | 'wall'
   | 'door'
   | 'window'
-  | 'skylight'           // roof-mounted window
+  | 'skylight' // roof-mounted window
   | 'slab'
   | 'roof'
-  | 'ceiling'            // slab-like; position=ceiling
-  | 'foundation'         // slab-like; position=foundation
+  | 'ceiling' // slab-like; position=ceiling
+  | 'foundation' // slab-like; position=foundation
   | 'column'
   | 'beam'
-  | 'truss'              // composite beam structure
-  | 'brace'              // diagonal brace member
+  | 'truss' // composite beam structure
+  | 'brace' // diagonal brace member
   | 'stair'
-  | 'ramp'               // sloped slab
+  | 'ramp' // sloped slab
   | 'railing'
-  | 'mass'               // conceptual volume
-  | 'space'              // zone / room
+  | 'mass' // conceptual volume
+  | 'space' // zone / room
   | 'curtain_wall'
   // ── MEP ──────────────────────────────────────────────────────────────────
   | 'duct'
@@ -104,30 +104,30 @@ export type ElementType =
   | 'plumbing_fixture'
   | 'electrical_equipment'
   | 'mechanical_equipment'
-  | 'sprinkler'          // fire-suppression head
-  | 'lamp'               // light fixture
-  | 'air_terminal'       // diffuser / grille
+  | 'sprinkler' // fire-suppression head
+  | 'lamp' // light fixture
+  | 'air_terminal' // diffuser / grille
   // ── Site ─────────────────────────────────────────────────────────────────
-  | 'topography'         // terrain surface
-  | 'property_line'      // site boundary
+  | 'topography' // terrain surface
+  | 'property_line' // site boundary
   // ── Landscape / entourage ────────────────────────────────────────────────
-  | 'planting'           // vegetation (tree, shrub, grass patch)
-  | 'rock'               // stone / boulder
-  | 'site_furniture'     // bench, bollard, lamp-post, sign
-  | 'person'             // entourage figure
-  | 'vehicle'            // entourage vehicle
-  | 'terrain_contour'    // elevation contour line on site plan
+  | 'planting' // vegetation (tree, shrub, grass patch)
+  | 'rock' // stone / boulder
+  | 'site_furniture' // bench, bollard, lamp-post, sign
+  | 'person' // entourage figure
+  | 'vehicle' // entourage vehicle
+  | 'terrain_contour' // elevation contour line on site plan
   // ── Documentation / annotation ──────────────────────────────────────────
   | 'annotation'
   | 'dimension'
   | 'grid'
-  | 'label'              // callout with leader
-  | 'section_mark'       // view-reference marker
+  | 'label' // callout with leader
+  | 'section_mark' // view-reference marker
   | 'elevation_mark'
   | 'detail_mark'
   | 'revision_cloud'
-  | 'room_separator'     // zero-thickness separator
-  | 'model_text'         // 3D text in model space
+  | 'room_separator' // zero-thickness separator
+  | 'model_text' // 3D text in model space
   // ── 2D drafting primitives ───────────────────────────────────────────────
   | 'line'
   | 'circle'
@@ -136,7 +136,7 @@ export type ElementType =
   | 'surface'
   | 'solid'
   | 'point'
-  | 'hotspot'            // GDL-style anchor point
+  | 'hotspot' // GDL-style anchor point
   | 'text'
   | 'block_ref'
   | 'ellipse'
@@ -225,9 +225,11 @@ export interface ViewSchema {
   /** Section-specific: cut plane definition (only set when `type === 'section'`). */
   sectionCut?: {
     /** Plan point where the cut line starts. */
-    x1: number; y1: number;
+    x1: number;
+    y1: number;
     /** Plan point where the cut line ends. */
-    x2: number; y2: number;
+    x2: number;
+    y2: number;
     /** Bottom elevation of the section view (mm). */
     zBottom: number;
     /** Top elevation of the section view (mm). */
@@ -239,8 +241,10 @@ export interface ViewSchema {
   elevationDir?: 'N' | 'S' | 'E' | 'W';
   /** Detail-specific: cropped region in model space (only set when `type === 'detail'`). */
   detailRegion?: {
-    x: number; y: number;
-    width: number; height: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
     /** Print scale denominator (e.g. 10 = 1:10). */
     scale?: number;
   };
@@ -317,7 +321,14 @@ export interface FamilyGeometry {
   /** Triangle index triples (CCW winding). */
   faces: number[];
   /** Pre-computed bounding box; computed from vertices if omitted. */
-  boundingBox?: { minX: number; minY: number; minZ: number; maxX: number; maxY: number; maxZ: number };
+  boundingBox?: {
+    minX: number;
+    minY: number;
+    minZ: number;
+    maxX: number;
+    maxY: number;
+    maxZ: number;
+  };
 }
 
 /** Per-instance state persisted in `ElementSchema.family`. */
@@ -379,7 +390,16 @@ export interface Composite {
 // ── Visual programming graph (T-EXT-02) ─────────────────────────────────────
 
 /** Socket type for typed edge connections. */
-export type SocketType = 'number' | 'point' | 'curve' | 'surface' | 'brep' | 'material' | 'element' | 'list' | 'any';
+export type SocketType =
+  | 'number'
+  | 'point'
+  | 'curve'
+  | 'surface'
+  | 'brep'
+  | 'material'
+  | 'element'
+  | 'list'
+  | 'any';
 
 /** A single node in a visual programming graph. */
 export interface GraphNodeData {

@@ -4,25 +4,21 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDocumentStore, isDocumentReadOnly } from '../stores/documentStore';
-import {
-  buildTagLabel,
-  getTemplateForType,
-  BUILTIN_TAG_TEMPLATES,
-} from '../lib/tagSystem';
+import { buildTagLabel, getTemplateForType, BUILTIN_TAG_TEMPLATES } from '../lib/tagSystem';
 
 export function AnnotationTagPanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document    = useDocumentStore((s) => s.document);
-  const addElement  = useDocumentStore((s) => s.addElement);
+  const document = useDocumentStore((s) => s.document);
+  const addElement = useDocumentStore((s) => s.addElement);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
-  const isReadOnly  = isDocumentReadOnly();
+  const isReadOnly = isDocumentReadOnly();
 
   const [selectedId, setSelectedId] = useState<string>('');
-  const [status, setStatus]         = useState('');
+  const [status, setStatus] = useState('');
 
   const elements = useMemo(
     () => (document ? Object.values(document.content.elements) : []),
-    [document],
+    [document]
   );
 
   const supportedTypes = new Set(BUILTIN_TAG_TEMPLATES.map((t) => t.elementType));
@@ -37,8 +33,8 @@ export function AnnotationTagPanel(): React.ReactElement {
 
   const placeTag = () => {
     if (!selectedEl || isReadOnly) return;
-    const tmpl   = getTemplateForType(selectedEl.type);
-    const lines  = buildTagLabel(selectedEl, tmpl);
+    const tmpl = getTemplateForType(selectedEl.type);
+    const lines = buildTagLabel(selectedEl, tmpl);
 
     const layers = document ? Object.values(document.organization.layers) : [];
     const layerId = selectedEl.layerId || layers[0]?.id || 'default';
@@ -83,7 +79,9 @@ export function AnnotationTagPanel(): React.ReactElement {
             <span className="field-label">Preview</span>
             <div className="tag-bubble">
               {preview.map((line, i) => (
-                <div key={i} className="tag-line">{line || '—'}</div>
+                <div key={i} className="tag-line">
+                  {line || '—'}
+                </div>
               ))}
             </div>
           </div>
@@ -98,7 +96,9 @@ export function AnnotationTagPanel(): React.ReactElement {
         </button>
 
         {status && (
-          <p className="panel-status" role="status">{status}</p>
+          <p className="panel-status" role="status">
+            {status}
+          </p>
         )}
 
         {taggableElements.length === 0 && (

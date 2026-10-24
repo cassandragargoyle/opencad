@@ -23,7 +23,7 @@ export interface AutoSaveResult {
 
 export function useAutoSaveV2(
   intervalMs: number = 2000,
-  storage: AutoSaveStorage = localStorage,
+  storage: AutoSaveStorage = localStorage
 ): AutoSaveResult {
   const { document } = useDocumentStore();
   const [lastSaved, setLastSaved] = useState<Date | null>(null);

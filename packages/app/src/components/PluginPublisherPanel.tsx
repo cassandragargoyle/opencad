@@ -40,7 +40,10 @@ interface PublisherRegisterProps {
   onRegistered: (p: Publisher) => void;
 }
 
-function PublisherRegister({ initialEmail, onRegistered }: PublisherRegisterProps): React.ReactElement {
+function PublisherRegister({
+  initialEmail,
+  onRegistered,
+}: PublisherRegisterProps): React.ReactElement {
   const { t } = useTranslation('panels');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState(initialEmail ?? '');
@@ -52,7 +55,10 @@ function PublisherRegister({ initialEmail, onRegistered }: PublisherRegisterProp
     setSubmitting(true);
     setError(null);
     try {
-      const p = await registerPublisher({ displayName: displayName.trim(), contactEmail: email.trim() });
+      const p = await registerPublisher({
+        displayName: displayName.trim(),
+        contactEmail: email.trim(),
+      });
       onRegistered(p);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to register');
@@ -64,16 +70,16 @@ function PublisherRegister({ initialEmail, onRegistered }: PublisherRegisterProp
   return (
     <form className="publisher-form" onSubmit={(e) => void handleSubmit(e)}>
       <h4 className="section-title">{t('publisher.registerTitle')}</h4>
-      <p className="publisher-intro">
-        {t('publisher.registerIntro')}
-      </p>
+      <p className="publisher-intro">{t('publisher.registerIntro')}</p>
       <label className="publisher-field">
         <span>{t('publisher.displayName')}</span>
         <input
           type="text"
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
-          placeholder={t('publisher.displayNamePlaceholder', { defaultValue: 'e.g. Acme Architects' })}
+          placeholder={t('publisher.displayNamePlaceholder', {
+            defaultValue: 'e.g. Acme Architects',
+          })}
           required
           disabled={submitting}
         />
@@ -100,7 +106,15 @@ function PublisherRegister({ initialEmail, onRegistered }: PublisherRegisterProp
 // ── Submit a plugin ──────────────────────────────────────────────────────────
 
 const ALL_PERMISSIONS: PluginPermission[] = ['document', 'ui', 'network', 'storage'];
-const CATEGORIES = ['examples', 'modeling', 'structural', 'analysis', 'documentation', 'import-export', 'misc'];
+const CATEGORIES = [
+  'examples',
+  'modeling',
+  'structural',
+  'analysis',
+  'documentation',
+  'import-export',
+  'misc',
+];
 
 interface SubmitPluginFormProps {
   publisher: Publisher;
@@ -184,7 +198,13 @@ function SubmitPluginForm({ publisher }: SubmitPluginFormProps): React.ReactElem
       </label>
       <label className="publisher-field">
         <span>{t('publisher.name')}</span>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required disabled={submitting} />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          disabled={submitting}
+        />
       </label>
       <label className="publisher-field">
         <span>{t('publisher.description')}</span>
@@ -209,8 +229,16 @@ function SubmitPluginForm({ publisher }: SubmitPluginFormProps): React.ReactElem
         </label>
         <label className="publisher-field">
           <span>{t('publisher.category')}</span>
-          <select value={category} onChange={(e) => setCategory(e.target.value)} disabled={submitting}>
-            {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            disabled={submitting}
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
         </label>
         <label className="publisher-field">
@@ -276,14 +304,18 @@ function ModerationQueue(): React.ReactElement {
     }
   }, []);
 
-  useEffect(() => { void refresh(); }, [refresh]);
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
 
   const approve = async (id: string): Promise<void> => {
     setBusy(id);
     try {
       await adminSetModeration(id, 'approved');
       await refresh();
-    } finally { setBusy(null); }
+    } finally {
+      setBusy(null);
+    }
   };
   const reject = async (id: string): Promise<void> => {
     const notes = window.prompt(t('publisher.rejectPrompt')) ?? undefined;
@@ -291,7 +323,9 @@ function ModerationQueue(): React.ReactElement {
     try {
       await adminSetModeration(id, 'rejected', notes);
       await refresh();
-    } finally { setBusy(null); }
+    } finally {
+      setBusy(null);
+    }
   };
   const revoke = async (id: string): Promise<void> => {
     const reason = window.prompt(t('publisher.revokePrompt')) ?? undefined;
@@ -299,7 +333,9 @@ function ModerationQueue(): React.ReactElement {
     try {
       await adminRevoke(id, true, reason);
       await refresh();
-    } finally { setBusy(null); }
+    } finally {
+      setBusy(null);
+    }
   };
 
   // If the admin endpoint 404s for this user, they aren't an admin —
@@ -396,16 +432,16 @@ export function PluginPublisherPanel({ userEmail }: PluginPublisherPanelProps): 
         <PublisherRegister initialEmail={userEmail} onRegistered={setPublisher} />
       ) : (
         <>
-          {!publisher.stripeOnboarded && onboardingUrl && !onboardingUrl.startsWith('about:blank') && (
-            <div className="publisher-stripe-notice">
-              <span>
-                {t('publisher.stripeNotice')}
-              </span>
-              <a className="btn-install" href={onboardingUrl} target="_blank" rel="noreferrer">
-                {t('publisher.completeStripe')}
-              </a>
-            </div>
-          )}
+          {!publisher.stripeOnboarded &&
+            onboardingUrl &&
+            !onboardingUrl.startsWith('about:blank') && (
+              <div className="publisher-stripe-notice">
+                <span>{t('publisher.stripeNotice')}</span>
+                <a className="btn-install" href={onboardingUrl} target="_blank" rel="noreferrer">
+                  {t('publisher.completeStripe')}
+                </a>
+              </div>
+            )}
           <SubmitPluginForm publisher={publisher} />
           <ModerationQueue />
         </>

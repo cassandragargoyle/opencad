@@ -34,7 +34,7 @@ function makeEl(
   z: number,
   width: number,
   height: number,
-  depth: number,
+  depth: number
 ): ElementSchema {
   return {
     id,
@@ -42,7 +42,14 @@ function makeEl(
     layerId: 'l1',
     levelId: null,
     geometry: { type: 'brep', data: {} },
-    properties: { x: { type: 'number', value: x }, y: { type: 'number', value: y }, z: { type: 'number', value: z }, width: { type: 'number', value: width }, height: { type: 'number', value: height }, depth: { type: 'number', value: depth } },
+    properties: {
+      x: { type: 'number', value: x },
+      y: { type: 'number', value: y },
+      z: { type: 'number', value: z },
+      width: { type: 'number', value: width },
+      height: { type: 'number', value: height },
+      depth: { type: 'number', value: depth },
+    },
     propertySets: [],
     transform: BASE_TRANSFORM,
     boundingBox: BASE_BBOX,

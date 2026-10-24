@@ -2,10 +2,7 @@
  * T-VIEW-06: Unit tests for callout — detail marker cross-reference system.
  */
 import { describe, it, expect } from 'vitest';
-import {
-  createCalloutMarker,
-  resolveCalloutLabel,
-} from './callout';
+import { createCalloutMarker, resolveCalloutLabel } from './callout';
 
 describe('T-VIEW-06: callout', () => {
   it('createCalloutMarker returns a marker with the target view id', () => {
@@ -26,9 +23,7 @@ describe('T-VIEW-06: callout', () => {
   });
 
   it('resolveCalloutLabel returns view name when view exists', () => {
-    const views = [
-      { id: 'view-1', name: 'Detail A', type: 'detail' as const },
-    ];
+    const views = [{ id: 'view-1', name: 'Detail A', type: 'detail' as const }];
     const label = resolveCalloutLabel('view-1', views);
     expect(label).toContain('Detail A');
   });

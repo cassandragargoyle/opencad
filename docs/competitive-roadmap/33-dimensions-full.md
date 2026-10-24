@@ -9,6 +9,7 @@ The current dimension tool only produces straight linear dimensions between two 
 ## Scope
 
 ### In scope
+
 - **Angular dimension**: pick two non-parallel lines (or 3 points); emits the angle between them in degrees / radians (configurable).
 - **Radial dimension**: pick a circle or arc; emits `R = <mm>` on a leader line.
 - **Diameter dimension**: same but `Ø = <mm>`.
@@ -19,6 +20,7 @@ The current dimension tool only produces straight linear dimensions between two 
 - All dimension types render in plan, section, elevation; export to SVG.
 
 ### Out of scope
+
 - Running dimensions that auto-extend on edit.
 - Tolerance stacking across chained dims.
 

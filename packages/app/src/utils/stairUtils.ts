@@ -26,7 +26,7 @@ export function generateStairTreads(
   y: number,
   _width: number,
   depth: number,
-  numRisers: number,
+  numRisers: number
 ): StairTread[] {
   if (numRisers < 2 || depth <= 0) {
     return [];

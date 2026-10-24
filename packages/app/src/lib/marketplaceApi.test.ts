@@ -36,7 +36,7 @@ const makePlugin = (overrides: Partial<Plugin> = {}): Plugin => ({
 });
 
 function stubFetch(
-  response: Partial<Response> & { json?: () => Promise<unknown> },
+  response: Partial<Response> & { json?: () => Promise<unknown> }
 ): ReturnType<typeof vi.fn> {
   const mockFetch = vi.fn().mockResolvedValue({
     ok: true,
@@ -209,10 +209,7 @@ describe('T-MKT-003: network error rejects with descriptive message', () => {
   });
 
   it('error message includes the original failure reason', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockRejectedValue(new Error('net::ERR_NAME_NOT_RESOLVED')),
-    );
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('net::ERR_NAME_NOT_RESOLVED')));
 
     await expect(listPlugins()).rejects.toThrow(/net::ERR_NAME_NOT_RESOLVED/);
   });

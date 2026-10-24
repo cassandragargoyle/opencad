@@ -83,10 +83,7 @@ export function RemoteCursors() {
           >
             <path d="M2 2 L2 16 L6 12 L8 18 L11 17 L9 11 L14 11 Z" />
           </svg>
-          <span
-            className="remote-cursor-label"
-            style={{ background: peerColor(c.peerId) }}
-          >
+          <span className="remote-cursor-label" style={{ background: peerColor(c.peerId) }}>
             {peerLabel(c.peerId)}
           </span>
         </div>

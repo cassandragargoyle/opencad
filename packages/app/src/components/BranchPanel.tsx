@@ -44,7 +44,9 @@ export function BranchPanel(): React.ReactElement {
   if (!doc || !store) {
     return (
       <div className="branch-panel">
-        <div className="panel-header"><span className="panel-title">{t('branches.title')}</span></div>
+        <div className="panel-header">
+          <span className="panel-title">{t('branches.title')}</span>
+        </div>
         <p className="empty-hint">{t('branches.openProjectHint')}</p>
       </div>
     );

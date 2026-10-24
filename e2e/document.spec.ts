@@ -54,7 +54,14 @@ test.describe('Document Model E2E Tests', () => {
       await expect(layerCount).toHaveText('0');
 
       await activateTool(page, 'Rectangle');
-      await drawRectangle(page, page.locator('.viewport-wrapper canvas').first(), 100, 100, 300, 250);
+      await drawRectangle(
+        page,
+        page.locator('.viewport-wrapper canvas').first(),
+        100,
+        100,
+        300,
+        250
+      );
       await expect(layerCount).toHaveText('1');
 
       await page.reload();
@@ -105,12 +112,14 @@ test.describe('T-E2E-001 / T-2D: 2D drawing tools', () => {
     // Switching to the properties tab should reveal the WallToolPanel
     await openRightPanel(page, 'Properties');
     // The WallToolPanel is conditionally rendered when activeTool === 'wall'
-    await expect(page.locator('.wall-tool-panel, [class*="wall-tool"]')).toBeVisible({
-      timeout: 3000,
-    }).catch(() => {
-      // WallToolPanel may not be visible if properties panel does not show it;
-      // the main assertion is that the tool button is active (already checked)
-    });
+    await expect(page.locator('.wall-tool-panel, [class*="wall-tool"]'))
+      .toBeVisible({
+        timeout: 3000,
+      })
+      .catch(() => {
+        // WallToolPanel may not be visible if properties panel does not show it;
+        // the main assertion is that the tool button is active (already checked)
+      });
   });
 
   test('drawing a rectangle: mousedown + move + mouseup creates an element', async ({ page }) => {
@@ -120,7 +129,11 @@ test.describe('T-E2E-001 / T-2D: 2D drawing tools', () => {
     const canvas = page.locator('.viewport-wrapper canvas').first();
     await expect(canvas).toBeVisible();
 
-    const statusBefore = await page.locator('.status-right .status-item').last().textContent().catch(() => '0 elements');
+    const statusBefore = await page
+      .locator('.status-right .status-item')
+      .last()
+      .textContent()
+      .catch(() => '0 elements');
 
     await drawRectangle(page, canvas, 100, 100, 300, 250);
 
@@ -129,7 +142,11 @@ test.describe('T-E2E-001 / T-2D: 2D drawing tools', () => {
 
     // The element count in the status bar should have increased (or the canvas
     // rendered a new shape without JS errors).
-    const statusAfter = await page.locator('.status-right .status-item').last().textContent().catch(() => null);
+    const statusAfter = await page
+      .locator('.status-right .status-item')
+      .last()
+      .textContent()
+      .catch(() => null);
 
     // If status text is unavailable the test still passes as long as no
     // page errors were thrown — Playwright will surface those automatically.
@@ -178,7 +195,7 @@ test.describe('T-E2E-001: 3D view', () => {
       (e) =>
         !e.includes('service-worker') &&
         !e.includes('favicon') &&
-        !e.includes('Failed to load resource'),
+        !e.includes('Failed to load resource')
     );
     expect(criticalErrors).toHaveLength(0);
   });
@@ -222,7 +239,7 @@ test.describe('T-E2E-001: Version history UI', () => {
     // The save-version button is typically in the Navigator or toolbar.
     // We look for a button with a matching title or aria-label.
     const saveVersionBtn = page.locator(
-      '[title*="Save Version"], [title*="Snapshot"], [aria-label*="Save Version"], [aria-label*="Snapshot"]',
+      '[title*="Save Version"], [title*="Snapshot"], [aria-label*="Save Version"], [aria-label*="Snapshot"]'
     );
     const hasSaveVersionBtn = await saveVersionBtn.count();
 

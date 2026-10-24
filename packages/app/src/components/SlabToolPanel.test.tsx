@@ -15,7 +15,13 @@ const mockUseDocumentStore = vi.mocked(useDocumentStore);
 function makeStore(overrides = {}) {
   return {
     toolParams: {
-      slab: { thickness: 250, material: 'Concrete', slopeAngle: 0, elevationOffset: 0, slabType: 'floor' },
+      slab: {
+        thickness: 250,
+        material: 'Concrete',
+        slopeAngle: 0,
+        elevationOffset: 0,
+        slabType: 'floor',
+      },
     },
     setToolParam: vi.fn(),
     ...overrides,
@@ -80,7 +86,17 @@ describe('T-BIM-002: SlabToolPanel', () => {
 
   it('shows slope angle when slab type is roof', () => {
     mockUseDocumentStore.mockReturnValue(
-      makeStore({ toolParams: { slab: { thickness: 250, material: 'Concrete', slopeAngle: 30, elevationOffset: 0, slabType: 'roof' } } }) as ReturnType<typeof useDocumentStore>
+      makeStore({
+        toolParams: {
+          slab: {
+            thickness: 250,
+            material: 'Concrete',
+            slopeAngle: 30,
+            elevationOffset: 0,
+            slabType: 'roof',
+          },
+        },
+      }) as ReturnType<typeof useDocumentStore>
     );
     render(<SlabToolPanel />);
     expect(screen.getByLabelText(/slope/i)).toHaveValue(30);

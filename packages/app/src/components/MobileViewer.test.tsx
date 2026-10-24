@@ -5,7 +5,9 @@ import { MobileViewer } from './MobileViewer';
 expect.extend(jestDomMatchers);
 
 describe('T-MOB-001: MobileViewer', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders mobile viewer container', () => {
     render(<MobileViewer projectName="Test Project" />);
@@ -35,14 +37,19 @@ describe('T-MOB-001: MobileViewer', () => {
   });
 
   it('shows level selector', () => {
-    const levels = [{ id: 'l1', name: 'Ground Floor' }, { id: 'l2', name: 'First Floor' }];
+    const levels = [
+      { id: 'l1', name: 'Ground Floor' },
+      { id: 'l2', name: 'First Floor' },
+    ];
     render(<MobileViewer projectName="Test Project" levels={levels} />);
     expect(screen.getAllByText(/ground floor|first floor/i).length).toBeGreaterThan(0);
   });
 
   it('shows touch-friendly zoom controls', () => {
     render(<MobileViewer projectName="Test Project" />);
-    expect(screen.getAllByRole('button', { name: /zoom in|zoom out|\+|−/i }).length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole('button', { name: /zoom in|zoom out|\+|−/i }).length
+    ).toBeGreaterThan(0);
   });
 
   it('shows element count', () => {

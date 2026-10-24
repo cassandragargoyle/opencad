@@ -24,19 +24,30 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 /** Flush the microtask queue (equivalent to vi.runAllMicrotasksAsync in vitest >=4.2). */
-const flushMicrotasks = () => new Promise<void>((resolve) => { queueMicrotask(resolve); });
+const flushMicrotasks = () =>
+  new Promise<void>((resolve) => {
+    queueMicrotask(resolve);
+  });
 
 // ── localStorage mock ─────────────────────────────────────────────────────────
 
 function createLocalStorageMock() {
   const store: Record<string, string> = {};
   return {
-    getItem:    vi.fn((key: string): string | null => store[key] ?? null),
-    setItem:    vi.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: vi.fn((key: string) => { delete store[key]; }),
-    clear:      vi.fn(() => { Object.keys(store).forEach((k) => delete store[k]); }),
-    get length() { return Object.keys(store).length; },
-    key:        vi.fn((i: number): string | null => Object.keys(store)[i] ?? null),
+    getItem: vi.fn((key: string): string | null => store[key] ?? null),
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: vi.fn(() => {
+      Object.keys(store).forEach((k) => delete store[k]);
+    }),
+    get length() {
+      return Object.keys(store).length;
+    },
+    key: vi.fn((i: number): string | null => Object.keys(store)[i] ?? null),
     /** Direct access for test setup. */
     _store: store,
   };
@@ -65,24 +76,26 @@ function createWebSocketMock() {
   // Must be a real class (not arrow) so syncAdapter can call `new WebSocket(url)`.
   class MockWS {
     static CONNECTING = 0 as const;
-    static OPEN       = 1 as const;
-    static CLOSING    = 2 as const;
-    static CLOSED     = 3 as const;
+    static OPEN = 1 as const;
+    static CLOSING = 2 as const;
+    static CLOSED = 3 as const;
 
     readonly url: string;
     readyState = MockWS.OPEN;
     sent: string[] = [];
-    onopen:    ((evt: Event)       => void) | null = null;
+    onopen: ((evt: Event) => void) | null = null;
     onmessage: ((evt: MessageEvent) => void) | null = null;
-    onclose:   ((evt: CloseEvent)  => void) | null = null;
-    onerror:   ((evt: Event)       => void) | null = null;
+    onclose: ((evt: CloseEvent) => void) | null = null;
+    onerror: ((evt: Event) => void) | null = null;
 
     constructor(url: string) {
       this.url = url;
       instances.push(this as unknown as WsInstance);
     }
 
-    send(data: string) { this.sent.push(data); }
+    send(data: string) {
+      this.sent.push(data);
+    }
 
     close(code = 1000) {
       this.readyState = MockWS.CLOSED;
@@ -110,42 +123,46 @@ function createWebSocketMock() {
 // ── CRDT mock ─────────────────────────────────────────────────────────────────
 
 interface CrdtMock {
-  apply_local:          ReturnType<typeof vi.fn>;
-  apply_property:       ReturnType<typeof vi.fn>;
-  delete_element:       ReturnType<typeof vi.fn>;
-  merge_remote:         ReturnType<typeof vi.fn>;
-  apply_batch:          ReturnType<typeof vi.fn>;
-  state_json:           ReturnType<typeof vi.fn>;
+  apply_local: ReturnType<typeof vi.fn>;
+  apply_property: ReturnType<typeof vi.fn>;
+  delete_element: ReturnType<typeof vi.fn>;
+  merge_remote: ReturnType<typeof vi.fn>;
+  apply_batch: ReturnType<typeof vi.fn>;
+  state_json: ReturnType<typeof vi.fn>;
   full_state_delta_json: ReturnType<typeof vi.fn>;
-  vector_clock:         ReturnType<typeof vi.fn>;
-  element_count:        ReturnType<typeof vi.fn>;
-  update_presence:      ReturnType<typeof vi.fn>;
-  merge_presence:       ReturnType<typeof vi.fn>;
-  cursors_json:         ReturnType<typeof vi.fn>;
-  free:                 ReturnType<typeof vi.fn>;
+  vector_clock: ReturnType<typeof vi.fn>;
+  element_count: ReturnType<typeof vi.fn>;
+  update_presence: ReturnType<typeof vi.fn>;
+  merge_presence: ReturnType<typeof vi.fn>;
+  cursors_json: ReturnType<typeof vi.fn>;
+  free: ReturnType<typeof vi.fn>;
 }
 
 function makeCrdtMock(peerId: string): CrdtMock {
   return {
-    apply_local:  vi.fn().mockReturnValue(
-      `{"op":"Set","element_id":"e1","entry":{"value":{},"lamport":1,"peer_id":"${peerId}"}}`,
-    ),
-    apply_property: vi.fn().mockReturnValue(
-      `{"op":"SetProp","element_id":"e1","prop":"x","entry":{"value":10,"lamport":2,"peer_id":"${peerId}"}}`,
-    ),
-    delete_element: vi.fn().mockReturnValue(
-      `{"op":"Delete","element_id":"e1","lamport":3,"peer_id":"${peerId}"}`,
-    ),
-    merge_remote:          vi.fn(),
-    apply_batch:           vi.fn(),
-    state_json:            vi.fn().mockReturnValue('{}'),
+    apply_local: vi
+      .fn()
+      .mockReturnValue(
+        `{"op":"Set","element_id":"e1","entry":{"value":{},"lamport":1,"peer_id":"${peerId}"}}`
+      ),
+    apply_property: vi
+      .fn()
+      .mockReturnValue(
+        `{"op":"SetProp","element_id":"e1","prop":"x","entry":{"value":10,"lamport":2,"peer_id":"${peerId}"}}`
+      ),
+    delete_element: vi
+      .fn()
+      .mockReturnValue(`{"op":"Delete","element_id":"e1","lamport":3,"peer_id":"${peerId}"}`),
+    merge_remote: vi.fn(),
+    apply_batch: vi.fn(),
+    state_json: vi.fn().mockReturnValue('{}'),
     full_state_delta_json: vi.fn().mockReturnValue('{"op":"Batch","deltas":[]}'),
-    vector_clock:          vi.fn().mockReturnValue('{}'),
-    element_count:         vi.fn().mockReturnValue(0),
-    update_presence:       vi.fn().mockReturnValue('{"x":1,"y":2}'),
-    merge_presence:        vi.fn(),
-    cursors_json:          vi.fn().mockReturnValue('{}'),
-    free:                  vi.fn(),
+    vector_clock: vi.fn().mockReturnValue('{}'),
+    element_count: vi.fn().mockReturnValue(0),
+    update_presence: vi.fn().mockReturnValue('{"x":1,"y":2}'),
+    merge_presence: vi.fn(),
+    cursors_json: vi.fn().mockReturnValue('{}'),
+    free: vi.fn(),
   };
 }
 

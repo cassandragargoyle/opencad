@@ -48,7 +48,7 @@ export class PluginRegistry {
       try {
         globalThis.localStorage?.setItem(
           STORAGE_KEY,
-          JSON.stringify(Array.from(this._plugins.values())),
+          JSON.stringify(Array.from(this._plugins.values()))
         );
       } catch {
         /* storage quota / disabled — non-fatal */
@@ -86,7 +86,9 @@ export class PluginRegistry {
   /** Subscribe to registry changes. Returns an unsubscribe function. */
   subscribe(fn: () => void): () => void {
     this._subscribers.add(fn);
-    return () => { this._subscribers.delete(fn); };
+    return () => {
+      this._subscribers.delete(fn);
+    };
   }
 }
 

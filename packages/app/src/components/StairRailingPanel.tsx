@@ -52,13 +52,20 @@ export function StairRailingPanel() {
 
         {!compliant && (
           <div className="compliance-warning" role="alert">
-            ⚠ {t('tool.stair.complianceWarning', { value: Math.round(2 * riserHeight + treadDepth), defaultValue: 'Riser/tread ratio violates building code (2R+G = {{value}}mm, must be 550–700mm)' })}
+            ⚠{' '}
+            {t('tool.stair.complianceWarning', {
+              value: Math.round(2 * riserHeight + treadDepth),
+              defaultValue:
+                'Riser/tread ratio violates building code (2R+G = {{value}}mm, must be 550–700mm)',
+            })}
           </div>
         )}
 
         <div className="tool-panel-group">
           <div className="tool-panel-row">
-            <label htmlFor="stair-rise">{t('tool.stair.totalRise', { defaultValue: 'Total Rise (mm)' })}</label>
+            <label htmlFor="stair-rise">
+              {t('tool.stair.totalRise', { defaultValue: 'Total Rise (mm)' })}
+            </label>
             <input
               id="stair-rise"
               type="number"
@@ -69,12 +76,18 @@ export function StairRailingPanel() {
           </div>
 
           <div className="tool-panel-row computed-row">
-            <span className="computed-label">{t('tool.stair.riserCount', { defaultValue: 'Riser count' })}</span>
-            <span className="computed-value">{numRisers} × {Math.round(riserHeight)}mm</span>
+            <span className="computed-label">
+              {t('tool.stair.riserCount', { defaultValue: 'Riser count' })}
+            </span>
+            <span className="computed-value">
+              {numRisers} × {Math.round(riserHeight)}mm
+            </span>
           </div>
 
           <div className="tool-panel-row">
-            <label htmlFor="stair-tread">{t('tool.stair.treadDepth', { defaultValue: 'Tread Depth (mm)' })}</label>
+            <label htmlFor="stair-tread">
+              {t('tool.stair.treadDepth', { defaultValue: 'Tread Depth (mm)' })}
+            </label>
             <input
               id="stair-tread"
               type="number"
@@ -85,7 +98,9 @@ export function StairRailingPanel() {
           </div>
 
           <div className="tool-panel-row">
-            <label htmlFor="stair-width">{t('tool.stair.width', { defaultValue: 'Width (mm)' })}</label>
+            <label htmlFor="stair-width">
+              {t('tool.stair.width', { defaultValue: 'Width (mm)' })}
+            </label>
             <input
               id="stair-width"
               type="number"
@@ -96,7 +111,9 @@ export function StairRailingPanel() {
           </div>
 
           <div className="tool-panel-row">
-            <label htmlFor="stair-material">{t('tool.stair.material', { defaultValue: 'Material' })}</label>
+            <label htmlFor="stair-material">
+              {t('tool.stair.material', { defaultValue: 'Material' })}
+            </label>
             <input
               id="stair-material"
               type="text"
@@ -107,7 +124,9 @@ export function StairRailingPanel() {
           </div>
 
           <div className="tool-panel-row">
-            <label htmlFor="stair-railing-height">{t('tool.stair.railingHeight', { defaultValue: 'Railing Height (mm)' })}</label>
+            <label htmlFor="stair-railing-height">
+              {t('tool.stair.railingHeight', { defaultValue: 'Railing Height (mm)' })}
+            </label>
             <input
               id="stair-railing-height"
               type="number"
@@ -118,7 +137,9 @@ export function StairRailingPanel() {
           </div>
         </div>
 
-        <div className="placement-hint">{t('tool.stair.placeHint', { defaultValue: 'Drag to place stair bounding box' })}</div>
+        <div className="placement-hint">
+          {t('tool.stair.placeHint', { defaultValue: 'Drag to place stair bounding box' })}
+        </div>
       </div>
     );
   }
@@ -131,11 +152,15 @@ export function StairRailingPanel() {
 
   return (
     <div className="tool-panel">
-      <div className="tool-panel-header">{t('tool.railing.title', { defaultValue: 'Railing' })}</div>
+      <div className="tool-panel-header">
+        {t('tool.railing.title', { defaultValue: 'Railing' })}
+      </div>
 
       <div className="tool-panel-group">
         <div className="tool-panel-row">
-          <label htmlFor="rail-height">{t('tool.railing.height', { defaultValue: 'Height (mm)' })}</label>
+          <label htmlFor="rail-height">
+            {t('tool.railing.height', { defaultValue: 'Height (mm)' })}
+          </label>
           <input
             id="rail-height"
             type="number"
@@ -146,7 +171,9 @@ export function StairRailingPanel() {
         </div>
 
         <div className="tool-panel-row">
-          <label htmlFor="rail-material">{t('tool.railing.material', { defaultValue: 'Material' })}</label>
+          <label htmlFor="rail-material">
+            {t('tool.railing.material', { defaultValue: 'Material' })}
+          </label>
           <input
             id="rail-material"
             type="text"
@@ -157,7 +184,9 @@ export function StairRailingPanel() {
         </div>
 
         <div className="tool-panel-row">
-          <label htmlFor="rail-baluster-spacing">{t('tool.railing.balusterSpacing', { defaultValue: 'Baluster Spacing (mm)' })}</label>
+          <label htmlFor="rail-baluster-spacing">
+            {t('tool.railing.balusterSpacing', { defaultValue: 'Baluster Spacing (mm)' })}
+          </label>
           <input
             id="rail-baluster-spacing"
             type="number"
@@ -168,7 +197,9 @@ export function StairRailingPanel() {
         </div>
       </div>
 
-      <div className="placement-hint">{t('tool.railing.placeHint', { defaultValue: 'Draw path to place railing' })}</div>
+      <div className="placement-hint">
+        {t('tool.railing.placeHint', { defaultValue: 'Draw path to place railing' })}
+      </div>
     </div>
   );
 }

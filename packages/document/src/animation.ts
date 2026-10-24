@@ -61,10 +61,7 @@ export function cubicHermite(p0: number, m0: number, p1: number, m1: number, t: 
   const t2 = t * t;
   const t3 = t2 * t;
   return (
-    (2 * t3 - 3 * t2 + 1) * p0 +
-    (t3 - 2 * t2 + t) * m0 +
-    (-2 * t3 + 3 * t2) * p1 +
-    (t3 - t2) * m1
+    (2 * t3 - 3 * t2 + 1) * p0 + (t3 - 2 * t2 + t) * m0 + (-2 * t3 + 3 * t2) * p1 + (t3 - t2) * m1
   );
 }
 
@@ -80,10 +77,14 @@ function cubicHermiteVec3(p0: Vec3, m0: Vec3, p1: Vec3, m1: Vec3, t: number): Ve
 
 function applyEasing(t: number, easing: CameraKeyframe['easing']): number {
   switch (easing) {
-    case 'ease-in':      return t * t;
-    case 'ease-out':     return t * (2 - t);
-    case 'ease-in-out':  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-    default:             return t; // linear
+    case 'ease-in':
+      return t * t;
+    case 'ease-out':
+      return t * (2 - t);
+    case 'ease-in-out':
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    default:
+      return t; // linear
   }
 }
 
@@ -124,15 +125,15 @@ export function interpolateCameraPath(keyframes: CameraKeyframe[], timeSec: numb
 
   // Scale tangents by segment duration (Catmull-Rom style if tangents absent)
   const m0 = a.tangentOut ?? ZERO_VEC3;
-  const m1 = b.tangentIn  ?? ZERO_VEC3;
+  const m1 = b.tangentIn ?? ZERO_VEC3;
 
   const scaledM0 = { x: m0.x * span, y: m0.y * span, z: m0.z * span };
   const scaledM1 = { x: m1.x * span, y: m1.y * span, z: m1.z * span };
 
   return {
     position: cubicHermiteVec3(a.position, scaledM0, b.position, scaledM1, t),
-    target:   cubicHermiteVec3(a.target,   scaledM0, b.target,   scaledM1, t),
-    fov:      cubicHermite(a.fov, 0, b.fov, 0, t),
+    target: cubicHermiteVec3(a.target, scaledM0, b.target, scaledM1, t),
+    fov: cubicHermite(a.fov, 0, b.fov, 0, t),
   };
 }
 
@@ -146,7 +147,7 @@ export function retimeKeyframe(
   keyframes: CameraKeyframe[],
   id: string,
   newTime: number,
-  overlapEpsilonSec = 0.01,
+  overlapEpsilonSec = 0.01
 ): CameraKeyframe[] {
   if (newTime < 0) throw new RangeError('Keyframe time must be ≥ 0');
   const idx = keyframes.findIndex((kf) => kf.id === id);
@@ -173,7 +174,12 @@ export function hasOverlap(keyframes: CameraKeyframe[], epsilonSec = 0.01): bool
 
 // ── Preset animations ─────────────────────────────────────────────────────────
 
-export type AnimationPreset = 'orbit' | 'fly-through' | 'dolly-zoom' | 'top-down-reveal' | 'elevation-sweep';
+export type AnimationPreset =
+  | 'orbit'
+  | 'fly-through'
+  | 'dolly-zoom'
+  | 'top-down-reveal'
+  | 'elevation-sweep';
 
 /**
  * Generate preset keyframes for a model centred at `centre` with approximate `radius`.
@@ -181,13 +187,24 @@ export type AnimationPreset = 'orbit' | 'fly-through' | 'dolly-zoom' | 'top-down
 export function generatePresetKeyframes(
   preset: AnimationPreset,
   centre: Vec3,
-  radius: number,
+  radius: number
 ): CameraKeyframe[] {
   const { x: cx, y: cy, z: cz } = centre;
   const r = radius;
 
-  const kf = (id: string, time: number, position: Vec3, target: Vec3, fov: number): CameraKeyframe => ({
-    id, time, position, target, fov, easing: 'ease-in-out',
+  const kf = (
+    id: string,
+    time: number,
+    position: Vec3,
+    target: Vec3,
+    fov: number
+  ): CameraKeyframe => ({
+    id,
+    time,
+    position,
+    target,
+    fov,
+    easing: 'ease-in-out',
   });
 
   switch (preset) {
@@ -197,28 +214,36 @@ export function generatePresetKeyframes(
       const steps = 8;
       for (let i = 0; i <= steps; i++) {
         const angle = (i / steps) * 2 * Math.PI;
-        frames.push(kf(`orbit-${i}`, (i / steps) * 10, {
-          x: cx + r * Math.cos(angle),
-          y: cy + r * 0.4,
-          z: cz + r * Math.sin(angle),
-        }, { x: cx, y: cy, z: cz }, 60));
+        frames.push(
+          kf(
+            `orbit-${i}`,
+            (i / steps) * 10,
+            {
+              x: cx + r * Math.cos(angle),
+              y: cy + r * 0.4,
+              z: cz + r * Math.sin(angle),
+            },
+            { x: cx, y: cy, z: cz },
+            60
+          )
+        );
       }
       return frames;
     }
 
     case 'fly-through':
       return [
-        kf('ft-0', 0,  { x: cx - r * 1.5, y: cy + r * 0.3, z: cz }, { x: cx, y: cy, z: cz }, 75),
-        kf('ft-1', 3,  { x: cx,            y: cy + r * 0.15, z: cz }, { x: cx + r * 0.5, y: cy, z: cz }, 65),
-        kf('ft-2', 6,  { x: cx + r * 1.5, y: cy + r * 0.3, z: cz }, { x: cx, y: cy, z: cz }, 55),
+        kf('ft-0', 0, { x: cx - r * 1.5, y: cy + r * 0.3, z: cz }, { x: cx, y: cy, z: cz }, 75),
+        kf('ft-1', 3, { x: cx, y: cy + r * 0.15, z: cz }, { x: cx + r * 0.5, y: cy, z: cz }, 65),
+        kf('ft-2', 6, { x: cx + r * 1.5, y: cy + r * 0.3, z: cz }, { x: cx, y: cy, z: cz }, 55),
       ];
 
     case 'dolly-zoom': {
       // Dolly-zoom: move closer while widening FOV to keep subject same size
       const near = r * 0.5;
-      const far  = r * 2.0;
+      const far = r * 2.0;
       return [
-        kf('dz-0', 0, { x: cx + far,  y: cy + r * 0.1, z: cz }, { x: cx, y: cy, z: cz }, 20),
+        kf('dz-0', 0, { x: cx + far, y: cy + r * 0.1, z: cz }, { x: cx, y: cy, z: cz }, 20),
         kf('dz-1', 5, { x: cx + near, y: cy + r * 0.1, z: cz }, { x: cx, y: cy, z: cz }, 90),
       ];
     }
@@ -227,13 +252,19 @@ export function generatePresetKeyframes(
       return [
         kf('td-0', 0, { x: cx, y: cy + r * 3, z: cz }, { x: cx, y: cy, z: cz }, 30),
         kf('td-1', 4, { x: cx, y: cy + r * 1, z: cz + r * 0.5 }, { x: cx, y: cy, z: cz }, 55),
-        kf('td-2', 8, { x: cx + r * 0.8, y: cy + r * 0.5, z: cz + r * 0.8 }, { x: cx, y: cy, z: cz }, 65),
+        kf(
+          'td-2',
+          8,
+          { x: cx + r * 0.8, y: cy + r * 0.5, z: cz + r * 0.8 },
+          { x: cx, y: cy, z: cz },
+          65
+        ),
       ];
 
     case 'elevation-sweep':
       return [
-        kf('es-0', 0,  { x: cx + r, y: cy,         z: cz + r }, { x: cx, y: cy, z: cz }, 60),
-        kf('es-1', 5,  { x: cx + r, y: cy + r * 2, z: cz + r }, { x: cx, y: cy, z: cz }, 60),
+        kf('es-0', 0, { x: cx + r, y: cy, z: cz + r }, { x: cx, y: cy, z: cz }, 60),
+        kf('es-1', 5, { x: cx + r, y: cy + r * 2, z: cz + r }, { x: cx, y: cy, z: cz }, 60),
         kf('es-2', 10, { x: cx + r, y: cy + r * 4, z: cz + r }, { x: cx, y: cy + r, z: cz }, 45),
       ];
 
@@ -272,8 +303,12 @@ export function exportFramePoses(animation: AnimationSchema, opts: Mp4ExportOpti
 
 // ── Catmull-Rom tangent auto-generation ──────────────────────────────────────
 
-function vec3Sub(a: Vec3, b: Vec3): Vec3 { return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z }; }
-function vec3Scale(v: Vec3, s: number): Vec3 { return { x: v.x * s, y: v.y * s, z: v.z * s }; }
+function vec3Sub(a: Vec3, b: Vec3): Vec3 {
+  return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+}
+function vec3Scale(v: Vec3, s: number): Vec3 {
+  return { x: v.x * s, y: v.y * s, z: v.z * s };
+}
 
 /**
  * Auto-generate Catmull-Rom tangents for all keyframes.
@@ -285,9 +320,12 @@ export function autoTangents(keyframes: CameraKeyframe[]): CameraKeyframe[] {
     const prev = keyframes[i - 1];
     const next = keyframes[i + 1];
     if (!prev && !next) return kf;
-    const tangent = prev && next
-      ? vec3Scale(vec3Sub(next.position, prev.position), 0.5)
-      : prev ? vec3Sub(kf.position, prev.position) : vec3Sub(next!.position, kf.position);
+    const tangent =
+      prev && next
+        ? vec3Scale(vec3Sub(next.position, prev.position), 0.5)
+        : prev
+          ? vec3Sub(kf.position, prev.position)
+          : vec3Sub(next!.position, kf.position);
     return { ...kf, tangentIn: tangent, tangentOut: tangent };
   });
 }

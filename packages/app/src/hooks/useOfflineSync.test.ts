@@ -48,7 +48,9 @@ describe('T-OFF-005: Offline sync hook', () => {
   it('forceSync does not throw when online', () => {
     const { result } = renderHook(() => useOfflineSync());
     expect(() => {
-      act(() => { result.current.forceSync(); });
+      act(() => {
+        result.current.forceSync();
+      });
     }).not.toThrow();
   });
 
@@ -56,7 +58,9 @@ describe('T-OFF-005: Offline sync hook', () => {
     vi.stubGlobal('navigator', { onLine: false });
     const { result } = renderHook(() => useOfflineSync());
     expect(() => {
-      act(() => { result.current.forceSync(); });
+      act(() => {
+        result.current.forceSync();
+      });
     }).not.toThrow();
   });
 });

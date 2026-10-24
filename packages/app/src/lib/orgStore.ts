@@ -39,18 +39,26 @@ export async function loadOrgState(): Promise<OrgState> {
   try {
     const fromOpfs = await opfsRead(OPFS_KEY);
     if (fromOpfs) return JSON.parse(fromOpfs) as OrgState;
-  } catch { /* fall through */ }
+  } catch {
+    /* fall through */
+  }
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) return JSON.parse(raw) as OrgState;
-  } catch { /* fall through */ }
+  } catch {
+    /* fall through */
+  }
   return { orgs: {}, activeOrgId: null, projectOrg: {} };
 }
 
 export async function saveOrgState(state: OrgState): Promise<void> {
   const s = JSON.stringify(state);
   await opfsWrite(OPFS_KEY, s);
-  try { localStorage.setItem(LS_KEY, s); } catch { /* quota */ }
+  try {
+    localStorage.setItem(LS_KEY, s);
+  } catch {
+    /* quota */
+  }
 }
 
 // ─── Mutations (pure) ────────────────────────────────────────────────────────
@@ -78,7 +86,7 @@ export function deleteOrg(state: OrgState, orgId: string): OrgState {
   const { [orgId]: _removed, ...rest } = state.orgs;
   void _removed;
   const nextProjectOrg = Object.fromEntries(
-    Object.entries(state.projectOrg).filter(([, oid]) => oid !== orgId),
+    Object.entries(state.projectOrg).filter(([, oid]) => oid !== orgId)
   );
   return {
     ...state,
@@ -119,7 +127,7 @@ export function setMemberRole(
   state: OrgState,
   orgId: string,
   userId: string,
-  role: RoleId,
+  role: RoleId
 ): OrgState {
   const org = state.orgs[orgId];
   if (!org) return state;
@@ -153,7 +161,7 @@ export function getProjectOrg(state: OrgState, projectId: string): Organization 
 export function getUserRoleInProject(
   state: OrgState,
   projectId: string,
-  userId: string,
+  userId: string
 ): RoleId | null {
   const org = getProjectOrg(state, projectId);
   if (!org) return null;

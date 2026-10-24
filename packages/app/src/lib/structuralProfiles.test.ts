@@ -8,8 +8,12 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  profileArea, polygonArea, sweepVolume,
-  buildWShape, buildHSS, BUILT_IN_PROFILES,
+  profileArea,
+  polygonArea,
+  sweepVolume,
+  buildWShape,
+  buildHSS,
+  BUILT_IN_PROFILES,
 } from './structuralProfiles';
 
 describe('T-MOD-020: structuralProfiles', () => {
@@ -42,16 +46,20 @@ describe('T-MOD-020: structuralProfiles', () => {
 
   it('polygonArea is positive for CCW winding', () => {
     const square = [
-      { x: 0, y: 0 }, { x: 10, y: 0 },
-      { x: 10, y: 10 }, { x: 0, y: 10 },
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
     ];
     expect(polygonArea(square)).toBeCloseTo(100, 3);
   });
 
   it('polygonArea on CW winding returns same magnitude', () => {
     const square = [
-      { x: 0, y: 0 }, { x: 0, y: 10 },
-      { x: 10, y: 10 }, { x: 10, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 10 },
+      { x: 10, y: 10 },
+      { x: 10, y: 0 },
     ];
     expect(polygonArea(square)).toBeCloseTo(100, 3);
   });

@@ -24,7 +24,7 @@ describe('T-IO-051: pdfUnderlay', () => {
 
   it('calibrateScale handles diagonal distance', () => {
     const s = calibrateScale({ x: 0, y: 0 }, { x: 3, y: 4 }, 5000);
-    expect(s).toBe(1000);  // 5000 mm / 5 px
+    expect(s).toBe(1000); // 5000 mm / 5 px
   });
 
   it('calibrateScale on coincident points returns 1 (no divide-by-zero)', () => {

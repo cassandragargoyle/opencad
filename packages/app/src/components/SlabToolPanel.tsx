@@ -38,7 +38,9 @@ export function SlabToolPanel() {
         </div>
 
         <div className="placement-param">
-          <label htmlFor="slab-thickness">{t('tool.slab.thickness', { defaultValue: 'Thickness (mm)' })}</label>
+          <label htmlFor="slab-thickness">
+            {t('tool.slab.thickness', { defaultValue: 'Thickness (mm)' })}
+          </label>
           <input
             id="slab-thickness"
             type="number"
@@ -51,7 +53,9 @@ export function SlabToolPanel() {
         </div>
 
         <div className="placement-param">
-          <label htmlFor="slab-material">{t('tool.slab.material', { defaultValue: 'Material' })}</label>
+          <label htmlFor="slab-material">
+            {t('tool.slab.material', { defaultValue: 'Material' })}
+          </label>
           <input
             id="slab-material"
             type="text"
@@ -61,7 +65,9 @@ export function SlabToolPanel() {
         </div>
 
         <div className="placement-param">
-          <label htmlFor="slab-slope">{t('tool.slab.slopeAngle', { defaultValue: 'Slope Angle (°)' })}</label>
+          <label htmlFor="slab-slope">
+            {t('tool.slab.slopeAngle', { defaultValue: 'Slope Angle (°)' })}
+          </label>
           <input
             id="slab-slope"
             type="number"
@@ -74,7 +80,9 @@ export function SlabToolPanel() {
         </div>
 
         <div className="placement-param">
-          <label htmlFor="slab-elevation">{t('tool.slab.elevationOffset', { defaultValue: 'Elevation Offset (mm)' })}</label>
+          <label htmlFor="slab-elevation">
+            {t('tool.slab.elevationOffset', { defaultValue: 'Elevation Offset (mm)' })}
+          </label>
           <input
             id="slab-elevation"
             type="number"
@@ -85,7 +93,9 @@ export function SlabToolPanel() {
         </div>
       </div>
 
-      <div className="placement-hint">{t('tool.slab.placeHint', { defaultValue: 'Draw polygon boundary to place slab' })}</div>
+      <div className="placement-hint">
+        {t('tool.slab.placeHint', { defaultValue: 'Draw polygon boundary to place slab' })}
+      </div>
     </div>
   );
 }

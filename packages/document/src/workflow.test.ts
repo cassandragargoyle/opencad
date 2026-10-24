@@ -91,8 +91,14 @@ describe('T-COL-03: workflow state machine', () => {
 
   it('WORKFLOW_TRANSITIONS covers all statuses', () => {
     const statuses: (keyof typeof WORKFLOW_TRANSITIONS)[] = [
-      'draft', 'submitted', 'in_review', 'approved', 'approved_with_comments',
-      'rejected', 'void', 'closed',
+      'draft',
+      'submitted',
+      'in_review',
+      'approved',
+      'approved_with_comments',
+      'rejected',
+      'void',
+      'closed',
     ];
     for (const s of statuses) {
       expect(WORKFLOW_TRANSITIONS[s]).toBeDefined();
@@ -112,7 +118,7 @@ describe('T-COL-03: workflow state machine', () => {
 
 describe('T-COL-03: attachWorkflowToBCF()', () => {
   it('creates workflow state for existing BCF topic', () => {
-    const doc  = createProject('proj-1', 'user-1');
+    const doc = createProject('proj-1', 'user-1');
     const file = documentToBCF(doc, 'tester');
     const topicId = file.topics[0]?.guid;
     if (!topicId) return; // skip if no topics
@@ -122,7 +128,7 @@ describe('T-COL-03: attachWorkflowToBCF()', () => {
   });
 
   it('throws for missing topic id', () => {
-    const doc  = createProject('proj-1', 'user-1');
+    const doc = createProject('proj-1', 'user-1');
     const file = documentToBCF(doc, 'tester');
     expect(() => attachWorkflowToBCF(file, 'nonexistent-id')).toThrow();
   });

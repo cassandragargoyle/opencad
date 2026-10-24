@@ -45,8 +45,18 @@ describe('T-ANA-04: pmv()', () => {
   });
 
   it('higher metabolic rate reduces cold PMV magnitude', () => {
-    const coldBase = pmv({ ...neutralInput, airTempC: 15, radiantTempC: 15, metabolicRateMet: 1.0 });
-    const coldHigh = pmv({ ...neutralInput, airTempC: 15, radiantTempC: 15, metabolicRateMet: 2.5 });
+    const coldBase = pmv({
+      ...neutralInput,
+      airTempC: 15,
+      radiantTempC: 15,
+      metabolicRateMet: 1.0,
+    });
+    const coldHigh = pmv({
+      ...neutralInput,
+      airTempC: 15,
+      radiantTempC: 15,
+      metabolicRateMet: 2.5,
+    });
     expect(coldHigh).toBeGreaterThan(coldBase);
   });
 });

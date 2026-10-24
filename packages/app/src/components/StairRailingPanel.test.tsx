@@ -84,7 +84,16 @@ describe('T-BIM-005: StairRailingPanel', () => {
   it('shows compliance warning when rise/going ratio is bad', () => {
     // Short tread depth (100mm) violates standard rule
     vi.mocked(useDocumentStore).mockReturnValue(
-      makeStore('stair', { stair: { totalRise: 3000, treadDepth: 100, width: 1200, material: 'Concrete', railingHeight: 1000, balusters: true } }) as ReturnType<typeof useDocumentStore>
+      makeStore('stair', {
+        stair: {
+          totalRise: 3000,
+          treadDepth: 100,
+          width: 1200,
+          material: 'Concrete',
+          railingHeight: 1000,
+          balusters: true,
+        },
+      }) as ReturnType<typeof useDocumentStore>
     );
     render(<StairRailingPanel />);
     expect(screen.getByRole('alert')).toBeInTheDocument();

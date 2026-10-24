@@ -150,28 +150,33 @@ import type { BIMMaterial } from '../lib/materials';
 export function getBIMMaterialTextureStyle(mat: BIMMaterial): CSSProperties {
   const c = mat.color;
   // Map by id — BIM materials are a small, well-known set
-  if (mat.id === 'bim-concrete')   return { background: [
-    `radial-gradient(circle at 12% 28%, ${adjustHex(c, +15)} 0%, transparent 22%)`,
-    `radial-gradient(circle at 68% 72%, ${adjustHex(c, -15)} 0%, transparent 20%)`,
-    c,
-  ].join(', ') };
-  if (mat.id === 'bim-steel')      return metallicSheen(c, 0.4);
-  if (mat.id === 'bim-timber')     return woodGrain(c);
-  if (mat.id === 'bim-aluminum')   return metallicSheen(c, 0.25);
-  if (mat.id === 'bim-brick')      return brickPattern(c, adjustHex(c, +50));
-  if (mat.id === 'bim-glass')      return {
-    background: `linear-gradient(135deg,
+  if (mat.id === 'bim-concrete')
+    return {
+      background: [
+        `radial-gradient(circle at 12% 28%, ${adjustHex(c, +15)} 0%, transparent 22%)`,
+        `radial-gradient(circle at 68% 72%, ${adjustHex(c, -15)} 0%, transparent 20%)`,
+        c,
+      ].join(', '),
+    };
+  if (mat.id === 'bim-steel') return metallicSheen(c, 0.4);
+  if (mat.id === 'bim-timber') return woodGrain(c);
+  if (mat.id === 'bim-aluminum') return metallicSheen(c, 0.25);
+  if (mat.id === 'bim-brick') return brickPattern(c, adjustHex(c, +50));
+  if (mat.id === 'bim-glass')
+    return {
+      background: `linear-gradient(135deg,
       rgba(255,255,255,0.85) 0%, ${c} 25%,
       rgba(255,255,255,0.4)  45%, ${c} 65%,
       rgba(255,255,255,0.2)  100%)`,
-  };
-  if (mat.id === 'bim-insulation') return {
-    background: `repeating-linear-gradient(-25deg,
+    };
+  if (mat.id === 'bim-insulation')
+    return {
+      background: `repeating-linear-gradient(-25deg,
       ${c} 0px, ${c} 5px,
       ${adjustHex(c, +30)} 5px, ${adjustHex(c, +30)} 7px,
       ${c} 7px, ${c} 14px)`,
-  };
-  if (mat.id === 'bim-copper')     return metallicSheen(c, 0.3);
+    };
+  if (mat.id === 'bim-copper') return metallicSheen(c, 0.3);
   return speckle(c);
 }
 
@@ -274,19 +279,38 @@ export function getMaterialTextureStyle(mat: Material): CSSProperties {
         ].join(', '),
       };
     }
-    if (mat.id.includes('tile') || mat.id.includes('ceramic') || mat.id.includes('porcelain') || mat.id.includes('mosaic')) {
+    if (
+      mat.id.includes('tile') ||
+      mat.id.includes('ceramic') ||
+      mat.id.includes('porcelain') ||
+      mat.id.includes('mosaic')
+    ) {
       return tileGrid(c);
     }
-    if (mat.id.includes('wood') || mat.id.includes('laminate') || mat.id.includes('solid') || mat.id.includes('engineered')) {
+    if (
+      mat.id.includes('wood') ||
+      mat.id.includes('laminate') ||
+      mat.id.includes('solid') ||
+      mat.id.includes('engineered')
+    ) {
       return woodGrain(c);
     }
     if (mat.roughness < 0.2) {
       // Polished / epoxy
-      return { background: `linear-gradient(135deg, ${adjustHex(c, +40)} 0%, ${c} 50%, ${adjustHex(c, +40)} 100%)` };
+      return {
+        background: `linear-gradient(135deg, ${adjustHex(c, +40)} 0%, ${c} 50%, ${adjustHex(c, +40)} 100%)`,
+      };
     }
-    if (mat.id.includes('vinyl') || mat.id.includes('rubber') || mat.id.includes('linoleum') ||
-        mat.id.includes('cork')  || mat.id.includes('bamboo') || mat.id.includes('resin') ||
-        mat.id.includes('marmoleum') || mat.id.includes('encaustic')) {
+    if (
+      mat.id.includes('vinyl') ||
+      mat.id.includes('rubber') ||
+      mat.id.includes('linoleum') ||
+      mat.id.includes('cork') ||
+      mat.id.includes('bamboo') ||
+      mat.id.includes('resin') ||
+      mat.id.includes('marmoleum') ||
+      mat.id.includes('encaustic')
+    ) {
       return plankPattern(c, 9, -18);
     }
     if (mat.id.includes('terrazzo')) {
@@ -314,8 +338,13 @@ export function getMaterialTextureStyle(mat: Material): CSSProperties {
       // Simulated foliage — fine dotted speckle on a green base.
       return speckle(c);
     }
-    if (mat.id.includes('thatch') || mat.id.includes('shingle') || mat.id.includes('shake') ||
-        mat.id.includes('felt')   || mat.id.includes('bitumen')) {
+    if (
+      mat.id.includes('thatch') ||
+      mat.id.includes('shingle') ||
+      mat.id.includes('shake') ||
+      mat.id.includes('felt') ||
+      mat.id.includes('bitumen')
+    ) {
       return plankPattern(c, 6, -18);
     }
     return speckle(c);
@@ -340,7 +369,9 @@ export function getMaterialTextureStyle(mat: Material): CSSProperties {
   // ── Paint / finish ────────────────────────────────────────────────────────
   if (mat.category === 'Paint') {
     if (mat.roughness < 0.5) {
-      return { background: `linear-gradient(130deg, ${adjustHex(c, +40)} 0%, ${c} 50%, ${c} 100%)` };
+      return {
+        background: `linear-gradient(130deg, ${adjustHex(c, +40)} 0%, ${c} 50%, ${c} 100%)`,
+      };
     }
     if (mat.id.includes('textured') || mat.id.includes('wallpaper')) {
       return {

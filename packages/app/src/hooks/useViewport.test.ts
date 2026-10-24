@@ -188,7 +188,9 @@ describe.skip('T-ROLE-005: viewport read-only mode', () => {
     } as unknown as React.MouseEvent<HTMLCanvasElement>;
 
     expect(() => {
-      act(() => { result.current.handleCanvasMouseDown(mockEvent); });
+      act(() => {
+        result.current.handleCanvasMouseDown(mockEvent);
+      });
     }).not.toThrow();
   });
 

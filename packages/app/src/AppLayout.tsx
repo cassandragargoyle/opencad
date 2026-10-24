@@ -116,38 +116,57 @@ function loadOrgMembersForProject(projectId: string | null): AdminMember[] | und
   try {
     const raw = localStorage.getItem('opencad-org-state');
     if (!raw) return undefined;
-    const state = JSON.parse(raw) as { orgs: Record<string, { members: AdminMember[] }>; projectOrg: Record<string, string> };
+    const state = JSON.parse(raw) as {
+      orgs: Record<string, { members: AdminMember[] }>;
+      projectOrg: Record<string, string>;
+    };
     const orgId = state.projectOrg?.[projectId];
     if (!orgId) return undefined;
     const members = state.orgs?.[orgId]?.members;
     return members && members.length > 0 ? members : undefined;
-  } catch { return undefined; }
+  } catch {
+    return undefined;
+  }
 }
 
 function loadBCFTopics(): BCFTopic[] {
   try {
     const raw = localStorage.getItem(BCF_STORAGE_KEY);
     return raw ? (JSON.parse(raw) as BCFTopic[]) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 function saveBCFTopics(topics: BCFTopic[]): void {
-  try { localStorage.setItem(BCF_STORAGE_KEY, JSON.stringify(topics)); } catch { /* quota */ }
+  try {
+    localStorage.setItem(BCF_STORAGE_KEY, JSON.stringify(topics));
+  } catch {
+    /* quota */
+  }
 }
 
 function loadSSOConfig(): SSOConfig | undefined {
   try {
     const raw = localStorage.getItem(SSO_STORAGE_KEY);
     return raw ? (JSON.parse(raw) as SSOConfig) : undefined;
-  } catch { return undefined; }
+  } catch {
+    return undefined;
+  }
 }
 function saveSSOConfig(cfg: SSOConfig): void {
-  try { localStorage.setItem(SSO_STORAGE_KEY, JSON.stringify(cfg)); } catch { /* quota */ }
+  try {
+    localStorage.setItem(SSO_STORAGE_KEY, JSON.stringify(cfg));
+  } catch {
+    /* quota */
+  }
 }
 function loadMembers(): AdminMember[] | undefined {
   try {
     const raw = localStorage.getItem(MEMBERS_STORAGE_KEY);
     return raw ? (JSON.parse(raw) as AdminMember[]) : undefined;
-  } catch { return undefined; }
+  } catch {
+    return undefined;
+  }
 }
 function saveMemberRole(userId: string, role: RoleName): void {
   try {
@@ -157,7 +176,9 @@ function saveMemberRole(userId: string, role: RoleName): void {
       ? existing.map((m) => (m.id === userId ? { ...m, role } : m))
       : [...existing, { id: userId, name: userId, role }];
     localStorage.setItem(MEMBERS_STORAGE_KEY, JSON.stringify(next));
-  } catch { /* quota */ }
+  } catch {
+    /* quota */
+  }
 }
 import { HatchPanel } from './components/HatchPanel';
 import { SymbolLibrary } from './components/SymbolLibrary';
@@ -204,10 +225,7 @@ import { GuidedTour, hasSeenTour, markTourSeen } from './components/GuidedTour';
 import { AdminPanel } from './components/AdminPanel';
 import { PanelResizer } from './components/PanelResizer';
 import { ProjectHomeScreen } from './components/ProjectHomeScreen';
-import {
-  isTauri,
-  tauriToggleMaximize,
-} from './hooks/useTauri';
+import { isTauri, tauriToggleMaximize } from './hooks/useTauri';
 import type { TauriUpdateInfo } from './hooks/useTauri';
 import { usePresence } from './hooks/usePresence';
 import { useSrAnnouncer } from './hooks/useSrAnnouncer';
@@ -262,11 +280,19 @@ const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNod
   { id: 'topoImport', title: 'Terrain', icon: <Mountain size={16} strokeWidth={2} /> },
   { id: 'setback', title: 'Setbacks', icon: <Fence size={16} strokeWidth={2} /> },
   { id: 'grading', title: 'Grading', icon: <Shovel size={16} strokeWidth={2} /> },
-  { id: 'sectionViews', title: 'Section/Elevation Views', icon: <Slice size={16} strokeWidth={2} /> },
+  {
+    id: 'sectionViews',
+    title: 'Section/Elevation Views',
+    icon: <Slice size={16} strokeWidth={2} />,
+  },
   { id: 'detailViews', title: 'Detail Views', icon: <Zap size={16} strokeWidth={2} /> },
   { id: 'tags', title: 'Annotation Tags', icon: <Hash size={16} strokeWidth={2} /> },
   { id: 'revisions', title: 'Revision Clouds', icon: <GitBranch size={16} strokeWidth={2} /> },
-  { id: 'callouts', title: 'Callout Markers', icon: <MessageCirclePlus size={16} strokeWidth={2} /> },
+  {
+    id: 'callouts',
+    title: 'Callout Markers',
+    icon: <MessageCirclePlus size={16} strokeWidth={2} />,
+  },
   { id: 'keynotes', title: 'Keynotes', icon: <FileText size={16} strokeWidth={2} /> },
   { id: 'dimensionTypes', title: 'Dimension Types', icon: <Zap size={16} strokeWidth={2} /> },
   { id: 'legendViews', title: 'Legend Views', icon: <Palette size={16} strokeWidth={2} /> },
@@ -298,22 +324,32 @@ const RIGHT_PANEL_TABS: { id: RightPanelTab; title: string; icon: React.ReactNod
 ];
 
 /** Build CostPanel items from the document using quantityTakeoff + material rates. */
-function computeCostItems(doc: NonNullable<ReturnType<typeof useDocumentStore.getState>['document']>): CostItem[] {
+function computeCostItems(
+  doc: NonNullable<ReturnType<typeof useDocumentStore.getState>['document']>
+): CostItem[] {
   const rows = computeTakeoff(doc);
   // Per-type fallback rates when elements have no applied material.
   const typeRates: Record<string, number> = {
-    wall: 120, slab: 85, roof: 110, column: 180, beam: 160,
-    door: 450, window: 380, stair: 950, railing: 110,
+    wall: 120,
+    slab: 85,
+    roof: 110,
+    column: 180,
+    beam: 160,
+    door: 450,
+    window: 380,
+    stair: 950,
+    railing: 110,
     curtain_wall: 280,
   };
   const out: CostItem[] = [];
   for (const row of rows) {
     if (row.count === 0) continue;
-    const quantity = row.totalArea && row.totalArea > 0
-      ? row.totalArea / 1e6     // mm² → m²
-      : row.totalLength && row.totalLength > 0
-        ? row.totalLength / 1000 // mm → m
-        : row.count;
+    const quantity =
+      row.totalArea && row.totalArea > 0
+        ? row.totalArea / 1e6 // mm² → m²
+        : row.totalLength && row.totalLength > 0
+          ? row.totalLength / 1000 // mm → m
+          : row.count;
     const unit = row.totalArea ? 'm²' : row.totalLength ? 'm' : 'ea';
     const rate = typeRates[row.type] ?? 0;
     out.push({
@@ -330,7 +366,9 @@ function computeCostItems(doc: NonNullable<ReturnType<typeof useDocumentStore.ge
 }
 
 /** Build CarbonPanel entries from the document using material embodied-carbon data. */
-function computeCarbonEntries(doc: NonNullable<ReturnType<typeof useDocumentStore.getState>['document']>): CarbonEntry[] {
+function computeCarbonEntries(
+  doc: NonNullable<ReturnType<typeof useDocumentStore.getState>['document']>
+): CarbonEntry[] {
   const rows = computeTakeoff(doc);
   const byMat = new Map<string, { quantity: number; mat: (typeof BUILT_IN_MATERIALS)[number] }>();
 
@@ -373,7 +411,20 @@ export function AppLayout() {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   const { t: tPanels } = useTranslation('panels');
-  const { document: doc, initProject, activeTool, selectedIds, setActiveTool, undo, redo, canUndo, canRedo, loadDocumentSchema, setElementMaterial, renameProject } = useDocumentStore();
+  const {
+    document: doc,
+    initProject,
+    activeTool,
+    selectedIds,
+    setActiveTool,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    loadDocumentSchema,
+    setElementMaterial,
+    renameProject,
+  } = useDocumentStore();
   const renameProjectInList = useProjectStore((s) => s.renameProject);
   const leftPanelRef = React.useRef<HTMLElement>(null);
   const _rightPanelRef = React.useRef<HTMLElement>(null);
@@ -400,14 +451,14 @@ export function AppLayout() {
   // StatusBar (and offline-queue flush on reconnect) react to real
   // connectivity, not a value that was frozen at `true` on load.
   React.useEffect(() => {
-    const setOnline  = useDocumentStore.getState().setOnlineStatus;
+    const setOnline = useDocumentStore.getState().setOnlineStatus;
     setOnline(navigator.onLine);
-    const onOnline  = () => setOnline(true);
+    const onOnline = () => setOnline(true);
     const onOffline = () => setOnline(false);
-    window.addEventListener('online',  onOnline);
+    window.addEventListener('online', onOnline);
     window.addEventListener('offline', onOffline);
     return () => {
-      window.removeEventListener('online',  onOnline);
+      window.removeEventListener('online', onOnline);
       window.removeEventListener('offline', onOffline);
     };
   }, []);
@@ -432,7 +483,9 @@ export function AppLayout() {
 
   // T-A11Y-01: Screen reader announcements for tool changes + selection changes.
   const announce = useSrAnnouncer();
-  React.useEffect(() => { announce(`Tool: ${activeTool}`); }, [activeTool, announce]);
+  React.useEffect(() => {
+    announce(`Tool: ${activeTool}`);
+  }, [activeTool, announce]);
   React.useEffect(() => {
     if (selectedIds.length === 0) announce('Selection cleared');
     else if (selectedIds.length === 1) announce('1 element selected');
@@ -443,7 +496,9 @@ export function AppLayout() {
   // store so element-mutating actions become no-ops when the user's
   // access has lapsed. Exports and view state are never gated.
   const { readOnly } = useEntitlements();
-  React.useEffect(() => { setDocumentReadOnly(readOnly); }, [readOnly]);
+  React.useEffect(() => {
+    setDocumentReadOnly(readOnly);
+  }, [readOnly]);
 
   // ── Project members (real, server-backed) ───────────────────────────────
   // Drops the localStorage/MOCK_MEMBERS fallback for projects that exist
@@ -452,30 +507,40 @@ export function AppLayout() {
   // through the API so they persist across devices.
   const [realMembers, setRealMembers] = React.useState<AdminMember[] | null>(null);
   React.useEffect(() => {
-    if (!projectId) { setRealMembers(null); return; }
+    if (!projectId) {
+      setRealMembers(null);
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
         const rows = await projectMembersApi.list(projectId);
         if (cancelled) return;
-        setRealMembers(rows.map((r) => ({
-          id: r.firebaseUid,
-          name: r.displayName || r.email || r.firebaseUid,
-          role: r.role as RoleName,
-        })));
+        setRealMembers(
+          rows.map((r) => ({
+            id: r.firebaseUid,
+            name: r.displayName || r.email || r.firebaseUid,
+            role: r.role as RoleName,
+          }))
+        );
       } catch {
         if (!cancelled) setRealMembers(null);
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [projectId]);
 
   const handleSetMemberRole = React.useCallback(
     (userId: string, role: RoleName) => {
-      if (!projectId) { saveMemberRole(userId, role); return; }
+      if (!projectId) {
+        saveMemberRole(userId, role);
+        return;
+      }
       // Optimistic UI.
       setRealMembers((prev) =>
-        prev ? prev.map((m) => (m.id === userId ? { ...m, role } : m)) : prev,
+        prev ? prev.map((m) => (m.id === userId ? { ...m, role } : m)) : prev
       );
       void projectMembersApi.updateRole(projectId, userId, role).catch((err) => {
         // eslint-disable-next-line no-console
@@ -484,7 +549,7 @@ export function AppLayout() {
         saveMemberRole(userId, role);
       });
     },
-    [projectId],
+    [projectId]
   );
 
   // Boot the plugin host once. Reconcile remote install state first so:
@@ -507,7 +572,7 @@ export function AppLayout() {
             revokedMessages.push(
               p.revokedReason
                 ? `"${p.name}" was removed by OpenCAD: ${p.revokedReason}`
-                : `"${p.name}" was removed by OpenCAD for policy reasons.`,
+                : `"${p.name}" was removed by OpenCAD for policy reasons.`
             );
             continue;
           }
@@ -540,7 +605,7 @@ export function AppLayout() {
 
   // Plugin-registered commands — rendered as entries in the Plugins menu.
   const [pluginCommands, setPluginCommands] = React.useState<PluginCommand[]>(() =>
-    listPluginCommands(),
+    listPluginCommands()
   );
   React.useEffect(() => onPluginCommandsChange(setPluginCommands), []);
   const [showPluginsMenu, setShowPluginsMenu] = React.useState(false);
@@ -586,7 +651,9 @@ export function AppLayout() {
   const [showAuth, setShowAuth] = useState<'login' | 'register' | null>(null);
   const { status: authStatus, profile: authProfile, signOut: authSignOut } = useAuthStore();
   const [showSettings, setShowSettings] = useState(false);
-  const [settingsTab, setSettingsTab] = useState<'language' | 'apikeys' | 'permissions' | 'sso' | 'billing'>('language');
+  const [settingsTab, setSettingsTab] = useState<
+    'language' | 'apikeys' | 'permissions' | 'sso' | 'billing'
+  >('language');
   // SSO tab visible only when the deployment has been configured with a
   // real SAML provider. The panel itself is localStorage-only today so
   // we refuse to render it in any other environment.
@@ -598,18 +665,23 @@ export function AppLayout() {
 
   const [leftPanelWidth, setLeftPanelWidth] = useLocalStorage('opencad-leftPanelWidth', 260);
   const [rightPanelWidth, setRightPanelWidth] = useLocalStorage('opencad-rightPanelWidth', 260);
-  const resizingRef = useRef<{ side: 'left' | 'right'; startX: number; startWidth: number } | null>(null);
+  const resizingRef = useRef<{ side: 'left' | 'right'; startX: number; startWidth: number } | null>(
+    null
+  );
 
-  const startResize = useCallback((side: 'left' | 'right', e: React.MouseEvent) => {
-    e.preventDefault();
-    resizingRef.current = {
-      side,
-      startX: e.clientX,
-      startWidth: side === 'left' ? leftPanelWidth : rightPanelWidth,
-    };
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-  }, [leftPanelWidth, rightPanelWidth]);
+  const startResize = useCallback(
+    (side: 'left' | 'right', e: React.MouseEvent) => {
+      e.preventDefault();
+      resizingRef.current = {
+        side,
+        startX: e.clientX,
+        startWidth: side === 'left' ? leftPanelWidth : rightPanelWidth,
+      };
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    },
+    [leftPanelWidth, rightPanelWidth]
+  );
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
@@ -667,7 +739,8 @@ export function AppLayout() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) metaThemeColor.setAttribute('content', theme === 'light' ? '#f0f0f0' : '#1e1e1e');
+    if (metaThemeColor)
+      metaThemeColor.setAttribute('content', theme === 'light' ? '#f0f0f0' : '#1e1e1e');
     window.dispatchEvent(new Event('theme-change'));
   }, [theme]);
 
@@ -678,17 +751,34 @@ export function AppLayout() {
   }, [projectId, initProject]);
 
   useEffect(() => {
-    if (doc?.organization.levels && Object.keys(doc.organization.levels).length > 0 && !selectedLevel) {
+    if (
+      doc?.organization.levels &&
+      Object.keys(doc.organization.levels).length > 0 &&
+      !selectedLevel
+    ) {
       setSelectedLevel(Object.keys(doc.organization.levels)[0]);
     }
   }, [doc, selectedLevel, setSelectedLevel]);
 
   useEffect(() => {
     const TOOL_SHORTCUTS: Record<string, string> = {
-      v: 'select', l: 'line', r: 'rectangle', c: 'circle', a: 'arc',
-      p: 'polygon', w: 'wall', k: 'column', b: 'beam', s: 'slab',
-      o: 'roof', t: 'stair', d: 'door', n: 'window', g: 'railing',
-      m: 'dimension', x: 'text',
+      v: 'select',
+      l: 'line',
+      r: 'rectangle',
+      c: 'circle',
+      a: 'arc',
+      p: 'polygon',
+      w: 'wall',
+      k: 'column',
+      b: 'beam',
+      s: 'slab',
+      o: 'roof',
+      t: 'stair',
+      d: 'door',
+      n: 'window',
+      g: 'railing',
+      m: 'dimension',
+      x: 'text',
     };
 
     const handler = (e: KeyboardEvent) => {
@@ -696,9 +786,18 @@ export function AppLayout() {
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       if ((e.target as HTMLElement).isContentEditable) return;
       if (e.metaKey || e.ctrlKey) {
-        if (e.key === '[') { e.preventDefault(); setShowLeftPanel((v) => !v); }
-        if (e.key === ']') { e.preventDefault(); setShowRightPanel((v) => !v); }
-        if (e.key === 'k') { e.preventDefault(); setShowCommandPalette((v) => !v); }
+        if (e.key === '[') {
+          e.preventDefault();
+          setShowLeftPanel((v) => !v);
+        }
+        if (e.key === ']') {
+          e.preventDefault();
+          setShowRightPanel((v) => !v);
+        }
+        if (e.key === 'k') {
+          e.preventDefault();
+          setShowCommandPalette((v) => !v);
+        }
         return;
       }
 
@@ -749,40 +848,98 @@ export function AppLayout() {
 
   const toggleAIChat = () => setShowAIChat(!showAIChat);
 
-  function handleCommandExecute(command: { id: string; label: string; category: string; action: () => void }) {
+  function handleCommandExecute(command: {
+    id: string;
+    label: string;
+    category: string;
+    action: () => void;
+  }) {
     setShowCommandPalette(false);
     const toolIds = [
-      'select', 'wall', 'door', 'window', 'slab', 'column', 'beam',
-      'stair', 'railing', 'line', 'rectangle', 'circle', 'arc',
-      'polyline', 'text', 'dimension', 'polygon',
+      'select',
+      'wall',
+      'door',
+      'window',
+      'slab',
+      'column',
+      'beam',
+      'stair',
+      'railing',
+      'line',
+      'rectangle',
+      'circle',
+      'arc',
+      'polyline',
+      'text',
+      'dimension',
+      'polygon',
     ];
     if (toolIds.includes(command.id)) {
       setActiveTool(command.id as Parameters<typeof setActiveTool>[0]);
     } else {
       switch (command.id) {
-        case 'undo': undo(); break;
-        case 'redo': redo(); break;
-        case 'view-3d': setActiveView('3d'); break;
-        case 'view-top': setActiveView('floor-plan'); break;
-        case 'view-section': setActiveView('section'); break;
-        case 'toggle-ai': toggleAIChat(); break;
-        case 'import': setShowModal('import'); break;
-        case 'export': setShowModal('export'); break;
-        case 'focus-mode': setFocusMode((f) => !f); break;
-        case 'panel-left': setShowLeftPanel((v) => !v); break;
-        case 'panel-right': setShowRightPanel((v) => !v); break;
-        case 'history': setRightPanelTab('history'); setShowRightPanel(true); break;
+        case 'undo':
+          undo();
+          break;
+        case 'redo':
+          redo();
+          break;
+        case 'view-3d':
+          setActiveView('3d');
+          break;
+        case 'view-top':
+          setActiveView('floor-plan');
+          break;
+        case 'view-section':
+          setActiveView('section');
+          break;
+        case 'toggle-ai':
+          toggleAIChat();
+          break;
+        case 'import':
+          setShowModal('import');
+          break;
+        case 'export':
+          setShowModal('export');
+          break;
+        case 'focus-mode':
+          setFocusMode((f) => !f);
+          break;
+        case 'panel-left':
+          setShowLeftPanel((v) => !v);
+          break;
+        case 'panel-right':
+          setShowRightPanel((v) => !v);
+          break;
+        case 'history':
+          setRightPanelTab('history');
+          setShowRightPanel(true);
+          break;
 
-        case 'properties': setRightPanelTab('properties'); setShowRightPanel(true); break;
-        default: break;
+        case 'properties':
+          setRightPanelTab('properties');
+          setShowRightPanel(true);
+          break;
+        default:
+          break;
       }
     }
   }
 
   if (isMobile) {
-    const levels = doc?.organization.levels ? Object.values(doc.organization.levels).map((l) => ({ id: l.id, name: l.name })) : [];
-    const elementCount = doc?.content.elements ? Object.keys(doc.content.elements).length : undefined;
-    return <MobileViewer projectName={doc?.name ?? 'Project'} levels={levels} elementCount={elementCount} />;
+    const levels = doc?.organization.levels
+      ? Object.values(doc.organization.levels).map((l) => ({ id: l.id, name: l.name }))
+      : [];
+    const elementCount = doc?.content.elements
+      ? Object.keys(doc.content.elements).length
+      : undefined;
+    return (
+      <MobileViewer
+        projectName={doc?.name ?? 'Project'}
+        levels={levels}
+        elementCount={elementCount}
+      />
+    );
   }
 
   // No active project → show the full-screen project browser / home screen
@@ -807,7 +964,9 @@ export function AppLayout() {
   return (
     <div className={`app-container${focusMode ? ' focus-mode' : ''}`}>
       {/* T-A11Y-01: Skip navigation link — first focusable element */}
-      <a href="#viewport" className="skip-link">Skip to canvas</a>
+      <a href="#viewport" className="skip-link">
+        Skip to canvas
+      </a>
       {/* T-A11Y-01: Screen reader live region — populated by useSrAnnouncer */}
       <div id="sr-announcer" aria-live="polite" aria-atomic="true" className="sr-only" />
       <ReadOnlyBanner />
@@ -894,24 +1053,81 @@ export function AppLayout() {
 
           <div className="toolbar-tabs" data-tour="view-tabs">
             {allowedViews.includes('floor-plan') && (
-              <button className={`tab-btn${activeView === 'floor-plan' ? ' active' : ''}`} onClick={() => setActiveView('floor-plan')}>{t('view.floorPlan')}</button>
+              <button
+                className={`tab-btn${activeView === 'floor-plan' ? ' active' : ''}`}
+                onClick={() => setActiveView('floor-plan')}
+              >
+                {t('view.floorPlan')}
+              </button>
             )}
             {allowedViews.includes('3d') && (
-              <button className={`tab-btn${activeView === '3d' ? ' active' : ''}`} onClick={() => setActiveView('3d')}>{t('view.threeD')}</button>
+              <button
+                className={`tab-btn${activeView === '3d' ? ' active' : ''}`}
+                onClick={() => setActiveView('3d')}
+              >
+                {t('view.threeD')}
+              </button>
             )}
             {allowedViews.includes('section') && (
-              <button className={`tab-btn${activeView === 'section' ? ' active' : ''}`} onClick={() => setActiveView('section')}>{t('view.section')}</button>
+              <button
+                className={`tab-btn${activeView === 'section' ? ' active' : ''}`}
+                onClick={() => setActiveView('section')}
+              >
+                {t('view.section')}
+              </button>
             )}
           </div>
 
           <div className="toolbar-right">
-            <button className="toolbar-btn" onClick={() => setShowFeedback(true)} title={t('nav.feedback')} style={{ color: 'var(--accent-primary)' }}><span className="tool-icon"><MessageCirclePlus size={15} /></span></button>
-            <button className="toolbar-btn" data-tour="help" onClick={() => setShowHelp(true)} title={t('nav.help') + ' (?)'}><span className="tool-icon"><HelpCircle size={15} /></span></button>
-            <button className="toolbar-btn" onClick={toggleTheme} title={t('tooltip.toggleTheme')}><span className="tool-icon">{theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}</span></button>
-            <button className="toolbar-btn" onClick={() => setShowModal('import')} title={t('tooltip.importFile')}><span className="tool-icon"><FolderOpen size={15} /></span></button>
-            <button className="toolbar-btn" onClick={() => setShowModal('export')} title={t('tooltip.exportFile')}><span className="tool-icon"><FileDown size={15} /></span></button>
+            <button
+              className="toolbar-btn"
+              onClick={() => setShowFeedback(true)}
+              title={t('nav.feedback')}
+              style={{ color: 'var(--accent-primary)' }}
+            >
+              <span className="tool-icon">
+                <MessageCirclePlus size={15} />
+              </span>
+            </button>
+            <button
+              className="toolbar-btn"
+              data-tour="help"
+              onClick={() => setShowHelp(true)}
+              title={t('nav.help') + ' (?)'}
+            >
+              <span className="tool-icon">
+                <HelpCircle size={15} />
+              </span>
+            </button>
+            <button className="toolbar-btn" onClick={toggleTheme} title={t('tooltip.toggleTheme')}>
+              <span className="tool-icon">
+                {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+              </span>
+            </button>
+            <button
+              className="toolbar-btn"
+              onClick={() => setShowModal('import')}
+              title={t('tooltip.importFile')}
+            >
+              <span className="tool-icon">
+                <FolderOpen size={15} />
+              </span>
+            </button>
+            <button
+              className="toolbar-btn"
+              onClick={() => setShowModal('export')}
+              title={t('tooltip.exportFile')}
+            >
+              <span className="tool-icon">
+                <FileDown size={15} />
+              </span>
+            </button>
             {can('panel:ai') && (
-              <button className="toolbar-btn" onClick={toggleAIChat} title={t('nav.ai')}><span className="tool-icon"><Bot size={15} /></span></button>
+              <button className="toolbar-btn" onClick={toggleAIChat} title={t('nav.ai')}>
+                <span className="tool-icon">
+                  <Bot size={15} />
+                </span>
+              </button>
             )}
             {authStatus === 'authenticated' && authProfile ? (
               <button
@@ -924,7 +1140,15 @@ export function AppLayout() {
                 </span>
               </button>
             ) : (
-              <button className="toolbar-btn" onClick={() => setShowAuth('login')} title={t('nav.signIn', { defaultValue: 'Sign In' })}><span className="tool-icon"><User size={15} /></span></button>
+              <button
+                className="toolbar-btn"
+                onClick={() => setShowAuth('login')}
+                title={t('nav.signIn', { defaultValue: 'Sign In' })}
+              >
+                <span className="tool-icon">
+                  <User size={15} />
+                </span>
+              </button>
             )}
             <div className="toolbar-sep" />
             <button
@@ -959,7 +1183,9 @@ export function AppLayout() {
             />
           )}
         </aside>
-        {leftVisible && <PanelResizer panelRef={leftPanelRef} side="right" minWidth={180} maxWidth={480} />}
+        {leftVisible && (
+          <PanelResizer panelRef={leftPanelRef} side="right" minWidth={180} maxWidth={480} />
+        )}
 
         <div
           className={`app-toolshelf-container${chromeVisible ? '' : ' panel-collapsed'}`}
@@ -988,7 +1214,8 @@ export function AppLayout() {
                   a redundant duplicate with a separate unsynced state. */}
               {focusMode && (
                 <div className="focus-hint">
-                  {t('focusHint.before', { defaultValue: 'Press' })} <kbd>\</kbd> {t('focusHint.after', { defaultValue: 'to exit focus mode' })}
+                  {t('focusHint.before', { defaultValue: 'Press' })} <kbd>\</kbd>{' '}
+                  {t('focusHint.after', { defaultValue: 'to exit focus mode' })}
                 </div>
               )}
             </div>
@@ -1014,7 +1241,13 @@ export function AppLayout() {
               // touching the static RIGHT_PANEL_TABS array.
               const label = tPanels(`tabs.${tab.id}`, { defaultValue: tab.title });
               return (
-                <button key={tab.id} className={`right-panel-tab-btn${rightPanelTab === tab.id ? ' active' : ''}`} onClick={() => setRightPanelTab(tab.id)} title={label} aria-label={label}>
+                <button
+                  key={tab.id}
+                  className={`right-panel-tab-btn${rightPanelTab === tab.id ? ' active' : ''}`}
+                  onClick={() => setRightPanelTab(tab.id)}
+                  title={label}
+                  aria-label={label}
+                >
                   {tab.icon}
                 </button>
               );
@@ -1063,7 +1296,9 @@ export function AppLayout() {
                       const parsed = parseBCF(text);
                       saveBCFTopics(parsed.topics);
                       setBcfVersion((v) => v + 1);
-                    } catch { /* surfaced via BCFPanel's own error UI */ }
+                    } catch {
+                      /* surfaced via BCFPanel's own error UI */
+                    }
                   }}
                   onExport={(topics) => {
                     const file: BCFFile = {
@@ -1087,8 +1322,12 @@ export function AppLayout() {
                   selectedCount={selectedIds.length}
                   currentMaterialName={
                     selectedIds.length > 0 && doc
-                      ? ((doc.content.elements[selectedIds[0]]?.properties?.['Material']?.value as string | undefined)
-                        ?? (doc.content.elements[selectedIds[0]]?.properties?.['MaterialId']?.value as string | undefined))
+                      ? ((doc.content.elements[selectedIds[0]]?.properties?.['Material']?.value as
+                          | string
+                          | undefined) ??
+                        (doc.content.elements[selectedIds[0]]?.properties?.['MaterialId']?.value as
+                          | string
+                          | undefined))
                       : undefined
                   }
                   onSelect={(mat) => {
@@ -1102,9 +1341,7 @@ export function AppLayout() {
               {rightPanelTab === 'carbon' && (
                 <CarbonPanel entries={doc ? computeCarbonEntries(doc) : []} />
               )}
-              {rightPanelTab === 'cost' && (
-                <CostPanel items={doc ? computeCostItems(doc) : []} />
-              )}
+              {rightPanelTab === 'cost' && <CostPanel items={doc ? computeCostItems(doc) : []} />}
               {rightPanelTab === 'hatch' && <HatchPanel />}
               {rightPanelTab === 'symbols' && <SymbolLibrary />}
               {rightPanelTab === 'shadow' && <ShadowAnalysisPanel />}
@@ -1122,9 +1359,7 @@ export function AppLayout() {
                   // only when offline or for projects that haven't been
                   // pushed server-side yet.
                   members={
-                    realMembers ??
-                    loadOrgMembersForProject(doc?.id ?? null) ??
-                    loadMembers()
+                    realMembers ?? loadOrgMembersForProject(doc?.id ?? null) ?? loadMembers()
                   }
                   onSetRole={handleSetMemberRole}
                 />
@@ -1171,11 +1406,7 @@ export function AppLayout() {
             <span className="plugin-menu-count">{pluginCommands.length}</span>
           </button>
           {showPluginsMenu && (
-            <div
-              className="plugin-menu-list"
-              role="menu"
-              onClick={() => setShowPluginsMenu(false)}
-            >
+            <div className="plugin-menu-list" role="menu" onClick={() => setShowPluginsMenu(false)}>
               {pluginCommands.map((cmd) => (
                 <button
                   key={`${cmd.pluginId}:${cmd.id}`}
@@ -1196,11 +1427,17 @@ export function AppLayout() {
       <HelpPanel
         open={showHelp}
         onClose={() => setShowHelp(false)}
-        onStartTour={() => { setShowHelp(false); setShowTour(true); }}
+        onStartTour={() => {
+          setShowHelp(false);
+          setShowTour(true);
+        }}
       />
       <GuidedTour
         open={showTour}
-        onClose={() => { setShowTour(false); markTourSeen(); }}
+        onClose={() => {
+          setShowTour(false);
+          markTourSeen();
+        }}
       />
 
       {showModal && <ImportExportModal mode={showModal} onClose={() => setShowModal(null)} />}
@@ -1208,14 +1445,15 @@ export function AppLayout() {
       {showCommandPalette && (
         <div className="command-palette-overlay" onClick={() => setShowCommandPalette(false)}>
           <div onClick={(e) => e.stopPropagation()}>
-            <CommandPalette onClose={() => setShowCommandPalette(false)} onExecute={handleCommandExecute} />
+            <CommandPalette
+              onClose={() => setShowCommandPalette(false)}
+              onExecute={handleCommandExecute}
+            />
           </div>
         </div>
       )}
 
-      {showAuth && (
-        <AuthModal onClose={() => setShowAuth(null)} />
-      )}
+      {showAuth && <AuthModal onClose={() => setShowAuth(null)} />}
 
       {showSettings && (
         <div className="settings-overlay" onClick={() => setShowSettings(false)}>
@@ -1223,31 +1461,73 @@ export function AppLayout() {
             <div className="settings-modal-header">
               <h2 className="settings-modal-title">{t('settings.title')}</h2>
               <div className="settings-header-actions">
-                <button className="settings-signout" aria-label={t('nav.signOut')} onClick={() => { setShowSettings(false); void authSignOut(); }}>{t('nav.signOut')}</button>
-                <button className="settings-close" aria-label={t('dashboard.closeSettings')} onClick={() => setShowSettings(false)}>×</button>
+                <button
+                  className="settings-signout"
+                  aria-label={t('nav.signOut')}
+                  onClick={() => {
+                    setShowSettings(false);
+                    void authSignOut();
+                  }}
+                >
+                  {t('nav.signOut')}
+                </button>
+                <button
+                  className="settings-close"
+                  aria-label={t('dashboard.closeSettings')}
+                  onClick={() => setShowSettings(false)}
+                >
+                  ×
+                </button>
               </div>
             </div>
             <div className="settings-tabs">
-              <button className={`settings-tab-btn${settingsTab === 'language' ? ' active' : ''}`} onClick={() => setSettingsTab('language')}>{t('settings.tabs.language')}</button>
-              <button className={`settings-tab-btn${settingsTab === 'apikeys' ? ' active' : ''}`} onClick={() => setSettingsTab('apikeys')}>{t('settings.tabs.apiKeys')}</button>
-              <button className={`settings-tab-btn${settingsTab === 'permissions' ? ' active' : ''}`} onClick={() => setSettingsTab('permissions')}>{t('settings.tabs.permissions')}</button>
+              <button
+                className={`settings-tab-btn${settingsTab === 'language' ? ' active' : ''}`}
+                onClick={() => setSettingsTab('language')}
+              >
+                {t('settings.tabs.language')}
+              </button>
+              <button
+                className={`settings-tab-btn${settingsTab === 'apikeys' ? ' active' : ''}`}
+                onClick={() => setSettingsTab('apikeys')}
+              >
+                {t('settings.tabs.apiKeys')}
+              </button>
+              <button
+                className={`settings-tab-btn${settingsTab === 'permissions' ? ' active' : ''}`}
+                onClick={() => setSettingsTab('permissions')}
+              >
+                {t('settings.tabs.permissions')}
+              </button>
               {ssoEnabled && (
-                <button className={`settings-tab-btn${settingsTab === 'sso' ? ' active' : ''}`} onClick={() => setSettingsTab('sso')}>{t('settings.tabs.sso')}</button>
+                <button
+                  className={`settings-tab-btn${settingsTab === 'sso' ? ' active' : ''}`}
+                  onClick={() => setSettingsTab('sso')}
+                >
+                  {t('settings.tabs.sso')}
+                </button>
               )}
-              <button className={`settings-tab-btn${settingsTab === 'billing' ? ' active' : ''}`} onClick={() => setSettingsTab('billing')}>{t('settings.tabs.billing')}</button>
+              <button
+                className={`settings-tab-btn${settingsTab === 'billing' ? ' active' : ''}`}
+                onClick={() => setSettingsTab('billing')}
+              >
+                {t('settings.tabs.billing')}
+              </button>
             </div>
             <div className="settings-content">
               {settingsTab === 'language' && <LanguageSettingsPanel />}
               {settingsTab === 'apikeys' && <APIKeyPanel />}
               {settingsTab === 'permissions' && <PermissionsPanel />}
               {settingsTab === 'sso' && ssoEnabled && (
-                <SSOSettingsPanel
-                  config={loadSSOConfig()}
-                  onSave={(cfg) => saveSSOConfig(cfg)}
-                />
+                <SSOSettingsPanel config={loadSSOConfig()} onSave={(cfg) => saveSSOConfig(cfg)} />
               )}
               {settingsTab === 'billing' && (
-                <BillingPanel onUpgrade={() => { setShowSettings(false); setShowUpgrade(true); }} />
+                <BillingPanel
+                  onUpgrade={() => {
+                    setShowSettings(false);
+                    setShowUpgrade(true);
+                  }}
+                />
               )}
             </div>
           </div>

@@ -9,8 +9,9 @@ Every real wall is a composite: an exterior brick leaf, a cavity, an insulation 
 ## Scope
 
 ### In scope
+
 - A new `Composite` definition object: ordered list of layers, each with `{ material: string, thickness: number, core: boolean, finish: 'exterior' | 'interior' | 'both' }`.
-- Composites are stored in `DocumentSchema.composites: Record<string, Composite>`; walls reference a composite by id (`CompositeId` property) *instead of* a flat thickness + material.
+- Composites are stored in `DocumentSchema.composites: Record<string, Composite>`; walls reference a composite by id (`CompositeId` property) _instead of_ a flat thickness + material.
 - Backward compatibility: walls without `CompositeId` keep their existing `Width`/`Material` as a single-layer composite.
 - 3D rendering: the wall mesh is built from N stacked boxes along the perpendicular axis, one per layer, each with its own material + thickness.
 - 2D rendering: the wall draws as multiple parallel lines with each region filled per layer material's hatch pattern.
@@ -19,6 +20,7 @@ Every real wall is a composite: an exterior brick leaf, a cavity, an insulation 
 - Built-in composites shipped: `ext-300-brick-cavity-blockwork-plaster`, `int-150-plasterboard-stud-plasterboard`, `part-100-lightweight-partition`, `curt-60-glazing`.
 
 ### Out of scope (this issue)
+
 - Layer-priority intersection at junctions (which layers pass through at a joint) — handled separately once T-MOD-001 is in.
 - Sloped / tapered composites.
 - User-authored hatch patterns per material.

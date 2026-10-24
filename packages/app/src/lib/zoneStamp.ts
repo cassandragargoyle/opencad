@@ -15,15 +15,20 @@ import type { ElementSchema } from '@opencad/document';
 import { polygonArea, polygonCentroid, type Point2D } from '../utils/roomDetection';
 
 export type StampField =
-  | 'tag' | 'name' | 'area' | 'occupancy'
-  | 'finishFloor' | 'finishWalls' | 'finishCeiling';
+  | 'tag'
+  | 'name'
+  | 'area'
+  | 'occupancy'
+  | 'finishFloor'
+  | 'finishWalls'
+  | 'finishCeiling';
 
 export interface ZoneStamp {
   elementId: string;
-  centroid: Point2D;        // world mm
-  areaMm2: number;          // raw area
-  areaM2: number;           // area in m²
-  lines: string[];          // one per configured field, pre-rendered
+  centroid: Point2D; // world mm
+  areaMm2: number; // raw area
+  areaM2: number; // area in m²
+  lines: string[]; // one per configured field, pre-rendered
 }
 
 function strProp(el: ElementSchema, key: string, fb = ''): string {
@@ -40,7 +45,9 @@ function points(el: ElementSchema): Point2D[] | null {
   try {
     const pts = JSON.parse(raw) as Point2D[];
     return Array.isArray(pts) && pts.length >= 3 ? pts : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export const DEFAULT_STAMP_FIELDS: StampField[] = ['tag', 'name', 'area', 'occupancy'];
@@ -53,13 +60,13 @@ export const DEFAULT_STAMP_FIELDS: StampField[] = ['tag', 'name', 'area', 'occup
 export function buildZoneStamp(
   zone: ElementSchema,
   fields: StampField[] = DEFAULT_STAMP_FIELDS,
-  overrideTag?: string,
+  overrideTag?: string
 ): ZoneStamp | null {
   const pts = points(zone);
   if (!pts) return null;
 
   const areaMm2 = Math.abs(polygonArea(pts));
-  const areaM2  = areaMm2 / 1_000_000;
+  const areaM2 = areaMm2 / 1_000_000;
   const centroid = polygonCentroid(pts);
 
   const tag = overrideTag ?? strProp(zone, 'Tag');
@@ -79,9 +86,7 @@ export function buildZoneStamp(
     finishCeiling,
   };
 
-  const lines = fields
-    .map((f) => rendered[f])
-    .filter((s) => s && s.length > 0);
+  const lines = fields.map((f) => rendered[f]).filter((s) => s && s.length > 0);
 
   return { elementId: zone.id, centroid, areaMm2, areaM2, lines };
 }
@@ -91,14 +96,17 @@ export function buildZoneStamp(
  */
 export function buildAllStamps(
   elements: Record<string, ElementSchema>,
-  fields: StampField[] = DEFAULT_STAMP_FIELDS,
+  fields: StampField[] = DEFAULT_STAMP_FIELDS
 ): ZoneStamp[] {
   const out: ZoneStamp[] = [];
   for (const el of Object.values(elements)) {
     if (el.type !== 'space') continue;
     // Fall back to numProp Area if Points isn't present
     const stamp = buildZoneStamp(el, fields);
-    if (stamp) { out.push(stamp); continue; }
+    if (stamp) {
+      out.push(stamp);
+      continue;
+    }
     const legacyArea = numProp(el, 'Area');
     if (legacyArea > 0) {
       out.push({
@@ -106,8 +114,11 @@ export function buildAllStamps(
         centroid: { x: 0, y: 0 },
         areaMm2: legacyArea * 1_000_000,
         areaM2: legacyArea,
-        lines: [strProp(el, 'Tag'), strProp(el, 'Name', '(room)'), `${legacyArea.toFixed(1)} m²`]
-          .filter((s) => s.length > 0),
+        lines: [
+          strProp(el, 'Tag'),
+          strProp(el, 'Name', '(room)'),
+          `${legacyArea.toFixed(1)} m²`,
+        ].filter((s) => s.length > 0),
       });
     }
   }

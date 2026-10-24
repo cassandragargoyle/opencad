@@ -86,11 +86,11 @@ export interface GhostModeConfig {
 }
 
 export const DEFAULT_GHOST_CONFIG: GhostModeConfig = {
-  ghostOpacity:      0.15,
-  ghostColour:       '#888888',
-  halfTone:          false,
+  ghostOpacity: 0.15,
+  ghostColour: '#888888',
+  halfTone: false,
   ghostedCategories: [],
-  pinnedElementIds:  [],
+  pinnedElementIds: [],
 };
 
 // ── Visibility resolution ─────────────────────────────────────────────────────
@@ -114,7 +114,7 @@ export function resolveElementVisibility(
   elementId: string,
   category: ElementCategory,
   viewVis: ViewVisibilityState,
-  ghostConfig?: GhostModeConfig,
+  ghostConfig?: GhostModeConfig
 ): ResolvedVisibility {
   // 1. Per-element override (strongest)
   const elOvr = viewVis.elementOverrides[elementId];
@@ -123,8 +123,8 @@ export function resolveElementVisibility(
     return {
       visible: elOvr.visible,
       opacity: baseOpacity,
-      colour:  elOvr.colour,
-      ghost:   elOvr.ghost ?? false,
+      colour: elOvr.colour,
+      ghost: elOvr.ghost ?? false,
     };
   }
 
@@ -132,20 +132,20 @@ export function resolveElementVisibility(
   const catOvr = viewVis.categoryOverrides[category];
   const catVisible = catOvr?.visible ?? true;
   const catOpacity = (catOvr?.opacity ?? 1) * viewVis.globalOpacity;
-  const catGhost   = catOvr?.ghost ?? false;
+  const catGhost = catOvr?.ghost ?? false;
 
   // 3. Ghost mode
   let ghost = catGhost;
   let opacity = catOpacity;
-  let colour  = catOvr?.colour;
+  let colour = catOvr?.colour;
 
   if (ghostConfig) {
-    const isPinned  = ghostConfig.pinnedElementIds.includes(elementId);
+    const isPinned = ghostConfig.pinnedElementIds.includes(elementId);
     const isGhosted = !isPinned && ghostConfig.ghostedCategories.includes(category);
     if (isGhosted) {
-      ghost   = true;
+      ghost = true;
       opacity = ghostConfig.ghostOpacity * viewVis.globalOpacity;
-      colour  = ghostConfig.ghostColour;
+      colour = ghostConfig.ghostColour;
     }
   }
 
@@ -158,7 +158,7 @@ export function resolveElementVisibility(
 export function setCategoryVisible(
   state: ViewVisibilityState,
   category: ElementCategory,
-  visible: boolean,
+  visible: boolean
 ): ViewVisibilityState {
   return {
     ...state,
@@ -173,7 +173,7 @@ export function setCategoryVisible(
 export function setElementVisible(
   state: ViewVisibilityState,
   elementId: string,
-  visible: boolean,
+  visible: boolean
 ): ViewVisibilityState {
   return {
     ...state,
@@ -188,7 +188,7 @@ export function setElementVisible(
 export function setCategoryGhost(
   state: ViewVisibilityState,
   category: ElementCategory,
-  ghost: boolean,
+  ghost: boolean
 ): ViewVisibilityState {
   return {
     ...state,

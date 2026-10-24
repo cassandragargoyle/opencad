@@ -9,6 +9,7 @@ Symmetrical plans (duplicated apartments, repeated office modules, barracks, cla
 ## Scope
 
 ### In scope
+
 - **Mirror**: pick two points defining the mirror axis; duplicate selection mirrored across it. Option to keep original or replace.
 - **Rotate**: pick pivot; type angle (numeric entry); selection rotated. Option to make copies at intermediate angles (e.g., 4 × 90° = polar array).
 - **Linear Array**: type count + spacing vector; selection replicated N times.
@@ -17,6 +18,7 @@ Symmetrical plans (duplicated apartments, repeated office modules, barracks, cla
 - All operations undoable as single actions.
 
 ### Out of scope
+
 - Radial-path array (following an arbitrary curve).
 - Parametric arrays (edit one, all update).
 

@@ -21,7 +21,11 @@ const makeWall = (id: string, overrides = {}) => ({
   },
   propertySets: [],
   geometry: { type: 'brep' as const, data: null },
-  transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0, w: 1 }, scale: { x: 1, y: 1, z: 1 } },
+  transform: {
+    translation: { x: 0, y: 0, z: 0 },
+    rotation: { x: 0, y: 0, z: 0, w: 1 },
+    scale: { x: 1, y: 1, z: 1 },
+  },
   boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 5000, y: 200, z: 3000 } },
   metadata: { id, createdBy: 'u1', createdAt: 0, updatedAt: 0, version: {} },
   ...overrides,
@@ -42,9 +46,15 @@ const makeStore = (overrides = {}) => ({
     id: 'doc-1',
     content: {
       elements: {
-        'w1': makeWall('w1'),
-        'w2': makeWall('w2', { properties: { height: { type: 'number', value: 2700, unit: 'mm' }, thickness: { type: 'number', value: 300, unit: 'mm' }, material: { type: 'string', value: 'Brick' } } }),
-        'd1': makeDoor('d1'),
+        w1: makeWall('w1'),
+        w2: makeWall('w2', {
+          properties: {
+            height: { type: 'number', value: 2700, unit: 'mm' },
+            thickness: { type: 'number', value: 300, unit: 'mm' },
+            material: { type: 'string', value: 'Brick' },
+          },
+        }),
+        d1: makeDoor('d1'),
       },
       spaces: {},
     },
@@ -144,7 +154,15 @@ describe('T-SCHED-001: SchedulePanel', () => {
   it('shows empty state when no elements of type exist', () => {
     vi.mocked(useDocumentStore).mockReturnValue(
       makeStore({
-        document: { id: 'doc-1', content: { elements: {}, spaces: {} }, organization: { layers: {}, levels: {} }, presentation: { views: {}, annotations: {} }, library: { materials: {} }, versions: [], vectorClock: {} },
+        document: {
+          id: 'doc-1',
+          content: { elements: {}, spaces: {} },
+          organization: { layers: {}, levels: {} },
+          presentation: { views: {}, annotations: {} },
+          library: { materials: {} },
+          versions: [],
+          vectorClock: {},
+        },
       }) as ReturnType<typeof useDocumentStore>
     );
     render(<SchedulePanel />);

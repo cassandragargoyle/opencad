@@ -63,9 +63,22 @@ describe('T-IO-03: COBie 2.4 export', () => {
       geometry: { type: 'point', data: null },
       layerId: 'l0',
       levelId: 'lv0',
-      transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-      boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 1, y: 1, z: 1, _type: 'Point3D' } },
-      metadata: { id: 'sp1', createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+      transform: {
+        translation: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+        max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
+      },
+      metadata: {
+        id: 'sp1',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
+        version: { clock: {} },
+      },
       visible: true,
       locked: false,
     };

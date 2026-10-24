@@ -212,7 +212,14 @@ describe('T-AI-001: AI project generation', () => {
     const elements = Object.values(result.document.content?.elements ?? {});
     const walls = elements.filter((e) => e.type === 'wall');
     expect(walls.length).toBeGreaterThan(0);
-    expect(result.warnings.some((w) => w.toLowerCase().includes('fallback') || w.toLowerCase().includes('template') || w.toLowerCase().includes('api key'))).toBe(true);
+    expect(
+      result.warnings.some(
+        (w) =>
+          w.toLowerCase().includes('fallback') ||
+          w.toLowerCase().includes('template') ||
+          w.toLowerCase().includes('api key')
+      )
+    ).toBe(true);
   });
 
   it('handles API error gracefully and returns fallback template', async () => {

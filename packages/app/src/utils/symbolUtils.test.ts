@@ -2,12 +2,7 @@
  * T-2D-010: Architectural symbol tests
  */
 import { describe, it, expect } from 'vitest';
-import {
-  SYMBOLS,
-  getNorthArrowPath,
-  getScaleBarTicks,
-  getDetailMarkerLabel,
-} from './symbolUtils';
+import { SYMBOLS, getNorthArrowPath, getScaleBarTicks, getDetailMarkerLabel } from './symbolUtils';
 
 describe('T-2D-010: Architectural Symbols', () => {
   describe('SYMBOLS', () => {

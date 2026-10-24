@@ -64,7 +64,9 @@ function loadProjects(): ProjectMeta[] {
   try {
     const raw = localStorage.getItem('opencad-projects');
     if (raw) return JSON.parse(raw) as ProjectMeta[];
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return [];
 }
 
@@ -74,7 +76,9 @@ function saveProjects(projects: ProjectMeta[]): void {
     // a few dozen ~80KB JPEG data URLs don't race localStorage's 5MB quota.
     const lean = projects.map((p) => ({ ...p, thumbnail: null }));
     localStorage.setItem('opencad-projects', JSON.stringify(lean));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 // Prevents React Strict Mode's double-invocation from running two concurrent syncs.
@@ -130,9 +134,7 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
         const liveBeforePush = get().projects;
         const localOnly = liveBeforePush.filter((p) => !serverById.has(p.id));
         if (localOnly.length > 0) {
-          await Promise.allSettled(
-            localOnly.map((p) => projectsApi.create(p.name, p.id))
-          );
+          await Promise.allSettled(localOnly.map((p) => projectsApi.create(p.name, p.id)));
           // Re-fetch to get the authoritative list after pushes complete.
           serverProjects = await projectsApi.list();
         }
@@ -226,9 +228,7 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
 
   starProject: (id) => {
     // Starred state is a local UI preference — not synced to server.
-    const projects = get().projects.map((p) =>
-      p.id === id ? { ...p, starred: !p.starred } : p
-    );
+    const projects = get().projects.map((p) => (p.id === id ? { ...p, starred: !p.starred } : p));
     saveProjects(projects);
     set({ projects });
   },
@@ -245,9 +245,7 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
   },
 
   updateThumbnail: (id, thumbnail) => {
-    const projects = get().projects.map((p) =>
-      p.id === id ? { ...p, thumbnail } : p
-    );
+    const projects = get().projects.map((p) => (p.id === id ? { ...p, thumbnail } : p));
     // Keep updatedAt stable — a thumbnail refresh shouldn't reorder the
     // dashboard's "last edited" sort. Persist to IDB; the in-memory list
     // carries the thumbnail so the card re-renders without a second read.
@@ -258,9 +256,7 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
   hydrateThumbnails: async () => {
     const map = await idbLoadAllThumbnails();
     if (Object.keys(map).length === 0) return;
-    const projects = get().projects.map((p) =>
-      map[p.id] ? { ...p, thumbnail: map[p.id] } : p
-    );
+    const projects = get().projects.map((p) => (map[p.id] ? { ...p, thumbnail: map[p.id] } : p));
     set({ projects });
   },
 

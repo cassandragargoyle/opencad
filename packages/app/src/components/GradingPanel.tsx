@@ -15,7 +15,7 @@ type GradingTool = 'spot_level' | 'drainage_arrow' | 'cutfill';
 
 export function GradingPanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document  = useDocumentStore((s) => s.document);
+  const document = useDocumentStore((s) => s.document);
   const addElement = useDocumentStore((s) => s.addElement);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
   const isReadOnly = isDocumentReadOnly();
@@ -28,7 +28,8 @@ export function GradingPanel(): React.ReactElement {
   const spotLevels = useMemo(() => {
     if (!document) return [];
     return Object.values(document.content.elements).filter(
-      (e) => e.type === 'annotation' &&
+      (e) =>
+        e.type === 'annotation' &&
         (e.properties as Record<string, { value: unknown }>)['Kind']?.value === 'spot_level'
     );
   }, [document]);
@@ -36,9 +37,7 @@ export function GradingPanel(): React.ReactElement {
   // Simple cut/fill demo: compare topography elements against Z=0 datum.
   const cutFillResult = useMemo(() => {
     if (!document) return null;
-    const topoEls = Object.values(document.content.elements).filter(
-      (e) => e.type === 'topography'
-    );
+    const topoEls = Object.values(document.content.elements).filter((e) => e.type === 'topography');
     if (topoEls.length === 0) return null;
 
     const topo = topoEls[0]!;
@@ -52,13 +51,27 @@ export function GradingPanel(): React.ReactElement {
       const n = Math.ceil(Math.sqrt(pts.length));
       const elevs = new Float32Array(n * n);
       const zeros = new Float32Array(n * n);
-      pts.slice(0, n * n).forEach((p, i) => { elevs[i] = p.z; });
+      pts.slice(0, n * n).forEach((p, i) => {
+        elevs[i] = p.z;
+      });
 
       const xRange = Math.max(...pts.map((p) => p.x)) - Math.min(...pts.map((p) => p.x)) || 1;
       const yRange = Math.max(...pts.map((p) => p.y)) - Math.min(...pts.map((p) => p.y)) || 1;
 
-      const existing: ElevationGrid = { cols: n, rows: n, elevations: elevs, rangeX: xRange, rangeY: yRange };
-      const datum:    ElevationGrid = { cols: n, rows: n, elevations: zeros, rangeX: xRange, rangeY: yRange };
+      const existing: ElevationGrid = {
+        cols: n,
+        rows: n,
+        elevations: elevs,
+        rangeX: xRange,
+        rangeY: yRange,
+      };
+      const datum: ElevationGrid = {
+        cols: n,
+        rows: n,
+        elevations: zeros,
+        rangeX: xRange,
+        rangeY: yRange,
+      };
 
       return computeCutFill(existing, datum);
     } catch {
@@ -66,33 +79,38 @@ export function GradingPanel(): React.ReactElement {
     }
   }, [document]);
 
-  const placeSpotLevel = useCallback((x: number, y: number) => {
-    if (!document || isReadOnly) return;
-    const zMm = parseFloat(spotPrefix === '' ? spotElev : spotElev) * 1000;
-    const z = Number.isFinite(zMm) ? zMm : 0;
-    const label = formatSpotLevel(z, spotPrefix);
-    const layers = Object.values(document.organization.layers);
-    const layerId = layers[0]?.id ?? 'default';
-    pushHistory('Place spot level');
-    addElement({
-      type: 'annotation',
-      layerId,
-      properties: {
-        Kind:      { type: 'string', value: 'spot_level' },
-        X:         { type: 'number', value: x },
-        Y:         { type: 'number', value: y },
-        Elevation: { type: 'number', value: z },
-        Label:     { type: 'string', value: label },
-      },
-    });
-  }, [document, isReadOnly, spotElev, spotPrefix, addElement, pushHistory]);
+  const placeSpotLevel = useCallback(
+    (x: number, y: number) => {
+      if (!document || isReadOnly) return;
+      const zMm = parseFloat(spotPrefix === '' ? spotElev : spotElev) * 1000;
+      const z = Number.isFinite(zMm) ? zMm : 0;
+      const label = formatSpotLevel(z, spotPrefix);
+      const layers = Object.values(document.organization.layers);
+      const layerId = layers[0]?.id ?? 'default';
+      pushHistory('Place spot level');
+      addElement({
+        type: 'annotation',
+        layerId,
+        properties: {
+          Kind: { type: 'string', value: 'spot_level' },
+          X: { type: 'number', value: x },
+          Y: { type: 'number', value: y },
+          Elevation: { type: 'number', value: z },
+          Label: { type: 'string', value: label },
+        },
+      });
+    },
+    [document, isReadOnly, spotElev, spotPrefix, addElement, pushHistory]
+  );
 
   // Expose spot level placer on window for viewport integration.
   React.useEffect(() => {
     if (tool !== 'spot_level') return;
     const win = window as unknown as Record<string, unknown>;
     win.__gradingPlaceSpotLevel = placeSpotLevel;
-    return () => { delete win.__gradingPlaceSpotLevel; };
+    return () => {
+      delete win.__gradingPlaceSpotLevel;
+    };
   }, [tool, placeSpotLevel]);
 
   if (!document) {
@@ -187,7 +205,9 @@ export function GradingPanel(): React.ReactElement {
               </div>
               <div className="grading-panel__stat">
                 <span className="grading-panel__stat-label">{t('panels.grading.netVolume')}</span>
-                <span className={`grading-panel__stat-value ${cutFillResult.netVolume >= 0 ? 'fill' : 'cut'}`}>
+                <span
+                  className={`grading-panel__stat-value ${cutFillResult.netVolume >= 0 ? 'fill' : 'cut'}`}
+                >
                   {cutFillResult.netVolume >= 0 ? '+' : ''}
                   {(cutFillResult.netVolume / 1e9).toFixed(2)} m³
                 </span>

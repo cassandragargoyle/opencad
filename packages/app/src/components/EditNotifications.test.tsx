@@ -62,10 +62,10 @@ describe('T-COL-005: EditNotifications', () => {
 
   it('shows up to 3 notifications maximum', () => {
     const map = buildMap([
-      makeEntry({ userId: 'u1', userName: 'Ana',   elementId: 'wall-01', elementType: 'wall' }),
-      makeEntry({ userId: 'u2', userName: 'Bob',   elementId: 'slab-02', elementType: 'slab' }),
+      makeEntry({ userId: 'u1', userName: 'Ana', elementId: 'wall-01', elementType: 'wall' }),
+      makeEntry({ userId: 'u2', userName: 'Bob', elementId: 'slab-02', elementType: 'slab' }),
       makeEntry({ userId: 'u3', userName: 'Carol', elementId: 'door-03', elementType: 'door' }),
-      makeEntry({ userId: 'u4', userName: 'Dave',  elementId: 'win-04',  elementType: 'window' }),
+      makeEntry({ userId: 'u4', userName: 'Dave', elementId: 'win-04', elementType: 'window' }),
     ]);
     render(<EditNotifications editingMap={map} />);
     // At most 3 toast items should appear

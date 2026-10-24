@@ -29,7 +29,9 @@ export function CarbonPanel({ entries = [], onExport }: CarbonPanelProps = {}) {
   return (
     <div className="carbon-panel">
       <div className="panel-header">
-        <span className="panel-title">{t('carbon.calculatorTitle', { defaultValue: 'Carbon Calculator' })}</span>
+        <span className="panel-title">
+          {t('carbon.calculatorTitle', { defaultValue: 'Carbon Calculator' })}
+        </span>
         <button
           aria-label={t('carbon.exportReport', { defaultValue: 'Export carbon report' })}
           className="btn-export"
@@ -41,14 +43,16 @@ export function CarbonPanel({ entries = [], onExport }: CarbonPanelProps = {}) {
       </div>
 
       {entries.length === 0 ? (
-        <div className="carbon-empty">{t('carbon.emptyDetail', { defaultValue: 'No carbon data. Add materials with carbon factors to calculate.' })}</div>
+        <div className="carbon-empty">
+          {t('carbon.emptyDetail', {
+            defaultValue: 'No carbon data. Add materials with carbon factors to calculate.',
+          })}
+        </div>
       ) : (
         <>
           <div className="carbon-summary">
             <span className="carbon-total-label">{t('carbon.total')}</span>
-            <span className="carbon-total-value">
-              {formatCarbon(totalKgCO2e)} kgCO2e
-            </span>
+            <span className="carbon-total-value">{formatCarbon(totalKgCO2e)} kgCO2e</span>
           </div>
 
           <table className="carbon-table">
@@ -76,8 +80,12 @@ export function CarbonPanel({ entries = [], onExport }: CarbonPanelProps = {}) {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={4}><strong>{t('carbon.total')}</strong></td>
-                <td colSpan={2}><strong>{formatCarbon(totalKgCO2e)} kgCO2e</strong></td>
+                <td colSpan={4}>
+                  <strong>{t('carbon.total')}</strong>
+                </td>
+                <td colSpan={2}>
+                  <strong>{formatCarbon(totalKgCO2e)} kgCO2e</strong>
+                </td>
               </tr>
             </tfoot>
           </table>

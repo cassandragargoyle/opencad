@@ -83,7 +83,7 @@ export function runTestFit(
   opts: {
     circulationFactor?: number;
     gapM?: number;
-  } = {},
+  } = {}
 ): TestFitResult {
   const circulation = opts.circulationFactor ?? DEFAULT_CIRCULATION_FACTOR;
   const gap = opts.gapM ?? 0;
@@ -112,8 +112,14 @@ export function runTestFit(
     let d = room.targetAreaM2 / w;
 
     // Enforce minimums
-    if (w < room.minWidthM) { w = room.minWidthM; d = room.targetAreaM2 / w; }
-    if (d < room.minDepthM) { d = room.minDepthM; w = room.targetAreaM2 / d; }
+    if (w < room.minWidthM) {
+      w = room.minWidthM;
+      d = room.targetAreaM2 / w;
+    }
+    if (d < room.minDepthM) {
+      d = room.minDepthM;
+      w = room.targetAreaM2 / d;
+    }
 
     // Round up to nearest 0.1 m
     w = Math.ceil(w * 10) / 10;
@@ -135,26 +141,26 @@ export function runTestFit(
 
     const placedArea = w * d;
     placements.push({
-      roomId:        room.id,
-      roomName:      room.name,
-      x:             Math.round(cursorX * 1000) / 1000,
-      y:             Math.round(cursorY * 1000) / 1000,
-      width:         w,
-      depth:         d,
-      areaMm2:       placedArea,
+      roomId: room.id,
+      roomName: room.name,
+      x: Math.round(cursorX * 1000) / 1000,
+      y: Math.round(cursorY * 1000) / 1000,
+      width: w,
+      depth: d,
+      areaMm2: placedArea,
       areaFulfilled: placedArea >= room.targetAreaM2 * 0.95,
     });
 
     usedAreaM2 += placedArea;
-    cursorX    += w + gap;
+    cursorX += w + gap;
     if (d > stripHeight) stripHeight = d;
   }
 
   return {
     placements,
-    usedAreaM2:      Math.round(usedAreaM2 * 100) / 100,
+    usedAreaM2: Math.round(usedAreaM2 * 100) / 100,
     availableAreaM2: Math.round(availableAreaM2 * 100) / 100,
-    efficiency:      availableAreaM2 > 0 ? Math.min(1, usedAreaM2 / availableAreaM2) : 0,
+    efficiency: availableAreaM2 > 0 ? Math.min(1, usedAreaM2 / availableAreaM2) : 0,
     unplacedRooms,
   };
 }
@@ -175,7 +181,7 @@ export function programmeFitsInBbox(
   rooms: RoomProgram[],
   widthM: number,
   depthM: number,
-  circulationFactor = DEFAULT_CIRCULATION_FACTOR,
+  circulationFactor = DEFAULT_CIRCULATION_FACTOR
 ): boolean {
   const netArea = widthM * depthM * (1 - circulationFactor);
   return totalProgrammeArea(rooms) <= netArea;

@@ -149,10 +149,7 @@ const MARKETPLACE_ITEMS: MarketplaceItem[] = [
   },
 ];
 
-export function searchMarketplace(
-  query: string,
-  opts?: SearchOptions,
-): MarketplaceListing {
+export function searchMarketplace(query: string, opts?: SearchOptions): MarketplaceListing {
   const page = opts?.page ?? 1;
   const pageSize = opts?.pageSize ?? 20;
   const lower = query.toLowerCase();
@@ -177,7 +174,7 @@ export function searchMarketplace(
 
 export function sortMarketplaceItems(
   items: MarketplaceItem[],
-  by: 'price' | 'rating' | 'downloads' | 'name',
+  by: 'price' | 'rating' | 'downloads' | 'name'
 ): MarketplaceItem[] {
   return [...items].sort((a, b) => {
     switch (by) {
@@ -195,7 +192,7 @@ export function sortMarketplaceItems(
 
 export function computeRevenueShare(
   price: number,
-  platformFeeFraction: number = PLATFORM_FEE_FRACTION,
+  platformFeeFraction: number = PLATFORM_FEE_FRACTION
 ): { authorShare: number; platformShare: number } {
   const platformShare = price * platformFeeFraction;
   const authorShare = price - platformShare;

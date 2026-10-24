@@ -29,12 +29,12 @@ const FIXTURE_SCHEMA: DocumentSchema = {
         id: 'space-bed1',
         type: 'space',
         properties: {
-          Name:   { type: 'string', value: 'Master Bedroom' },
-          Width:  { type: 'number', value: 4.5, unit: 'm' },
-          Depth:  { type: 'number', value: 5.0, unit: 'm' },
-          Area:   { type: 'number', value: 22.5, unit: 'm²' },
-          X:      { type: 'number', value: 0 },
-          Y:      { type: 'number', value: 0 },
+          Name: { type: 'string', value: 'Master Bedroom' },
+          Width: { type: 'number', value: 4.5, unit: 'm' },
+          Depth: { type: 'number', value: 5.0, unit: 'm' },
+          Area: { type: 'number', value: 22.5, unit: 'm²' },
+          X: { type: 'number', value: 0 },
+          Y: { type: 'number', value: 0 },
           RoomType: { type: 'string', value: 'bedroom' },
         },
         propertySets: [],
@@ -64,12 +64,12 @@ const FIXTURE_SCHEMA: DocumentSchema = {
         id: 'space-bed2',
         type: 'space',
         properties: {
-          Name:     { type: 'string', value: 'Bedroom 2' },
-          Width:    { type: 'number', value: 4.0, unit: 'm' },
-          Depth:    { type: 'number', value: 4.0, unit: 'm' },
-          Area:     { type: 'number', value: 16.0, unit: 'm²' },
-          X:        { type: 'number', value: 4.5 },
-          Y:        { type: 'number', value: 0 },
+          Name: { type: 'string', value: 'Bedroom 2' },
+          Width: { type: 'number', value: 4.0, unit: 'm' },
+          Depth: { type: 'number', value: 4.0, unit: 'm' },
+          Area: { type: 'number', value: 16.0, unit: 'm²' },
+          X: { type: 'number', value: 4.5 },
+          Y: { type: 'number', value: 0 },
           RoomType: { type: 'string', value: 'bedroom' },
         },
         propertySets: [],
@@ -99,12 +99,12 @@ const FIXTURE_SCHEMA: DocumentSchema = {
         id: 'space-bed3',
         type: 'space',
         properties: {
-          Name:     { type: 'string', value: 'Bedroom 3' },
-          Width:    { type: 'number', value: 3.5, unit: 'm' },
-          Depth:    { type: 'number', value: 3.5, unit: 'm' },
-          Area:     { type: 'number', value: 12.25, unit: 'm²' },
-          X:        { type: 'number', value: 8.5 },
-          Y:        { type: 'number', value: 0 },
+          Name: { type: 'string', value: 'Bedroom 3' },
+          Width: { type: 'number', value: 3.5, unit: 'm' },
+          Depth: { type: 'number', value: 3.5, unit: 'm' },
+          Area: { type: 'number', value: 12.25, unit: 'm²' },
+          X: { type: 'number', value: 8.5 },
+          Y: { type: 'number', value: 0 },
           RoomType: { type: 'string', value: 'bedroom' },
         },
         propertySets: [],
@@ -134,12 +134,12 @@ const FIXTURE_SCHEMA: DocumentSchema = {
         id: 'space-bath1',
         type: 'space',
         properties: {
-          Name:     { type: 'string', value: 'Bathroom 1' },
-          Width:    { type: 'number', value: 2.5, unit: 'm' },
-          Depth:    { type: 'number', value: 3.0, unit: 'm' },
-          Area:     { type: 'number', value: 7.5, unit: 'm²' },
-          X:        { type: 'number', value: 0 },
-          Y:        { type: 'number', value: 5.0 },
+          Name: { type: 'string', value: 'Bathroom 1' },
+          Width: { type: 'number', value: 2.5, unit: 'm' },
+          Depth: { type: 'number', value: 3.0, unit: 'm' },
+          Area: { type: 'number', value: 7.5, unit: 'm²' },
+          X: { type: 'number', value: 0 },
+          Y: { type: 'number', value: 5.0 },
           RoomType: { type: 'string', value: 'bathroom' },
         },
         propertySets: [],
@@ -169,12 +169,12 @@ const FIXTURE_SCHEMA: DocumentSchema = {
         id: 'space-bath2',
         type: 'space',
         properties: {
-          Name:     { type: 'string', value: 'Bathroom 2' },
-          Width:    { type: 'number', value: 2.0, unit: 'm' },
-          Depth:    { type: 'number', value: 2.5, unit: 'm' },
-          Area:     { type: 'number', value: 5.0, unit: 'm²' },
-          X:        { type: 'number', value: 2.5 },
-          Y:        { type: 'number', value: 5.0 },
+          Name: { type: 'string', value: 'Bathroom 2' },
+          Width: { type: 'number', value: 2.0, unit: 'm' },
+          Depth: { type: 'number', value: 2.5, unit: 'm' },
+          Area: { type: 'number', value: 5.0, unit: 'm²' },
+          X: { type: 'number', value: 2.5 },
+          Y: { type: 'number', value: 5.0 },
           RoomType: { type: 'string', value: 'bathroom' },
         },
         propertySets: [],
@@ -204,12 +204,12 @@ const FIXTURE_SCHEMA: DocumentSchema = {
         id: 'space-living',
         type: 'space',
         properties: {
-          Name:     { type: 'string', value: 'Living Room' },
-          Width:    { type: 'number', value: 6.0, unit: 'm' },
-          Depth:    { type: 'number', value: 7.0, unit: 'm' },
-          Area:     { type: 'number', value: 42.0, unit: 'm²' },
-          X:        { type: 'number', value: 0 },
-          Y:        { type: 'number', value: 8.0 },
+          Name: { type: 'string', value: 'Living Room' },
+          Width: { type: 'number', value: 6.0, unit: 'm' },
+          Depth: { type: 'number', value: 7.0, unit: 'm' },
+          Area: { type: 'number', value: 42.0, unit: 'm²' },
+          X: { type: 'number', value: 0 },
+          Y: { type: 'number', value: 8.0 },
           RoomType: { type: 'string', value: 'living' },
         },
         propertySets: [],
@@ -239,12 +239,12 @@ const FIXTURE_SCHEMA: DocumentSchema = {
         id: 'space-hallway',
         type: 'space',
         properties: {
-          Name:     { type: 'string', value: 'Hallway' },
-          Width:    { type: 'number', value: 1.5, unit: 'm' },
-          Depth:    { type: 'number', value: 8.0, unit: 'm' },
-          Area:     { type: 'number', value: 12.0, unit: 'm²' },
-          X:        { type: 'number', value: 4.5 },
-          Y:        { type: 'number', value: 4.0 },
+          Name: { type: 'string', value: 'Hallway' },
+          Width: { type: 'number', value: 1.5, unit: 'm' },
+          Depth: { type: 'number', value: 8.0, unit: 'm' },
+          Area: { type: 'number', value: 12.0, unit: 'm²' },
+          X: { type: 'number', value: 4.5 },
+          Y: { type: 'number', value: 4.0 },
           RoomType: { type: 'string', value: 'hallway' },
         },
         propertySets: [],
@@ -274,12 +274,12 @@ const FIXTURE_SCHEMA: DocumentSchema = {
         id: 'space-kitchen',
         type: 'space',
         properties: {
-          Name:     { type: 'string', value: 'Kitchen' },
-          Width:    { type: 'number', value: 4.0, unit: 'm' },
-          Depth:    { type: 'number', value: 4.0, unit: 'm' },
-          Area:     { type: 'number', value: 16.0, unit: 'm²' },
-          X:        { type: 'number', value: 6.0 },
-          Y:        { type: 'number', value: 8.0 },
+          Name: { type: 'string', value: 'Kitchen' },
+          Width: { type: 'number', value: 4.0, unit: 'm' },
+          Depth: { type: 'number', value: 4.0, unit: 'm' },
+          Area: { type: 'number', value: 16.0, unit: 'm²' },
+          X: { type: 'number', value: 6.0 },
+          Y: { type: 'number', value: 8.0 },
           RoomType: { type: 'string', value: 'kitchen' },
         },
         propertySets: [],
@@ -372,55 +372,45 @@ beforeEach(async () => {
 
 describe('T-AI-001: Prompt → valid DocumentSchema with correct room types', () => {
   it('returns a DocumentSchema with content.elements', async () => {
-    const schema = await generateFloorPlan(
-      '3-bedroom house with living room and 2 bathrooms'
-    );
+    const schema = await generateFloorPlan('3-bedroom house with living room and 2 bathrooms');
     expect(schema).toBeDefined();
     expect(schema.content).toBeDefined();
     expect(schema.content.elements).toBeDefined();
   });
 
   it('schema has exactly 3 bedroom spaces', async () => {
-    const schema = await generateFloorPlan(
-      '3-bedroom house with living room and 2 bathrooms'
-    );
+    const schema = await generateFloorPlan('3-bedroom house with living room and 2 bathrooms');
     const elements = Object.values(schema.content.elements);
     const bedrooms = elements.filter(
-      (e) => e.type === 'space' &&
-        (e.properties['RoomType']?.value as string | undefined) === 'bedroom'
+      (e) =>
+        e.type === 'space' && (e.properties['RoomType']?.value as string | undefined) === 'bedroom'
     );
     expect(bedrooms.length).toBe(3);
   });
 
   it('schema has exactly 1 living room space', async () => {
-    const schema = await generateFloorPlan(
-      '3-bedroom house with living room and 2 bathrooms'
-    );
+    const schema = await generateFloorPlan('3-bedroom house with living room and 2 bathrooms');
     const elements = Object.values(schema.content.elements);
     const living = elements.filter(
-      (e) => e.type === 'space' &&
-        (e.properties['RoomType']?.value as string | undefined) === 'living'
+      (e) =>
+        e.type === 'space' && (e.properties['RoomType']?.value as string | undefined) === 'living'
     );
     expect(living.length).toBe(1);
   });
 
   it('schema has exactly 2 bathroom spaces', async () => {
-    const schema = await generateFloorPlan(
-      '3-bedroom house with living room and 2 bathrooms'
-    );
+    const schema = await generateFloorPlan('3-bedroom house with living room and 2 bathrooms');
     const elements = Object.values(schema.content.elements);
     const baths = elements.filter(
-      (e) => e.type === 'space' &&
-        (e.properties['RoomType']?.value as string | undefined) === 'bathroom'
+      (e) =>
+        e.type === 'space' && (e.properties['RoomType']?.value as string | undefined) === 'bathroom'
     );
     expect(baths.length).toBe(2);
   });
 
   it('each space element has required properties: Name, Width, Depth, Area, X, Y, RoomType', async () => {
     const schema = await generateFloorPlan('3-bedroom house');
-    const spaces = Object.values(schema.content.elements).filter(
-      (e) => e.type === 'space'
-    );
+    const spaces = Object.values(schema.content.elements).filter((e) => e.type === 'space');
     expect(spaces.length).toBeGreaterThan(0);
     for (const space of spaces) {
       expect(space.properties['Name']).toBeDefined();
@@ -594,8 +584,9 @@ describe('T-AI-005: modifyFloorPlan preserves unchanged elements', () => {
     const original = FIXTURE_SCHEMA;
     const updated = await modifyFloorPlan(original, 'make the master bedroom larger');
     // Living room should be unchanged
-    const origLiving = original.content.elements['space-living']!.properties['Area']?.value as number;
-    const updLiving  = updated.content.elements['space-living']!.properties['Area']?.value as number;
+    const origLiving = original.content.elements['space-living']!.properties['Area']
+      ?.value as number;
+    const updLiving = updated.content.elements['space-living']!.properties['Area']?.value as number;
     expect(updLiving).toBe(origLiving);
   });
 });
@@ -616,12 +607,12 @@ function makeSpace(
     id,
     type: 'space' as const,
     properties: {
-      Name:     { type: 'string' as const, value: name },
-      Width:    { type: 'number' as const, value: width, unit: 'm' },
-      Depth:    { type: 'number' as const, value: depth, unit: 'm' },
-      Area:     { type: 'number' as const, value: area, unit: 'm²' },
-      X:        { type: 'number' as const, value: x },
-      Y:        { type: 'number' as const, value: y },
+      Name: { type: 'string' as const, value: name },
+      Width: { type: 'number' as const, value: width, unit: 'm' },
+      Depth: { type: 'number' as const, value: depth, unit: 'm' },
+      Area: { type: 'number' as const, value: area, unit: 'm²' },
+      X: { type: 'number' as const, value: x },
+      Y: { type: 'number' as const, value: y },
       RoomType: { type: 'string' as const, value: roomType },
       ConnectsTo: { type: 'string' as const, value: 'hallway-main' },
     },
@@ -663,8 +654,19 @@ function baseSchema(elements: Record<string, ElementSchema>): DocumentSchema {
     },
     content: { elements, spaces: {} },
     organization: {
-      layers: { 'layer-1': { id: 'layer-1', name: 'Layer 1', color: '#808080', visible: true, locked: false, order: 0 } },
-      levels: { 'level-1': { id: 'level-1', name: 'Ground', elevation: 0, height: 3000, order: 0 } },
+      layers: {
+        'layer-1': {
+          id: 'layer-1',
+          name: 'Layer 1',
+          color: '#808080',
+          visible: true,
+          locked: false,
+          order: 0,
+        },
+      },
+      levels: {
+        'level-1': { id: 'level-1', name: 'Ground', elevation: 0, height: 3000, order: 0 },
+      },
     },
     presentation: { views: {}, annotations: {} },
     library: { materials: {} },
@@ -678,9 +680,9 @@ function baseSchema(elements: Record<string, ElementSchema>): DocumentSchema {
 function buildSimpleValidSchema(): DocumentSchema {
   return baseSchema({
     'hallway-main': makeSpace('hallway-main', 'Hallway', 'hallway', 0, 0, 1.5, 5),
-    'bed-1':        makeSpace('bed-1',   'Bedroom',   'bedroom',  1.5, 0, 3.5, 4),
-    'bath-1':       makeSpace('bath-1',  'Bathroom',  'bathroom', 1.5, 4, 2.5, 2),
-    'living-1':     makeSpace('living-1','Living Room','living',   1.5, 6, 5.0, 5),
+    'bed-1': makeSpace('bed-1', 'Bedroom', 'bedroom', 1.5, 0, 3.5, 4),
+    'bath-1': makeSpace('bath-1', 'Bathroom', 'bathroom', 1.5, 4, 2.5, 2),
+    'living-1': makeSpace('living-1', 'Living Room', 'living', 1.5, 6, 5.0, 5),
   });
 }
 

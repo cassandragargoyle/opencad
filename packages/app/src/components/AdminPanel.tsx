@@ -30,12 +30,18 @@ export interface AdminMember {
  * network stub, but never shown to real users because AppLayout always
  * supplies the `members` prop.
  */
-const DEMO_MEMBERS: AdminMember[] = [
-  { id: 'u1', name: 'Project owner (demo)', role: 'owner' },
-];
+const DEMO_MEMBERS: AdminMember[] = [{ id: 'u1', name: 'Project owner (demo)', role: 'owner' }];
 
 /** All 7 role IDs available in the system */
-const ALL_ROLES: RoleName[] = ['admin', 'architect', 'structural', 'mep', 'contractor', 'owner', 'pm'];
+const ALL_ROLES: RoleName[] = [
+  'admin',
+  'architect',
+  'structural',
+  'mep',
+  'contractor',
+  'owner',
+  'pm',
+];
 
 interface AdminPanelProps {
   /** Role-capability predicate from useRole() */
@@ -102,7 +108,10 @@ export function AdminPanel({
         <span className="panel-title">{t('admin.title')}</span>
       </div>
 
-      <table className="members-table" aria-label={t('settings.admin.projectMembers', { defaultValue: 'Project members' })}>
+      <table
+        className="members-table"
+        aria-label={t('settings.admin.projectMembers', { defaultValue: 'Project members' })}
+      >
         <thead>
           <tr>
             <th>{t('admin.headerName')}</th>

@@ -38,7 +38,9 @@ const _mockStoreState = vi.hoisted(() => ({
 vi.mock('../stores/documentStore', () => {
   // Selector-aware: when called with a selector fn, apply it to the state.
   const hook = vi.fn((selector?: unknown) =>
-    typeof selector === 'function' ? (selector as (s: typeof _mockStoreState) => unknown)(_mockStoreState) : _mockStoreState,
+    typeof selector === 'function'
+      ? (selector as (s: typeof _mockStoreState) => unknown)(_mockStoreState)
+      : _mockStoreState
   );
   return {
     useDocumentStore: Object.assign(hook, { getState: vi.fn().mockReturnValue(_mockStoreState) }),
@@ -167,7 +169,7 @@ describe('T-AI-006: AIChatPanel', () => {
       // both appear after microtask flush.
       await new Promise((r) => setTimeout(r, 0));
       expect(generateProject).toHaveBeenCalledWith(
-        expect.objectContaining({ prompt: 'a tiny studio' }),
+        expect.objectContaining({ prompt: 'a tiny studio' })
       );
       expect(_mockStoreState.loadDocumentSchema).toHaveBeenCalledTimes(1);
       expect(await screen.findByText(/Loaded 1 element/i)).toBeInTheDocument();

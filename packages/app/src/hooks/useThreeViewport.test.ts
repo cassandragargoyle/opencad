@@ -20,24 +20,56 @@ vi.mock('three-mesh-bvh', () => ({
 vi.mock('three', () => {
   // Use class syntax so vi.fn() works as a constructor (vitest 4 requirement)
   class Vector3 {
-    x: number; y: number; z: number;
-    constructor(x = 0, y = 0, z = 0) { this.x = x; this.y = y; this.z = z; }
-    set(_x: number, _y: number, _z: number) { this.x = _x; this.y = _y; this.z = _z; return this; }
-    copy(v: Vector3) { this.x = v.x; this.y = v.y; this.z = v.z; return this; }
-    add() { return this; }
-    addScaledVector() { return this; }
-    normalize() { return this; }
-    crossVectors() { return this; }
-    setFromSpherical() { return this; }
-    getWorldDirection() { return this; }
+    x: number;
+    y: number;
+    z: number;
+    constructor(x = 0, y = 0, z = 0) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+    }
+    set(_x: number, _y: number, _z: number) {
+      this.x = _x;
+      this.y = _y;
+      this.z = _z;
+      return this;
+    }
+    copy(v: Vector3) {
+      this.x = v.x;
+      this.y = v.y;
+      this.z = v.z;
+      return this;
+    }
+    add() {
+      return this;
+    }
+    addScaledVector() {
+      return this;
+    }
+    normalize() {
+      return this;
+    }
+    crossVectors() {
+      return this;
+    }
+    setFromSpherical() {
+      return this;
+    }
+    getWorldDirection() {
+      return this;
+    }
   }
 
   class Spherical {
-    radius = 1; phi = 0; theta = 0;
+    radius = 1;
+    phi = 0;
+    theta = 0;
   }
 
   class Color {
-    setHex() { return this; }
+    setHex() {
+      return this;
+    }
   }
 
   class PerspectiveCamera {
@@ -64,16 +96,25 @@ vi.mock('three', () => {
   }
 
   class GridHelper {}
-  class AmbientLight { position = { set: vi.fn() }; }
-  class DirectionalLight { position = { set: vi.fn() }; castShadow = false; }
+  class AmbientLight {
+    position = { set: vi.fn() };
+  }
+  class DirectionalLight {
+    position = { set: vi.fn() };
+    castShadow = false;
+  }
   class AxesHelper {}
   class Box3 {
     expandByObject = vi.fn();
     getCenter = vi.fn().mockImplementation((v: { x: number; y: number; z: number }) => {
-      v.x = 0; v.y = 0; v.z = 0;
+      v.x = 0;
+      v.y = 0;
+      v.z = 0;
     });
     getSize = vi.fn().mockImplementation((v: { x: number; y: number; z: number }) => {
-      v.x = 1000; v.y = 1000; v.z = 1000;
+      v.x = 1000;
+      v.y = 1000;
+      v.z = 1000;
     });
   }
   class Raycaster {
@@ -81,7 +122,9 @@ vi.mock('three', () => {
     intersectObjects = vi.fn().mockReturnValue([]);
   }
   class Vector2 {
-    x = 0; y = 0; set = vi.fn();
+    x = 0;
+    y = 0;
+    set = vi.fn();
   }
   class MeshStandardMaterial {
     color = { setHex: vi.fn() };
@@ -90,7 +133,9 @@ vi.mock('three', () => {
     emissiveIntensity = 0;
     clone = vi.fn().mockReturnThis();
   }
-  const Material = class { dispose = vi.fn(); };
+  const Material = class {
+    dispose = vi.fn();
+  };
   class BufferGeometry {
     dispose = vi.fn();
     computeBoundsTree = vi.fn();
@@ -126,7 +171,9 @@ vi.mock('three', () => {
   class Points {
     userData = {};
   }
-  class PointsMaterial { dispose = vi.fn(); }
+  class PointsMaterial {
+    dispose = vi.fn();
+  }
   class Group {
     userData = {};
     add = vi.fn();
@@ -147,9 +194,18 @@ vi.mock('three', () => {
   }
   // Extend Vector3 mock with methods needed by LandscapeInstanceManager.
   class ExtVector3 extends Vector3 {
-    setScalar(_s: number) { this.x = _s; this.y = _s; this.z = _s; return this; }
-    distanceTo(_v: Vector3) { return 0; }
-    clone() { return new ExtVector3(this.x, this.y, this.z); }
+    setScalar(_s: number) {
+      this.x = _s;
+      this.y = _s;
+      this.z = _s;
+      return this;
+    }
+    distanceTo(_v: Vector3) {
+      return 0;
+    }
+    clone() {
+      return new ExtVector3(this.x, this.y, this.z);
+    }
   }
 
   return {
@@ -186,7 +242,11 @@ vi.mock('three', () => {
     Matrix4,
     Quaternion,
     Euler,
-    Shape: class { moveTo = vi.fn(); lineTo = vi.fn(); closePath = vi.fn(); },
+    Shape: class {
+      moveTo = vi.fn();
+      lineTo = vi.fn();
+      closePath = vi.fn();
+    },
     MathUtils: { degToRad: (deg: number) => (deg * Math.PI) / 180 },
     Plane: class {
       normal = new Vector3(0, 1, 0);
@@ -310,27 +370,47 @@ describe('T-3D-011: useThreeViewport — view presets', () => {
 
   it('setViewPreset does not throw for top preset', () => {
     const { result } = renderHook(() => useThreeViewport());
-    expect(() => act(() => { result.current.setViewPreset('top'); })).not.toThrow();
+    expect(() =>
+      act(() => {
+        result.current.setViewPreset('top');
+      })
+    ).not.toThrow();
   });
 
   it('setViewPreset does not throw for front preset', () => {
     const { result } = renderHook(() => useThreeViewport());
-    expect(() => act(() => { result.current.setViewPreset('front'); })).not.toThrow();
+    expect(() =>
+      act(() => {
+        result.current.setViewPreset('front');
+      })
+    ).not.toThrow();
   });
 
   it('setViewPreset does not throw for right preset', () => {
     const { result } = renderHook(() => useThreeViewport());
-    expect(() => act(() => { result.current.setViewPreset('right'); })).not.toThrow();
+    expect(() =>
+      act(() => {
+        result.current.setViewPreset('right');
+      })
+    ).not.toThrow();
   });
 
   it('setViewPreset does not throw for 3d preset', () => {
     const { result } = renderHook(() => useThreeViewport());
-    expect(() => act(() => { result.current.setViewPreset('3d'); })).not.toThrow();
+    expect(() =>
+      act(() => {
+        result.current.setViewPreset('3d');
+      })
+    ).not.toThrow();
   });
 
   it('setViewPreset does not throw for perspective preset', () => {
     const { result } = renderHook(() => useThreeViewport());
-    expect(() => act(() => { result.current.setViewPreset('perspective'); })).not.toThrow();
+    expect(() =>
+      act(() => {
+        result.current.setViewPreset('perspective');
+      })
+    ).not.toThrow();
   });
 });
 
@@ -341,17 +421,29 @@ describe('T-3D-011: useThreeViewport — zoom', () => {
 
   it('zoomIn does not throw', () => {
     const { result } = renderHook(() => useThreeViewport());
-    expect(() => act(() => { result.current.zoomIn(); })).not.toThrow();
+    expect(() =>
+      act(() => {
+        result.current.zoomIn();
+      })
+    ).not.toThrow();
   });
 
   it('zoomOut does not throw', () => {
     const { result } = renderHook(() => useThreeViewport());
-    expect(() => act(() => { result.current.zoomOut(); })).not.toThrow();
+    expect(() =>
+      act(() => {
+        result.current.zoomOut();
+      })
+    ).not.toThrow();
   });
 
   it('zoomToFit does not throw when no elements in scene', () => {
     const { result } = renderHook(() => useThreeViewport());
-    expect(() => act(() => { result.current.zoomToFit(); })).not.toThrow();
+    expect(() =>
+      act(() => {
+        result.current.zoomToFit();
+      })
+    ).not.toThrow();
   });
 });
 
@@ -410,7 +502,9 @@ describe.skip('T-3D-005: orbit/pan/zoom camera controls', () => {
   it('simulateOrbit changes camera azimuth angle', () => {
     const { result } = renderHook(() => useThreeViewport());
     const before = result.current.getCameraState().azimuth;
-    act(() => { result.current.simulateOrbit(100, 0); });
+    act(() => {
+      result.current.simulateOrbit(100, 0);
+    });
     const after = result.current.getCameraState().azimuth;
     expect(Math.abs(after - before)).toBeGreaterThan(0.001);
   });
@@ -418,7 +512,9 @@ describe.skip('T-3D-005: orbit/pan/zoom camera controls', () => {
   it('simulateOrbit changes camera elevation angle', () => {
     const { result } = renderHook(() => useThreeViewport());
     const before = result.current.getCameraState().elevation;
-    act(() => { result.current.simulateOrbit(0, 50); });
+    act(() => {
+      result.current.simulateOrbit(0, 50);
+    });
     const after = result.current.getCameraState().elevation;
     expect(Math.abs(after - before)).toBeGreaterThan(0.001);
   });
@@ -426,7 +522,9 @@ describe.skip('T-3D-005: orbit/pan/zoom camera controls', () => {
   it('simulatePan translates camera target', () => {
     const { result } = renderHook(() => useThreeViewport());
     const before = { ...result.current.getCameraState().target };
-    act(() => { result.current.simulatePan(500, 0); });
+    act(() => {
+      result.current.simulatePan(500, 0);
+    });
     const after = result.current.getCameraState().target;
     // At least one axis should change
     const changed =
@@ -439,7 +537,9 @@ describe.skip('T-3D-005: orbit/pan/zoom camera controls', () => {
   it('simulateZoom changes camera distance', () => {
     const { result } = renderHook(() => useThreeViewport());
     const before = result.current.getCameraState().distance;
-    act(() => { result.current.simulateZoom(200); });
+    act(() => {
+      result.current.simulateZoom(200);
+    });
     const after = result.current.getCameraState().distance;
     expect(Math.abs(after - before)).toBeGreaterThan(0.001);
   });

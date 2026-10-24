@@ -104,13 +104,13 @@ describe('T-ANA-01: Perez illuminance', () => {
   });
 
   it('is higher on a clear day than an overcast day', () => {
-    const clear    = perezIlluminance(800, 100, 50); // high DNI, low DHI
-    const overcast = perezIlluminance(0, 300, 50);   // no DNI, moderate DHI
+    const clear = perezIlluminance(800, 100, 50); // high DNI, low DHI
+    const overcast = perezIlluminance(0, 300, 50); // no DNI, moderate DHI
     expect(clear).toBeGreaterThan(overcast);
   });
 
   it('scales with solar altitude', () => {
-    const low  = perezIlluminance(500, 200, 10);
+    const low = perezIlluminance(500, 200, 10);
     const high = perezIlluminance(500, 200, 60);
     expect(high).toBeGreaterThan(low);
   });
@@ -131,7 +131,7 @@ describe('T-ANA-01: Tregenza sky discretisation', () => {
   });
 
   it('sky hemisphere weights sum to 2π (± 5%)', () => {
-    const w  = tregenzaWeights();
+    const w = tregenzaWeights();
     const sum = Array.from(w.subarray(0, 144)).reduce((s, v) => s + v, 0);
     expect(sum).toBeCloseTo(2 * Math.PI, 0);
   });
@@ -167,7 +167,7 @@ describe('T-ANA-01: analysis grid generation', () => {
 
   it('respects spacing parameter', () => {
     const coarse = generateGrid(0, 0, 10000, 8000, { spacing: 2000 });
-    const fine   = generateGrid(0, 0, 10000, 8000, { spacing: 600 });
+    const fine = generateGrid(0, 0, 10000, 8000, { spacing: 600 });
     expect(fine.length).toBeGreaterThan(coarse.length);
   });
 
@@ -236,7 +236,11 @@ describe('T-ANA-01: daylight metrics (LM-83-12)', () => {
 describe('T-ANA-01: space metrics aggregation', () => {
   it('sDA=1 when all points have DA ≥ 0.5', () => {
     const metrics = Array.from({ length: 10 }, () => ({
-      DA: 0.7, sDA: 0.7, ASE: 100, cDA: 0.7, UDI: 0.6,
+      DA: 0.7,
+      sDA: 0.7,
+      ASE: 100,
+      cDA: 0.7,
+      UDI: 0.6,
     }));
     const s = aggregateSpaceMetrics(metrics);
     expect(s.sDA).toBeCloseTo(1, 5);
@@ -244,7 +248,11 @@ describe('T-ANA-01: space metrics aggregation', () => {
 
   it('ASE fraction = 0 when all points < 250 hours', () => {
     const metrics = Array.from({ length: 10 }, () => ({
-      DA: 0.7, sDA: 0.7, ASE: 100, cDA: 0.7, UDI: 0.6, // ASE < 250
+      DA: 0.7,
+      sDA: 0.7,
+      ASE: 100,
+      cDA: 0.7,
+      UDI: 0.6, // ASE < 250
     }));
     const s = aggregateSpaceMetrics(metrics);
     expect(s.ASE).toBe(0);
@@ -252,15 +260,31 @@ describe('T-ANA-01: space metrics aggregation', () => {
 
   it('LEED score 3 when sDA ≥ 75% and ASE ≤ 10%', () => {
     const metrics = Array.from({ length: 10 }, () => ({
-      DA: 0.8, sDA: 0.8, ASE: 100, cDA: 0.8, UDI: 0.7,
+      DA: 0.8,
+      sDA: 0.8,
+      ASE: 100,
+      cDA: 0.8,
+      UDI: 0.7,
     }));
     const s = aggregateSpaceMetrics(metrics);
     expect(s.LEEDScore).toBe(3);
   });
 
   it('LEED score 2 when sDA ≥ 55% and < 75%, ASE ≤ 10%', () => {
-    const goodPoints = Array.from({ length: 6 }, () => ({ DA: 0.8, sDA: 0.8, ASE: 100, cDA: 0.8, UDI: 0.7 }));
-    const badPoints  = Array.from({ length: 4 }, () => ({ DA: 0.3, sDA: 0.3, ASE: 100, cDA: 0.3, UDI: 0.3 }));
+    const goodPoints = Array.from({ length: 6 }, () => ({
+      DA: 0.8,
+      sDA: 0.8,
+      ASE: 100,
+      cDA: 0.8,
+      UDI: 0.7,
+    }));
+    const badPoints = Array.from({ length: 4 }, () => ({
+      DA: 0.3,
+      sDA: 0.3,
+      ASE: 100,
+      cDA: 0.3,
+      UDI: 0.3,
+    }));
     const s = aggregateSpaceMetrics([...goodPoints, ...badPoints]);
     expect(s.LEEDScore).toBe(2);
     expect(s.sDA).toBeCloseTo(0.6, 5);
@@ -268,7 +292,11 @@ describe('T-ANA-01: space metrics aggregation', () => {
 
   it('LEED score 0 when ASE > 10%', () => {
     const metrics = Array.from({ length: 10 }, () => ({
-      DA: 0.9, sDA: 0.9, ASE: 300, cDA: 0.9, UDI: 0.8, // ASE > 250h
+      DA: 0.9,
+      sDA: 0.9,
+      ASE: 300,
+      cDA: 0.9,
+      UDI: 0.8, // ASE > 250h
     }));
     const s = aggregateSpaceMetrics(metrics);
     expect(s.LEEDScore).toBe(0);
@@ -299,7 +327,7 @@ describe('T-ANA-01: point illuminance estimate', () => {
 
   it('illuminance decreases with distance', () => {
     const near = estimatePointIlluminance(50000, 5, 1);
-    const far  = estimatePointIlluminance(50000, 5, 5);
+    const far = estimatePointIlluminance(50000, 5, 5);
     expect(near).toBeGreaterThan(far);
   });
 

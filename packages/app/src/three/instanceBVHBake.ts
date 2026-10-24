@@ -39,7 +39,7 @@ export function bakeInstancesToBVH(
     if (!(obj instanceof THREE.InstancedMesh)) return;
     if (obj.count === 0) return;
 
-    const include = filter ? filter(obj) : (obj.userData.isLandscape === true);
+    const include = filter ? filter(obj) : obj.userData.isLandscape === true;
     if (!include) return;
 
     const merged = mergeInstanced(obj);
@@ -51,7 +51,7 @@ export function bakeInstancesToBVH(
 
     const mesh = new THREE.Mesh(merged, mat);
     mesh.userData.isBakedLandscape = true;
-    mesh.castShadow    = obj.castShadow;
+    mesh.castShadow = obj.castShadow;
     mesh.receiveShadow = obj.receiveShadow;
     baked.push(mesh);
     geoms.push(merged);
@@ -66,9 +66,7 @@ export function bakeInstancesToBVH(
 }
 
 /** Merge all active instances of an InstancedMesh into one BufferGeometry. */
-function mergeInstanced(
-  instanced: THREE.InstancedMesh
-): THREE.BufferGeometry | null {
+function mergeInstanced(instanced: THREE.InstancedMesh): THREE.BufferGeometry | null {
   const srcGeom = instanced.geometry;
   const posAttr = srcGeom.getAttribute('position') as THREE.BufferAttribute | undefined;
   if (!posAttr) return null;
@@ -97,13 +95,13 @@ function mergeInstanced(
       pos.fromBufferAttribute(posAttr, v);
       pos.applyMatrix4(mat);
       const base = (vOffset + v) * 3;
-      mergedPositions[base]     = pos.x;
+      mergedPositions[base] = pos.x;
       mergedPositions[base + 1] = pos.y;
       mergedPositions[base + 2] = pos.z;
     }
 
     if (srcIndex && mergedIndex) {
-      const idxOffset  = i * srcIndex.count;
+      const idxOffset = i * srcIndex.count;
       for (let k = 0; k < srcIndex.count; k++) {
         mergedIndex[idxOffset + k] = (srcIndex.getX(k) ?? 0) + vOffset;
       }

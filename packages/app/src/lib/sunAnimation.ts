@@ -15,9 +15,11 @@ export interface SiteLocation {
 
 export interface SunVec {
   /** Unit vector from site toward the sun. +Y is up. */
-  x: number; y: number; z: number;
-  elevationDeg: number;  // 0 = horizon, 90 = zenith
-  azimuthDeg: number;    // 0 = N, 90 = E, clockwise
+  x: number;
+  y: number;
+  z: number;
+  elevationDeg: number; // 0 = horizon, 90 = zenith
+  azimuthDeg: number; // 0 = N, 90 = E, clockwise
 }
 
 function julianDay(date: Date): number {
@@ -32,14 +34,14 @@ function julianDay(date: Date): number {
  */
 export function sunDirectionAt(date: Date, site: SiteLocation): SunVec {
   const jd = julianDay(date);
-  const toRad = (d: number) => d * Math.PI / 180;
-  const toDeg = (r: number) => r * 180 / Math.PI;
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const toDeg = (r: number) => (r * 180) / Math.PI;
 
   // Mean longitude + mean anomaly (deg)
-  const L = (280.460 + 0.9856474 * jd) % 360;
+  const L = (280.46 + 0.9856474 * jd) % 360;
   const g = toRad((357.528 + 0.9856003 * jd) % 360);
   // Ecliptic longitude
-  const lambda = toRad(L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g));
+  const lambda = toRad(L + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g));
   // Obliquity of ecliptic
   const eps = toRad(23.439 - 0.0000004 * jd);
   // Right ascension + declination
@@ -48,7 +50,7 @@ export function sunDirectionAt(date: Date, site: SiteLocation): SunVec {
 
   // Hour angle
   const gmst = 18.697374558 + 24.06570982441908 * jd;
-  const utHours = (date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600);
+  const utHours = date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600;
   void utHours;
   const lmst = (gmst * 15 + site.longitudeDeg) % 360;
   const H = toRad(lmst) - alpha;
@@ -56,7 +58,8 @@ export function sunDirectionAt(date: Date, site: SiteLocation): SunVec {
   const lat = toRad(site.latitudeDeg);
   const sinEl = Math.sin(lat) * Math.sin(delta) + Math.cos(lat) * Math.cos(delta) * Math.cos(H);
   const elevation = Math.asin(Math.max(-1, Math.min(1, sinEl)));
-  const cosAz = (Math.sin(delta) - Math.sin(elevation) * Math.sin(lat)) / (Math.cos(elevation) * Math.cos(lat));
+  const cosAz =
+    (Math.sin(delta) - Math.sin(elevation) * Math.sin(lat)) / (Math.cos(elevation) * Math.cos(lat));
   let azimuth = Math.acos(Math.max(-1, Math.min(1, cosAz)));
   if (Math.sin(H) > 0) azimuth = 2 * Math.PI - azimuth;
   // Convert to x/y/z (+Y up, +X east, +Z south so +N is -Z)
@@ -76,7 +79,7 @@ export function buildSunTimeline(
   site: SiteLocation,
   startUtc: Date,
   endUtc: Date,
-  stepMinutes: number,
+  stepMinutes: number
 ): Array<{ timestamp: Date; sun: SunVec }> {
   const out: Array<{ timestamp: Date; sun: SunVec }> = [];
   const stepMs = stepMinutes * 60_000;

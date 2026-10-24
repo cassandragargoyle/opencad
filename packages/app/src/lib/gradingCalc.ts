@@ -41,9 +41,11 @@ export interface SpotLevel {
 
 export interface DrainageArrow {
   /** Arrow start point. */
-  x1: number; y1: number;
+  x1: number;
+  y1: number;
   /** Arrow end point (points downhill). */
-  x2: number; y2: number;
+  x2: number;
+  y2: number;
   /** Slope as rise/run (e.g. 0.02 = 2%). */
   slope: number;
 }
@@ -55,15 +57,9 @@ export interface DrainageArrow {
  * @param existing  Existing terrain elevations.
  * @param proposed  Proposed grade elevations.
  */
-export function computeCutFill(
-  existing: ElevationGrid,
-  proposed: ElevationGrid
-): CutFillResult {
+export function computeCutFill(existing: ElevationGrid, proposed: ElevationGrid): CutFillResult {
   const { cols, rows } = existing;
-  if (
-    proposed.cols !== cols || proposed.rows !== rows ||
-    cols < 2 || rows < 2
-  ) {
+  if (proposed.cols !== cols || proposed.rows !== rows || cols < 2 || rows < 2) {
     return { cutVolume: 0, fillVolume: 0, netVolume: 0, cellClasses: [] };
   }
 
@@ -71,19 +67,14 @@ export function computeCutFill(
   const cellH = existing.rangeY / (rows - 1);
   const cellArea = cellW * cellH; // mm²
 
-  let cutVolume  = 0;
+  let cutVolume = 0;
   let fillVolume = 0;
   const cellClasses: ('cut' | 'fill' | 'flat')[] = [];
 
   for (let r = 0; r < rows - 1; r++) {
     for (let c = 0; c < cols - 1; c++) {
       // Four corners of the quad cell.
-      const idx = [
-        r * cols + c,
-        r * cols + c + 1,
-        (r + 1) * cols + c,
-        (r + 1) * cols + c + 1,
-      ];
+      const idx = [r * cols + c, r * cols + c + 1, (r + 1) * cols + c, (r + 1) * cols + c + 1];
 
       let sumDiff = 0;
       for (const i of idx) {
@@ -138,7 +129,7 @@ export function spotLevelsToArrow(from: SpotLevel, to: SpotLevel): DrainageArrow
  */
 export function formatSpotLevel(z: number, prefix = 'FL'): string {
   const meters = z / 1000;
-  const sign   = meters >= 0 ? '+' : '';
+  const sign = meters >= 0 ? '+' : '';
   return `${prefix} ${sign}${meters.toFixed(3)}`;
 }
 

@@ -37,7 +37,7 @@ export function GraphPanelWrapper(): React.ReactElement {
         return remaining[0]?.id ?? null;
       });
     },
-    [deleteGraph, graphs],
+    [deleteGraph, graphs]
   );
 
   if (!document) {
@@ -63,7 +63,10 @@ export function GraphPanelWrapper(): React.ReactElement {
       {graphs.length > 0 && (
         <div className="graph-panel-wrapper__tabs" role="tablist" aria-label="Graph tabs">
           {graphs.map((g) => (
-            <div key={g.id} className={`graph-panel-wrapper__tab${activeId === g.id ? ' active' : ''}`}>
+            <div
+              key={g.id}
+              className={`graph-panel-wrapper__tab${activeId === g.id ? ' active' : ''}`}
+            >
               <button
                 role="tab"
                 aria-selected={activeId === g.id}
@@ -87,11 +90,7 @@ export function GraphPanelWrapper(): React.ReactElement {
 
       {/* Canvas */}
       {active ? (
-        <GraphPanel
-          key={active.id}
-          graph={active}
-          onSave={saveGraph}
-        />
+        <GraphPanel key={active.id} graph={active} onSave={saveGraph} />
       ) : (
         <div className="graph-panel-wrapper--empty">
           <p>No graphs yet.</p>

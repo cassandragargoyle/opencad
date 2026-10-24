@@ -130,12 +130,19 @@ async function bakeAsset(cfg: SourceConfig): Promise<ManifestAsset | null> {
       await io.write(path.join(outDir, 'lo.glb'), docLo);
 
       // impostor — placeholder for now; full octahedral render requires headless Three.js
-      fs.writeFileSync(path.join(outDir, 'impostor.json'), JSON.stringify({
-        views: 8, size: 256, layout: 'octahedral', generated: false,
-      }));
-
+      fs.writeFileSync(
+        path.join(outDir, 'impostor.json'),
+        JSON.stringify({
+          views: 8,
+          size: 256,
+          layout: 'octahedral',
+          generated: false,
+        })
+      );
     } catch (err) {
-      console.warn(`[bake-landscape] ${cfg.id}: gltf-transform not available, copying source as hi.glb`);
+      console.warn(
+        `[bake-landscape] ${cfg.id}: gltf-transform not available, copying source as hi.glb`
+      );
       fs.copyFileSync(srcPath, path.join(outDir, 'hi.glb'));
       fs.copyFileSync(srcPath, path.join(outDir, 'mid.glb'));
       fs.copyFileSync(srcPath, path.join(outDir, 'lo.glb'));
@@ -187,7 +194,9 @@ async function main(): Promise<void> {
 
   const totalBytes = totalDirSize(OUTPUT_DIR);
   if (totalBytes > BUDGET_BYTES) {
-    console.error(`[bake-landscape] BUDGET EXCEEDED: ${totalBytes} bytes > ${BUDGET_BYTES} bytes (25 MB)`);
+    console.error(
+      `[bake-landscape] BUDGET EXCEEDED: ${totalBytes} bytes > ${BUDGET_BYTES} bytes (25 MB)`
+    );
     process.exit(1);
   }
 
@@ -199,7 +208,9 @@ async function main(): Promise<void> {
   };
 
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
-  console.log(`[bake-landscape] Done. ${assets.length} assets, ${(totalBytes / 1024 / 1024).toFixed(1)} MB total.`);
+  console.log(
+    `[bake-landscape] Done. ${assets.length} assets, ${(totalBytes / 1024 / 1024).toFixed(1)} MB total.`
+  );
 }
 
 main().catch((err: unknown) => {

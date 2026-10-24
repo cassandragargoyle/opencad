@@ -49,10 +49,7 @@ function makeId(): string {
  * Uses Poisson-disk sampling when `config.avoidOverlap` is true, otherwise
  * fills the area with `config.density` uniformly-random candidates.
  */
-export function generateScatterPoints(
-  center: Point2D,
-  config: ScatterBrushConfig
-): ScatterPoint[] {
+export function generateScatterPoints(center: Point2D, config: ScatterBrushConfig): ScatterPoint[] {
   const { radius, density, elementTypes, jitter, avoidOverlap } = config;
   if (radius <= 0 || density <= 0 || elementTypes.length === 0) return [];
 
@@ -133,10 +130,7 @@ function _poissonDisk(
  * Keep only the scatter points whose (x, y) lies inside `maskPolygon`
  * using the ray-casting algorithm.
  */
-export function filterByMask(
-  points: ScatterPoint[],
-  maskPolygon: Point2D[]
-): ScatterPoint[] {
+export function filterByMask(points: ScatterPoint[], maskPolygon: Point2D[]): ScatterPoint[] {
   if (maskPolygon.length < 3) return [];
   return points.filter((p) => _pointInPolygon(p.x, p.y, maskPolygon));
 }
@@ -145,9 +139,11 @@ function _pointInPolygon(px: number, py: number, poly: Point2D[]): boolean {
   let inside = false;
   const n = poly.length;
   for (let i = 0, j = n - 1; i < n; j = i++) {
-    const xi = poly[i].x, yi = poly[i].y;
-    const xj = poly[j].x, yj = poly[j].y;
-    if (((yi > py) !== (yj > py)) && (px < ((xj - xi) * (py - yi)) / (yj - yi) + xi)) {
+    const xi = poly[i].x,
+      yi = poly[i].y;
+    const xj = poly[j].x,
+      yj = poly[j].y;
+    if (yi > py !== yj > py && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) {
       inside = !inside;
     }
   }
@@ -157,10 +153,7 @@ function _pointInPolygon(px: number, py: number, poly: Point2D[]): boolean {
 /**
  * Merge two scatter batches, deduplicating by `id`.
  */
-export function mergeScatterBatches(
-  a: ScatterPoint[],
-  b: ScatterPoint[]
-): ScatterPoint[] {
+export function mergeScatterBatches(a: ScatterPoint[], b: ScatterPoint[]): ScatterPoint[] {
   const seen = new Set<string>();
   const result: ScatterPoint[] = [];
   for (const p of [...a, ...b]) {

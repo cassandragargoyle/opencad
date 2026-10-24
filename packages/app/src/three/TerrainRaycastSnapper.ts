@@ -9,11 +9,7 @@ import * as THREE from 'three';
 const GROUND_PLANE = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 
 /** Element types treated as terrain surfaces for snap. */
-const TERRAIN_TYPES = new Set([
-  'topography',
-  'surface',
-  'terrain_contour',
-]);
+const TERRAIN_TYPES = new Set(['topography', 'surface', 'terrain_contour']);
 
 export interface SnapResult {
   /** World X (mm). */

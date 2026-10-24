@@ -8,17 +8,17 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  computeAxisLock, applyAxisLock,
-  inferFromReferencePoints, inferExtension, inferMidpoint, inferPerpendicularFoot,
+  computeAxisLock,
+  applyAxisLock,
+  inferFromReferencePoints,
+  inferExtension,
+  inferMidpoint,
+  inferPerpendicularFoot,
 } from './inference';
 
 describe('T-MOD-021: inference', () => {
   it('T-MOD-021-001: reference X-align returns a vertical guide', () => {
-    const g = inferFromReferencePoints(
-      { x: 100, y: 0 },
-      [{ x: 99, y: 500 }],
-      20,
-    );
+    const g = inferFromReferencePoints({ x: 100, y: 0 }, [{ x: 99, y: 500 }], 20);
     expect(g?.kind).toBe('x');
     expect(g?.value).toBe(99);
   });

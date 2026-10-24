@@ -22,11 +22,15 @@ export interface Reservation {
 export const RESERVATION_TTL_MS = 5 * 60 * 1000;
 
 export function reserve(
-  elementId: string, userId: string, userName: string,
-  now: number = Date.now(),
+  elementId: string,
+  userId: string,
+  userName: string,
+  now: number = Date.now()
 ): Reservation {
   return {
-    elementId, userId, userName,
+    elementId,
+    userId,
+    userName,
     timestamp: now,
     expires: now + RESERVATION_TTL_MS,
   };
@@ -40,7 +44,7 @@ export function isReserved(
   reservations: Record<string, Reservation>,
   elementId: string,
   askingUserId: string,
-  now: number = Date.now(),
+  now: number = Date.now()
 ): boolean {
   const r = reservations[elementId];
   if (!r) return false;
@@ -52,7 +56,7 @@ export function isReserved(
 export function reserveOwner(
   reservations: Record<string, Reservation>,
   elementId: string,
-  now: number = Date.now(),
+  now: number = Date.now()
 ): Reservation | null {
   const r = reservations[elementId];
   if (!r || r.expires < now) return null;
@@ -65,8 +69,9 @@ export function reserveOwner(
  */
 export function release(
   reservations: Record<string, Reservation>,
-  elementId: string, userId: string,
-  opts?: { force?: boolean },
+  elementId: string,
+  userId: string,
+  opts?: { force?: boolean }
 ): Record<string, Reservation> {
   const r = reservations[elementId];
   if (!r) return reservations;
@@ -82,7 +87,7 @@ export function release(
  */
 export function pruneExpired(
   reservations: Record<string, Reservation>,
-  now: number = Date.now(),
+  now: number = Date.now()
 ): Record<string, Reservation> {
   const next: Record<string, Reservation> = {};
   for (const [id, r] of Object.entries(reservations)) {
@@ -94,8 +99,9 @@ export function pruneExpired(
 /** Refresh a reservation's expiry — the UI calls this on every edit. */
 export function refresh(
   reservations: Record<string, Reservation>,
-  elementId: string, userId: string,
-  now: number = Date.now(),
+  elementId: string,
+  userId: string,
+  now: number = Date.now()
 ): Record<string, Reservation> {
   const r = reservations[elementId];
   if (!r || r.userId !== userId) return reservations;

@@ -20,7 +20,7 @@ describe('T-MOD-030: hatchPatterns', () => {
   it('T-MOD-030-002: scale 2× halves line density vs scale 1×', () => {
     const base = BUILT_IN_HATCHES.find((h) => h.id === 'hatch-concrete')!;
     const scaled = { ...base, scale: 2 };
-    const lines1 = generateHatchLines(base,   BBOX);
+    const lines1 = generateHatchLines(base, BBOX);
     const lines2 = generateHatchLines(scaled, BBOX);
     expect(lines2.length).toBeLessThan(lines1.length);
   });
@@ -28,7 +28,7 @@ describe('T-MOD-030: hatchPatterns', () => {
   it('T-MOD-030-003: rotation offsets line direction', () => {
     const base = BUILT_IN_HATCHES.find((h) => h.id === 'hatch-brick')!;
     const rotated = { ...base, rotation: 90 };
-    const l0 = generateHatchLines(base,     BBOX);
+    const l0 = generateHatchLines(base, BBOX);
     const l90 = generateHatchLines(rotated, BBOX);
     // l0 has horizontal lines (a.y == b.y); l90 has vertical lines (a.x == b.x)
     const first0 = l0[0]!;
@@ -42,7 +42,8 @@ describe('T-MOD-030: hatchPatterns', () => {
     const lines = generateHatchLines(hatch, BBOX);
     // All lines should have dx = dy (45°)
     for (const l of lines) {
-      const dx = l.b.x - l.a.x, dy = l.b.y - l.a.y;
+      const dx = l.b.x - l.a.x,
+        dy = l.b.y - l.a.y;
       expect(Math.abs(Math.abs(dx) - Math.abs(dy))).toBeLessThan(0.5);
     }
   });

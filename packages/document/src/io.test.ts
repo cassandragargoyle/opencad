@@ -195,7 +195,9 @@ describe('T-IO-005: importWithProgress', () => {
   it('returns parse error when parse throws', async () => {
     const result = await importWithProgress(
       async () => 'bad data',
-      () => { throw new Error('parse failed'); }
+      () => {
+        throw new Error('parse failed');
+      }
     );
     expect(result.success).toBe(false);
     expect(result.errors[0].type).toBe('parse');
@@ -213,7 +215,9 @@ describe('T-IO-005: importWithProgress', () => {
 
   it('returns io error when readStream throws', async () => {
     const result = await importWithProgress(
-      async () => { throw new Error('network error'); },
+      async () => {
+        throw new Error('network error');
+      },
       (s) => s
     );
     expect(result.success).toBe(false);
@@ -232,7 +236,10 @@ describe('T-IO-005: importWithProgress', () => {
 describe('T-IO-006: batchImportFiles', () => {
   it('returns total count', async () => {
     const result = await batchImportFiles(
-      [{ name: 'a.ifc', content: 'data' }, { name: 'b.dxf', content: 'data' }],
+      [
+        { name: 'a.ifc', content: 'data' },
+        { name: 'b.dxf', content: 'data' },
+      ],
       (content) => content
     );
     expect(result.total).toBe(2);
@@ -257,10 +264,9 @@ describe('T-IO-006: batchImportFiles', () => {
   });
 
   it('captures parse error in results', async () => {
-    const result = await batchImportFiles(
-      [{ name: 'a.ifc', content: 'bad' }],
-      () => { throw new Error('parse failed'); }
-    );
+    const result = await batchImportFiles([{ name: 'a.ifc', content: 'bad' }], () => {
+      throw new Error('parse failed');
+    });
     expect(result.failed).toBe(1);
     expect(result.results[0].error).toContain('parse failed');
   });
@@ -303,9 +309,9 @@ describe('exportDocument', () => {
   });
 
   it('throws for unsupported export format', async () => {
-    await expect(
-      exportDocument({}, { format: 'xyz' as 'json' })
-    ).rejects.toBeInstanceOf(UnsupportedFormatError);
+    await expect(exportDocument({}, { format: 'xyz' as 'json' })).rejects.toBeInstanceOf(
+      UnsupportedFormatError
+    );
   });
 });
 

@@ -4,13 +4,14 @@
 
 ## Why
 
-Today walls pass through roofs, beams float above the columns that support them, and stairs stop short of the slab they're meant to land on. Real BIM applications describe these relationships parametrically: one element is declared as a *target* and another as an *operator*, the operator boolean-subtracts or boolean-adds geometry from the target, and the relationship survives edits on either side. Without this, every 3D render exposes the model as an assembly of disjoint boxes rather than a building.
+Today walls pass through roofs, beams float above the columns that support them, and stairs stop short of the slab they're meant to land on. Real BIM applications describe these relationships parametrically: one element is declared as a _target_ and another as an _operator_, the operator boolean-subtracts or boolean-adds geometry from the target, and the relationship survives edits on either side. Without this, every 3D render exposes the model as an assembly of disjoint boxes rather than a building.
 
-This issue delivers the *minimum* SEO subset needed to fix the ugliest visible cases. Full SEO (intersections, additions, SUBTRACT-with-priority, user-defined pairs) is a separate future issue.
+This issue delivers the _minimum_ SEO subset needed to fix the ugliest visible cases. Full SEO (intersections, additions, SUBTRACT-with-priority, user-defined pairs) is a separate future issue.
 
 ## Scope
 
 ### In scope
+
 - A new `operations` array on `DocumentSchema` storing `{ id, operatorId, targetId, type: 'subtract' | 'add', enabled }`.
 - Three built-in default rules, applied automatically when elements meet the right spatial condition:
   1. **Wall top clipped by roof underside** — any wall whose top plane passes through a roof polygon is clipped to the roof's sloped underside.
@@ -20,6 +21,7 @@ This issue delivers the *minimum* SEO subset needed to fix the ugliest visible c
 - Operations recomputed when either operator or target is moved/rotated/resized.
 
 ### Out of scope (this issue)
+
 - User-authored SEO pairs in the UI — built-in default rules only. UI for this is a follow-up.
 - Priority-based wall/slab intersections (composite layer priority) — handled by T-MOD-004.
 - SUBTRACT with SUBTRACT-from-shell, DIVIDE, INTERSECT — only SUBTRACT in v1.

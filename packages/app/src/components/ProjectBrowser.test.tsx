@@ -60,13 +60,17 @@ beforeEach(() => {
 
 describe('T-DOC-010: ProjectBrowser', () => {
   it('T-DOC-010-001: renders project list', async () => {
-    await act(async () => { render(<ProjectBrowser />); });
+    await act(async () => {
+      render(<ProjectBrowser />);
+    });
     expect(screen.getByText('My House')).toBeInTheDocument();
     expect(screen.getByText('Office Tower')).toBeInTheDocument();
   });
 
   it('T-DOC-010-002: search filters by name (case-insensitive)', async () => {
-    await act(async () => { render(<ProjectBrowser />); });
+    await act(async () => {
+      render(<ProjectBrowser />);
+    });
     const search = screen.getByTestId('project-search');
     await act(async () => {
       fireEvent.change(search, { target: { value: 'house' } });
@@ -81,7 +85,9 @@ describe('T-DOC-010: ProjectBrowser', () => {
   });
 
   it('T-DOC-010-003: sort by name A-Z works', async () => {
-    await act(async () => { render(<ProjectBrowser />); });
+    await act(async () => {
+      render(<ProjectBrowser />);
+    });
     const sortSelect = screen.getByTestId('sort-select');
     await act(async () => {
       fireEvent.change(sortSelect, { target: { value: 'name-asc' } });
@@ -92,7 +98,9 @@ describe('T-DOC-010: ProjectBrowser', () => {
   });
 
   it('T-DOC-010-004: sort by recent works', async () => {
-    await act(async () => { render(<ProjectBrowser />); });
+    await act(async () => {
+      render(<ProjectBrowser />);
+    });
     const sortSelect = screen.getByTestId('sort-select');
     await act(async () => {
       fireEvent.change(sortSelect, { target: { value: 'recent' } });
@@ -103,13 +111,17 @@ describe('T-DOC-010: ProjectBrowser', () => {
   });
 
   it('T-DOC-010-005: New Project button is visible', async () => {
-    await act(async () => { render(<ProjectBrowser />); });
+    await act(async () => {
+      render(<ProjectBrowser />);
+    });
     expect(screen.getByTestId('new-project-btn')).toBeInTheDocument();
   });
 
   it('T-DOC-010-006: clicking a project card selects it', async () => {
     const onSelect = vi.fn();
-    await act(async () => { render(<ProjectBrowser onSelect={onSelect} />); });
+    await act(async () => {
+      render(<ProjectBrowser onSelect={onSelect} />);
+    });
     await act(async () => {
       fireEvent.click(screen.getByTestId('project-card-p1'));
     });
@@ -118,14 +130,18 @@ describe('T-DOC-010: ProjectBrowser', () => {
 
   it('T-DOC-010-007: empty state shown when no projects', async () => {
     vi.mocked(projectsApi.list).mockResolvedValue([]);
-    await act(async () => { render(<ProjectBrowser />); });
+    await act(async () => {
+      render(<ProjectBrowser />);
+    });
     await waitFor(() => {
       expect(screen.getByText(/no projects/i)).toBeInTheDocument();
     });
   });
 
   it('T-DOC-010-008: delete button calls projectsApi.delete', async () => {
-    await act(async () => { render(<ProjectBrowser />); });
+    await act(async () => {
+      render(<ProjectBrowser />);
+    });
     // With default "recent" sort, p3 (updatedAt=3000) is first
     const deleteBtn = screen.getAllByRole('button', { name: /delete/i })[0]!;
     await act(async () => {

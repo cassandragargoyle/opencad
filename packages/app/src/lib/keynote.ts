@@ -26,7 +26,7 @@ let _seq = 1;
 
 export function addKeynote(
   table: KeynoteTable,
-  params: { type: KeynoteType; code: string; text: string },
+  params: { type: KeynoteType; code: string; text: string }
 ): string {
   const id = `kn_${Date.now().toString(36)}_${Math.floor(Math.random() * 0xffff).toString(16)}`;
   const number = table.entries.length + 1;
@@ -41,9 +41,6 @@ export function resolveKeynoteLabel(table: KeynoteTable, id: string): string {
   return `${entry.number}. ${entry.text}`;
 }
 
-export function filterKeynotesByType(
-  table: KeynoteTable,
-  type: KeynoteType,
-): Keynote[] {
+export function filterKeynotesByType(table: KeynoteTable, type: KeynoteType): Keynote[] {
   return table.entries.filter((e) => e.type === type);
 }

@@ -31,14 +31,32 @@ function makeStore(overrides = {}) {
       content: {
         elements: {
           'wall-1': {
-            id: 'wall-1', type: 'wall', layerId: 'l1',
-            geometry: { type: 'wall', startPoint: { x: 0, y: 0, z: 0 }, endPoint: { x: 5000, y: 0, z: 0 }, thickness: 200, height: 3000 },
-            properties: {}, metadata: { createdAt: 0, updatedAt: 0, createdBy: 'u', version: 1 },
+            id: 'wall-1',
+            type: 'wall',
+            layerId: 'l1',
+            geometry: {
+              type: 'wall',
+              startPoint: { x: 0, y: 0, z: 0 },
+              endPoint: { x: 5000, y: 0, z: 0 },
+              thickness: 200,
+              height: 3000,
+            },
+            properties: {},
+            metadata: { createdAt: 0, updatedAt: 0, createdBy: 'u', version: 1 },
           },
           'column-1': {
-            id: 'column-1', type: 'column', layerId: 'l1',
-            geometry: { type: 'column', position: { x: 2500, y: 0, z: 0 }, width: 400, depth: 400, height: 3000 },
-            properties: {}, metadata: { createdAt: 0, updatedAt: 0, createdBy: 'u', version: 1 },
+            id: 'column-1',
+            type: 'column',
+            layerId: 'l1',
+            geometry: {
+              type: 'column',
+              position: { x: 2500, y: 0, z: 0 },
+              width: 400,
+              depth: 400,
+              height: 3000,
+            },
+            properties: {},
+            metadata: { createdAt: 0, updatedAt: 0, createdBy: 'u', version: 1 },
           },
         },
         spaces: {},
@@ -98,7 +116,8 @@ describe('T-MEP-002: ClashDetectionPanel', () => {
     vi.mocked(useDocumentStore).mockReturnValue(store as never);
     render(<ClashDetectionPanel />);
     fireEvent.click(screen.getByRole('button', { name: /run clash detection/i }));
-    const clashItem = screen.getByText(/wall.*column|column.*wall/i).closest('[data-clash-id]') ||
+    const clashItem =
+      screen.getByText(/wall.*column|column.*wall/i).closest('[data-clash-id]') ||
       screen.getByText(/hard/i).closest('li') ||
       screen.getByText(/wall.*column|column.*wall/i).closest('li');
     if (clashItem) {

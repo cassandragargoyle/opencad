@@ -96,7 +96,11 @@ describe('SpatialGrid — basic correctness', () => {
   it('returns all points when radius spans many cells', () => {
     const grid = makeGrid(500);
     const coords = [
-      [0, 0], [600, 0], [-600, 0], [0, 600], [0, -600],
+      [0, 0],
+      [600, 0],
+      [-600, 0],
+      [0, 600],
+      [0, -600],
     ];
     for (const [x, y] of coords) grid.insert(x!, y!, `${x},${y}`);
     const results = grid.query(0, 0, 700);

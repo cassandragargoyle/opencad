@@ -57,7 +57,10 @@ export interface Entitlements {
 }
 
 /** Per-tier entitlement baselines. Overlaid with the read-only lever. */
-const TIER_DEFAULTS: Record<SubscriptionTier, Omit<Entitlements, 'tier' | 'readOnly' | 'readOnlyReason' | 'isLoading' | 'accessMode'>> = {
+const TIER_DEFAULTS: Record<
+  SubscriptionTier,
+  Omit<Entitlements, 'tier' | 'readOnly' | 'readOnlyReason' | 'isLoading' | 'accessMode'>
+> = {
   free: {
     projectCap: 1,
     collabEnabled: false,

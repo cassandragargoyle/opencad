@@ -26,9 +26,7 @@ function makeElement(
   return {
     id: 'el-1',
     type: 'wall',
-    properties: materialId
-      ? { material: { type: 'string', value: materialId } }
-      : {},
+    properties: materialId ? { material: { type: 'string', value: materialId } } : {},
     propertySets: [],
     geometry: { type: 'brep', data: null },
     layerId: 'layer-1',

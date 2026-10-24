@@ -7,8 +7,14 @@
  */
 
 export type ViewCategory =
-  | 'plan' | 'section' | 'elevation' | 'detail'
-  | 'schedule' | '3d' | 'rendering' | 'worksheet';
+  | 'plan'
+  | 'section'
+  | 'elevation'
+  | 'detail'
+  | 'schedule'
+  | '3d'
+  | 'rendering'
+  | 'worksheet';
 
 export interface ViewEntry {
   id: string;
@@ -21,7 +27,7 @@ export interface ViewEntry {
 }
 
 export interface ViewSettings {
-  scale?: string;                 // "1:100"
+  scale?: string; // "1:100"
   visibleStories?: 'all' | 'current' | 'current-and-below' | 'current-and-above';
   layerCombinationId?: string;
   graphicOverrideId?: string;
@@ -109,7 +115,8 @@ export function applyTemplate(view: ViewEntry, template: ViewTemplate): ViewEntr
 
 /** List templates applicable to a given view category. */
 export function templatesForCategory(
-  templates: ViewTemplate[], category: ViewCategory,
+  templates: ViewTemplate[],
+  category: ViewCategory
 ): ViewTemplate[] {
   return templates.filter((t) => !t.applyTo || t.applyTo.includes(category));
 }

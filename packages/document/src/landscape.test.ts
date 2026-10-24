@@ -2,19 +2,30 @@
  * T-SITE-01: Landscape element types — schema, type guard, factory, IFC export.
  */
 import { describe, it, expect } from 'vitest';
-import {
-  isLandscapeElement,
-  LANDSCAPE_ELEMENT_TYPES,
-  type LandscapeProperties,
-} from './types';
+import { isLandscapeElement, LANDSCAPE_ELEMENT_TYPES, type LandscapeProperties } from './types';
 import { addElement, createProject } from './document';
 import { IFCAdapter } from './ifc';
 
 // ── Type guard ────────────────────────────────────────────────────────────────
 
 describe('T-SITE-01: isLandscapeElement', () => {
-  const landscapeTypes = ['planting', 'rock', 'site_furniture', 'person', 'vehicle', 'terrain_contour'] as const;
-  const nonLandscapeTypes = ['wall', 'door', 'slab', 'duct', 'topography', 'annotation', 'line'] as const;
+  const landscapeTypes = [
+    'planting',
+    'rock',
+    'site_furniture',
+    'person',
+    'vehicle',
+    'terrain_contour',
+  ] as const;
+  const nonLandscapeTypes = [
+    'wall',
+    'door',
+    'slab',
+    'duct',
+    'topography',
+    'annotation',
+    'line',
+  ] as const;
 
   for (const t of landscapeTypes) {
     it(`returns true for "${t}"`, () => {
@@ -136,7 +147,12 @@ describe('T-SITE-01: addElement factory for landscape types', () => {
       Rotation: { type: 'number' as const, value: 0 },
       Variation: { type: 'number' as const, value: 0 },
     };
-    const id = addElement(doc, { type: 'planting', layerId: 'default', levelId: '', properties: props });
+    const id = addElement(doc, {
+      type: 'planting',
+      layerId: 'default',
+      levelId: '',
+      properties: props,
+    });
     expect(doc.content.elements[id].properties['SpeciesId'].value).toBe('tree_oak_01');
   });
 });

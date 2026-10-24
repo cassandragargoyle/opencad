@@ -64,146 +64,169 @@ export function SheetManager(): React.ReactElement {
 
   return (
     <>
-    {pendingDeleteId && (
-      <ConfirmModal
-        message={t('sheets.deleteConfirm', { defaultValue: 'Delete this sheet? This cannot be undone.' })}
-        confirmLabel={t('sheets.delete', { defaultValue: 'Delete' })}
-        onConfirm={confirmDelete}
-        onCancel={() => setPendingDeleteId(null)}
-      />
-    )}
-    <div className="sheet-manager">
-      <div className="sheet-manager-header">
-        <span className="panel-title">{t('sheets.title')}</span>
-        <button
-          className="btn-primary"
-          aria-label={t('sheets.addSheet', { defaultValue: 'Add Sheet' })}
-          onClick={addSheet}
-        >
-          {t('sheets.addSheet', { defaultValue: 'Add Sheet' })}
-        </button>
-      </div>
-
-      <ul className="sheet-list" aria-label={t('settings.sheets.sheetListAria', { defaultValue: 'Sheet list' })}>
-        {sheets.map((sheet) => (
-          <li
-            key={sheet.id}
-            className={`sheet-list-item${selectedId === sheet.id ? ' selected' : ''}`}
-            onClick={() => setSelectedId(sheet.id)}
-            aria-selected={selectedId === sheet.id}
-            onDragOver={(e) => {
-              if (e.dataTransfer.types.includes('application/x-opencad-view')) {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'copy';
-              }
-            }}
-            onDrop={(e) => {
-              const viewId = e.dataTransfer.getData('application/x-opencad-view');
-              if (!viewId) return;
-              e.preventDefault();
-              if (sheet.views.includes(viewId)) return;
-              updateSheet(sheet.id, { views: [...sheet.views, viewId] });
-              setSelectedId(sheet.id);
-            }}
-          >
-            <span className="sheet-list-title">{sheet.title}</span>
-            <span className="sheet-list-meta">{sheet.size} · {sheet.scale}{sheet.views.length > 0 ? ` · ${sheet.views.length} view${sheet.views.length === 1 ? '' : 's'}` : ''}</span>
-          </li>
-        ))}
-      </ul>
-
-      {selectedSheet && (
-        <div className="sheet-properties" aria-label={t('sheets.propertiesAria', { defaultValue: 'Sheet Properties' })}>
-          <div className="sheet-prop-row">
-            <label htmlFor="sheet-mgr-title">{t('sheets.titleLabel', { defaultValue: 'Title' })}</label>
-            <input
-              id="sheet-mgr-title"
-              type="text"
-              value={selectedSheet.title}
-              onChange={(e) => updateSheet(selectedSheet.id, { title: e.target.value })}
-              aria-label={t('sheets.titleLabel', { defaultValue: 'Title' })}
-            />
-          </div>
-
-          <div className="sheet-prop-row">
-            <label htmlFor="sheet-mgr-size">{t('sheets.size', { defaultValue: 'Size' })}</label>
-            <select
-              id="sheet-mgr-size"
-              aria-label={t('sheets.size', { defaultValue: 'Size' })}
-              value={selectedSheet.size}
-              onChange={(e) =>
-                updateSheet(selectedSheet.id, { size: e.target.value as Sheet['size'] })
-              }
-            >
-              {MANAGER_SIZES.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="sheet-prop-row">
-            <label htmlFor="sheet-mgr-scale">{t('sheets.scale', { defaultValue: 'Scale' })}</label>
-            <select
-              id="sheet-mgr-scale"
-              aria-label={t('sheets.scale', { defaultValue: 'Scale' })}
-              value={selectedSheet.scale}
-              onChange={(e) => updateSheet(selectedSheet.id, { scale: e.target.value })}
-            >
-              {MANAGER_SCALES.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-          </div>
-
-          {selectedSheet.views.length > 0 && (
-            <div className="sheet-prop-row sheet-prop-row--views">
-              <span className="sheet-views-label">
-                {t('sheets.views', { defaultValue: 'Views' })} ({selectedSheet.views.length})
-              </span>
-              <SheetViewThumbs
-                viewIds={selectedSheet.views}
-                onRemove={(id) =>
-                  updateSheet(selectedSheet.id, {
-                    views: selectedSheet.views.filter((v) => v !== id),
-                  })
-                }
-              />
-            </div>
-          )}
-
-          <div
-            className="sheet-drop-hint"
-            onDragOver={(e) => {
-              if (e.dataTransfer.types.includes('application/x-opencad-view')) {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'copy';
-                (e.currentTarget as HTMLElement).classList.add('drop-target');
-              }
-            }}
-            onDragLeave={(e) => {
-              (e.currentTarget as HTMLElement).classList.remove('drop-target');
-            }}
-            onDrop={(e) => {
-              (e.currentTarget as HTMLElement).classList.remove('drop-target');
-              const viewId = e.dataTransfer.getData('application/x-opencad-view');
-              if (!viewId || selectedSheet.views.includes(viewId)) return;
-              e.preventDefault();
-              updateSheet(selectedSheet.id, { views: [...selectedSheet.views, viewId] });
-            }}
-          >
-            {t('sheets.dropHint', { defaultValue: 'Drop a rendering here to add it to this sheet' })}
-          </div>
-
+      {pendingDeleteId && (
+        <ConfirmModal
+          message={t('sheets.deleteConfirm', {
+            defaultValue: 'Delete this sheet? This cannot be undone.',
+          })}
+          confirmLabel={t('sheets.delete', { defaultValue: 'Delete' })}
+          onConfirm={confirmDelete}
+          onCancel={() => setPendingDeleteId(null)}
+        />
+      )}
+      <div className="sheet-manager">
+        <div className="sheet-manager-header">
+          <span className="panel-title">{t('sheets.title')}</span>
           <button
-            className="btn-danger"
-            aria-label={t('sheets.deleteSheet', { defaultValue: 'Delete Sheet' })}
-            onClick={() => deleteSheet(selectedSheet.id)}
+            className="btn-primary"
+            aria-label={t('sheets.addSheet', { defaultValue: 'Add Sheet' })}
+            onClick={addSheet}
           >
-            {t('sheets.deleteSheet', { defaultValue: 'Delete Sheet' })}
+            {t('sheets.addSheet', { defaultValue: 'Add Sheet' })}
           </button>
         </div>
-      )}
-    </div>
+
+        <ul
+          className="sheet-list"
+          aria-label={t('settings.sheets.sheetListAria', { defaultValue: 'Sheet list' })}
+        >
+          {sheets.map((sheet) => (
+            <li
+              key={sheet.id}
+              className={`sheet-list-item${selectedId === sheet.id ? ' selected' : ''}`}
+              onClick={() => setSelectedId(sheet.id)}
+              aria-selected={selectedId === sheet.id}
+              onDragOver={(e) => {
+                if (e.dataTransfer.types.includes('application/x-opencad-view')) {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'copy';
+                }
+              }}
+              onDrop={(e) => {
+                const viewId = e.dataTransfer.getData('application/x-opencad-view');
+                if (!viewId) return;
+                e.preventDefault();
+                if (sheet.views.includes(viewId)) return;
+                updateSheet(sheet.id, { views: [...sheet.views, viewId] });
+                setSelectedId(sheet.id);
+              }}
+            >
+              <span className="sheet-list-title">{sheet.title}</span>
+              <span className="sheet-list-meta">
+                {sheet.size} · {sheet.scale}
+                {sheet.views.length > 0
+                  ? ` · ${sheet.views.length} view${sheet.views.length === 1 ? '' : 's'}`
+                  : ''}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        {selectedSheet && (
+          <div
+            className="sheet-properties"
+            aria-label={t('sheets.propertiesAria', { defaultValue: 'Sheet Properties' })}
+          >
+            <div className="sheet-prop-row">
+              <label htmlFor="sheet-mgr-title">
+                {t('sheets.titleLabel', { defaultValue: 'Title' })}
+              </label>
+              <input
+                id="sheet-mgr-title"
+                type="text"
+                value={selectedSheet.title}
+                onChange={(e) => updateSheet(selectedSheet.id, { title: e.target.value })}
+                aria-label={t('sheets.titleLabel', { defaultValue: 'Title' })}
+              />
+            </div>
+
+            <div className="sheet-prop-row">
+              <label htmlFor="sheet-mgr-size">{t('sheets.size', { defaultValue: 'Size' })}</label>
+              <select
+                id="sheet-mgr-size"
+                aria-label={t('sheets.size', { defaultValue: 'Size' })}
+                value={selectedSheet.size}
+                onChange={(e) =>
+                  updateSheet(selectedSheet.id, { size: e.target.value as Sheet['size'] })
+                }
+              >
+                {MANAGER_SIZES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="sheet-prop-row">
+              <label htmlFor="sheet-mgr-scale">
+                {t('sheets.scale', { defaultValue: 'Scale' })}
+              </label>
+              <select
+                id="sheet-mgr-scale"
+                aria-label={t('sheets.scale', { defaultValue: 'Scale' })}
+                value={selectedSheet.scale}
+                onChange={(e) => updateSheet(selectedSheet.id, { scale: e.target.value })}
+              >
+                {MANAGER_SCALES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {selectedSheet.views.length > 0 && (
+              <div className="sheet-prop-row sheet-prop-row--views">
+                <span className="sheet-views-label">
+                  {t('sheets.views', { defaultValue: 'Views' })} ({selectedSheet.views.length})
+                </span>
+                <SheetViewThumbs
+                  viewIds={selectedSheet.views}
+                  onRemove={(id) =>
+                    updateSheet(selectedSheet.id, {
+                      views: selectedSheet.views.filter((v) => v !== id),
+                    })
+                  }
+                />
+              </div>
+            )}
+
+            <div
+              className="sheet-drop-hint"
+              onDragOver={(e) => {
+                if (e.dataTransfer.types.includes('application/x-opencad-view')) {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'copy';
+                  (e.currentTarget as HTMLElement).classList.add('drop-target');
+                }
+              }}
+              onDragLeave={(e) => {
+                (e.currentTarget as HTMLElement).classList.remove('drop-target');
+              }}
+              onDrop={(e) => {
+                (e.currentTarget as HTMLElement).classList.remove('drop-target');
+                const viewId = e.dataTransfer.getData('application/x-opencad-view');
+                if (!viewId || selectedSheet.views.includes(viewId)) return;
+                e.preventDefault();
+                updateSheet(selectedSheet.id, { views: [...selectedSheet.views, viewId] });
+              }}
+            >
+              {t('sheets.dropHint', {
+                defaultValue: 'Drop a rendering here to add it to this sheet',
+              })}
+            </div>
+
+            <button
+              className="btn-danger"
+              aria-label={t('sheets.deleteSheet', { defaultValue: 'Delete Sheet' })}
+              onClick={() => deleteSheet(selectedSheet.id)}
+            >
+              {t('sheets.deleteSheet', { defaultValue: 'Delete Sheet' })}
+            </button>
+          </div>
+        )}
+      </div>
     </>
   );
 }
@@ -230,7 +253,9 @@ function SheetViewThumbs({
               className="sheet-view-thumb-remove"
               aria-label="Remove"
               onClick={() => onRemove(id)}
-            >×</button>
+            >
+              ×
+            </button>
           </div>
         );
       })}
@@ -281,14 +306,11 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
     if (!sheetTitle) setSheetTitle('Floor Plan');
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const availableViews = useMemo(
-    () => (doc ? Object.values(doc.presentation.views) : []),
-    [doc],
-  );
+  const availableViews = useMemo(() => (doc ? Object.values(doc.presentation.views) : []), [doc]);
 
   const toggleView = (viewId: string) => {
     setSelectedViewIds((prev) =>
-      prev.includes(viewId) ? prev.filter((v) => v !== viewId) : [...prev, viewId],
+      prev.includes(viewId) ? prev.filter((v) => v !== viewId) : [...prev, viewId]
     );
   };
 
@@ -331,7 +353,7 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
   // Layout the view tiles: single = full area above title block; 2 side-by
   // -side; 3/4 as a 2×2 grid.
   const titleBlockH = 40; // matches DEFAULT_TITLE_BLOCK_SVG viewBox height
-  const paperW = 200;     // arbitrary inner units for SVG layout
+  const paperW = 200; // arbitrary inner units for SVG layout
   const paperH = 150 * (paperMmH / paperMmW) + titleBlockH;
   const availH = paperH - titleBlockH - 6;
   const tiles = selectedViewIds.slice(0, 4);
@@ -343,12 +365,16 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
   return (
     <div className="sheet-panel">
       <div className="panel-header">
-        <span className="panel-title">{t('sheets.layoutTitle', { defaultValue: 'Sheet Layout' })}</span>
+        <span className="panel-title">
+          {t('sheets.layoutTitle', { defaultValue: 'Sheet Layout' })}
+        </span>
       </div>
 
       <div className="sheet-controls">
         <div className="sheet-row">
-          <label htmlFor="sheet-size">{t('sheets.sheetSize', { defaultValue: 'Sheet Size' })}</label>
+          <label htmlFor="sheet-size">
+            {t('sheets.sheetSize', { defaultValue: 'Sheet Size' })}
+          </label>
           <select
             id="sheet-size"
             aria-label={t('sheets.sheetSize', { defaultValue: 'Sheet Size' })}
@@ -357,13 +383,17 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
             className="sheet-select"
           >
             {SHEET_SIZES.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </div>
 
         <div className="sheet-row">
-          <label htmlFor="sheet-orientation">{t('sheets.orientation', { defaultValue: 'Orientation' })}</label>
+          <label htmlFor="sheet-orientation">
+            {t('sheets.orientation', { defaultValue: 'Orientation' })}
+          </label>
           <select
             id="sheet-orientation"
             aria-label={t('sheets.orientation', { defaultValue: 'Orientation' })}
@@ -372,7 +402,9 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
             className="sheet-select"
           >
             {ORIENTATIONS.map((o) => (
-              <option key={o} value={o}>{o}</option>
+              <option key={o} value={o}>
+                {o}
+              </option>
             ))}
           </select>
         </div>
@@ -387,7 +419,9 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
             className="sheet-select"
           >
             {SCALES.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </div>
@@ -395,7 +429,9 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
 
       <div className="sheet-title-block">
         <div className="sheet-row">
-          <label htmlFor="sheet-project-name">{t('sheets.projectName', { defaultValue: 'Project Name' })}</label>
+          <label htmlFor="sheet-project-name">
+            {t('sheets.projectName', { defaultValue: 'Project Name' })}
+          </label>
           <input
             id="sheet-project-name"
             type="text"
@@ -406,7 +442,9 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
           />
         </div>
         <div className="sheet-row">
-          <label htmlFor="sheet-title">{t('sheets.sheetTitle', { defaultValue: 'Sheet Title' })}</label>
+          <label htmlFor="sheet-title">
+            {t('sheets.sheetTitle', { defaultValue: 'Sheet Title' })}
+          </label>
           <input
             id="sheet-title"
             type="text"
@@ -417,7 +455,9 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
           />
         </div>
         <div className="sheet-row">
-          <label htmlFor="sheet-drawn-by">{t('sheets.drawnBy', { defaultValue: 'Drawn By' })}</label>
+          <label htmlFor="sheet-drawn-by">
+            {t('sheets.drawnBy', { defaultValue: 'Drawn By' })}
+          </label>
           <input
             id="sheet-drawn-by"
             type="text"
@@ -428,7 +468,9 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
           />
         </div>
         <div className="sheet-row">
-          <label htmlFor="sheet-number">{t('sheets.sheetNumber', { defaultValue: 'Sheet Number' })}</label>
+          <label htmlFor="sheet-number">
+            {t('sheets.sheetNumber', { defaultValue: 'Sheet Number' })}
+          </label>
           <input
             id="sheet-number"
             type="text"
@@ -440,9 +482,13 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
       </div>
 
       <div className="sheet-views-picker">
-        <div className="sheet-views-picker-title">{t('sheets.viewsOnSheet', { defaultValue: 'Views on sheet (max 4)' })}</div>
+        <div className="sheet-views-picker-title">
+          {t('sheets.viewsOnSheet', { defaultValue: 'Views on sheet (max 4)' })}
+        </div>
         {availableViews.length === 0 ? (
-          <div className="sheet-views-empty">{t('sheets.noSavedViews', { defaultValue: 'No saved views. Create views first.' })}</div>
+          <div className="sheet-views-empty">
+            {t('sheets.noSavedViews', { defaultValue: 'No saved views. Create views first.' })}
+          </div>
         ) : (
           <ul className="sheet-views-list">
             {availableViews.map((v) => (
@@ -452,9 +498,7 @@ export function SheetPanel({ onExportPDF }: SheetPanelProps = {}) {
                     type="checkbox"
                     checked={selectedViewIds.includes(v.id)}
                     onChange={() => toggleView(v.id)}
-                    disabled={
-                      !selectedViewIds.includes(v.id) && selectedViewIds.length >= 4
-                    }
+                    disabled={!selectedViewIds.includes(v.id) && selectedViewIds.length >= 4}
                   />
                   <span>{v.name}</span>
                   <span className="sheet-views-list-type">{v.type}</span>

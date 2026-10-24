@@ -9,6 +9,7 @@ Elevations are the set of orthographic drawings every construction document pack
 ## Scope
 
 ### In scope
+
 - A new `Elevation` element type: a named view with a `viewDirection`, `cameraDistance`, and optional `cropBox`.
 - The Navigator gains an "Elevations" group; users can add a new named elevation ("North", "South", "East", "West") from a right-click menu.
 - Each elevation opens a dedicated view: orthographic camera, named, with a title bar showing "N", "S", "E", "W" and the elevation name.
@@ -16,6 +17,7 @@ Elevations are the set of orthographic drawings every construction document pack
 - The elevation can be exported to SVG for layout-book inclusion (T-DOC-008).
 
 ### Out of scope (this issue)
+
 - Shaded / photoreal elevations — plain-line first.
 - Angled / rotated elevations from arbitrary angles — start with 4 cardinal + any user-entered degree angle via a number field.
 

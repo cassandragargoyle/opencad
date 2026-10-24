@@ -8,36 +8,35 @@ import { createDetailView, getDetailViewElements } from '../lib/detailView';
 
 export function DetailViewPanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document    = useDocumentStore((s) => s.document);
-  const addView     = useDocumentStore((s) => s.addView);
+  const document = useDocumentStore((s) => s.document);
+  const addView = useDocumentStore((s) => s.addView);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
-  const isReadOnly  = isDocumentReadOnly();
+  const isReadOnly = isDocumentReadOnly();
 
-  const [name,  setName]  = useState('Detail 1');
-  const [x,     setX]     = useState('0');
-  const [y,     setY]     = useState('0');
-  const [w,     setW]     = useState('5000');
-  const [h,     setH]     = useState('3000');
+  const [name, setName] = useState('Detail 1');
+  const [x, setX] = useState('0');
+  const [y, setY] = useState('0');
+  const [w, setW] = useState('5000');
+  const [h, setH] = useState('3000');
   const [scale, setScale] = useState('10');
   const [status, setStatus] = useState('');
 
   const elements = useMemo(
     () => (document ? Object.values(document.content.elements) : []),
-    [document],
+    [document]
   );
 
   const existingDetails = useMemo(
-    () => (document
-      ? Object.values(document.presentation.views).filter((v) => v.type === 'detail')
-      : []),
-    [document],
+    () =>
+      document ? Object.values(document.presentation.views).filter((v) => v.type === 'detail') : [],
+    [document]
   );
 
   const regionElements = useMemo(() => {
     const region = {
       x: parseFloat(x) || 0,
       y: parseFloat(y) || 0,
-      width:  parseFloat(w) || 5000,
+      width: parseFloat(w) || 5000,
       height: parseFloat(h) || 3000,
     };
     return getDetailViewElements(elements, region);
@@ -48,7 +47,7 @@ export function DetailViewPanel(): React.ReactElement {
     const region = {
       x: parseFloat(x) || 0,
       y: parseFloat(y) || 0,
-      width:  parseFloat(w) || 5000,
+      width: parseFloat(w) || 5000,
       height: parseFloat(h) || 3000,
     };
     const scaleNum = parseFloat(scale) || 10;
@@ -78,43 +77,70 @@ export function DetailViewPanel(): React.ReactElement {
         <div className="field-row">
           <label className="field-label half">
             Origin X (mm)
-            <input type="number" className="panel-input" value={x} onChange={(e) => setX(e.target.value)} disabled={isReadOnly} />
+            <input
+              type="number"
+              className="panel-input"
+              value={x}
+              onChange={(e) => setX(e.target.value)}
+              disabled={isReadOnly}
+            />
           </label>
           <label className="field-label half">
             Origin Y (mm)
-            <input type="number" className="panel-input" value={y} onChange={(e) => setY(e.target.value)} disabled={isReadOnly} />
+            <input
+              type="number"
+              className="panel-input"
+              value={y}
+              onChange={(e) => setY(e.target.value)}
+              disabled={isReadOnly}
+            />
           </label>
         </div>
         <div className="field-row">
           <label className="field-label half">
             Width (mm)
-            <input type="number" className="panel-input" value={w} onChange={(e) => setW(e.target.value)} disabled={isReadOnly} />
+            <input
+              type="number"
+              className="panel-input"
+              value={w}
+              onChange={(e) => setW(e.target.value)}
+              disabled={isReadOnly}
+            />
           </label>
           <label className="field-label half">
             Height (mm)
-            <input type="number" className="panel-input" value={h} onChange={(e) => setH(e.target.value)} disabled={isReadOnly} />
+            <input
+              type="number"
+              className="panel-input"
+              value={h}
+              onChange={(e) => setH(e.target.value)}
+              disabled={isReadOnly}
+            />
           </label>
         </div>
 
         <label className="field-label">
           Print Scale (1:x)
-          <input type="number" className="panel-input" value={scale} onChange={(e) => setScale(e.target.value)} disabled={isReadOnly} min="1" />
+          <input
+            type="number"
+            className="panel-input"
+            value={scale}
+            onChange={(e) => setScale(e.target.value)}
+            disabled={isReadOnly}
+            min="1"
+          />
         </label>
 
-        <p className="panel-hint">
-          {regionElements.length} element(s) in region
-        </p>
+        <p className="panel-hint">{regionElements.length} element(s) in region</p>
 
-        <button
-          className="panel-btn primary"
-          onClick={createDetail}
-          disabled={isReadOnly}
-        >
+        <button className="panel-btn primary" onClick={createDetail} disabled={isReadOnly}>
           Create Detail View
         </button>
 
         {status && (
-          <p className="panel-status" role="status">{status}</p>
+          <p className="panel-status" role="status">
+            {status}
+          </p>
         )}
 
         {existingDetails.length > 0 && (

@@ -105,7 +105,7 @@ export function MarketplacePanel({
   // Subscribe so the UI reflects installs/uninstalls from any code path
   // (including host-driven reloads after a refresh).
   const [registeredIds, setRegisteredIds] = useState<Set<string>>(
-    () => new Set(pluginRegistry.list().map((m) => m.id)),
+    () => new Set(pluginRegistry.list().map((m) => m.id))
   );
 
   // Plugin pending consent approval. When non-null, PluginConsentModal
@@ -208,7 +208,7 @@ export function MarketplacePanel({
       await installPlugin(pluginId); // bumps installed version server-side
       // Refresh installedFromServer so the Update button goes away.
       setInstalledFromServer((prev) =>
-        prev.map((i) => (i.id === pluginId ? { ...i, installedVersion: plugin.version } : i)),
+        prev.map((i) => (i.id === pluginId ? { ...i, installedVersion: plugin.version } : i))
       );
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -233,7 +233,7 @@ export function MarketplacePanel({
       const i = installedById.get(plugin.id);
       return !!i && i.installedVersion !== plugin.version;
     },
-    [installedById],
+    [installedById]
   );
 
   /** Runs once the user clicks Install in the consent modal for a
@@ -264,7 +264,9 @@ export function MarketplacePanel({
       await installPlugin(pluginId);
     } catch (err) {
       // Server rejected — revert UI + local state.
-      setApiPlugins((prev) => prev.map((p) => (p.id === pluginId ? { ...p, installed: false } : p)));
+      setApiPlugins((prev) =>
+        prev.map((p) => (p.id === pluginId ? { ...p, installed: false } : p))
+      );
       pluginRegistry.unregister(pluginId);
       // eslint-disable-next-line no-console
       console.warn(`[marketplace] install failed for ${pluginId}:`, err);
@@ -284,9 +286,7 @@ export function MarketplacePanel({
   // client still sees the plugin as gone, and the next installed-list
   // reconcile will clear the discrepancy.
   const handleApiUninstall = useCallback(async (pluginId: string) => {
-    setApiPlugins((prev) =>
-      prev.map((p) => (p.id === pluginId ? { ...p, installed: false } : p)),
-    );
+    setApiPlugins((prev) => prev.map((p) => (p.id === pluginId ? { ...p, installed: false } : p)));
     setUninstallingIds((prev) => new Set([...prev, pluginId]));
     pluginRegistry.unregister(pluginId);
     try {
@@ -328,7 +328,7 @@ export function MarketplacePanel({
           (item) =>
             item.name.toLowerCase().includes(q) ||
             item.description.toLowerCase().includes(q) ||
-            item.category.toLowerCase().includes(q),
+            item.category.toLowerCase().includes(q)
         );
   }, [items, search]);
 
@@ -413,7 +413,10 @@ export function MarketplacePanel({
 
       {/* Loading skeleton */}
       {loading && (
-        <div className="marketplace-section" aria-label={t('marketplace.loading', { defaultValue: 'Loading plugins' })}>
+        <div
+          className="marketplace-section"
+          aria-label={t('marketplace.loading', { defaultValue: 'Loading plugins' })}
+        >
           <PluginSkeleton />
           <PluginSkeleton />
           <PluginSkeleton />
@@ -429,9 +432,7 @@ export function MarketplacePanel({
       {showFallback && (
         <div className="marketplace-section">
           <div className="marketplace-notice">
-            <span className="marketplace-notice-text">
-              {t('marketplace.bundledCaption')}
-            </span>
+            <span className="marketplace-notice-text">{t('marketplace.bundledCaption')}</span>
           </div>
           {AVAILABLE_PLUGINS.map((plugin) => {
             const isInstalled = registeredIds.has(plugin.id);
@@ -475,7 +476,10 @@ export function MarketplacePanel({
             const isInstalling = installingIds.has(plugin.id);
             const isUninstalling = uninstallingIds.has(plugin.id);
             return (
-              <div key={plugin.id} className={`marketplace-item${plugin.installed ? ' installed' : ''}`}>
+              <div
+                key={plugin.id}
+                className={`marketplace-item${plugin.installed ? ' installed' : ''}`}
+              >
                 <div className="item-info">
                   {plugin.icon && <img src={plugin.icon} alt="" className="plugin-icon" />}
                   <span className="item-name">{plugin.name}</span>
@@ -504,7 +508,9 @@ export function MarketplacePanel({
                       disabled={isUninstalling}
                       onClick={() => void handleApiUninstall(plugin.id)}
                     >
-                      {isUninstalling ? t('marketplace.uninstall') + '…' : t('marketplace.uninstall')}
+                      {isUninstalling
+                        ? t('marketplace.uninstall') + '…'
+                        : t('marketplace.uninstall')}
                     </button>
                   ) : (
                     <button
@@ -532,7 +538,9 @@ export function MarketplacePanel({
       )}
 
       {showEmpty && (
-        <div className="marketplace-empty">{t('marketplace.empty', { defaultValue: 'No plugins found.' })}</div>
+        <div className="marketplace-empty">
+          {t('marketplace.empty', { defaultValue: 'No plugins found.' })}
+        </div>
       )}
 
       {/* Legacy prop-based items (used in tests / embedded mode) */}
@@ -543,13 +551,19 @@ export function MarketplacePanel({
               <div className="item-info">
                 <span className="item-name">{item.name}</span>
                 <span className="item-desc">{item.description}</span>
-                <span className="item-meta">v{item.version} · {item.category} · {item.downloads.toLocaleString()} downloads</span>
+                <span className="item-meta">
+                  v{item.version} · {item.category} · {item.downloads.toLocaleString()} downloads
+                </span>
               </div>
               <div className="item-actions">
                 {item.installed ? (
                   <span className="installed-badge">Installed</span>
                 ) : (
-                  <button aria-label={`Install ${item.name}`} className="btn-install" onClick={() => onInstall?.(item)}>
+                  <button
+                    aria-label={`Install ${item.name}`}
+                    className="btn-install"
+                    onClick={() => onInstall?.(item)}
+                  >
                     Install
                   </button>
                 )}

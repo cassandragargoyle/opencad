@@ -17,8 +17,8 @@ THREE.Mesh.prototype.raycast = acceleratedRaycast;
 const INITIAL_CAPACITY = 64;
 
 /** Camera-distance thresholds for LOD switching (world units = mm). */
-const LOD_NEAR  = 15_000;
-const LOD_FAR   = 60_000;
+const LOD_NEAR = 15_000;
+const LOD_FAR = 60_000;
 
 type LodLevel = 'hi' | 'mid' | 'lo';
 
@@ -34,7 +34,7 @@ interface SpeciesBucket {
 
 function getLodForDistance(d: number): LodLevel {
   if (d < LOD_NEAR) return 'hi';
-  if (d < LOD_FAR)  return 'mid';
+  if (d < LOD_FAR) return 'mid';
   return 'lo';
 }
 
@@ -63,17 +63,17 @@ function buildGeometry(elementType: string, lod: LodLevel): THREE.BufferGeometry
 
 /** Color per element type for instanced mesh material. */
 const TYPE_COLOR: Record<string, string> = {
-  planting:       '#4a7c3f',
-  rock:           '#8a8070',
+  planting: '#4a7c3f',
+  rock: '#8a8070',
   site_furniture: '#b0a090',
-  person:         '#c0a080',
-  vehicle:        '#606878',
-  terrain_contour:'#a0906a',
+  person: '#c0a080',
+  vehicle: '#606878',
+  terrain_contour: '#a0906a',
 };
 
 function buildMaterial(elementType: string): THREE.MeshStandardMaterial {
   return new THREE.MeshStandardMaterial({
-    color:     new THREE.Color(TYPE_COLOR[elementType] ?? '#888888'),
+    color: new THREE.Color(TYPE_COLOR[elementType] ?? '#888888'),
     roughness: 0.85,
     metalness: 0.05,
   });
@@ -86,15 +86,15 @@ function createBucket(speciesId: string, elementType: string, scene: THREE.Scene
   for (const lod of lods) {
     const geom = buildGeometry(elementType, lod);
     geom.computeBoundsTree();
-    const mat  = buildMaterial(elementType);
+    const mat = buildMaterial(elementType);
     const mesh = new THREE.InstancedMesh(geom, mat, INITIAL_CAPACITY);
     mesh.count = 0;
-    mesh.castShadow    = true;
+    mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.userData.speciesId    = speciesId;
-    mesh.userData.elementType  = elementType;
-    mesh.userData.lod          = lod;
-    mesh.userData.isLandscape  = true;
+    mesh.userData.speciesId = speciesId;
+    mesh.userData.elementType = elementType;
+    mesh.userData.lod = lod;
+    mesh.userData.isLandscape = true;
     // Only hi-LOD mesh is initially visible; updateLod() switches as needed.
     mesh.visible = lod === 'hi';
     scene.add(mesh);
@@ -115,9 +115,9 @@ function elementTransform(el: ElementSchema): { pos: THREE.Vector3; ry: number; 
   const pv = (k: string, fb: number) =>
     typeof props[k]?.value === 'number' ? (props[k]!.value as number) : fb;
 
-  const x  = pv('X', 0);
-  const y  = pv('Y', 0);
-  const z  = pv('Z', 0);
+  const x = pv('X', 0);
+  const y = pv('Y', 0);
+  const z = pv('Z', 0);
   const ry = THREE.MathUtils.degToRad(pv('Rotation', 0));
   // Scale property is dimensionless (1.0 = normal). Convert mm-scale geometry
   // to scene units by applying the element scale directly.
@@ -125,17 +125,17 @@ function elementTransform(el: ElementSchema): { pos: THREE.Vector3; ry: number; 
 
   const tt = el.transform?.translation ?? { x: 0, y: 0, z: 0 };
   return {
-    pos:   new THREE.Vector3(x + tt.x, z + tt.z, y + tt.y),
+    pos: new THREE.Vector3(x + tt.x, z + tt.z, y + tt.y),
     ry,
     scale,
   };
 }
 
-const _matrix  = new THREE.Matrix4();
-const _pos     = new THREE.Vector3();
-const _quat    = new THREE.Quaternion();
-const _eulerY  = new THREE.Euler();
-const _scale   = new THREE.Vector3();
+const _matrix = new THREE.Matrix4();
+const _pos = new THREE.Vector3();
+const _quat = new THREE.Quaternion();
+const _eulerY = new THREE.Euler();
+const _scale = new THREE.Vector3();
 
 function buildMatrix(pos: THREE.Vector3, ry: number, scale: number): THREE.Matrix4 {
   _pos.copy(pos);
@@ -149,18 +149,14 @@ function buildMatrix(pos: THREE.Vector3, ry: number, scale: number): THREE.Matri
 function growBucket(bucket: SpeciesBucket, scene: THREE.Scene): void {
   const lods: LodLevel[] = ['hi', 'mid', 'lo'];
   for (const lod of lods) {
-    const old  = bucket.meshes[lod];
-    const cap  = old.instanceMatrix.array.length / 16;
-    const newMesh = new THREE.InstancedMesh(
-      old.geometry,
-      old.material as THREE.Material,
-      cap * 2
-    );
+    const old = bucket.meshes[lod];
+    const cap = old.instanceMatrix.array.length / 16;
+    const newMesh = new THREE.InstancedMesh(old.geometry, old.material as THREE.Material, cap * 2);
     newMesh.count = old.count;
-    newMesh.castShadow    = true;
+    newMesh.castShadow = true;
     newMesh.receiveShadow = true;
-    newMesh.visible       = old.visible;
-    newMesh.userData      = { ...old.userData };
+    newMesh.visible = old.visible;
+    newMesh.userData = { ...old.userData };
     // Copy existing instance matrices.
     for (let i = 0; i < old.count; i++) {
       old.getMatrixAt(i, _matrix);
@@ -177,7 +173,7 @@ function growBucket(bucket: SpeciesBucket, scene: THREE.Scene): void {
 }
 
 export class LandscapeInstanceManager {
-  private scene:   THREE.Scene;
+  private scene: THREE.Scene;
   private buckets: Map<string, SpeciesBucket> = new Map();
   /** element id → speciesId for quick removal. */
   private elementSpecies: Map<string, string> = new Map();
@@ -197,8 +193,10 @@ export class LandscapeInstanceManager {
       if (!isLandscapeElement(el)) continue;
       seenIds.add(el.id);
 
-      const speciesId = (el.properties as Record<string, { value: unknown }>)['SpeciesId']
-        ?.value as string | undefined ?? `${el.type}:default`;
+      const speciesId =
+        ((el.properties as Record<string, { value: unknown }>)['SpeciesId']?.value as
+          | string
+          | undefined) ?? `${el.type}:default`;
 
       const existingSpecies = this.elementSpecies.get(el.id);
       if (existingSpecies && existingSpecies !== speciesId) {
@@ -222,7 +220,7 @@ export class LandscapeInstanceManager {
         const idx = bucket.elementIndex.get(el.id);
         if (idx !== undefined) {
           const mat = buildMatrix(pos, ry, scale);
-          for (const lod of (['hi', 'mid', 'lo'] as LodLevel[])) {
+          for (const lod of ['hi', 'mid', 'lo'] as LodLevel[]) {
             bucket.meshes[lod].setMatrixAt(idx, mat);
             bucket.meshes[lod].instanceMatrix.needsUpdate = true;
           }
@@ -247,14 +245,16 @@ export class LandscapeInstanceManager {
       // Compute average position of instances to estimate distance.
       // For large scenes a bounding sphere would be better, but this is
       // sufficient for the typical number of landscape species (< 20).
-      const lod = getLodForDistance(cameraPosition.distanceTo(
-        // Use first instance position as representative.
-        ((): THREE.Vector3 => {
-          bucket.meshes.hi.getMatrixAt(0, _matrix);
-          _matrix.decompose(_pos, _quat, _scale);
-          return _pos.clone();
-        })()
-      ));
+      const lod = getLodForDistance(
+        cameraPosition.distanceTo(
+          // Use first instance position as representative.
+          ((): THREE.Vector3 => {
+            bucket.meshes.hi.getMatrixAt(0, _matrix);
+            _matrix.decompose(_pos, _quat, _scale);
+            return _pos.clone();
+          })()
+        )
+      );
 
       for (const l of lods) {
         bucket.meshes[l].visible = l === lod && bucket.count > 0;

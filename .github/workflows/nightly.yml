@@ -3,7 +3,7 @@ name: Nightly
 on:
   schedule:
     # Run at 2am UTC every day
-    - cron: "0 2 * * *"
+    - cron: '0 2 * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -184,7 +184,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: ${{ job.status }}
-          title: "Nightly Build Failed"
+          title: 'Nightly Build Failed'
           description: |
             One or more nightly jobs failed. Check the [Actions tab](https://github.com/CariHQ/opencad/actions) for details.
           color: 0xff0000

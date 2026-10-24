@@ -7,7 +7,11 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  createFavorite, mergeFavorites, favoritesForTool, applyFavorite, seedStarterFavorites,
+  createFavorite,
+  mergeFavorites,
+  favoritesForTool,
+  applyFavorite,
+  seedStarterFavorites,
 } from './favorites';
 
 describe('T-MOD-026: favorites', () => {
@@ -32,7 +36,10 @@ describe('T-MOD-026: favorites', () => {
   it('mergeFavorites: project favorite overrides same-id user favorite', () => {
     const userFav = createFavorite('wall', 'From User', { thickness: 100 });
     userFav.id = 'shared-id';
-    const projectFav = { ...createFavorite('wall', 'From Project', { thickness: 200 }), id: 'shared-id' };
+    const projectFav = {
+      ...createFavorite('wall', 'From Project', { thickness: 200 }),
+      id: 'shared-id',
+    };
     const merged = mergeFavorites([userFav], [projectFav]);
     expect(merged).toHaveLength(1);
     expect(merged[0]!.name).toBe('From Project');

@@ -6,17 +6,17 @@
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface SolarPosition {
-  azimuth: number;   // degrees, 0–360
+  azimuth: number; // degrees, 0–360
   elevation: number; // degrees, 0–90 (clamped; never negative)
   hour: number;
   month: number;
 }
 
 export interface SolarConfig {
-  latitude: number;  // degrees, positive = north
+  latitude: number; // degrees, positive = north
   longitude: number; // degrees, positive = east (unused in simplified formula)
-  month: number;     // 1–12
-  hour: number;      // 0–23
+  month: number; // 1–12
+  hour: number; // 0–23
 }
 
 // ─── Solar Position ───────────────────────────────────────────────────────────
@@ -32,9 +32,7 @@ export interface SolarConfig {
  */
 export function calculateSolarPosition(config: SolarConfig): SolarPosition {
   const rawElevation =
-    90 -
-    Math.abs(config.latitude) +
-    23.5 * Math.cos(((config.month - 6) / 6) * Math.PI);
+    90 - Math.abs(config.latitude) + 23.5 * Math.cos(((config.month - 6) / 6) * Math.PI);
 
   const elevation = Math.min(90, Math.max(0, rawElevation));
   const azimuth = ((config.hour - 12) / 12) * 180 + 180;

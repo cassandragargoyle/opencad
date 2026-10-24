@@ -20,9 +20,7 @@ export function compositeThickness(composite: Pick<Composite, 'layers'>): number
  * Validate a composite. Returns the array of reasons it fails validation,
  * empty array when it's valid. Used by schema load + ui edit commit.
  */
-export function validateComposite(
-  composite: Pick<Composite, 'layers' | 'name'>
-): string[] {
+export function validateComposite(composite: Pick<Composite, 'layers' | 'name'>): string[] {
   const reasons: string[] = [];
   if (!composite.layers || composite.layers.length === 0) {
     reasons.push('Composite must have at least one layer.');
@@ -51,10 +49,10 @@ export const BUILT_IN_COMPOSITES: Record<string, Composite> = {
     name: 'Exterior — brick / cavity / blockwork / plaster (300 mm)',
     category: 'wall',
     layers: [
-      { material: 'Brick',        thickness: 102.5, finish: 'exterior' },
-      { material: 'Air Cavity',   thickness: 50 },
+      { material: 'Brick', thickness: 102.5, finish: 'exterior' },
+      { material: 'Air Cavity', thickness: 50 },
       { material: 'Mineral Wool', thickness: 100 },
-      { material: 'Concrete',     thickness: 35, core: true },
+      { material: 'Concrete', thickness: 35, core: true },
       { material: 'Plasterboard', thickness: 12.5, finish: 'interior' },
     ],
   },
@@ -63,9 +61,9 @@ export const BUILT_IN_COMPOSITES: Record<string, Composite> = {
     name: 'Interior partition — plasterboard / stud / plasterboard (150 mm)',
     category: 'wall',
     layers: [
-      { material: 'Plasterboard', thickness: 15,  finish: 'exterior' },
-      { material: 'Air Cavity',   thickness: 120, core: true },
-      { material: 'Plasterboard', thickness: 15,  finish: 'interior' },
+      { material: 'Plasterboard', thickness: 15, finish: 'exterior' },
+      { material: 'Air Cavity', thickness: 120, core: true },
+      { material: 'Plasterboard', thickness: 15, finish: 'interior' },
     ],
   },
   'part-100-lightweight-partition': {
@@ -74,7 +72,7 @@ export const BUILT_IN_COMPOSITES: Record<string, Composite> = {
     category: 'wall',
     layers: [
       { material: 'Plasterboard', thickness: 12.5, finish: 'exterior' },
-      { material: 'Air Cavity',   thickness: 75,   core: true },
+      { material: 'Air Cavity', thickness: 75, core: true },
       { material: 'Plasterboard', thickness: 12.5, finish: 'interior' },
     ],
   },
@@ -82,27 +80,23 @@ export const BUILT_IN_COMPOSITES: Record<string, Composite> = {
     id: 'curt-60-glazing',
     name: 'Curtain wall — glazing (60 mm)',
     category: 'wall',
-    layers: [
-      { material: 'Clear Glass', thickness: 60, core: true, finish: 'both' },
-    ],
+    layers: [{ material: 'Clear Glass', thickness: 60, core: true, finish: 'both' }],
   },
   'slab-200-concrete': {
     id: 'slab-200-concrete',
     name: 'Slab — concrete (200 mm)',
     category: 'slab',
-    layers: [
-      { material: 'Concrete', thickness: 200, core: true },
-    ],
+    layers: [{ material: 'Concrete', thickness: 200, core: true }],
   },
   'roof-250-clay-tile-deck': {
     id: 'roof-250-clay-tile-deck',
     name: 'Roof — clay tile / deck / insulation (250 mm)',
     category: 'roof',
     layers: [
-      { material: 'Clay Roof Tiles', thickness: 40,  finish: 'exterior' },
-      { material: 'Timber',          thickness: 25 },
-      { material: 'Mineral Wool',    thickness: 175, core: true },
-      { material: 'Plasterboard',    thickness: 10,  finish: 'interior' },
+      { material: 'Clay Roof Tiles', thickness: 40, finish: 'exterior' },
+      { material: 'Timber', thickness: 25 },
+      { material: 'Mineral Wool', thickness: 175, core: true },
+      { material: 'Plasterboard', thickness: 10, finish: 'interior' },
     ],
   },
 };
@@ -115,12 +109,13 @@ export const BUILT_IN_COMPOSITES: Record<string, Composite> = {
 export function migrateLegacyWallToComposite(
   props: Record<string, { value: unknown; type: string; unit?: string }>
 ): { composite: Composite; compositeId: string } | null {
-  if (typeof (props['CompositeId']?.value) === 'string' && props['CompositeId']?.value !== '') return null;
+  if (typeof props['CompositeId']?.value === 'string' && props['CompositeId']?.value !== '')
+    return null;
 
   const widthRaw = props['Width']?.value;
-  const matRaw   = props['Material']?.value;
+  const matRaw = props['Material']?.value;
   const thickness = typeof widthRaw === 'number' ? widthRaw : 200;
-  const material  = typeof matRaw === 'string' ? matRaw : 'Concrete';
+  const material = typeof matRaw === 'string' ? matRaw : 'Concrete';
 
   const id = `legacy-${Math.round(thickness)}-${material.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   const composite: Composite = {

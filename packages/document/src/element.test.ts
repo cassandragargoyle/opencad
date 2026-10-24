@@ -70,7 +70,12 @@ describe('T-DOC-007: createElement', () => {
   });
 
   it('accepts custom properties', () => {
-    const el = createElement({ id: 'el-1', type: 'wall', layerId: 'l1', properties: { Width: { type: 'number', value: 200 } } });
+    const el = createElement({
+      id: 'el-1',
+      type: 'wall',
+      layerId: 'l1',
+      properties: { Width: { type: 'number', value: 200 } },
+    });
     expect((el.properties['Width'] as { value: number }).value).toBe(200);
   });
 
@@ -118,7 +123,12 @@ describe('T-DOC-007: updateElementProperty', () => {
   });
 
   it('overwrites existing property', () => {
-    const el = createElement({ id: 'el-1', type: 'wall', layerId: 'l1', properties: { Width: { type: 'number', value: 200 } } });
+    const el = createElement({
+      id: 'el-1',
+      type: 'wall',
+      layerId: 'l1',
+      properties: { Width: { type: 'number', value: 200 } },
+    });
     const updated = updateElementProperty(el, 'Width', { type: 'number', value: 300 });
     expect((updated.properties['Width'] as { value: number }).value).toBe(300);
   });

@@ -26,13 +26,13 @@ export type WindDirection = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW';
  */
 export function windDirectionToAngle(dir: WindDirection): number {
   const map: Record<WindDirection, number> = {
-    N:  0,
+    N: 0,
     NE: 45,
-    E:  90,
+    E: 90,
     SE: 135,
-    S:  180,
+    S: 180,
     SW: 225,
-    W:  270,
+    W: 270,
     NW: 315,
   };
   return map[dir];
@@ -57,12 +57,12 @@ const WIND_ROSE_DIRS: WindDirection[] = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', '
  * Find the dominant wind direction using the highest frequency × speed product.
  */
 export function dominantWindDirection(rose: WindRose): WindDirection {
-  let maxProduct  = -Infinity;
+  let maxProduct = -Infinity;
   let dominantIdx = 0;
   for (let i = 0; i < 8; i++) {
     const product = rose.frequencies[i] * rose.speeds[i];
     if (product > maxProduct) {
-      maxProduct  = product;
+      maxProduct = product;
       dominantIdx = i;
     }
   }
@@ -91,14 +91,15 @@ export interface FacadePressure {
  */
 export function estimateFacadePressure(
   buildingAspect: number,
-  windAngleDeg: number,
+  windAngleDeg: number
 ): FacadePressure {
   // Clamp aspect ratio to sensible range
   const aspect = Math.max(0.2, Math.min(5.0, buildingAspect));
 
   // Wind angle in [0°, 90°] by symmetry
   const theta = Math.abs(((windAngleDeg % 360) + 360) % 360);
-  const effectiveAngle = theta <= 90 ? theta : theta <= 180 ? 180 - theta : theta <= 270 ? theta - 180 : 360 - theta;
+  const effectiveAngle =
+    theta <= 90 ? theta : theta <= 180 ? 180 - theta : theta <= 270 ? theta - 180 : 360 - theta;
   const angleRad = (effectiveAngle * Math.PI) / 180;
 
   // Windward Cp — interpolate between normal-incidence Cp and oblique-incidence minimum
@@ -110,17 +111,17 @@ export function estimateFacadePressure(
   // L/B (depth/width) = 1/aspect
   const lBRatio = 1 / aspect;
   let cpLeewardBase: number;
-  if (lBRatio <= 1.0)       cpLeewardBase = -0.5;
-  else if (lBRatio <= 2.0)  cpLeewardBase = -0.3;
-  else                      cpLeewardBase = -0.2;
+  if (lBRatio <= 1.0) cpLeewardBase = -0.5;
+  else if (lBRatio <= 2.0) cpLeewardBase = -0.3;
+  else cpLeewardBase = -0.2;
 
   // Side walls are suction at all angles
   const cpLeeward = cpLeewardBase;
 
   return {
-    faceId:        'primary',
+    faceId: 'primary',
     windwardCoeff: Math.round(cpWindward * 1000) / 1000,
-    leewardCoeff:  Math.round(cpLeeward  * 1000) / 1000,
+    leewardCoeff: Math.round(cpLeeward * 1000) / 1000,
   };
 }
 
@@ -154,7 +155,7 @@ export interface PedestrianPoint {
 export function computePedestrianWind(
   buildingHeight: number,
   setbackM: number,
-  freeStreamMs: number,
+  freeStreamMs: number
 ): PedestrianPoint {
   const alpha = 0.25; // power law exponent, suburban terrain
 
@@ -170,7 +171,7 @@ export function computePedestrianWind(
     reductionFactor = 0.9;
   } else if (hToSRatio >= 1.0) {
     // Transitional canyon regime
-    reductionFactor = 0.5 + 0.4 * (hToSRatio - 1.0) / 2.0;
+    reductionFactor = 0.5 + (0.4 * (hToSRatio - 1.0)) / 2.0;
   } else {
     // Isolated building wake — significant speed reduction
     reductionFactor = 0.3 + 0.2 * hToSRatio;
@@ -208,10 +209,10 @@ export type LawsonCriteria = 'A' | 'B' | 'C' | 'D' | 'E';
  *   E: > 8 m/s  — unsafe (potential hazard)
  */
 export function lawsonCategory(windSpeedMs: number): LawsonCriteria {
-  if (windSpeedMs < 2)  return 'A';
-  if (windSpeedMs < 4)  return 'B';
-  if (windSpeedMs < 6)  return 'C';
-  if (windSpeedMs < 8)  return 'D';
+  if (windSpeedMs < 2) return 'A';
+  if (windSpeedMs < 4) return 'B';
+  if (windSpeedMs < 6) return 'C';
+  if (windSpeedMs < 8) return 'D';
   return 'E';
 }
 
@@ -229,19 +230,19 @@ export interface BeaufortEntry {
  * maxSpeedMs is the upper boundary; force 12 has Infinity.
  */
 export const BEAUFORT_SCALE: BeaufortEntry[] = [
-  { force: 0,  description: 'Calm',               maxSpeedMs: 0.2   },
-  { force: 1,  description: 'Light air',           maxSpeedMs: 1.5   },
-  { force: 2,  description: 'Light breeze',        maxSpeedMs: 3.3   },
-  { force: 3,  description: 'Gentle breeze',       maxSpeedMs: 5.4   },
-  { force: 4,  description: 'Moderate breeze',     maxSpeedMs: 7.9   },
-  { force: 5,  description: 'Fresh breeze',        maxSpeedMs: 10.7  },
-  { force: 6,  description: 'Strong breeze',       maxSpeedMs: 13.8  },
-  { force: 7,  description: 'Near gale',           maxSpeedMs: 17.1  },
-  { force: 8,  description: 'Gale',                maxSpeedMs: 20.7  },
-  { force: 9,  description: 'Severe gale',         maxSpeedMs: 24.4  },
-  { force: 10, description: 'Storm',               maxSpeedMs: 28.4  },
-  { force: 11, description: 'Violent storm',       maxSpeedMs: 32.6  },
-  { force: 12, description: 'Hurricane force',     maxSpeedMs: Infinity },
+  { force: 0, description: 'Calm', maxSpeedMs: 0.2 },
+  { force: 1, description: 'Light air', maxSpeedMs: 1.5 },
+  { force: 2, description: 'Light breeze', maxSpeedMs: 3.3 },
+  { force: 3, description: 'Gentle breeze', maxSpeedMs: 5.4 },
+  { force: 4, description: 'Moderate breeze', maxSpeedMs: 7.9 },
+  { force: 5, description: 'Fresh breeze', maxSpeedMs: 10.7 },
+  { force: 6, description: 'Strong breeze', maxSpeedMs: 13.8 },
+  { force: 7, description: 'Near gale', maxSpeedMs: 17.1 },
+  { force: 8, description: 'Gale', maxSpeedMs: 20.7 },
+  { force: 9, description: 'Severe gale', maxSpeedMs: 24.4 },
+  { force: 10, description: 'Storm', maxSpeedMs: 28.4 },
+  { force: 11, description: 'Violent storm', maxSpeedMs: 32.6 },
+  { force: 12, description: 'Hurricane force', maxSpeedMs: Infinity },
 ];
 
 /**

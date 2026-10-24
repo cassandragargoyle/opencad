@@ -14,7 +14,10 @@ interface PresenceOverlayProps {
 
 export function PresenceOverlay({ collaborators }: PresenceOverlayProps) {
   return (
-    <div className="presence-overlay" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 100 }}>
+    <div
+      className="presence-overlay"
+      style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 100 }}
+    >
       {collaborators.map((c) => (
         <div
           key={c.userId}
@@ -69,7 +72,10 @@ export function PresenceOverlay({ collaborators }: PresenceOverlayProps) {
         </div>
       ))}
 
-      <div className="presence-avatar-bar" style={{ position: 'absolute', top: 8, right: 8, display: 'flex', gap: 4 }}>
+      <div
+        className="presence-avatar-bar"
+        style={{ position: 'absolute', top: 8, right: 8, display: 'flex', gap: 4 }}
+      >
         {collaborators.map((c) => (
           <div
             key={c.userId}

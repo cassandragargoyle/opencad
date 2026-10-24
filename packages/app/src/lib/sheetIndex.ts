@@ -76,12 +76,12 @@ export function buildSheetIndexRows(sheets: Sheet[]): SheetIndexRow[] {
   return sheets
     .filter((s) => s.sheetNumber)
     .map((s) => ({
-      sheetNumber:  s.sheetNumber!,
-      title:        s.title,
-      discipline:   s.discipline,
-      revision:     s.revision ?? '',
+      sheetNumber: s.sheetNumber!,
+      title: s.title,
+      discipline: s.discipline,
+      revision: s.revision ?? '',
       revisionDate: s.revisionDate ?? '',
-      author:       s.author ?? '',
+      author: s.author ?? '',
     }));
 }
 

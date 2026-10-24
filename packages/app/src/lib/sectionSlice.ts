@@ -11,10 +11,18 @@
  * follow once the section view needs them.
  */
 
-export interface Point3D { x: number; y: number; z: number }
-export interface Point2D { x: number; y: number }
+export interface Point3D {
+  x: number;
+  y: number;
+  z: number;
+}
+export interface Point2D {
+  x: number;
+  y: number;
+}
 export interface Box3D {
-  min: Point3D; max: Point3D;
+  min: Point3D;
+  max: Point3D;
   /** optional tag to identify the source element back in the section view. */
   elementId?: string;
   material?: string;
@@ -81,7 +89,7 @@ export function sliceBoxes(boxes: Box3D[], plane: AxisPlane): SliceResult {
  */
 export function sliceCompositeWall(
   layers: Array<{ box: Box3D; material: string }>,
-  plane: AxisPlane,
+  plane: AxisPlane
 ): SliceResult {
   const out: SliceResult['polygons'] = [];
   for (const layer of layers) {

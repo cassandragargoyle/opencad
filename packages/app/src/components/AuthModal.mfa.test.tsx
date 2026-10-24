@@ -97,7 +97,7 @@ describe('T-AUTH-007: AuthModal MFA TOTP challenge step', () => {
     const mockResolver = { hints: [{ factorId: 'totp', uid: 'hint-uid' }] };
     mockSignIn.mockRejectedValue(makeMfaError(mockResolver));
     mockResolveMfaChallenge.mockRejectedValue(
-      Object.assign(new Error('Invalid OTP'), { code: 'auth/invalid-verification-code' }),
+      Object.assign(new Error('Invalid OTP'), { code: 'auth/invalid-verification-code' })
     );
 
     render(<AuthModal onClose={onClose} />);

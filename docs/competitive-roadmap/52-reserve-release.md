@@ -11,6 +11,7 @@ CRDT + reserve / release is the hybrid that scales: fine-grained locking only wh
 ## Scope
 
 ### In scope
+
 - **Reserve**: when a user starts editing an element, a lightweight lock is broadcast. Other users see a badge on the element ("🔒 Alice is editing").
 - **Release**: explicit user action, or automatic after a timeout, or on selection change.
 - **Force release**: privileged user (admin / project owner) can revoke any lock.
@@ -19,6 +20,7 @@ CRDT + reserve / release is the hybrid that scales: fine-grained locking only wh
 - **Sync**: reservations travel over the same CRDT channel as document data, but with a separate namespace.
 
 ### Out of scope
+
 - Per-layer reservations.
 - Per-property reservations (lock just the material, not geometry).
 - Offline reservations (requires global server authority).

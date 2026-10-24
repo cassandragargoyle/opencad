@@ -14,9 +14,9 @@ import {
 } from '../lib/setbackCalc';
 
 const DEFAULT_SETBACKS: SetbackDistances = {
-  front: 3000,  // 3 m
-  rear:  3000,
-  left:  1500,  // 1.5 m
+  front: 3000, // 3 m
+  rear: 3000,
+  left: 1500, // 1.5 m
   right: 1500,
 };
 
@@ -28,23 +28,25 @@ function collectPropertyLinePolygon(
   if (lines.length === 0) return [];
 
   // If any property_line has a Points property, use that directly.
-  const withPoints = lines.find(
-    (e) => typeof e.properties['Points']?.value === 'string'
-  );
+  const withPoints = lines.find((e) => typeof e.properties['Points']?.value === 'string');
   if (withPoints) {
     try {
       const pts = JSON.parse(withPoints.properties['Points']!.value as string) as Point2D[];
       if (pts.length >= 3) return pts;
-    } catch { /* fall through */ }
+    } catch {
+      /* fall through */
+    }
   }
 
   // Build polygon from StartX/StartY/EndX/EndY segments by chaining endpoints.
   const segments = lines.map((e) => {
-    const pv = (k: string) => typeof e.properties[k]?.value === 'number'
-      ? (e.properties[k]!.value as number) : 0;
+    const pv = (k: string) =>
+      typeof e.properties[k]?.value === 'number' ? (e.properties[k]!.value as number) : 0;
     return {
-      x1: pv('StartX'), y1: pv('StartY'),
-      x2: pv('EndX'),   y2: pv('EndY'),
+      x1: pv('StartX'),
+      y1: pv('StartY'),
+      x2: pv('EndX'),
+      y2: pv('EndY'),
     };
   });
 
@@ -65,8 +67,16 @@ function collectPropertyLinePolygon(
       const s = segments[i]!;
       const d1 = (s.x1 - last.x) ** 2 + (s.y1 - last.y) ** 2;
       const d2 = (s.x2 - last.x) ** 2 + (s.y2 - last.y) ** 2;
-      if (d1 < bestDist) { bestDist = d1; bestIdx = i; reversed = false; }
-      if (d2 < bestDist) { bestDist = d2; bestIdx = i; reversed = true; }
+      if (d1 < bestDist) {
+        bestDist = d1;
+        bestIdx = i;
+        reversed = false;
+      }
+      if (d2 < bestDist) {
+        bestDist = d2;
+        bestIdx = i;
+        reversed = true;
+      }
     }
     if (bestIdx < 0) break;
     const s = segments[bestIdx]!;
@@ -77,11 +87,7 @@ function collectPropertyLinePolygon(
   return poly.length >= 3 ? poly.slice(0, -1) : []; // last = first, remove duplicate
 }
 
-function mmInput(
-  label: string,
-  value: number,
-  onChange: (v: number) => void
-): React.ReactElement {
+function mmInput(label: string, value: number, onChange: (v: number) => void): React.ReactElement {
   return (
     <label className="setback-panel__field">
       <span className="setback-panel__label">{label}</span>
@@ -101,7 +107,7 @@ function mmInput(
 
 export function PropertySetbackPanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document   = useDocumentStore((s) => s.document);
+  const document = useDocumentStore((s) => s.document);
   const addElement = useDocumentStore((s) => s.addElement);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
   const isReadOnly = isDocumentReadOnly();
@@ -110,9 +116,15 @@ export function PropertySetbackPanel(): React.ReactElement {
   const [error, setError] = useState<string | null>(null);
 
   const polygon = useMemo(
-    () => document ? collectPropertyLinePolygon(
-      document.content.elements as Record<string, { type: string; properties: Record<string, { value: unknown }> }>
-    ) : [],
+    () =>
+      document
+        ? collectPropertyLinePolygon(
+            document.content.elements as Record<
+              string,
+              { type: string; properties: Record<string, { value: unknown }> }
+            >
+          )
+        : [],
     [document]
   );
 
@@ -152,11 +164,11 @@ export function PropertySetbackPanel(): React.ReactElement {
       type: 'surface',
       layerId,
       properties: {
-        Name:   { type: 'string', value: t('panels.setback.envelopeName') },
-        Kind:   { type: 'string', value: 'setback_envelope' },
+        Name: { type: 'string', value: t('panels.setback.envelopeName') },
+        Kind: { type: 'string', value: 'setback_envelope' },
         Points: { type: 'string', value: JSON.stringify(result.polygon) },
-        X:      { type: 'number', value: centroid.x },
-        Y:      { type: 'number', value: centroid.y },
+        X: { type: 'number', value: centroid.x },
+        Y: { type: 'number', value: centroid.y },
       },
     });
   }, [document, isReadOnly, polygon, setbacks, addElement, pushHistory, t]);
@@ -179,13 +191,25 @@ export function PropertySetbackPanel(): React.ReactElement {
       </div>
 
       <div className="setback-panel__fields">
-        {mmInput(t('panels.setback.front'), setbacks.front,  (v) => setSetbacks((s) => ({ ...s, front:  v })))}
-        {mmInput(t('panels.setback.rear'),  setbacks.rear,   (v) => setSetbacks((s) => ({ ...s, rear:   v })))}
-        {mmInput(t('panels.setback.left'),  setbacks.left,   (v) => setSetbacks((s) => ({ ...s, left:   v })))}
-        {mmInput(t('panels.setback.right'), setbacks.right,  (v) => setSetbacks((s) => ({ ...s, right:  v })))}
+        {mmInput(t('panels.setback.front'), setbacks.front, (v) =>
+          setSetbacks((s) => ({ ...s, front: v }))
+        )}
+        {mmInput(t('panels.setback.rear'), setbacks.rear, (v) =>
+          setSetbacks((s) => ({ ...s, rear: v }))
+        )}
+        {mmInput(t('panels.setback.left'), setbacks.left, (v) =>
+          setSetbacks((s) => ({ ...s, left: v }))
+        )}
+        {mmInput(t('panels.setback.right'), setbacks.right, (v) =>
+          setSetbacks((s) => ({ ...s, right: v }))
+        )}
       </div>
 
-      {error && <div className="setback-panel__error" role="alert">{error}</div>}
+      {error && (
+        <div className="setback-panel__error" role="alert">
+          {error}
+        </div>
+      )}
 
       <button
         className="setback-panel__generate-btn"

@@ -2,11 +2,7 @@
  * T-VIEW-03: Unit tests for detailView — 2D detail view region logic.
  */
 import { describe, it, expect } from 'vitest';
-import {
-  createDetailView,
-  getDetailViewElements,
-  type DetailRegion,
-} from './detailView';
+import { createDetailView, getDetailViewElements, type DetailRegion } from './detailView';
 import type { ElementSchema } from '@opencad/document';
 
 function makeElement(id: string, x1: number, y1: number, x2: number, y2: number): ElementSchema {
@@ -49,9 +45,9 @@ describe('T-VIEW-03: detailView', () => {
 
   it('getDetailViewElements returns elements inside the region', () => {
     const elements = [
-      makeElement('e1', 100, 100, 400, 100),   // inside
-      makeElement('e2', 600, 100, 900, 100),   // outside
-      makeElement('e3', 200, 200, 300, 200),   // inside
+      makeElement('e1', 100, 100, 400, 100), // inside
+      makeElement('e2', 600, 100, 900, 100), // outside
+      makeElement('e3', 200, 200, 300, 200), // inside
     ];
     const region: DetailRegion = { x: 0, y: 0, width: 500, height: 500, scale: 10 };
     const result = getDetailViewElements(elements, region);

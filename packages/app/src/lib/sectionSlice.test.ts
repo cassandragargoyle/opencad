@@ -13,18 +13,21 @@ describe('T-DOC-005: sectionSlice', () => {
   it('T-DOC-005-001: slicing a unit box with x=0.5 plane returns a YZ rectangle', () => {
     const r = sliceBoxAxisPlane(
       { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 1, z: 1 } },
-      { axis: 'x', value: 0.5 },
+      { axis: 'x', value: 0.5 }
     );
     expect(r).toHaveLength(4);
     expect(r).toEqual([
-      { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 },
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 1, y: 1 },
+      { x: 0, y: 1 },
     ]);
   });
 
   it('T-DOC-005-002: plane that misses the box returns null', () => {
     const r = sliceBoxAxisPlane(
       { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 1, z: 1 } },
-      { axis: 'x', value: 10 },
+      { axis: 'x', value: 10 }
     );
     expect(r).toBeNull();
   });
@@ -32,7 +35,7 @@ describe('T-DOC-005: sectionSlice', () => {
   it('T-DOC-005-002b: y plane outside the box returns null', () => {
     const r = sliceBoxAxisPlane(
       { min: { x: 0, y: 2, z: 0 }, max: { x: 1, y: 3, z: 1 } },
-      { axis: 'y', value: 0 },
+      { axis: 'y', value: 0 }
     );
     expect(r).toBeNull();
   });
@@ -41,7 +44,10 @@ describe('T-DOC-005: sectionSlice', () => {
     const layers = [
       { box: { min: { x: 0, y: 0, z: 0 }, max: { x: 100, y: 100, z: 100 } }, material: 'Brick' },
       { box: { min: { x: 100, y: 0, z: 0 }, max: { x: 150, y: 100, z: 100 } }, material: 'Cavity' },
-      { box: { min: { x: 150, y: 0, z: 0 }, max: { x: 200, y: 100, z: 100 } }, material: 'Blockwork' },
+      {
+        box: { min: { x: 150, y: 0, z: 0 }, max: { x: 200, y: 100, z: 100 } },
+        material: 'Blockwork',
+      },
     ];
     const result = sliceCompositeWall(layers, { axis: 'x', value: 50 });
     // The x=50 plane hits the first layer only

@@ -9,6 +9,7 @@ When an element is selected, users want editable control points along every edge
 ## Scope
 
 ### In scope
+
 - When an element is selected, render hotspot dots at:
   - Each vertex (editable: drag that vertex).
   - Each edge midpoint (editable: move edge perpendicular to itself).
@@ -19,6 +20,7 @@ When an element is selected, users want editable control points along every edge
 - Numeric entry via coord box (T-MOD-003).
 
 ### Out of scope
+
 - 3D hotspots on walls (walls edited in plan only in v1).
 - Rotation hotspots (use dedicated rotate gizmo instead).
 

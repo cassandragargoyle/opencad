@@ -28,7 +28,11 @@ export function SiteImportPanel({ onImport, onSearch }: SiteImportPanelProps = {
   const { t } = useTranslation('panels');
   const [query, setQuery] = useState('');
   const [source, setSource] = useState<'osm' | 'ordnance-survey'>('osm');
-  const [selectedLayers, setSelectedLayers] = useState<SiteLayer[]>(['terrain', 'buildings', 'roads']);
+  const [selectedLayers, setSelectedLayers] = useState<SiteLayer[]>([
+    'terrain',
+    'buildings',
+    'roads',
+  ]);
   const [radius, setRadius] = useState(500);
 
   const toggleLayer = (layer: SiteLayer) => {
@@ -54,10 +58,14 @@ export function SiteImportPanel({ onImport, onSearch }: SiteImportPanelProps = {
       <div className="site-search-row">
         <input
           type="text"
-          placeholder={t('site.searchPlaceholder', { defaultValue: 'Enter address, coordinates, or location…' })}
+          placeholder={t('site.searchPlaceholder', {
+            defaultValue: 'Enter address, coordinates, or location…',
+          })}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch();
+          }}
           className="site-search-input"
         />
         <button
@@ -71,7 +79,10 @@ export function SiteImportPanel({ onImport, onSearch }: SiteImportPanelProps = {
 
       <div className="site-source-row">
         <label>{t('site.source', { defaultValue: 'Source:' })}</label>
-        <select value={source} onChange={(e) => setSource(e.target.value as 'osm' | 'ordnance-survey')}>
+        <select
+          value={source}
+          onChange={(e) => setSource(e.target.value as 'osm' | 'ordnance-survey')}
+        >
           <option value="osm">OpenStreetMap / OSM</option>
           <option value="ordnance-survey">Ordnance Survey</option>
         </select>

@@ -1,78 +1,78 @@
 version: 2
 updates:
   # JavaScript/TypeScript dependencies
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "UTC"
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'UTC'
     open-pull-requests-limit: 10
     reviewers:
-      - "opencad/maintainers"
+      - 'opencad/maintainers'
     labels:
-      - "dependencies"
-      - "javascript"
+      - 'dependencies'
+      - 'javascript'
     commit-message:
-      prefix: "chore(deps)"
+      prefix: 'chore(deps)'
     # Group minor/patch updates together
     groups:
       dev-dependencies:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 
   # Rust dependencies (geometry kernel)
-  - package-ecosystem: "cargo"
-    directory: "/packages/geometry"
+  - package-ecosystem: 'cargo'
+    directory: '/packages/geometry'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "UTC"
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'UTC'
     open-pull-requests-limit: 5
     reviewers:
-      - "opencad/maintainers"
+      - 'opencad/maintainers'
     labels:
-      - "dependencies"
-      - "rust"
+      - 'dependencies'
+      - 'rust'
     commit-message:
-      prefix: "chore(deps)"
+      prefix: 'chore(deps)'
 
   # Rust dependencies (desktop app)
-  - package-ecosystem: "cargo"
-    directory: "/apps/desktop/src-tauri"
+  - package-ecosystem: 'cargo'
+    directory: '/apps/desktop/src-tauri'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "UTC"
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'UTC'
     open-pull-requests-limit: 5
     reviewers:
-      - "opencad/maintainers"
+      - 'opencad/maintainers'
     labels:
-      - "dependencies"
-      - "rust"
-      - "desktop"
+      - 'dependencies'
+      - 'rust'
+      - 'desktop'
     commit-message:
-      prefix: "chore(deps)"
+      prefix: 'chore(deps)'
 
   # GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "UTC"
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'UTC'
     open-pull-requests-limit: 5
     reviewers:
-      - "opencad/maintainers"
+      - 'opencad/maintainers'
     labels:
-      - "dependencies"
-      - "ci"
+      - 'dependencies'
+      - 'ci'
     commit-message:
-      prefix: "chore(ci)"
+      prefix: 'chore(ci)'

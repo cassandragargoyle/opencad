@@ -17,10 +17,12 @@ import type { Profile2D, BoxRegion } from './useGeometryBuilder';
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function makeWallElement(
-  startX = 0, startY = 0,
-  endX = 5000, endY = 0,
+  startX = 0,
+  startY = 0,
+  endX = 5000,
+  endY = 0,
   height = 3000,
-  thickness = 200,
+  thickness = 200
 ): ElementSchema {
   return {
     id: 'wall-test',
@@ -30,18 +32,31 @@ function makeWallElement(
     layerId: 'layer-0',
     levelId: null,
     properties: {
-      StartX:   { type: 'number', value: startX },
-      StartY:   { type: 'number', value: startY },
-      EndX:     { type: 'number', value: endX },
-      EndY:     { type: 'number', value: endY },
-      Height:   { type: 'number', value: height },
-      Width:    { type: 'number', value: thickness },
+      StartX: { type: 'number', value: startX },
+      StartY: { type: 'number', value: startY },
+      EndX: { type: 'number', value: endX },
+      EndY: { type: 'number', value: endY },
+      Height: { type: 'number', value: height },
+      Width: { type: 'number', value: thickness },
     },
     propertySets: [],
-    geometry:    { type: 'mesh', data: null },
-    transform:   { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-    boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' } },
-    metadata:    { id: 'wall-test', createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
+    geometry: { type: 'mesh', data: null },
+    transform: {
+      translation: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+    },
+    boundingBox: {
+      min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+      max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' },
+    },
+    metadata: {
+      id: 'wall-test',
+      createdBy: 'test',
+      createdAt: 0,
+      updatedAt: 0,
+      version: { clock: {} },
+    },
   };
 }
 
@@ -141,11 +156,24 @@ describe('T-3D-WASM-002: buildWallGeometry', () => {
   it('uses default values when properties are missing', () => {
     const { result } = renderHook(() => useGeometryBuilder());
     const wall: ElementSchema = {
-      id: 'w2', type: 'wall', visible: true, locked: false,
-      layerId: 'l', levelId: null, properties: {}, propertySets: [],
+      id: 'w2',
+      type: 'wall',
+      visible: true,
+      locked: false,
+      layerId: 'l',
+      levelId: null,
+      properties: {},
+      propertySets: [],
       geometry: { type: 'mesh', data: null },
-      transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-      boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 1000, y: 200, z: 3000, _type: 'Point3D' } },
+      transform: {
+        translation: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      boundingBox: {
+        min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+        max: { x: 1000, y: 200, z: 3000, _type: 'Point3D' },
+      },
       metadata: { id: 'w2', createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
     };
     // Default EndX = StartX + 1000, so length > 0 → mesh should be non-empty
@@ -169,9 +197,9 @@ describe('T-3D-WASM-003: subtractBox', () => {
   it('removes fully-interior triangles', () => {
     const { result } = renderHook(() => useGeometryBuilder());
     // A single triangle completely inside the box
-    const insideTri = new Float32Array([1.1, 1.1, 0.0,  1.9, 1.1, 0.0,  1.5, 1.9, 0.0]);
+    const insideTri = new Float32Array([1.1, 1.1, 0.0, 1.9, 1.1, 0.0, 1.5, 1.9, 0.0]);
     // A single triangle completely outside
-    const outsideTri = new Float32Array([4.0, 4.0, 0.0,  6.0, 4.0, 0.0,  5.0, 6.0, 0.0]);
+    const outsideTri = new Float32Array([4.0, 4.0, 0.0, 6.0, 4.0, 0.0, 5.0, 6.0, 0.0]);
     const combined = new Float32Array(18);
     combined.set(insideTri, 0);
     combined.set(outsideTri, 9);
@@ -184,7 +212,7 @@ describe('T-3D-WASM-003: subtractBox', () => {
   it('keeps boundary-straddling triangles', () => {
     const { result } = renderHook(() => useGeometryBuilder());
     // Vertex at 0.5 is outside box [1,2]
-    const straddling = new Float32Array([0.5, 1.5, 0.0,  1.5, 1.5, 0.0,  1.0, 2.5, 0.0]);
+    const straddling = new Float32Array([0.5, 1.5, 0.0, 1.5, 1.5, 0.0, 1.0, 2.5, 0.0]);
     const box: BoxRegion = { minX: 1.0, minY: 1.0, minZ: -1.0, maxX: 2.0, maxY: 2.0, maxZ: 1.0 };
     const filtered = result.current.subtractBox(straddling, box);
     expect(filtered.length).toBe(9);

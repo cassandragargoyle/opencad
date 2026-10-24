@@ -28,7 +28,15 @@ describe('T-BIM-001: materials catalog', () => {
 
   it('all categories are represented', () => {
     const presentCategories = new Set<string>(MATERIALS.map((m) => m.category));
-    const requiredCategories = ['concrete', 'masonry', 'steel', 'wood', 'glass', 'insulation', 'finish'];
+    const requiredCategories = [
+      'concrete',
+      'masonry',
+      'steel',
+      'wood',
+      'glass',
+      'insulation',
+      'finish',
+    ];
     for (const cat of requiredCategories) {
       expect(presentCategories.has(cat)).toBe(true);
     }

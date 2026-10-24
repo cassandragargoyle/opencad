@@ -38,7 +38,14 @@ export function VirtualElementList({
     <div className="virtual-list" style={{ position: 'relative', overflow: 'hidden' }}>
       <div
         className="virtual-list-spacer"
-        style={{ height: totalHeight, position: 'absolute', top: 0, left: 0, right: 0, pointerEvents: 'none' }}
+        style={{
+          height: totalHeight,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          pointerEvents: 'none',
+        }}
         aria-hidden="true"
       />
       <div
@@ -49,11 +56,19 @@ export function VirtualElementList({
           <div
             key={item.id}
             className="virtual-list-item"
-            style={{ height: itemHeight, display: 'flex', alignItems: 'center', gap: 8, padding: '0 8px' }}
+            style={{
+              height: itemHeight,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '0 8px',
+            }}
             onClick={() => onItemClick?.(item)}
             role="listitem"
           >
-            <span className="item-type-badge" style={{ fontSize: 10, opacity: 0.7 }}>{item.type}</span>
+            <span className="item-type-badge" style={{ fontSize: 10, opacity: 0.7 }}>
+              {item.type}
+            </span>
             <span className="item-label">{item.label}</span>
           </div>
         ))}

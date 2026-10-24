@@ -38,7 +38,8 @@ describe('T-MOD-003: useViewport.commitFromCoordBox', () => {
     // Begin drawing at (0,0) by calling handleCanvasMouseDown on a stub
     // canvas element.
     const canvas = document.createElement('canvas');
-    canvas.width = 200; canvas.height = 200;
+    canvas.width = 200;
+    canvas.height = 200;
     Object.defineProperty(canvas, 'getBoundingClientRect', {
       value: () => ({ left: 0, top: 0, right: 200, bottom: 200, width: 200, height: 200 }),
     });
@@ -47,8 +48,11 @@ describe('T-MOD-003: useViewport.commitFromCoordBox', () => {
 
     act(() => {
       result.current.handleCanvasMouseDown({
-        button: 0, clientX: 100, clientY: 100,
-        preventDefault: () => {}, stopPropagation: () => {},
+        button: 0,
+        clientX: 100,
+        clientY: 100,
+        preventDefault: () => {},
+        stopPropagation: () => {},
       } as unknown as React.MouseEvent<HTMLCanvasElement>);
     });
 
@@ -67,6 +71,6 @@ describe('T-MOD-003: useViewport.commitFromCoordBox', () => {
     const ey = (w.properties as Record<string, { value: number }>)['EndY']!.value;
     // End should be exactly 4500 mm along +X from start.
     expect(ex - sx).toBeCloseTo(4500, 1);
-    expect(ey - sy).toBeCloseTo(0,    1);
+    expect(ey - sy).toBeCloseTo(0, 1);
   });
 });

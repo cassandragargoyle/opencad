@@ -6,23 +6,30 @@
  * resulting points back onto the element's properties.
  */
 
-export interface Point { x: number; y: number }
+export interface Point {
+  x: number;
+  y: number;
+}
 
 /** Mirror a point across a line defined by two points. */
 export function mirrorPoint(p: Point, axisA: Point, axisB: Point): Point {
-  const dx = axisB.x - axisA.x, dy = axisB.y - axisA.y;
+  const dx = axisB.x - axisA.x,
+    dy = axisB.y - axisA.y;
   const len2 = dx * dx + dy * dy;
   if (len2 === 0) return p;
   // Project p onto axis, then reflect
   const t = ((p.x - axisA.x) * dx + (p.y - axisA.y) * dy) / len2;
-  const projX = axisA.x + t * dx, projY = axisA.y + t * dy;
+  const projX = axisA.x + t * dx,
+    projY = axisA.y + t * dy;
   return { x: 2 * projX - p.x, y: 2 * projY - p.y };
 }
 
 /** Rotate a point by `angle` radians around `pivot`. */
 export function rotatePoint(p: Point, pivot: Point, angle: number): Point {
-  const c = Math.cos(angle), s = Math.sin(angle);
-  const dx = p.x - pivot.x, dy = p.y - pivot.y;
+  const c = Math.cos(angle),
+    s = Math.sin(angle);
+  const dx = p.x - pivot.x,
+    dy = p.y - pivot.y;
   return { x: pivot.x + dx * c - dy * s, y: pivot.y + dx * s + dy * c };
 }
 

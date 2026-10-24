@@ -50,45 +50,57 @@ pnpm --filter=@opencad/<package> test:watch  # Watch mode for TDD
 This is a **pnpm + Turborepo monorepo** with the following packages:
 
 ### `packages/app` (`@opencad/app`)
+
 The browser React application (Vite + React 19 + PWA). This is the main UI shell.
+
 - **State**: Zustand store in `src/stores/documentStore.ts` — central state for the active document, selected elements, active tool, undo/redo history, and online status
 - **Viewport**: Two rendering modes — `useViewport` (2D canvas-based drafting) and `useThreeViewport` (Three.js 3D view). The `Viewport` component switches between them based on `viewType`
 - **UI panels**: `AppLayout.tsx` composes `ToolShelf`, `Navigator`, `LayerPanel`, `PropertiesPanel`, `StatusBar`, `AIChatPanel`, `LevelSelector`, `Viewport`
 - **Theme**: Light/dark, toggled via `data-theme` attribute on `<html>`, stored in `localStorage`
 
 ### `packages/document` (`@opencad/document`)
+
 The CRDT document model. This is the source of truth for all project data.
+
 - `types.ts` — All TypeScript interfaces: `DocumentSchema`, `ElementSchema`, `ElementType`, `LayerSchema`, `LevelSchema`, etc.
 - `document.ts` — `DocumentModel` class and `createProject()` factory
 - `index.ts` — Public exports; everything flows through here
 - File format adapters: `ifc.ts`, `dwg.ts`, `pdf.ts`, `revit.ts`, `archicad.ts`, `sketchup.ts`
 
 ### `packages/geometry` (`@opencad/geometry`)
+
 WASM geometry kernel (Rust → WASM via wasm-pack). Provides the OpenCASCADE-based Boolean operations, BRep modeling, and parametric geometry used by the document model.
 
 ### `packages/ai` (`@opencad/ai`)
+
 AI orchestration layer. Handles prompt-to-project generation, code compliance checking, and design modification commands.
 
 ### `packages/sync` (`@opencad/sync`)
+
 Cloud sync engine. Manages CRDT-based real-time collaboration and offline-first synchronization (IndexedDB in browser, SQLite on desktop).
 
 ### `packages/shared` (`@opencad/shared`)
+
 Shared utilities and types consumed by all other packages.
 
 ### `packages/desktop` (`@opencad/desktop`)
+
 Tauri v2 desktop application wrapper. The Rust backend (`src-tauri/`) handles native file I/O, local AI (Ollama), and OS integrations.
 
 ### `e2e/`
+
 Playwright end-to-end tests (`@opencad/e2e`), configured via `e2e/playwright.config.ts`.
 
 ## TDD Workflow (AGENTS.md)
 
 **This project enforces strict TDD.** All work follows:
+
 1. **Red** — Write a failing test first
 2. **Green** — Write minimal code to pass
 3. **Refactor** — Clean up while keeping tests green
 
 Test IDs follow PRD section conventions:
+
 - `T-DOC-*` — Document model
 - `T-COL-*` — Collaboration/CRDT
 - `T-3D-*` — 3D geometry
@@ -110,6 +122,7 @@ chore/<description>           Non-functional changes (deps, config, docs)
 ```
 
 Rules:
+
 - **Never commit directly to `main`** — always open a PR
 - **One concern per branch** — don't bundle unrelated fixes
 - **Always run `pnpm ci:local` before pushing** — catches typecheck, lint, and unit test failures
@@ -118,6 +131,7 @@ Rules:
 ## PR Workflow
 
 Always create a PR after completing work:
+
 ```bash
 git checkout -b feat/<T-XXX>-<description>
 # ... implement with TDD ...
@@ -140,6 +154,7 @@ Link issues with `Closes #<number>` in the PR body. See `AGENTS.md` for full det
 ## Commit Messages
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
 ```
 feat(geometry): add fillet operation
 fix(sync): prevent stale write overriding server state

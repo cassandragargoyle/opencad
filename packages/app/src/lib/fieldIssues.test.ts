@@ -13,10 +13,7 @@ import {
   type FieldIssue,
 } from './fieldIssues';
 
-function makeIssue(
-  id: string,
-  overrides: Partial<FieldIssue> = {},
-): FieldIssue {
+function makeIssue(id: string, overrides: Partial<FieldIssue> = {}): FieldIssue {
   return createFieldIssue({
     id,
     title: `Issue ${id}`,
@@ -52,10 +49,14 @@ describe('T-FIELD-03: createFieldIssue()', () => {
 
 describe('T-FIELD-03: filterIssues()', () => {
   const issues = [
-    makeIssue('a', { status: 'open',     priority: 'critical', assignedTo: 'alice' }),
+    makeIssue('a', { status: 'open', priority: 'critical', assignedTo: 'alice' }),
     makeIssue('b', { status: 'resolved', priority: 'low' }),
-    makeIssue('c', { status: 'open',     priority: 'high', bcfTopicGuid: 'topic-1' }),
-    makeIssue('d', { status: 'open',     priority: 'medium', photos: [{ id: 'p1', dataUri: 'data:x', capturedAt: 0 }] }),
+    makeIssue('c', { status: 'open', priority: 'high', bcfTopicGuid: 'topic-1' }),
+    makeIssue('d', {
+      status: 'open',
+      priority: 'medium',
+      photos: [{ id: 'p1', dataUri: 'data:x', capturedAt: 0 }],
+    }),
   ];
 
   it('filter by status', () => {
@@ -98,9 +99,9 @@ describe('T-FIELD-03: filterIssues()', () => {
 
 describe('T-FIELD-03: sortIssues()', () => {
   const issues = [
-    makeIssue('a', { priority: 'low',      createdAt: 1000 }),
+    makeIssue('a', { priority: 'low', createdAt: 1000 }),
     makeIssue('b', { priority: 'critical', createdAt: 3000 }),
-    makeIssue('c', { priority: 'high',     createdAt: 2000 }),
+    makeIssue('c', { priority: 'high', createdAt: 2000 }),
   ];
 
   it('sort by priority ascending (critical first)', () => {
@@ -138,7 +139,7 @@ describe('T-FIELD-03: clusterIssues()', () => {
 
   it('all issues far apart = one cluster each', () => {
     const issues = [
-      makeIssue('a', { position3D: { x: 0,     y: 0, z: 0 } }),
+      makeIssue('a', { position3D: { x: 0, y: 0, z: 0 } }),
       makeIssue('b', { position3D: { x: 10000, y: 0, z: 0 } }),
       makeIssue('c', { position3D: { x: 20000, y: 0, z: 0 } }),
     ];
@@ -147,7 +148,7 @@ describe('T-FIELD-03: clusterIssues()', () => {
 
   it('nearby issues merge into one cluster', () => {
     const issues = [
-      makeIssue('a', { position3D: { x: 0,  y: 0, z: 0 } }),
+      makeIssue('a', { position3D: { x: 0, y: 0, z: 0 } }),
       makeIssue('b', { position3D: { x: 50, y: 0, z: 0 } }),
       makeIssue('c', { position3D: { x: 90, y: 0, z: 0 } }),
     ];
@@ -158,7 +159,7 @@ describe('T-FIELD-03: clusterIssues()', () => {
 
   it('cluster centroid is avg of member positions', () => {
     const issues = [
-      makeIssue('a', { position3D: { x: 0,   y: 0, z: 0 } }),
+      makeIssue('a', { position3D: { x: 0, y: 0, z: 0 } }),
       makeIssue('b', { position3D: { x: 100, y: 0, z: 0 } }),
     ];
     const clusters = clusterIssues(issues, 1000);
@@ -181,10 +182,10 @@ describe('T-FIELD-03: issueDistance()', () => {
 
 describe('T-FIELD-03: issueStats()', () => {
   const issues = [
-    makeIssue('a', { status: 'open',        priority: 'critical' }),
+    makeIssue('a', { status: 'open', priority: 'critical' }),
     makeIssue('b', { status: 'in-progress', priority: 'high' }),
-    makeIssue('c', { status: 'resolved',    priority: 'low', bcfTopicGuid: 'topic-1' }),
-    makeIssue('d', { status: 'open',        photos: [{ id: 'p1', dataUri: 'x', capturedAt: 0 }] }),
+    makeIssue('c', { status: 'resolved', priority: 'low', bcfTopicGuid: 'topic-1' }),
+    makeIssue('d', { status: 'open', photos: [{ id: 'p1', dataUri: 'x', capturedAt: 0 }] }),
   ];
 
   it('counts total correctly', () => {

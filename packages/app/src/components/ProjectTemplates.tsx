@@ -83,7 +83,8 @@ const TEMPLATES: ProjectTemplate[] = [
   {
     id: 'office-multi',
     name: 'Multi-Storey Office',
-    description: 'Commercial office building with typical floor plan repeated over multiple levels.',
+    description:
+      'Commercial office building with typical floor plan repeated over multiple levels.',
     levels: 5,
     category: 'Commercial',
     elements: [
@@ -103,7 +104,9 @@ export function ProjectTemplates({ onSelect }: ProjectTemplatesProps) {
   return (
     <div className="project-templates">
       <div className="panel-header">
-        <span className="panel-title">{t('home.projectTemplates', { defaultValue: 'Project Templates' })}</span>
+        <span className="panel-title">
+          {t('home.projectTemplates', { defaultValue: 'Project Templates' })}
+        </span>
       </div>
       <div className="templates-grid">
         {TEMPLATES.map((tmpl) => (
@@ -114,7 +117,8 @@ export function ProjectTemplates({ onSelect }: ProjectTemplatesProps) {
               <span className="template-desc">{tmpl.description}</span>
               <span className="template-meta">
                 {tmpl.levels} {tmpl.levels === 1 ? 'level' : 'levels'}
-                {tmpl.elements.length > 0 && ` · ${tmpl.elements.reduce((s, e) => s + e.count, 0)} elements`}
+                {tmpl.elements.length > 0 &&
+                  ` · ${tmpl.elements.reduce((s, e) => s + e.count, 0)} elements`}
               </span>
             </div>
             <button

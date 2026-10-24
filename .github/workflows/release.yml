@@ -5,11 +5,11 @@ on:
     branches:
       - main
   release:
-    types: [published]   # fires when semantic-release publishes a GitHub Release
+    types: [published] # fires when semantic-release publishes a GitHub Release
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to build (e.g., v1.0.2)"
+        description: 'Tag to build (e.g., v1.0.2)'
         required: true
         type: string
 
@@ -48,7 +48,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          HUSKY: '0'   # disable pre-commit hook — wasm-pack not available on this runner
+          HUSKY: '0' # disable pre-commit hook — wasm-pack not available on this runner
         run: pnpm exec semantic-release
 
   # ──────────────────────────────────────────────────────────────
@@ -78,7 +78,7 @@ jobs:
     permissions:
       contents: write
     strategy:
-      fail-fast: false   # don't cancel macOS/Linux if Windows fails
+      fail-fast: false # don't cancel macOS/Linux if Windows fails
       matrix:
         include:
           # macOS universal binary (arm64 + x86_64 in one .dmg)
@@ -91,7 +91,7 @@ jobs:
 
           # Linux x64
           - platform: ubuntu-22.04
-            args: ""
+            args: ''
 
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 60
@@ -199,7 +199,7 @@ jobs:
           projectPath: packages/desktop
           tagName: ${{ github.event.release.tag_name || inputs.tag }}
           releaseName: OpenCAD ${{ github.event.release.tag_name || inputs.tag }}
-          releaseBody: ""
+          releaseBody: ''
           releaseDraft: false
           prerelease: ${{ github.event.release.prerelease || false }}
           args: ${{ matrix.args }}
@@ -226,7 +226,7 @@ jobs:
         with:
           node-version: 26
           cache: 'pnpm'
-          registry-url: "https://registry.npmjs.org"
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -252,7 +252,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: Success
-          title: "OpenCAD ${{ github.event.release.tag_name || inputs.tag }} Released!"
+          title: 'OpenCAD ${{ github.event.release.tag_name || inputs.tag }} Released!'
           description: |
             A new version of OpenCAD is now available.
 

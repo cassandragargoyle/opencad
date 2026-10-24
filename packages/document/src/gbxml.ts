@@ -14,27 +14,28 @@ export interface GbXMLExportOptions {
 }
 
 /** Export a DocumentSchema as a gbXML 6.01 string. */
-export function exportGbXML(
-  doc: DocumentSchema,
-  opts: GbXMLExportOptions = {},
-): string {
+export function exportGbXML(doc: DocumentSchema, opts: GbXMLExportOptions = {}): string {
   const scale = opts.metersPerUnit ?? 0.001;
   const spaceType = opts.defaultSpaceType ?? 'Office';
 
   const levels = Object.values(doc.organization.levels ?? {});
   const elements = Object.values(doc.content.elements ?? {});
 
-  const spaces     = elements.filter((e) => e.type === 'space');
-  const walls      = elements.filter((e) => e.type === 'wall');
-  const slabs      = elements.filter((e) => e.type === 'slab' || e.type === 'roof');
+  const spaces = elements.filter((e) => e.type === 'space');
+  const walls = elements.filter((e) => e.type === 'wall');
+  const slabs = elements.filter((e) => e.type === 'slab' || e.type === 'roof');
   // openings (door/window/skylight) are future: gbXML Opening element not yet emitted
   // const openings = elements.filter((e) => e.type === 'door' || e.type === 'window' || e.type === 'skylight');
 
-  const storeys = levels.map((lv) => `
+  const storeys = levels
+    .map(
+      (lv) => `
     <BuildingStorey id="Storey_${lv.id}" buildingIdRef="Building_1">
       <Name>${escXml(lv.name)}</Name>
       <Level>${(lv.elevation * scale).toFixed(3)}</Level>
-    </BuildingStorey>`).join('');
+    </BuildingStorey>`
+    )
+    .join('');
 
   const spaceXml = spaces.map((sp) => buildSpaceXml(sp, scale, spaceType)).join('');
   const surfaceXml = [
@@ -67,9 +68,9 @@ ${constructionXml}
 function buildSpaceXml(el: ElementSchema, scale: number, spaceType: string): string {
   const name = String(el.properties?.Name?.value ?? el.id);
   const area = Number(el.properties?.Area?.value ?? 0) * scale * scale;
-  const vol  = Number(el.properties?.Volume?.value ?? 0) * scale * scale * scale;
-  const lpd  = Number(el.properties?.LPD?.value ?? 10);  // W/m²
-  const epd  = Number(el.properties?.EPD?.value ?? 10);  // W/m²
+  const vol = Number(el.properties?.Volume?.value ?? 0) * scale * scale * scale;
+  const lpd = Number(el.properties?.LPD?.value ?? 10); // W/m²
+  const epd = Number(el.properties?.EPD?.value ?? 10); // W/m²
   const levelRef = el.levelId ? ` buildingStoreyIdRef="Storey_${el.levelId}"` : '';
   return `
     <Space id="Space_${el.id}"${levelRef} spaceType="${escXml(spaceType)}">

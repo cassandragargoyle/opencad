@@ -12,9 +12,16 @@ import {
 } from './spacePlanner';
 
 const officeRooms: RoomProgram[] = [
-  { id: 'r1', name: 'Open Office',   targetAreaM2: 200, minWidthM: 5, minDepthM: 5, type: 'office' },
-  { id: 'r2', name: 'Meeting Room',  targetAreaM2: 30,  minWidthM: 3, minDepthM: 3, type: 'meeting' },
-  { id: 'r3', name: 'Reception',     targetAreaM2: 20,  minWidthM: 3, minDepthM: 3, type: 'circulation' },
+  { id: 'r1', name: 'Open Office', targetAreaM2: 200, minWidthM: 5, minDepthM: 5, type: 'office' },
+  { id: 'r2', name: 'Meeting Room', targetAreaM2: 30, minWidthM: 3, minDepthM: 3, type: 'meeting' },
+  {
+    id: 'r3',
+    name: 'Reception',
+    targetAreaM2: 20,
+    minWidthM: 3,
+    minDepthM: 3,
+    type: 'circulation',
+  },
 ];
 
 describe('T-ANA-09: runTestFit()', () => {

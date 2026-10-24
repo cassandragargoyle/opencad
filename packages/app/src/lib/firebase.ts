@@ -6,19 +6,19 @@ import { getFirestore, type Firestore } from 'firebase/firestore';
 // Copy .env.example → .env.local and fill in your project values.
 // https://console.firebase.google.com → Project settings → Your apps
 const firebaseConfig = {
-  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY            ?? '',
-  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN        ?? '',
-  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID         ?? '',
-  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET     ?? '',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? '',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? '',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? '',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? '',
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? '',
-  appId:             import.meta.env.VITE_FIREBASE_APP_ID             ?? '',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID ?? '',
 };
 
 // Lazy init — only initialise when at least one required key is present.
 // In test environments and CI without env vars, Firebase is disabled and
 // the auth store falls back to no-op / unauthenticated state.
 export const isFirebaseConfigured = Boolean(
-  firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('REPLACE'),
+  firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('REPLACE')
 );
 
 let _app: FirebaseApp | null = null;

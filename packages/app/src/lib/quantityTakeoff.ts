@@ -9,7 +9,7 @@ import type { DocumentSchema, ElementSchema } from '@opencad/document';
 export interface TakeoffRow {
   type: string;
   count: number;
-  totalArea?: number;   // m²
+  totalArea?: number; // m²
   totalLength?: number; // m
   totalVolume?: number; // m³
 }
@@ -41,8 +41,8 @@ function wallMetrics(elements: ElementSchema[]): Partial<TakeoffRow> {
     let length = numProp(el, 'length');
     const sx = numProp(el, 'startX') ?? numProp(el, 'StartX');
     const sy = numProp(el, 'startY') ?? numProp(el, 'StartY');
-    const ex = numProp(el, 'endX')   ?? numProp(el, 'EndX');
-    const ey = numProp(el, 'endY')   ?? numProp(el, 'EndY');
+    const ex = numProp(el, 'endX') ?? numProp(el, 'EndX');
+    const ey = numProp(el, 'endY') ?? numProp(el, 'EndY');
     if (length === undefined && sx !== undefined && ex !== undefined) {
       const dx = ex - sx;
       const dy = (ey ?? 0) - (sy ?? 0);
@@ -52,10 +52,7 @@ function wallMetrics(elements: ElementSchema[]): Partial<TakeoffRow> {
     const height = numProp(el, 'height');
     // Thickness is 'Thickness' in new code, 'Width' in the original
     // wall-creation path, or 'thickness' in test fixtures.
-    const thickness =
-      numProp(el, 'thickness') ??
-      numProp(el, 'Thickness') ??
-      numProp(el, 'width');
+    const thickness = numProp(el, 'thickness') ?? numProp(el, 'Thickness') ?? numProp(el, 'width');
 
     if (length !== undefined) totalLength += length;
     if (length !== undefined && height !== undefined) {

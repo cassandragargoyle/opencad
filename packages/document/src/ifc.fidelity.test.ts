@@ -20,7 +20,10 @@ interface ElementSpec {
   name: string;
   type: ElementType;
   bbox: { min: [number, number, number]; max: [number, number, number] };
-  props?: Record<string, { type: 'string' | 'number' | 'boolean'; value: string | number | boolean }>;
+  props?: Record<
+    string,
+    { type: 'string' | 'number' | 'boolean'; value: string | number | boolean }
+  >;
 }
 
 function addElement(doc: DocumentSchema, spec: ElementSpec): string {
@@ -65,9 +68,7 @@ function addElement(doc: DocumentSchema, spec: ElementSpec): string {
 }
 
 function findByName(doc: DocumentSchema, name: string): ElementSchema | undefined {
-  return Object.values(doc.content.elements).find(
-    (e) => e.properties['Name']?.value === name,
-  );
+  return Object.values(doc.content.elements).find((e) => e.properties['Name']?.value === name);
 }
 
 // ─── Dimensional fidelity ────────────────────────────────────────────────────
@@ -80,12 +81,12 @@ describe('T-IFC-045: dimensional fidelity', () => {
       type: 'wall',
       bbox: { min: [0, 0, 0], max: [5000, 200, 3000] },
       props: {
-        StartX:   { type: 'number', value: 0 },
-        StartY:   { type: 'number', value: 0 },
-        EndX:     { type: 'number', value: 5000 },
-        EndY:     { type: 'number', value: 0 },
-        Height:   { type: 'number', value: 3000 },
-        Thickness:{ type: 'number', value: 200 },
+        StartX: { type: 'number', value: 0 },
+        StartY: { type: 'number', value: 0 },
+        EndX: { type: 'number', value: 5000 },
+        EndY: { type: 'number', value: 0 },
+        Height: { type: 'number', value: 3000 },
+        Thickness: { type: 'number', value: 200 },
       },
     });
 
@@ -108,12 +109,12 @@ describe('T-IFC-045: dimensional fidelity', () => {
       type: 'wall',
       bbox: { min: [1000, 2000, 0], max: [4000, 2200, 3000] },
       props: {
-        StartX:   { type: 'number', value: 1000 },
-        StartY:   { type: 'number', value: 2000 },
-        EndX:     { type: 'number', value: 4000 },
-        EndY:     { type: 'number', value: 2000 },
-        Height:   { type: 'number', value: 3000 },
-        Thickness:{ type: 'number', value: 200 },
+        StartX: { type: 'number', value: 1000 },
+        StartY: { type: 'number', value: 2000 },
+        EndX: { type: 'number', value: 4000 },
+        EndY: { type: 'number', value: 2000 },
+        Height: { type: 'number', value: 3000 },
+        Thickness: { type: 'number', value: 200 },
       },
     });
 
@@ -152,12 +153,12 @@ describe('T-IFC-045: dimensional fidelity', () => {
         type: 'wall',
         bbox: { min: [i * 1000, 0, 0], max: [i * 1000 + 800, 200, 3000] },
         props: {
-          StartX:   { type: 'number', value: i * 1000 },
-          StartY:   { type: 'number', value: 0 },
-          EndX:     { type: 'number', value: i * 1000 + 800 },
-          EndY:     { type: 'number', value: 0 },
-          Height:   { type: 'number', value: 3000 },
-          Thickness:{ type: 'number', value: 200 },
+          StartX: { type: 'number', value: i * 1000 },
+          StartY: { type: 'number', value: 0 },
+          EndX: { type: 'number', value: i * 1000 + 800 },
+          EndY: { type: 'number', value: 0 },
+          Height: { type: 'number', value: 3000 },
+          Thickness: { type: 'number', value: 200 },
         },
       });
     }
@@ -178,15 +179,15 @@ describe('T-IFC-045: structural fidelity', () => {
   it('preserves every BIM element type in a mixed document', () => {
     const doc = createProject('fid-mixed', 'tester');
     const specs: ElementSpec[] = [
-      { name: 'W',  type: 'wall',   bbox: { min: [0, 0, 0], max: [3000, 200, 3000] } },
-      { name: 'D',  type: 'door',   bbox: { min: [900, 0, 0], max: [1800, 200, 2100] } },
+      { name: 'W', type: 'wall', bbox: { min: [0, 0, 0], max: [3000, 200, 3000] } },
+      { name: 'D', type: 'door', bbox: { min: [900, 0, 0], max: [1800, 200, 2100] } },
       { name: 'WD', type: 'window', bbox: { min: [2000, 0, 900], max: [2900, 200, 2100] } },
-      { name: 'S',  type: 'slab',   bbox: { min: [0, 0, 0], max: [5000, 4000, 300] } },
-      { name: 'R',  type: 'roof',   bbox: { min: [0, 0, 3000], max: [5000, 4000, 3300] } },
-      { name: 'C',  type: 'column', bbox: { min: [0, 0, 0], max: [300, 300, 3000] } },
-      { name: 'B',  type: 'beam',   bbox: { min: [0, 0, 2700], max: [5000, 200, 3000] } },
-      { name: 'ST', type: 'stair',  bbox: { min: [0, 0, 0], max: [1200, 3000, 3000] } },
-      { name: 'SP', type: 'space',  bbox: { min: [0, 0, 0], max: [5000, 4000, 3000] } },
+      { name: 'S', type: 'slab', bbox: { min: [0, 0, 0], max: [5000, 4000, 300] } },
+      { name: 'R', type: 'roof', bbox: { min: [0, 0, 3000], max: [5000, 4000, 3300] } },
+      { name: 'C', type: 'column', bbox: { min: [0, 0, 0], max: [300, 300, 3000] } },
+      { name: 'B', type: 'beam', bbox: { min: [0, 0, 2700], max: [5000, 200, 3000] } },
+      { name: 'ST', type: 'stair', bbox: { min: [0, 0, 0], max: [1200, 3000, 3000] } },
+      { name: 'SP', type: 'space', bbox: { min: [0, 0, 0], max: [5000, 4000, 3000] } },
     ];
     for (const s of specs) addElement(doc, s);
 
@@ -205,11 +206,19 @@ describe('T-IFC-045: structural fidelity', () => {
 
     const l2 = crypto.randomUUID();
     doc.organization.levels[l2] = {
-      id: l2, name: 'First Floor', elevation: 3000, height: 3000, order: 1,
+      id: l2,
+      name: 'First Floor',
+      elevation: 3000,
+      height: 3000,
+      order: 1,
     };
     const l3 = crypto.randomUUID();
     doc.organization.levels[l3] = {
-      id: l3, name: 'Roof',        elevation: 6000, height: 3000, order: 2,
+      id: l3,
+      name: 'Roof',
+      elevation: 6000,
+      height: 3000,
+      order: 2,
     };
 
     const exported = serializeIFC(doc);
@@ -283,7 +292,7 @@ describe('T-IFC-045: count fidelity', () => {
     }
     const reimported = parseIFC(serializeIFC(doc));
     const wallCount = Object.values(reimported.content.elements).filter(
-      (e) => e.type === 'wall',
+      (e) => e.type === 'wall'
     ).length;
     expect(wallCount).toBe(25);
   });

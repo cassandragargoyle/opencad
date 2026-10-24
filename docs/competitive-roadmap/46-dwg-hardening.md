@@ -9,6 +9,7 @@ Every CAD office has a mountain of legacy DWG/DXF files — past projects, clien
 ## Scope
 
 ### In scope
+
 - Test corpus of ~30 DWG files from multiple sources at multiple versions (DWG 2000 through DWG 2025).
 - Support entity types: LINE, POLYLINE, LWPOLYLINE, ARC, CIRCLE, ELLIPSE, SPLINE, TEXT, MTEXT, HATCH, BLOCK, INSERT, LAYER.
 - Support layer-based import filtering.
@@ -17,6 +18,7 @@ Every CAD office has a mountain of legacy DWG/DXF files — past projects, clien
 - Units / scale detection (in / mm / dimensionless).
 
 ### Out of scope
+
 - 3D DWG / 3D polymeshes (architectural DWG is almost always 2D).
 - PROXY entities from vertical plugins (ignore with warning).
 

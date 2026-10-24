@@ -7,7 +7,15 @@ expect.extend(jestDomMatchers);
 
 vi.mock('../stores/documentStore');
 
-const _SECTION_PROFILES = ['Circular', 'Rectangular', 'H-Section', 'I-Section', 'IPE', 'HEA', 'RHS'];
+const _SECTION_PROFILES = [
+  'Circular',
+  'Rectangular',
+  'H-Section',
+  'I-Section',
+  'IPE',
+  'HEA',
+  'RHS',
+];
 
 function makeStore(activeTool = 'column', toolParams = {}) {
   const defaultParams = {

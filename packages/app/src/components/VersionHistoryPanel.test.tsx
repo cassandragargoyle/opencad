@@ -36,14 +36,22 @@ vi.mock('../stores/documentStore', () => ({
 // the local list only.
 vi.mock('../lib/serverApi', () => ({
   versionsApi: {
-    list:   vi.fn().mockResolvedValue([]),
+    list: vi.fn().mockResolvedValue([]),
     create: vi.fn().mockResolvedValue({
-      id: 'v1', project_id: 'test-project', version_number: 1,
-      message: null, created_at: new Date().toISOString(), data: '{}',
+      id: 'v1',
+      project_id: 'test-project',
+      version_number: 1,
+      message: null,
+      created_at: new Date().toISOString(),
+      data: '{}',
     }),
-    get:    vi.fn().mockResolvedValue({
-      id: 'v1', project_id: 'test-project', version_number: 1,
-      message: null, created_at: new Date().toISOString(), data: '{}',
+    get: vi.fn().mockResolvedValue({
+      id: 'v1',
+      project_id: 'test-project',
+      version_number: 1,
+      message: null,
+      created_at: new Date().toISOString(),
+      data: '{}',
     }),
   },
 }));

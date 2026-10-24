@@ -19,7 +19,7 @@ export function ClashPanel({ onRunDetection }: ClashPanelProps) {
     if (!clashes) return;
     const header = 'Element A,Element B,Severity,Overlap Volume (m³)';
     const rows = clashes.map(
-      (c) => `${c.elementAId},${c.elementBId},${c.severity},${c.overlapVolume}`,
+      (c) => `${c.elementAId},${c.elementBId},${c.severity},${c.overlapVolume}`
     );
     const csv = [header, ...rows].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -37,18 +37,17 @@ export function ClashPanel({ onRunDetection }: ClashPanelProps) {
         <span className="panel-title">{t('clash.title')}</span>
       </div>
       <div className="panel-body">
-        <button
-          data-testid="run-clash-btn"
-          className="btn-primary"
-          onClick={handleRun}
-        >
+        <button data-testid="run-clash-btn" className="btn-primary" onClick={handleRun}>
           {t('clash.runFull', { defaultValue: 'Run Clash Detection' })}
         </button>
 
         {clashes !== null && (
           <>
             <div data-testid="clash-count" className="clash-count">
-              {t('clash.clashes', { count: clashes.length, defaultValue: '{{count}} clash(es) found' })}
+              {t('clash.clashes', {
+                count: clashes.length,
+                defaultValue: '{{count}} clash(es) found',
+              })}
             </div>
 
             <table data-testid="clash-table" className="clash-table">
@@ -62,10 +61,7 @@ export function ClashPanel({ onRunDetection }: ClashPanelProps) {
               </thead>
               <tbody>
                 {clashes.map((clash, i) => (
-                  <tr
-                    key={i}
-                    className={`clash-row clash-${clash.severity}`}
-                  >
+                  <tr key={i} className={`clash-row clash-${clash.severity}`}>
                     <td>{clash.elementAId}</td>
                     <td>{clash.elementBId}</td>
                     <td className={clash.severity === 'hard' ? 'text-red' : 'text-amber'}>

@@ -27,12 +27,7 @@ export * from './composite';
 export * from './bcf';
 
 // ArchiCAD adapter — explicit exports to avoid name collisions with ./io#detectFormat
-export {
-  parsePLN,
-  parsePLA,
-  parseGDL,
-  type PLAObject,
-} from './archicad';
+export { parsePLN, parsePLA, parseGDL, type PLAObject } from './archicad';
 
 // Revit adapter
 export { parseRVT } from './revit';
@@ -47,7 +42,12 @@ export { exportGbXML, type GbXMLExportOptions } from './gbxml';
 export { exportCOBie, cobieToCSVMap, type CobieSheet, type CobieExportOptions } from './cobie';
 
 // Rhino 3DM import/export (T-IO-04)
-export { importRhino3dm, exportRhino3dm, type Rhino3dmImportResult, type Rhino3dmExportResult } from './rhino3dm';
+export {
+  importRhino3dm,
+  exportRhino3dm,
+  type Rhino3dmImportResult,
+  type Rhino3dmExportResult,
+} from './rhino3dm';
 
 // USD / USDZ export (T-IO-05)
 export { exportUSDA, buildUSDZPayload, type USDExportOptions, type USDZPayload } from './usd';

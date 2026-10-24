@@ -13,7 +13,7 @@ export interface ShadowAnalysisSettings {
 }
 
 const DEFAULT_SETTINGS: ShadowAnalysisSettings = {
-  latitude: 40.7,    // NYC (per spec)
+  latitude: 40.7, // NYC (per spec)
   longitude: -74.0,
   date: new Date().toISOString().slice(0, 10),
   time: '12:00',
@@ -81,7 +81,9 @@ export function ShadowAnalysisPanel({ onRun, onChange }: ShadowAnalysisPanelProp
   return (
     <div className="shadow-analysis-panel">
       <div className="panel-header">
-        <span className="panel-title">{t('shadow.fullTitle', { defaultValue: 'Shadow & Daylight Analysis' })}</span>
+        <span className="panel-title">
+          {t('shadow.fullTitle', { defaultValue: 'Shadow & Daylight Analysis' })}
+        </span>
       </div>
 
       <div className="analysis-section">
@@ -173,7 +175,9 @@ export function ShadowAnalysisPanel({ onRun, onChange }: ShadowAnalysisPanelProp
       <div className="analysis-section">
         <h4>{t('shadow.solarAnalysis', { defaultValue: 'Solar Analysis' })}</h4>
         <div className="field-row">
-          <span className="field-label">{t('shadow.elevation', { defaultValue: 'Elevation' })}</span>
+          <span className="field-label">
+            {t('shadow.elevation', { defaultValue: 'Elevation' })}
+          </span>
           <span className="field-value">{solarData.position.elevation.toFixed(1)}°</span>
         </div>
         <div className="field-row">
@@ -181,7 +185,9 @@ export function ShadowAnalysisPanel({ onRun, onChange }: ShadowAnalysisPanelProp
           <span className="field-value">{solarData.position.azimuth.toFixed(1)}°</span>
         </div>
         <div className="field-row">
-          <span className="field-label">{t('shadow.daylightHours', { defaultValue: 'Daylight Hours' })}</span>
+          <span className="field-label">
+            {t('shadow.daylightHours', { defaultValue: 'Daylight Hours' })}
+          </span>
           <span className="field-value">{solarData.daylightHours.toFixed(1)} h</span>
         </div>
       </div>
@@ -189,7 +195,9 @@ export function ShadowAnalysisPanel({ onRun, onChange }: ShadowAnalysisPanelProp
       <div className="analysis-section">
         <h4>{t('shadow.visualisation', { defaultValue: 'Visualisation' })}</h4>
         <div className="field-row">
-          <label htmlFor="sun-path-toggle">{t('shadow.showSunPath', { defaultValue: 'Show Sun Path' })}</label>
+          <label htmlFor="sun-path-toggle">
+            {t('shadow.showSunPath', { defaultValue: 'Show Sun Path' })}
+          </label>
           <input
             id="sun-path-toggle"
             type="checkbox"
@@ -198,7 +206,9 @@ export function ShadowAnalysisPanel({ onRun, onChange }: ShadowAnalysisPanelProp
           />
         </div>
         <div className="field-row">
-          <label htmlFor="shadow-map-toggle">{t('shadow.showShadowMap', { defaultValue: 'Show Shadow Map' })}</label>
+          <label htmlFor="shadow-map-toggle">
+            {t('shadow.showShadowMap', { defaultValue: 'Show Shadow Map' })}
+          </label>
           <input
             id="shadow-map-toggle"
             type="checkbox"

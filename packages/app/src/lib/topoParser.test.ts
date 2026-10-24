@@ -56,7 +56,11 @@ describe('T-SITE-06: topoParser', () => {
           type: 'Feature',
           geometry: {
             type: 'LineString',
-            coordinates: [[0, 0, 10], [100, 0, 10], [100, 100, 10]],
+            coordinates: [
+              [0, 0, 10],
+              [100, 0, 10],
+              [100, 100, 10],
+            ],
           },
           properties: { elevation: 10 },
         },
@@ -73,7 +77,13 @@ describe('T-SITE-06: topoParser', () => {
       features: [
         {
           type: 'Feature',
-          geometry: { type: 'LineString', coordinates: [[0, 0, 25], [50, 0, 30]] },
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [0, 0, 25],
+              [50, 0, 30],
+            ],
+          },
           properties: {},
         },
       ],
@@ -89,7 +99,13 @@ describe('T-SITE-06: topoParser', () => {
       features: [
         {
           type: 'Feature',
-          geometry: { type: 'LineString', coordinates: [[0, 0], [50, 0]] },
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [0, 0],
+              [50, 0],
+            ],
+          },
           properties: { elevation: 42 },
         },
       ],
@@ -107,7 +123,16 @@ describe('T-SITE-06: topoParser', () => {
           type: 'Feature',
           geometry: {
             type: 'MultiLineString',
-            coordinates: [[[0, 0, 5], [10, 0, 5]], [[0, 10, 8], [10, 10, 8]]],
+            coordinates: [
+              [
+                [0, 0, 5],
+                [10, 0, 5],
+              ],
+              [
+                [0, 10, 8],
+                [10, 10, 8],
+              ],
+            ],
           },
           properties: {},
         },
@@ -147,8 +172,10 @@ describe('T-SITE-06: topoParser', () => {
 
   it('builds a BufferGeometry with position attribute', () => {
     const points = [
-      { x: 0, y: 0, z: 0 }, { x: 1000, y: 0, z: 100 },
-      { x: 0, y: 1000, z: 50 }, { x: 1000, y: 1000, z: 75 },
+      { x: 0, y: 0, z: 0 },
+      { x: 1000, y: 0, z: 100 },
+      { x: 0, y: 1000, z: 50 },
+      { x: 1000, y: 1000, z: 75 },
     ];
     const geom = buildTerrainGeometry(points, 4);
     expect(geom.attributes['position']).toBeDefined();
@@ -158,8 +185,10 @@ describe('T-SITE-06: topoParser', () => {
   it('vertex count = (gridRes+1)² for square domain', () => {
     const res = 8;
     const points = [
-      { x: 0, y: 0, z: 0 }, { x: 1000, y: 0, z: 0 },
-      { x: 0, y: 1000, z: 0 }, { x: 1000, y: 1000, z: 0 },
+      { x: 0, y: 0, z: 0 },
+      { x: 1000, y: 0, z: 0 },
+      { x: 0, y: 1000, z: 0 },
+      { x: 1000, y: 1000, z: 0 },
     ];
     const geom = buildTerrainGeometry(points, res);
     const verts = geom.attributes['position']!.count;

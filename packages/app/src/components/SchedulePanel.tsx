@@ -24,8 +24,8 @@ const SCHEDULE_TYPES: { value: ElementType; label: string }[] = [
 function calcArea(el: ElementSchema): number | null {
   const bb = el.boundingBox;
   if (!bb) return null;
-  const width = (bb.max.x - bb.min.x) / 1000;  // mm → m
-  const height = (bb.max.z - bb.min.z) / 1000;  // mm → m
+  const width = (bb.max.x - bb.min.x) / 1000; // mm → m
+  const height = (bb.max.z - bb.min.z) / 1000; // mm → m
   if (width <= 0 || height <= 0) return null;
   return width * height;
 }
@@ -34,7 +34,7 @@ function calcArea(el: ElementSchema): number | null {
 function calcLength(el: ElementSchema): number | null {
   const bb = el.boundingBox;
   if (!bb) return null;
-  const len = (bb.max.x - bb.min.x) / 1000;  // mm → m
+  const len = (bb.max.x - bb.min.x) / 1000; // mm → m
   return len > 0 ? len : null;
 }
 
@@ -62,12 +62,8 @@ export function SchedulePanel() {
   // Quantity takeoff summary: count + totals for the selected type
   const qtySummary = useMemo(() => {
     const count = elements.length;
-    const areas = elements
-      .map(calcArea)
-      .filter((a): a is number => a !== null);
-    const lengths = elements
-      .map(calcLength)
-      .filter((l): l is number => l !== null);
+    const areas = elements.map(calcArea).filter((a): a is number => a !== null);
+    const lengths = elements.map(calcLength).filter((l): l is number => l !== null);
     const totalArea = areas.length > 0 ? areas.reduce((s, a) => s + a, 0) : null;
     const totalLength = lengths.length > 0 ? lengths.reduce((s, l) => s + l, 0) : null;
     return { count, totalArea, totalLength };
@@ -127,7 +123,9 @@ export function SchedulePanel() {
       {/* T-BIM-002: Quantity takeoff summary — compact stat strip, no side-scroll */}
       <div className="schedule-qty-summary" data-testid="schedule-qty-summary">
         <div className="schedule-qty-stat">
-          <span className="schedule-qty-label">{t('schedule.count', { defaultValue: 'Count' })}</span>
+          <span className="schedule-qty-label">
+            {t('schedule.count', { defaultValue: 'Count' })}
+          </span>
           <span className="schedule-qty-value">{qtySummary.count}</span>
         </div>
         <div className="schedule-qty-stat">
@@ -137,7 +135,9 @@ export function SchedulePanel() {
           </span>
         </div>
         <div className="schedule-qty-stat">
-          <span className="schedule-qty-label">{t('schedule.length', { defaultValue: 'Length' })}</span>
+          <span className="schedule-qty-label">
+            {t('schedule.length', { defaultValue: 'Length' })}
+          </span>
           <span className="schedule-qty-value">
             {qtySummary.totalLength !== null ? `${qtySummary.totalLength.toFixed(2)} m` : '—'}
           </span>
@@ -145,10 +145,20 @@ export function SchedulePanel() {
       </div>
 
       {elements.length === 0 ? (
-        <div className="schedule-empty">{t('schedule.noElements', { type: selectedType, defaultValue: 'No {{type}} elements in model' })}</div>
+        <div className="schedule-empty">
+          {t('schedule.noElements', {
+            type: selectedType,
+            defaultValue: 'No {{type}} elements in model',
+          })}
+        </div>
       ) : (
         <div className="schedule-table-wrapper">
-          <StructuredOrFallback type={selectedType} elements={elements} columns={columns} doc={doc} />
+          <StructuredOrFallback
+            type={selectedType}
+            elements={elements}
+            columns={columns}
+            doc={doc}
+          />
         </div>
       )}
     </div>
@@ -182,12 +192,12 @@ function StructuredOrFallback({
             key={r.elementId}
             tag={r.tag}
             fields={[
-              [translateFieldLabel(t, 'Width'),  `${r.width} mm`],
+              [translateFieldLabel(t, 'Width'), `${r.width} mm`],
               [translateFieldLabel(t, 'Height'), `${r.height} mm`],
               [translateFieldLabel(t, 'Material'), r.material || '—'],
               [translateFieldLabel(t, 'HostWall'), r.hostWall ? r.hostWall.slice(0, 8) : '—'],
               [translateFieldLabel(t, 'Level'), r.level || '—'],
-              [translateFieldLabel(t, 'Cost'),  r.cost ? String(r.cost) : '—'],
+              [translateFieldLabel(t, 'Cost'), r.cost ? String(r.cost) : '—'],
             ]}
           />
         ))}
@@ -203,9 +213,9 @@ function StructuredOrFallback({
             key={r.elementId}
             tag={r.tag}
             fields={[
-              [translateFieldLabel(t, 'Width'),  `${r.width} mm`],
+              [translateFieldLabel(t, 'Width'), `${r.width} mm`],
               [translateFieldLabel(t, 'Height'), `${r.height} mm`],
-              [translateFieldLabel(t, 'Sill'),   `${r.sill} mm`],
+              [translateFieldLabel(t, 'Sill'), `${r.sill} mm`],
               [translateFieldLabel(t, 'Material'), r.material || '—'],
               [translateFieldLabel(t, 'HostWall'), r.hostWall ? r.hostWall.slice(0, 8) : '—'],
               [translateFieldLabel(t, 'Level'), r.level || '—'],
@@ -225,7 +235,10 @@ function StructuredOrFallback({
             tag={r.tag}
             title={r.name}
             fields={[
-              [translateFieldLabel(t, 'Area'), typeof r.area === 'number' ? `${r.area.toFixed(1)} m²` : '—'],
+              [
+                translateFieldLabel(t, 'Area'),
+                typeof r.area === 'number' ? `${r.area.toFixed(1)} m²` : '—',
+              ],
               [translateFieldLabel(t, 'Occupancy'), r.occupancy || '—'],
               [translateFieldLabel(t, 'Floor'), r.finishFloor || '—'],
               [translateFieldLabel(t, 'Walls'), r.finishWalls || '—'],
@@ -246,7 +259,10 @@ function StructuredOrFallback({
             title={el.id.length > 12 ? el.id.slice(0, 12) + '…' : el.id}
             fields={columns.map((col) => {
               const prop = el.properties[col];
-              return [translateFieldLabel(t, col), prop ? `${prop.value}${prop.unit ? ' ' + prop.unit : ''}` : '—'] as [string, string];
+              return [
+                translateFieldLabel(t, col),
+                prop ? `${prop.value}${prop.unit ? ' ' + prop.unit : ''}` : '—',
+              ] as [string, string];
             })}
           />
         ))}
@@ -316,7 +332,7 @@ export function QuantityTab() {
         r.count,
         r.totalArea !== undefined ? r.totalArea.toFixed(2) : '',
         r.totalVolume !== undefined ? r.totalVolume.toFixed(2) : '',
-      ].join(','),
+      ].join(',')
     );
     const csv = [header, ...dataRows].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -332,7 +348,9 @@ export function QuantityTab() {
   return (
     <div className="quantity-tab">
       <div className="panel-header">
-        <span className="panel-title">{t('schedule.quantityTitle', { defaultValue: 'Quantity Takeoff' })}</span>
+        <span className="panel-title">
+          {t('schedule.quantityTitle', { defaultValue: 'Quantity Takeoff' })}
+        </span>
         <button
           className="btn-secondary"
           data-testid="export-csv-btn"
@@ -344,7 +362,9 @@ export function QuantityTab() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="quantity-empty">{t('schedule.noElementsModel', { defaultValue: 'No elements in model' })}</div>
+        <div className="quantity-empty">
+          {t('schedule.noElementsModel', { defaultValue: 'No elements in model' })}
+        </div>
       ) : (
         <table className="quantity-table">
           <thead>

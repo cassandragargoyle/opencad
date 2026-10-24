@@ -105,8 +105,6 @@ jobs:
 
       - name: Check formatting
         run: pnpm format:check
-        # Non-blocking until formatting is applied across the whole codebase
-        continue-on-error: true
 
   # ──────────────────────────────────────────────────────────────
   # 3. Rust Checks

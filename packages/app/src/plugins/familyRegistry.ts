@@ -64,7 +64,7 @@ export function defaultParams(def: FamilyDefinition): Record<string, ParamValue>
 /** Clamp/coerce params to be valid against the definition. Returns a fresh copy. */
 export function normalizeParams(
   def: FamilyDefinition,
-  raw: Record<string, ParamValue>,
+  raw: Record<string, ParamValue>
 ): Record<string, ParamValue> {
   const out: Record<string, ParamValue> = {};
   for (const schema of def.parameters) {
@@ -89,7 +89,7 @@ export function normalizeParams(
  *  Returns null if the callback throws or times out. */
 export function evalGeometry(
   def: FamilyDefinition,
-  params: Record<string, ParamValue>,
+  params: Record<string, ParamValue>
 ): FamilyGeometry | null {
   try {
     const start = performance.now();
@@ -107,17 +107,30 @@ export function evalGeometry(
 
 /** Derive a bounding box from geometry vertices (min/max scan). */
 export function boundingBoxFromGeometry(geom: FamilyGeometry): {
-  minX: number; minY: number; minZ: number;
-  maxX: number; maxY: number; maxZ: number;
+  minX: number;
+  minY: number;
+  minZ: number;
+  maxX: number;
+  maxY: number;
+  maxZ: number;
 } {
   if (geom.boundingBox) return geom.boundingBox;
-  let minX = Infinity, minY = Infinity, minZ = Infinity;
-  let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+  let minX = Infinity,
+    minY = Infinity,
+    minZ = Infinity;
+  let maxX = -Infinity,
+    maxY = -Infinity,
+    maxZ = -Infinity;
   for (let i = 0; i < geom.vertices.length; i += 3) {
-    const x = geom.vertices[i], y = geom.vertices[i + 1], z = geom.vertices[i + 2];
-    if (x < minX) minX = x; if (x > maxX) maxX = x;
-    if (y < minY) minY = y; if (y > maxY) maxY = y;
-    if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+    const x = geom.vertices[i],
+      y = geom.vertices[i + 1],
+      z = geom.vertices[i + 2];
+    if (x < minX) minX = x;
+    if (x > maxX) maxX = x;
+    if (y < minY) minY = y;
+    if (y > maxY) maxY = y;
+    if (z < minZ) minZ = z;
+    if (z > maxZ) maxZ = z;
   }
   return { minX, minY, minZ, maxX, maxY, maxZ };
 }

@@ -56,8 +56,8 @@ describe('T-2D-009: Geometric constraint solver', () => {
   it('horizontal constraint makes two points have same Y', () => {
     const { result } = renderHook(() => useConstraintSolver());
     act(() => {
-      result.current.addPoint('p1', 0, 0, true);  // fixed
-      result.current.addPoint('p2', 100, 50);      // free
+      result.current.addPoint('p1', 0, 0, true); // fixed
+      result.current.addPoint('p2', 100, 50); // free
     });
     act(() => {
       result.current.addConstraint('horizontal', ['p2', 'p1']);
@@ -113,9 +113,9 @@ describe('T-2D-009: Geometric constraint solver', () => {
   it('midpoint constraint places point at segment midpoint', () => {
     const { result } = renderHook(() => useConstraintSolver());
     act(() => {
-      result.current.addPoint('p1', 0, 0, true);   // start
+      result.current.addPoint('p1', 0, 0, true); // start
       result.current.addPoint('p2', 100, 0, true); // end
-      result.current.addPoint('pm', 60, 30);        // free midpoint
+      result.current.addPoint('pm', 60, 30); // free midpoint
     });
     act(() => {
       result.current.addConstraint('midpoint', ['pm', 'p1', 'p2']);
@@ -134,7 +134,7 @@ describe('T-2D-009: Geometric constraint solver', () => {
     const { result } = renderHook(() => useConstraintSolver());
     act(() => {
       result.current.addPoint('p1', 0, 0, true);
-      result.current.addPoint('p2', 80, 60);  // currently 100 away
+      result.current.addPoint('p2', 80, 60); // currently 100 away
     });
     act(() => {
       result.current.addConstraint('distance', ['p2', 'p1'], 50);

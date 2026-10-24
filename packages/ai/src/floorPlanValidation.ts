@@ -13,8 +13,8 @@ import type { DocumentSchema, ElementSchema, PropertyValue } from '@opencad/docu
 // ─── IBC Minimum Area Thresholds (m²) ────────────────────────────────────────
 
 const IBC_MIN_AREA: Record<string, number> = {
-  bedroom: 7.43,   // 80 sq ft
-  bathroom: 2.23,  // 24 sq ft
+  bedroom: 7.43, // 80 sq ft
+  bathroom: 2.23, // 24 sq ft
   living: 13.0,
   dining: 13.0,
 };
@@ -178,15 +178,11 @@ export function validateFloorPlan(
 ): FloorPlanValidationResult {
   const roomSizeViolations = validateRoomSizes(schema);
   const circulationResult = validateCirculation(schema);
-  const totalAreaValid = targetM2 !== undefined
-    ? validateTotalArea(schema, targetM2, tolerancePct)
-    : true;
+  const totalAreaValid =
+    targetM2 !== undefined ? validateTotalArea(schema, targetM2, tolerancePct) : true;
 
   return {
-    valid:
-      roomSizeViolations.length === 0 &&
-      circulationResult.valid &&
-      totalAreaValid,
+    valid: roomSizeViolations.length === 0 && circulationResult.valid && totalAreaValid,
     roomSizeViolations,
     circulationResult,
     totalAreaValid,

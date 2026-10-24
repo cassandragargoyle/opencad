@@ -2,11 +2,7 @@
  * T-VIEW-02: Unit tests for tagSystem — annotation tag template engine.
  */
 import { describe, it, expect } from 'vitest';
-import {
-  resolveTag,
-  buildTagLabel,
-  type TagTemplate,
-} from './tagSystem';
+import { resolveTag, buildTagLabel, type TagTemplate } from './tagSystem';
 import type { ElementSchema } from '@opencad/document';
 
 function makeElement(type: string, props: Record<string, unknown> = {}): ElementSchema {
@@ -17,9 +13,7 @@ function makeElement(type: string, props: Record<string, unknown> = {}): Element
     levelId: 'lv0',
     locked: false,
     visible: true,
-    properties: Object.fromEntries(
-      Object.entries(props).map(([k, v]) => [k, v])
-    ),
+    properties: Object.fromEntries(Object.entries(props).map(([k, v]) => [k, v])),
     geometry: { type: 'point', x: 0, y: 0 },
   };
 }

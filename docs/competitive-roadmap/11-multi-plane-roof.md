@@ -9,6 +9,7 @@ The current roof tool produces a flat polygon extruded by `Thickness`. Every rea
 ## Scope
 
 ### In scope
+
 - Roof builder gains a `planes: RoofPlane[]` array; each plane defines an outline polygon (in XY), a slope angle, and a pitch direction vector.
 - A "Roof by footprint" helper auto-generates four hip planes from a rectangular footprint at a user-chosen slope.
 - A "Gable" toggle collapses two opposing hips into vertical gables.
@@ -17,6 +18,7 @@ The current roof tool produces a flat polygon extruded by `Thickness`. Every rea
 - SEO automatically clips every wall below the roof to the roof underside (T-GEO-001 dependency; this issue defines the operator polygon).
 
 ### Out of scope
+
 - Dormers and skylights.
 - Curved roofs.
 - Green roofs (slabs with vegetation) — cosmetic later.

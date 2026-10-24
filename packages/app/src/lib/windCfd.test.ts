@@ -33,7 +33,7 @@ describe('T-ANA-06: windDirectionToAngle()', () => {
 
 describe('T-ANA-06: dominantWindDirection()', () => {
   const rose: WindRose = {
-    speeds:      [3, 2, 5, 2, 3, 2, 4, 2],
+    speeds: [3, 2, 5, 2, 3, 2, 4, 2],
     frequencies: [0.1, 0.1, 0.3, 0.1, 0.1, 0.1, 0.15, 0.05],
   };
 

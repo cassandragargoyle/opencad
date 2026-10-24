@@ -2,7 +2,7 @@
 
 ## Summary
 
-The PRD describes a single, unified Phase-1 product: a CRDT-backed, offline-first, browser-native BIM tool with OpenCASCADE WASM geometry, WebGPU rendering, AI code compliance, real-time Yjs collaboration, and a tight feature set covering a credible demo. The code is not that product. It is instead a sprawling **compute-library archipelago** — ~66 carefully unit-tested lib modules (schedules, clash rules, shell, morph, terrain, layer combos, drawing manager, stories, curtain walls, seo, etc.) that were built in response to the 52-issue competitive-roadmap — layered on top of a much thinner UI shell that only wires ~20 of them. The PRD's backbone technologies (Yjs, OpenCASCADE WASM, WebGPU, `@opencad/geometry`, `@opencad/sync`) are either stubbed out, dead, or replaced by a custom Rust LWW CRDT (`@opencad/sync-rs`) that is smaller and different in kind from Yjs. The competitive-roadmap (waves 1–4) has shipped most of its *compute* layer but very little of its *UX* layer, while the PRD's Phase-1 UX flows (AI code compliance from the chat panel, IFC roundtrip, sheet export, collaborative editing with real presence) are mostly represented by panels that import the compute but do not connect the data flow. Net assessment: we are drifting toward a **kit of BIM algorithms in search of a product**, and the PRD is the thing pulling us back toward shipping one. The drift is not all bad — much of the underlying math is real and correct — but the map (PRD) and territory (app) need to be re-aligned urgently before the Phase-1 gate because several P0 flows in the PRD exist as unwired code paths.
+The PRD describes a single, unified Phase-1 product: a CRDT-backed, offline-first, browser-native BIM tool with OpenCASCADE WASM geometry, WebGPU rendering, AI code compliance, real-time Yjs collaboration, and a tight feature set covering a credible demo. The code is not that product. It is instead a sprawling **compute-library archipelago** — ~66 carefully unit-tested lib modules (schedules, clash rules, shell, morph, terrain, layer combos, drawing manager, stories, curtain walls, seo, etc.) that were built in response to the 52-issue competitive-roadmap — layered on top of a much thinner UI shell that only wires ~20 of them. The PRD's backbone technologies (Yjs, OpenCASCADE WASM, WebGPU, `@opencad/geometry`, `@opencad/sync`) are either stubbed out, dead, or replaced by a custom Rust LWW CRDT (`@opencad/sync-rs`) that is smaller and different in kind from Yjs. The competitive-roadmap (waves 1–4) has shipped most of its _compute_ layer but very little of its _UX_ layer, while the PRD's Phase-1 UX flows (AI code compliance from the chat panel, IFC roundtrip, sheet export, collaborative editing with real presence) are mostly represented by panels that import the compute but do not connect the data flow. Net assessment: we are drifting toward a **kit of BIM algorithms in search of a product**, and the PRD is the thing pulling us back toward shipping one. The drift is not all bad — much of the underlying math is real and correct — but the map (PRD) and territory (app) need to be re-aligned urgently before the Phase-1 gate because several P0 flows in the PRD exist as unwired code paths.
 
 ## Shipped + matches the PRD
 
@@ -17,7 +17,7 @@ Limited, but real:
 - **IFC import/export** (PRD §11.2.2, P0). `packages/document/src/ifc.ts` + full `T-IFC-001..T-IFC-007` test coverage.
 - **AI chat panel with BYO provider** (PRD §8.1, §8.2). `AIChatPanel.tsx` streams to OpenAI-compatible / Ollama endpoints with local config persistence — the multi-model-router idea from PRD §6.2 is there in spirit, user-configured instead of server-routed.
 - **IBC compliance engine (rule set)** (PRD §8.2.3). `packages/ai/src/codeCompliance.ts` + `rules/ibc.ts` is sync, works offline, satisfies T-AI-024.
-- **Subscription / grace-period logic** (PRD §6.6, T-SUB-*). Implemented and tested in `packages/sync/src/subscription.ts` *(caveat: this test lives in the dead `@opencad/sync` package — see below)*.
+- **Subscription / grace-period logic** (PRD §6.6, T-SUB-_). Implemented and tested in `packages/sync/src/subscription.ts` _(caveat: this test lives in the dead `@opencad/sync` package — see below)\*.
 
 ## Shipped but diverged
 
@@ -25,7 +25,7 @@ Limited, but real:
   - PRD says: Yjs (`Y.Map<CRDTElement>`, `Y.Map<CRDTLayer>`, etc.) with custom BIM extensions.
   - We built: bespoke Rust LWW CRDT (`@opencad/sync-rs`) exposed via `lib/syncAdapter.ts`. No Y.Map. No Y.Doc. Property-level granularity is re-implemented from scratch.
   - **Better / worse / neutral:** Neutral-to-better for the LWW semantics we actually need; worse for ecosystem (no y-websocket, no Yjs awareness API, no y-indexeddb persistence). Also means the Yjs-specific conflict-resolution UX promised in PRD §9.1 "user notified of semantic conflicts" has no library support.
-  - **Recommendation:** Update PRD §10.2 and §15.3 to describe the Rust LWW approach, *or* rewrap it behind a Yjs-compatible adapter. Do not revert.
+  - **Recommendation:** Update PRD §10.2 and §15.3 to describe the Rust LWW approach, _or_ rewrap it behind a Yjs-compatible adapter. Do not revert.
 
 - **Geometry kernel** (PRD §6.3, §15.2 — OpenCASCADE WASM).
   - PRD says: OpenCASCADE compiled via Emscripten, BREP/NURBS, plus Rust custom extensions.
@@ -228,24 +228,24 @@ Net scope-creep assessment: **most of it is defensible** (either already-planned
 
 Sampled 12 load-bearing PRD test IDs. "Exists" means a test file references the ID; "Passes today" is best-effort based on the contract audit's inventory of what is live vs. dead.
 
-| Test ID | Exists in tests | Passes today | Notes |
-|---|---|---|---|
-| T-DOC-001 | Yes | Yes | `e2e/document.spec.ts:13` — Playwright E2E |
-| T-DOC-002 | Yes | Yes | Playwright + unit (`useAutoSaveV2.test.ts`) |
-| T-DOC-003 | Yes | Unknown | `useIndexedDB.test.ts:29` + `document.spec.ts`. Sync-reconnect flow is through `syncAdapter`. Likely passes unit; e2e may or may not exercise real server. |
-| T-2D-001 | Yes | Yes | Referenced in PRD and `docs/TDD_GUIDE.md`; concrete tests exist under `hooks/useViewport.test.ts` |
-| T-3D-001 | Yes | **Yes-but-dead** | `packages/geometry/src/primitives.test.ts:10` — tests `createBox`, but `@opencad/geometry` has zero non-test consumers (contract audit). Passes in isolation; not exercised end-to-end. |
-| T-3D-002 | Yes | **Yes-but-dead** | Same story — tests pass for `createSphere` but rendering doesn't go through this module. |
-| T-AI-001 | Yes | **Yes-but-dead** | `packages/ai/src/features.test.ts:25`, `generate.test.ts`. Passes unit. `generateProject` has zero callers in `packages/app`. |
-| T-AI-020 | Yes | Yes | `packages/ai/src/validation.test.ts:357`, `codeCompliance.ts`. Unit passes. Panel is not wired to UI — so passing unit but not usable. |
-| T-AI-024 | Yes | Yes | Sync / no-network. Good. |
-| T-OFF-001 | Yes (dead package) | **Dead-code pass** | `packages/sync/src/offline.test.ts:42` — this package is dead (contract audit). The test passes but it does not test the live offline path (which is `syncAdapter` + `offlineStore`). |
-| T-COL-001 | Yes (dead package) | **Dead-code pass** | `packages/sync/src/index.test.ts:19`, `crdt.test.ts`. Same — tests the dead Yjs-era code. The live CRDT is `@opencad/sync-rs` which has its own Rust-level tests. |
-| T-COL-003 | Yes | Unknown | Offline + concurrent merge — tested in `packages/sync` (dead) and has an e2e at `e2e/collaboration.spec.ts:113`. E2E likely exercises live adapter. |
-| T-PLG-001 | Yes | Yes-but-dead | `pluginRegistry.test.ts`, `sandbox.test.ts`. Sandbox is not wired to real store. |
-| T-IFC-001 | Yes | Yes | `packages/document/src/ifc.test.ts:94`. Live package. |
-| T-IFC-005 | Yes | Yes | Round-trip. Live package. |
-| T-SUB-001 | Yes (dead package) | **Dead-code pass** | `packages/sync/src/sync-client.test.ts:111`. Test is good; but it tests a sync client that the app does not use. |
+| Test ID   | Exists in tests    | Passes today       | Notes                                                                                                                                                                                   |
+| --------- | ------------------ | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| T-DOC-001 | Yes                | Yes                | `e2e/document.spec.ts:13` — Playwright E2E                                                                                                                                              |
+| T-DOC-002 | Yes                | Yes                | Playwright + unit (`useAutoSaveV2.test.ts`)                                                                                                                                             |
+| T-DOC-003 | Yes                | Unknown            | `useIndexedDB.test.ts:29` + `document.spec.ts`. Sync-reconnect flow is through `syncAdapter`. Likely passes unit; e2e may or may not exercise real server.                              |
+| T-2D-001  | Yes                | Yes                | Referenced in PRD and `docs/TDD_GUIDE.md`; concrete tests exist under `hooks/useViewport.test.ts`                                                                                       |
+| T-3D-001  | Yes                | **Yes-but-dead**   | `packages/geometry/src/primitives.test.ts:10` — tests `createBox`, but `@opencad/geometry` has zero non-test consumers (contract audit). Passes in isolation; not exercised end-to-end. |
+| T-3D-002  | Yes                | **Yes-but-dead**   | Same story — tests pass for `createSphere` but rendering doesn't go through this module.                                                                                                |
+| T-AI-001  | Yes                | **Yes-but-dead**   | `packages/ai/src/features.test.ts:25`, `generate.test.ts`. Passes unit. `generateProject` has zero callers in `packages/app`.                                                           |
+| T-AI-020  | Yes                | Yes                | `packages/ai/src/validation.test.ts:357`, `codeCompliance.ts`. Unit passes. Panel is not wired to UI — so passing unit but not usable.                                                  |
+| T-AI-024  | Yes                | Yes                | Sync / no-network. Good.                                                                                                                                                                |
+| T-OFF-001 | Yes (dead package) | **Dead-code pass** | `packages/sync/src/offline.test.ts:42` — this package is dead (contract audit). The test passes but it does not test the live offline path (which is `syncAdapter` + `offlineStore`).   |
+| T-COL-001 | Yes (dead package) | **Dead-code pass** | `packages/sync/src/index.test.ts:19`, `crdt.test.ts`. Same — tests the dead Yjs-era code. The live CRDT is `@opencad/sync-rs` which has its own Rust-level tests.                       |
+| T-COL-003 | Yes                | Unknown            | Offline + concurrent merge — tested in `packages/sync` (dead) and has an e2e at `e2e/collaboration.spec.ts:113`. E2E likely exercises live adapter.                                     |
+| T-PLG-001 | Yes                | Yes-but-dead       | `pluginRegistry.test.ts`, `sandbox.test.ts`. Sandbox is not wired to real store.                                                                                                        |
+| T-IFC-001 | Yes                | Yes                | `packages/document/src/ifc.test.ts:94`. Live package.                                                                                                                                   |
+| T-IFC-005 | Yes                | Yes                | Round-trip. Live package.                                                                                                                                                               |
+| T-SUB-001 | Yes (dead package) | **Dead-code pass** | `packages/sync/src/sync-client.test.ts:111`. Test is good; but it tests a sync client that the app does not use.                                                                        |
 
 **Headline numbers the PRD may be publishing wrong.** The PRD does not itself state a "% complete" number; however the memory index notes "Phase 1 ~35% done." Given the above, a more honest framing is:
 
@@ -273,8 +273,8 @@ Ordered by "maximum PRD alignment per hour of work."
 ## Notes
 
 - The contract audit's "three compliance engines" finding is echoed here at PRD level — PRD §8.2.3 describes ONE engine; we built three and wired zero of them to the UI.
-- The `@opencad/sync` tests (T-SUB-*, T-COL-001 in sync package, T-OFF-001 in sync package) all pass and are green in CI, which hides the fact that they test a package that is no longer integrated. Whoever reads the green bar assumes T-COL-001 is live — it is not, in the sense that the code-path the user hits goes through `syncAdapter` + `sync-rs` and does *not* execute those tests' code. Suggest either (a) deleting the dead package, or (b) renaming the tests so the ID reuse in `sync-rs` is explicit.
+- The `@opencad/sync` tests (T-SUB-*, T-COL-001 in sync package, T-OFF-001 in sync package) all pass and are green in CI, which hides the fact that they test a package that is no longer integrated. Whoever reads the green bar assumes T-COL-001 is live — it is not, in the sense that the code-path the user hits goes through `syncAdapter` + `sync-rs` and does *not\* execute those tests' code. Suggest either (a) deleting the dead package, or (b) renaming the tests so the ID reuse in `sync-rs` is explicit.
 - The contract audit noted `Viewport.tsx` is dead (replaced by `SplitViewport`). That's consistent with the PRD §7.1.4 "Multi-Viewport" promise — the multi-viewport path is the live one.
-- PRD appendix A lists T-E2E-001 and various T-PLN-*, T-RVT-*, T-SKP-* tests; these were not spot-checked but based on the file-format-adapter stubs in `document/src/archicad.ts`, `revit.ts`, `sketchup.ts` they are likely all in the "exists + passes unit but does not actually parse real files" category.
+- PRD appendix A lists T-E2E-001 and various T-PLN-_, T-RVT-_, T-SKP-\* tests; these were not spot-checked but based on the file-format-adapter stubs in `document/src/archicad.ts`, `revit.ts`, `sketchup.ts` they are likely all in the "exists + passes unit but does not actually parse real files" category.
 - The memory note "Phase 1 ~35% done" and "P0 blockers: serverApi.ts missing auth token, /auth/me never called" is consistent with this audit — though neither of those specific P0 blockers was re-verified here.
 - The uncommitted diff on `HatchPanel`, `MarketplacePanel`, `Navigator`, `ProjectBrowser`, `ProjectDashboard`, `SheetPanel`, `Viewport`, `useViewport`, `useThreeViewport`, `bim.test.ts`, `document.ts`, `app.css` is active work that may resolve some of the above findings. This audit reflects HEAD + staged/unstaged state as of 2026-04-19.

@@ -68,7 +68,11 @@ describe('T-2D-011: catmullRomToBezier', () => {
   });
 
   it('returns segments with cp1, cp2, and end properties', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+      { x: 200, y: 0 },
+    ];
     const segments = catmullRomToBezier(pts);
     for (const seg of segments) {
       expect(seg).toHaveProperty('cp1');
@@ -84,7 +88,11 @@ describe('T-2D-011: catmullRomToBezier', () => {
   });
 
   it('respects custom tension parameter', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+      { x: 200, y: 0 },
+    ];
     const defaultSegs = catmullRomToBezier(pts);
     const customSegs = catmullRomToBezier(pts, 0.25);
     // Different tension → different control points
@@ -94,21 +102,33 @@ describe('T-2D-011: catmullRomToBezier', () => {
 
 describe('T-2D-011: interpolateSpline', () => {
   it('t=0 returns the first point', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 50 }, { x: 200, y: 0 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 50 },
+      { x: 200, y: 0 },
+    ];
     const pt = interpolateSpline(pts, 0);
     expect(pt.x).toBeCloseTo(0);
     expect(pt.y).toBeCloseTo(0);
   });
 
   it('t=1 returns the last point', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 50 }, { x: 200, y: 0 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 50 },
+      { x: 200, y: 0 },
+    ];
     const pt = interpolateSpline(pts, 1);
     expect(pt.x).toBeCloseTo(200);
     expect(pt.y).toBeCloseTo(0);
   });
 
   it('t=0.5 returns a point strictly between first and last', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 50 }, { x: 200, y: 0 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 50 },
+      { x: 200, y: 0 },
+    ];
     const pt = interpolateSpline(pts, 0.5);
     expect(pt.x).toBeGreaterThan(0);
     expect(pt.x).toBeLessThan(200);
@@ -116,13 +136,20 @@ describe('T-2D-011: interpolateSpline', () => {
 
   it('t=0.5 on symmetric curve is near the centre x', () => {
     // Symmetric: first and last y=0, middle y=100
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+      { x: 200, y: 0 },
+    ];
     const pt = interpolateSpline(pts, 0.5);
     expect(pt.x).toBeCloseTo(100, 0);
   });
 
   it('single segment (2 points) interpolates linearly', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 100 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+    ];
     const pt = interpolateSpline(pts, 0.5);
     expect(pt.x).toBeCloseTo(50, 0);
     expect(pt.y).toBeCloseTo(50, 0);

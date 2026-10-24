@@ -95,9 +95,18 @@ export interface EnergyModelResult {
   peakHeatingKW: number;
   /** Monthly energy loads (kWh) — 12 values Jan–Dec */
   monthlyLoads: [
-    number, number, number, number,
-    number, number, number, number,
-    number, number, number, number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
   ];
   /** Unmet cooling setpoint hours */
   unmetCoolingHours: number;
@@ -180,21 +189,19 @@ export function buildIDFConstruction(c: BuildingConstruction): string {
       `${IDF_INDENT}${layer.conductivity.toFixed(4)},    !- Conductivity {W/m-K}`,
       `${IDF_INDENT}${layer.density.toFixed(1)},         !- Density {kg/m3}`,
       `${IDF_INDENT}${layer.specificHeat.toFixed(1)};    !- Specific Heat {J/kg-K}`,
-      ``,
+      ``
     );
   }
 
   // Emit Construction object referencing layers
   const layerFields = c.layers
-    .map((l, i) => `${IDF_INDENT}${l.name}${i < c.layers.length - 1 ? ',' : ';'}         !- Layer ${i + 1}`)
+    .map(
+      (l, i) =>
+        `${IDF_INDENT}${l.name}${i < c.layers.length - 1 ? ',' : ';'}         !- Layer ${i + 1}`
+    )
     .join('\n');
 
-  lines.push(
-    `Construction,`,
-    `${IDF_INDENT}${c.name},               !- Name`,
-    layerFields,
-    ``,
-  );
+  lines.push(`Construction,`, `${IDF_INDENT}${c.name},               !- Name`, layerFields, ``);
 
   return lines.join('\n');
 }
@@ -239,7 +246,7 @@ export function buildIDF(input: EnergyModelInput): string {
       `!- EnergyPlus Version: 23.x`,
       `!- Simulation period: Month ${input.simPeriod.startMonth} to Month ${input.simPeriod.endMonth}`,
       ``,
-    ].join('\n'),
+    ].join('\n')
   );
 
   // Version
@@ -255,7 +262,7 @@ export function buildIDF(input: EnergyModelInput): string {
       `${IDF_INDENT}No,                     !- Run Simulation for Sizing Periods`,
       `${IDF_INDENT}Yes;                    !- Run Simulation for Weather File Run Periods`,
       ``,
-    ].join('\n'),
+    ].join('\n')
   );
 
   // Building object
@@ -271,12 +278,12 @@ export function buildIDF(input: EnergyModelInput): string {
       `${IDF_INDENT}25,                     !- Maximum Number of Warmup Days`,
       `${IDF_INDENT}6;                      !- Minimum Number of Warmup Days`,
       ``,
-    ].join('\n'),
+    ].join('\n')
   );
 
   // Run period
   const startDay = `${input.simPeriod.startMonth}/1`;
-  const endDay   = `${input.simPeriod.endMonth}/31`;
+  const endDay = `${input.simPeriod.endMonth}/31`;
   sections.push(
     [
       `RunPeriod,`,
@@ -295,7 +302,7 @@ export function buildIDF(input: EnergyModelInput): string {
       `${IDF_INDENT}Yes;                    !- Use Weather File Snow Indicators`,
       ``,
       `! Run period: ${startDay} — ${endDay}`,
-    ].join('\n'),
+    ].join('\n')
   );
 
   // Site location
@@ -319,7 +326,7 @@ export function buildIDF(input: EnergyModelInput): string {
       `${IDF_INDENT}Fraction,               !- Schedule Type Limits Name`,
       `${IDF_INDENT}1.0;                    !- Hourly Value`,
       ``,
-    ].join('\n'),
+    ].join('\n')
   );
 
   // Constructions
@@ -344,7 +351,7 @@ export function buildIDF(input: EnergyModelInput): string {
       ``,
       `Output:Table:SummaryReports,`,
       `${IDF_INDENT}AllSummary;`,
-    ].join('\n'),
+    ].join('\n')
   );
 
   return sections.join('\n');
@@ -356,10 +363,10 @@ export type ClimateZone = 'hot-humid' | 'cold' | 'temperate' | 'dry';
 
 /** Base EUI values (kWh/m²/yr) by climate zone for a typical office building. */
 const BASE_EUI_BY_CLIMATE: Record<ClimateZone, number> = {
-  'hot-humid':  200,
-  'cold':       220,
-  'temperate':  150,
-  'dry':        175,
+  'hot-humid': 200,
+  cold: 220,
+  temperate: 150,
+  dry: 175,
 };
 
 /** Incremental EUI coefficients per W/m² of internal loads. */
@@ -379,24 +386,24 @@ export function estimateEUI(zones: ZoneDefinition[], climate: ClimateZone): numb
   const baseEUI = BASE_EUI_BY_CLIMATE[climate];
 
   // Weighted average of internal load densities
-  let totalArea    = 0;
-  let totalLoadW   = 0;
+  let totalArea = 0;
+  let totalLoadW = 0;
 
   for (const z of zones) {
-    const area      = z.floorAreaM2;
-    const loadWpM2  = z.lightingWpM2 + z.equipmentWpM2;
-    totalArea  += area;
+    const area = z.floorAreaM2;
+    const loadWpM2 = z.lightingWpM2 + z.equipmentWpM2;
+    totalArea += area;
     totalLoadW += loadWpM2 * area;
   }
 
-  const avgLoadWpM2   = totalArea > 0 ? totalLoadW / totalArea : 0;
-  const baselineLoad  = 15; // W/m² reference for base EUI (typical office)
-  const loadDelta     = avgLoadWpM2 - baselineLoad;
+  const avgLoadWpM2 = totalArea > 0 ? totalLoadW / totalArea : 0;
+  const baselineLoad = 15; // W/m² reference for base EUI (typical office)
+  const loadDelta = avgLoadWpM2 - baselineLoad;
 
   // Infiltration penalty: each 0.1 ACH above 0.5 adds ~5 kWh/m²/yr
-  let totalACH   = 0;
+  let totalACH = 0;
   for (const z of zones) totalACH += z.infiltrationACH;
-  const avgACH   = zones.length > 0 ? totalACH / zones.length : 0;
+  const avgACH = zones.length > 0 ? totalACH / zones.length : 0;
   const infPenalty = Math.max(0, (avgACH - 0.5) / 0.1) * 5;
 
   const eui = baseEUI + loadDelta * EUI_LOAD_FACTOR + infPenalty;

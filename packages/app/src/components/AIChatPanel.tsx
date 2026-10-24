@@ -10,7 +10,12 @@ import {
 } from '../hooks/useAIStream';
 import { firebaseAuth, isFirebaseConfigured } from '../lib/firebase';
 import { useDocumentStore } from '../stores/documentStore';
-import { generateProject, parseDesignCommand, applyDesignCommand, type DesignElement } from '@opencad/ai';
+import {
+  generateProject,
+  parseDesignCommand,
+  applyDesignCommand,
+  type DesignElement,
+} from '@opencad/ai';
 import type { DocumentSchema } from '@opencad/document';
 
 const AI_CONFIG_KEY = 'opencad-ai-config';
@@ -87,7 +92,8 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
     {
       id: '1',
       role: 'assistant',
-      content: "Hello! I'm your OpenCAD AI assistant. I can help you design buildings, check code compliance, and answer architecture questions.\n\nWhat would you like to do?",
+      content:
+        "Hello! I'm your OpenCAD AI assistant. I can help you design buildings, check code compliance, and answer architecture questions.\n\nWhat would you like to do?",
       timestamp: Date.now(),
     },
   ]);
@@ -104,9 +110,7 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
   }, [messages]);
 
   const isConfigured =
-    config.provider === 'server' ||
-    config.provider === 'ollama' ||
-    config.baseUrl.length > 0;
+    config.provider === 'server' || config.provider === 'ollama' || config.baseUrl.length > 0;
 
   const buildClient = useCallback((): AIStreamClient => {
     const storage = {
@@ -120,10 +124,7 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
         const user = firebaseAuth().currentUser;
         return user ? user.getIdToken().catch(() => null) : null;
       };
-      return new AIStreamClient(
-        createServerProvider(upstream, config.model, authHeader),
-        storage,
-      );
+      return new AIStreamClient(createServerProvider(upstream, config.model, authHeader), storage);
     }
     if (config.provider === 'ollama') {
       const url = config.baseUrl || 'http://localhost:11434';
@@ -140,7 +141,16 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
     const elements = doc.content.elements ? Object.values(doc.content.elements) : [];
     const layers = doc.organization.layers ? Object.values(doc.organization.layers) : [];
     const levels = doc.organization.levels ? Object.values(doc.organization.levels) : [];
-    return `\n\nCurrent project context:\n- Project: ${doc.name}\n- Levels: ${levels.map((l) => l.name).join(', ') || 'none'}\n- Layers: ${layers.map((l) => l.name).join(', ') || 'none'}\n- Elements: ${elements.length} total (${Object.entries(elements.reduce<Record<string,number>>((acc, e) => { acc[e.type] = (acc[e.type] ?? 0) + 1; return acc; }, {})).map(([t, c]) => `${c} ${t}s`).join(', ') || 'none'})`;
+    return `\n\nCurrent project context:\n- Project: ${doc.name}\n- Levels: ${levels.map((l) => l.name).join(', ') || 'none'}\n- Layers: ${layers.map((l) => l.name).join(', ') || 'none'}\n- Elements: ${elements.length} total (${
+      Object.entries(
+        elements.reduce<Record<string, number>>((acc, e) => {
+          acc[e.type] = (acc[e.type] ?? 0) + 1;
+          return acc;
+        }, {})
+      )
+        .map(([t, c]) => `${c} ${t}s`)
+        .join(', ') || 'none'
+    })`;
   }, [doc]);
 
   const handleSend = useCallback(async () => {
@@ -243,8 +253,8 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
                   content: `Loaded ${elementCount} element${elementCount === 1 ? '' : 's'}. ${result.description}${warningLines}`,
                   streaming: false,
                 }
-              : m,
-          ),
+              : m
+          )
         );
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
@@ -252,8 +262,8 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
           prev.map((m) =>
             m.id === thinkingId
               ? { ...m, content: `Generation failed: ${msg}`, streaming: false }
-              : m,
-          ),
+              : m
+          )
         );
       } finally {
         setIsLoading(false);
@@ -267,7 +277,8 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
         {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: 'Please configure your AI provider first. Click the ⚙ icon above to set up Ollama (local) or an OpenAI-compatible endpoint.',
+          content:
+            'Please configure your AI provider first. Click the ⚙ icon above to set up Ollama (local) or an OpenAI-compatible endpoint.',
           timestamp: Date.now(),
         },
       ]);
@@ -289,7 +300,9 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
     const systemAugmentedPrompt = BIM_SYSTEM_PROMPT + buildContext() + '\n\nUser: ' + userText;
 
     let cancelled = false;
-    abortRef.current = () => { cancelled = true; };
+    abortRef.current = () => {
+      cancelled = true;
+    };
 
     try {
       let accumulated = '';
@@ -298,9 +311,7 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
         if (chunk.type === 'delta') {
           accumulated += chunk.content;
           setMessages((prev) =>
-            prev.map((m) =>
-              m.id === assistantId ? { ...m, content: accumulated } : m
-            )
+            prev.map((m) => (m.id === assistantId ? { ...m, content: accumulated } : m))
           );
         } else if (chunk.type === 'done' || chunk.type === 'error') {
           if (chunk.type === 'error' && accumulated === '') {
@@ -311,7 +322,9 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
       }
       setMessages((prev) =>
         prev.map((m) =>
-          m.id === assistantId ? { ...m, content: accumulated || '(no response)', streaming: false } : m
+          m.id === assistantId
+            ? { ...m, content: accumulated || '(no response)', streaming: false }
+            : m
         )
       );
       client.saveHistory([
@@ -323,7 +336,11 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
-            ? { ...m, content: `Error: ${err instanceof Error ? err.message : 'Unknown error'}`, streaming: false }
+            ? {
+                ...m,
+                content: `Error: ${err instanceof Error ? err.message : 'Unknown error'}`,
+                streaming: false,
+              }
             : m
         )
       );
@@ -356,7 +373,11 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
       <div className="ai-chat-panel">
         <div className="chat-header">
           <span className="chat-title">AI Provider Setup</span>
-          <button className="chat-close" onClick={() => setShowConfig(false)} aria-label={t('ai.closeSettingsAria', { defaultValue: 'Close settings' })}>
+          <button
+            className="chat-close"
+            onClick={() => setShowConfig(false)}
+            aria-label={t('ai.closeSettingsAria', { defaultValue: 'Close settings' })}
+          >
             <X size={18} />
           </button>
         </div>
@@ -366,7 +387,9 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
             <select
               id="ai-provider"
               value={configDraft.provider}
-              onChange={(e) => setConfigDraft((d) => ({ ...d, provider: e.target.value as AIConfig['provider'] }))}
+              onChange={(e) =>
+                setConfigDraft((d) => ({ ...d, provider: e.target.value as AIConfig['provider'] }))
+              }
             >
               <option value="openai">OpenAI / OpenAI-compatible proxy</option>
               <option value="ollama">Ollama (local)</option>
@@ -377,13 +400,18 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
           {configDraft.provider === 'server' && (
             <>
               <div className="config-field">
-                <label htmlFor="ai-server-upstream">{t('ai.upstream', { defaultValue: 'Upstream via server' })}</label>
+                <label htmlFor="ai-server-upstream">
+                  {t('ai.upstream', { defaultValue: 'Upstream via server' })}
+                </label>
                 <select
                   id="ai-server-upstream"
                   value={configDraft.serverUpstream ?? 'openai'}
-                  onChange={(e) => setConfigDraft((d) => ({
-                    ...d, serverUpstream: e.target.value as NonNullable<AIConfig['serverUpstream']>,
-                  }))}
+                  onChange={(e) =>
+                    setConfigDraft((d) => ({
+                      ...d,
+                      serverUpstream: e.target.value as NonNullable<AIConfig['serverUpstream']>,
+                    }))
+                  }
                 >
                   <option value="openai">OpenAI (via server)</option>
                   <option value="anthropic">Anthropic (via server)</option>
@@ -401,9 +429,9 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
                 />
               </div>
               <p className="config-hint">
-                Server-routed mode keeps API keys out of the browser. The
-                server reads OPENAI_API_KEY / ANTHROPIC_API_KEY / OLLAMA_BASE_URL
-                from its environment and forwards your Firebase ID token.
+                Server-routed mode keeps API keys out of the browser. The server reads
+                OPENAI_API_KEY / ANTHROPIC_API_KEY / OLLAMA_BASE_URL from its environment and
+                forwards your Firebase ID token.
               </p>
             </>
           )}
@@ -411,7 +439,9 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
           {configDraft.provider === 'ollama' ? (
             <>
               <div className="config-field">
-                <label htmlFor="ai-ollama-url">{t('ai.ollamaBaseUrl', { defaultValue: 'Ollama base URL' })}</label>
+                <label htmlFor="ai-ollama-url">
+                  {t('ai.ollamaBaseUrl', { defaultValue: 'Ollama base URL' })}
+                </label>
                 <input
                   id="ai-ollama-url"
                   type="text"
@@ -430,7 +460,9 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
                   placeholder="llama3"
                 />
               </div>
-              <p className="config-hint">Install Ollama from ollama.com, then run: <code>ollama pull llama3</code></p>
+              <p className="config-hint">
+                Install Ollama from ollama.com, then run: <code>ollama pull llama3</code>
+              </p>
             </>
           ) : (
             <>
@@ -464,11 +496,17 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
                   placeholder="gpt-4o-mini"
                 />
               </div>
-              <p className="config-hint">Supports OpenAI, LM Studio, and any OpenAI-compatible endpoint.</p>
+              <p className="config-hint">
+                Supports OpenAI, LM Studio, and any OpenAI-compatible endpoint.
+              </p>
             </>
           )}
 
-          <button className="btn-save-config" onClick={handleSaveConfig} aria-label={t('ai.saveConfigAria', { defaultValue: 'Save AI configuration' })}>
+          <button
+            className="btn-save-config"
+            onClick={handleSaveConfig}
+            aria-label={t('ai.saveConfigAria', { defaultValue: 'Save AI configuration' })}
+          >
             Save Configuration
           </button>
         </div>
@@ -487,10 +525,19 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
               {config.provider === 'ollama' ? 'Local AI' : config.model}
             </span>
           )}
-          <button className="chat-icon-btn" onClick={() => setShowConfig(true)} title={t('ai.configureAria', { defaultValue: 'Configure AI provider' })} aria-label={t('ai.configureAria', { defaultValue: 'Configure AI' })}>
+          <button
+            className="chat-icon-btn"
+            onClick={() => setShowConfig(true)}
+            title={t('ai.configureAria', { defaultValue: 'Configure AI provider' })}
+            aria-label={t('ai.configureAria', { defaultValue: 'Configure AI' })}
+          >
             <Settings size={15} />
           </button>
-          <button className="chat-close" onClick={onClose} aria-label={t('ai.closeChat', { defaultValue: 'Close AI chat' })}>
+          <button
+            className="chat-close"
+            onClick={onClose}
+            aria-label={t('ai.closeChat', { defaultValue: 'Close AI chat' })}
+          >
             <X size={18} />
           </button>
         </div>
@@ -499,8 +546,14 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
       {!isConfigured && (
         <div className="ai-setup-banner">
           <Zap size={16} />
-          <span>{t('ai.configureToChat', { defaultValue: 'Configure an AI provider to enable chat.' })}</span>
-          <button onClick={() => setShowConfig(true)} className="btn-setup-ai" aria-label={t('ai.setupAria', { defaultValue: 'Set up AI provider' })}>
+          <span>
+            {t('ai.configureToChat', { defaultValue: 'Configure an AI provider to enable chat.' })}
+          </span>
+          <button
+            onClick={() => setShowConfig(true)}
+            className="btn-setup-ai"
+            aria-label={t('ai.setupAria', { defaultValue: 'Set up AI provider' })}
+          >
             {t('ai.setUp', { defaultValue: 'Set up' })}
           </button>
         </div>
@@ -522,7 +575,9 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
         ))}
         {isLoading && messages[messages.length - 1]?.streaming !== true && (
           <div className="message assistant">
-            <div className="message-avatar"><Bot size={16} /></div>
+            <div className="message-avatar">
+              <Bot size={16} />
+            </div>
             <div className="message-content typing">
               <span className="typing-dot" />
               <span className="typing-dot" />
@@ -547,13 +602,19 @@ export function AIChatPanel({ onClose }: AIChatPanelProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={isConfigured
-            ? t('ai.askPlaceholder', { defaultValue: 'Ask me anything…' })
-            : t('ai.configurePlaceholder', { defaultValue: 'Configure AI provider to chat' })}
+          placeholder={
+            isConfigured
+              ? t('ai.askPlaceholder', { defaultValue: 'Ask me anything…' })
+              : t('ai.configurePlaceholder', { defaultValue: 'Configure AI provider to chat' })
+          }
           rows={2}
         />
         {isLoading ? (
-          <button className="chat-stop" onClick={handleStop} aria-label={t('ai.stopGeneration', { defaultValue: 'Stop generation' })}>
+          <button
+            className="chat-stop"
+            onClick={handleStop}
+            aria-label={t('ai.stopGeneration', { defaultValue: 'Stop generation' })}
+          >
             {t('ai.stop', { defaultValue: 'Stop' })}
           </button>
         ) : (

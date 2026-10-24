@@ -1,9 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  DEFAULT_SECTION_BOX,
-  sectionBoxFromElements,
-} from '../lib/sectionBox';
+import { DEFAULT_SECTION_BOX, sectionBoxFromElements } from '../lib/sectionBox';
 import type { SectionBox } from '../lib/sectionBox';
 import { sliceBoxes, type Box3D } from '../lib/sectionSlice';
 import { useDocumentStore } from '../stores/documentStore';
@@ -99,7 +96,9 @@ export function SectionBoxPanel({
   return (
     <div className="section-box-panel panel">
       <div className="panel-header">
-        <span className="panel-title">{t('section.viewTitle', { defaultValue: 'Section View' })}</span>
+        <span className="panel-title">
+          {t('section.viewTitle', { defaultValue: 'Section View' })}
+        </span>
       </div>
       <div className="panel-body">
         <div className="panel-row">
@@ -132,11 +131,15 @@ export function SectionBoxPanel({
         {enabled && (
           <>
             <div className="panel-row" data-testid="section-cut-readout">
-              <span className="panel-label">{t('section.cutCountLabel', { defaultValue: 'Elements cut by plane' })}</span>
+              <span className="panel-label">
+                {t('section.cutCountLabel', { defaultValue: 'Elements cut by plane' })}
+              </span>
               <span className="panel-value">{cutCount}</span>
             </div>
             <div className="panel-row">
-              <label htmlFor="section-position">{t('section.positionLabel', { position, defaultValue: 'Position: {{position}}mm' })}</label>
+              <label htmlFor="section-position">
+                {t('section.positionLabel', { position, defaultValue: 'Position: {{position}}mm' })}
+              </label>
               <input
                 id="section-position"
                 type="range"
@@ -162,7 +165,9 @@ export function SectionBoxPanel({
         )}
         <div className="section-box-enhanced">
           <div className="panel-row">
-            <label htmlFor="section-box-enabled-check">{t('section.activateBox', { defaultValue: 'Activate Section Box' })}</label>
+            <label htmlFor="section-box-enabled-check">
+              {t('section.activateBox', { defaultValue: 'Activate Section Box' })}
+            </label>
             <input
               id="section-box-enabled-check"
               data-testid="section-box-enabled"
@@ -258,11 +263,7 @@ export function SectionBoxPanel({
             >
               {t('section.fitToModel', { defaultValue: 'Fit to Model' })}
             </button>
-            <button
-              data-testid="reset-section-btn"
-              className="btn-secondary"
-              onClick={handleReset}
-            >
+            <button data-testid="reset-section-btn" className="btn-secondary" onClick={handleReset}>
               {t('section.reset', { defaultValue: 'Reset' })}
             </button>
           </div>

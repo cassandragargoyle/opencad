@@ -54,13 +54,25 @@ export function ThreeViewportInner({ onViewChange }: ThreeViewportInnerProps) {
             {p === '3d' ? '3D' : p[0]!.toUpperCase()}
           </button>
         ))}
-        <button className="viewport-control-btn" onClick={zoomIn} title={t('viewport.zoomIn', { defaultValue: 'Zoom In' })}>
+        <button
+          className="viewport-control-btn"
+          onClick={zoomIn}
+          title={t('viewport.zoomIn', { defaultValue: 'Zoom In' })}
+        >
           <ZoomIn size={14} />
         </button>
-        <button className="viewport-control-btn" onClick={zoomOut} title={t('viewport.zoomOut', { defaultValue: 'Zoom Out' })}>
+        <button
+          className="viewport-control-btn"
+          onClick={zoomOut}
+          title={t('viewport.zoomOut', { defaultValue: 'Zoom Out' })}
+        >
           <ZoomOut size={14} />
         </button>
-        <button className="viewport-control-btn" onClick={zoomToFit} title={t('viewport.fit', { defaultValue: 'Fit' })}>
+        <button
+          className="viewport-control-btn"
+          onClick={zoomToFit}
+          title={t('viewport.fit', { defaultValue: 'Fit' })}
+        >
           <Maximize size={14} />
         </button>
         <button

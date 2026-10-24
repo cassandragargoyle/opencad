@@ -22,7 +22,10 @@ export interface IFC43HorizontalAlignment {
   name: string;
 }
 
-export function validateAlignment(alignment: IFC43HorizontalAlignment): { valid: boolean; errors: string[] } {
+export function validateAlignment(alignment: IFC43HorizontalAlignment): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   if (!alignment.id || alignment.id.trim() === '') {
@@ -79,19 +82,27 @@ export function buildAlignmentIFC(alignment: IFC43HorizontalAlignment): string {
     const azDeg = ((seg.azimuthRad * 180) / Math.PI).toFixed(6);
 
     if (seg.segmentType === 'Line') {
-      lines.push(`#${segId}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${seg.startX.toFixed(3)},${seg.startY.toFixed(3)})),${azDeg},0.,${seg.length.toFixed(3)},.LINE.,$,$);`);
+      lines.push(
+        `#${segId}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${seg.startX.toFixed(3)},${seg.startY.toFixed(3)})),${azDeg},0.,${seg.length.toFixed(3)},.LINE.,$,$);`
+      );
     } else if (seg.segmentType === 'Arc') {
       const r = seg.radius ?? 0;
-      lines.push(`#${segId}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${seg.startX.toFixed(3)},${seg.startY.toFixed(3)})),${azDeg},${r.toFixed(3)},${seg.length.toFixed(3)},.CIRCULARARC.,$,$);`);
+      lines.push(
+        `#${segId}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${seg.startX.toFixed(3)},${seg.startY.toFixed(3)})),${azDeg},${r.toFixed(3)},${seg.length.toFixed(3)},.CIRCULARARC.,$,$);`
+      );
     } else {
       // Clothoid
-      lines.push(`#${segId}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${seg.startX.toFixed(3)},${seg.startY.toFixed(3)})),${azDeg},$,${seg.length.toFixed(3)},.CLOTHOID.,$,$);`);
+      lines.push(
+        `#${segId}=IFCALIGNMENTHORIZONTALSEGMENT($,$,IFCCARTESIANPOINT((${seg.startX.toFixed(3)},${seg.startY.toFixed(3)})),${azDeg},$,${seg.length.toFixed(3)},.CLOTHOID.,$,$);`
+      );
     }
   }
 
   const segRefs = segmentIds.map((id) => `#${id}`).join(',');
   lines.push(`#${curveEntityId}=IFCALIGNMENTHORIZONTAL($,(${segRefs}));`);
-  lines.push(`#${alignmentEntityId}=IFCALIGNMENT('${alignment.id}',$,'${alignment.name}',$,$,$,#${curveEntityId},$);`);
+  lines.push(
+    `#${alignmentEntityId}=IFCALIGNMENT('${alignment.id}',$,'${alignment.name}',$,$,$,#${curveEntityId},$);`
+  );
 
   lines.push('ENDSEC;');
   lines.push('END-ISO-10303-21;');

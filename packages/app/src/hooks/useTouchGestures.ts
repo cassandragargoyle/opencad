@@ -4,8 +4,8 @@ import { useEffect, useRef } from 'react';
 
 export interface TouchGestureState {
   isPinching: boolean;
-  scale: number;       // current pinch scale (1.0 = no zoom)
-  rotation: number;    // rotation in radians (two-finger rotate)
+  scale: number; // current pinch scale (1.0 = no zoom)
+  rotation: number; // rotation in radians (two-finger rotate)
   panDelta: { x: number; y: number };
 }
 
@@ -19,8 +19,8 @@ export interface UseTouchGesturesOptions {
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 
-const TAP_MAX_DURATION_MS  = 200;
-const TAP_MAX_MOVEMENT_PX  = 10;
+const TAP_MAX_DURATION_MS = 200;
+const TAP_MAX_MOVEMENT_PX = 10;
 const DOUBLE_TAP_MAX_GAP_MS = 300;
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ function pinchAngle(t0: Touch, t1: Touch): number {
 
 export function useTouchGestures(
   elementRef: React.RefObject<HTMLElement | null>,
-  options: UseTouchGesturesOptions,
+  options: UseTouchGesturesOptions
 ): void {
   // Keep a stable ref to the latest options so event handlers never go stale.
   const optsRef = useRef(options);
@@ -57,23 +57,23 @@ export function useTouchGestures(
     // ── Per-gesture mutable state (no React re-renders needed) ────────────
 
     // Single-finger pan
-    let panActive     = false;
-    let panLastX      = 0;
-    let panLastY      = 0;
-    let panMaxMovePx  = 0;      // track total movement for tap detection
-    let panStartX     = 0;
-    let panStartY     = 0;
+    let panActive = false;
+    let panLastX = 0;
+    let panLastY = 0;
+    let panMaxMovePx = 0; // track total movement for tap detection
+    let panStartX = 0;
+    let panStartY = 0;
     let touchStartTime = 0;
 
     // Two-finger pinch / rotate
-    let pinchActive       = false;
-    let pinchStartDist    = 0;
-    let pinchLastAngle    = 0;
+    let pinchActive = false;
+    let pinchStartDist = 0;
+    let pinchLastAngle = 0;
 
     // Double-tap
-    let lastTapTime   = 0;
+    let lastTapTime = 0;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let lastTapPoint  = { x: 0, y: 0 };
+    let lastTapPoint = { x: 0, y: 0 };
 
     // ── touchstart ────────────────────────────────────────────────────────
 
@@ -82,21 +82,21 @@ export function useTouchGestures(
 
       if (ev.touches.length === 1) {
         const t = ev.touches[0]!;
-        panActive      = true;
-        panLastX       = t.clientX;
-        panLastY       = t.clientY;
-        panStartX      = t.clientX;
-        panStartY      = t.clientY;
-        panMaxMovePx   = 0;
+        panActive = true;
+        panLastX = t.clientX;
+        panLastY = t.clientY;
+        panStartX = t.clientX;
+        panStartY = t.clientY;
+        panMaxMovePx = 0;
         touchStartTime = Date.now();
-        pinchActive    = false;
+        pinchActive = false;
       } else if (ev.touches.length === 2) {
-        panActive   = false;
+        panActive = false;
         pinchActive = true;
-        const t0    = ev.touches[0]!;
-        const t1    = ev.touches[1]!;
-        pinchStartDist  = pinchDistance(t0, t1);
-        pinchLastAngle  = pinchAngle(t0, t1);
+        const t0 = ev.touches[0]!;
+        const t1 = ev.touches[1]!;
+        pinchStartDist = pinchDistance(t0, t1);
+        pinchLastAngle = pinchAngle(t0, t1);
       }
     };
 
@@ -106,7 +106,7 @@ export function useTouchGestures(
       ev.preventDefault();
 
       if (ev.touches.length === 1 && panActive) {
-        const t  = ev.touches[0]!;
+        const t = ev.touches[0]!;
         const dx = t.clientX - panLastX;
         const dy = t.clientY - panLastY;
 
@@ -119,14 +119,13 @@ export function useTouchGestures(
         panLastY = t.clientY;
 
         optsRef.current.onPan?.({ x: dx, y: dy });
-
       } else if (ev.touches.length === 2 && pinchActive) {
         const t0 = ev.touches[0]!;
         const t1 = ev.touches[1]!;
 
-        const newDist  = pinchDistance(t0, t1);
+        const newDist = pinchDistance(t0, t1);
         const newAngle = pinchAngle(t0, t1);
-        const center   = pinchCenter(t0, t1);
+        const center = pinchCenter(t0, t1);
 
         if (pinchStartDist > 0) {
           const scale = newDist / pinchStartDist;
@@ -150,10 +149,10 @@ export function useTouchGestures(
         panActive = false;
 
         const duration = Date.now() - touchStartTime;
-        const t        = ev.changedTouches[0]!;
+        const t = ev.changedTouches[0]!;
 
-        const isShortEnough  = duration <= TAP_MAX_DURATION_MS;
-        const isSmallEnough  = panMaxMovePx <= TAP_MAX_MOVEMENT_PX;
+        const isShortEnough = duration <= TAP_MAX_DURATION_MS;
+        const isSmallEnough = panMaxMovePx <= TAP_MAX_MOVEMENT_PX;
 
         if (isShortEnough && isSmallEnough) {
           const tapPoint = { x: panStartX, y: panStartY };
@@ -164,7 +163,7 @@ export function useTouchGestures(
             lastTapTime = 0;
             optsRef.current.onDoubleTap?.({ x: t.clientX, y: t.clientY });
           } else {
-            lastTapTime  = Date.now();
+            lastTapTime = Date.now();
             lastTapPoint = tapPoint;
             optsRef.current.onTap?.(tapPoint);
           }
@@ -172,7 +171,7 @@ export function useTouchGestures(
       }
 
       if (ev.touches.length < 2) {
-        pinchActive    = false;
+        pinchActive = false;
         pinchStartDist = 0;
       }
     };
@@ -180,13 +179,13 @@ export function useTouchGestures(
     // ── Register events ───────────────────────────────────────────────────
 
     el.addEventListener('touchstart', handleTouchStart, { passive: false });
-    el.addEventListener('touchmove',  handleTouchMove,  { passive: false });
-    el.addEventListener('touchend',   handleTouchEnd,   { passive: false });
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    el.addEventListener('touchend', handleTouchEnd, { passive: false });
 
     return () => {
       el.removeEventListener('touchstart', handleTouchStart, false);
-      el.removeEventListener('touchmove',  handleTouchMove,  false);
-      el.removeEventListener('touchend',   handleTouchEnd,   false);
+      el.removeEventListener('touchmove', handleTouchMove, false);
+      el.removeEventListener('touchend', handleTouchEnd, false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRef]);

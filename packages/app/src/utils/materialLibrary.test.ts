@@ -83,7 +83,11 @@ describe('T-MAT-001: Material Library', () => {
 
   describe('createCustomMaterial', () => {
     it('returns a material with a generated id', () => {
-      const m = createCustomMaterial({ name: 'Test Material', category: 'concrete', color: '#ff0000' });
+      const m = createCustomMaterial({
+        name: 'Test Material',
+        category: 'concrete',
+        color: '#ff0000',
+      });
       expect(m.id).toMatch(/^custom-test-material-/);
     });
 
@@ -99,7 +103,12 @@ describe('T-MAT-001: Material Library', () => {
     });
 
     it('accepts custom opacity', () => {
-      const m = createCustomMaterial({ name: 'Semi', category: 'glass', color: '#aaaaaa', opacity: 0.5 });
+      const m = createCustomMaterial({
+        name: 'Semi',
+        category: 'glass',
+        color: '#aaaaaa',
+        opacity: 0.5,
+      });
       expect(m.opacity).toBe(0.5);
     });
 

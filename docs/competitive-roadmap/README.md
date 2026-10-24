@@ -14,90 +14,90 @@ Each issue follows the same structure:
 
 ## Test-ID prefix convention
 
-| Prefix | Area |
-|---|---|
-| `T-MOD-*` | Modeling primitives / editing |
-| `T-GEO-*` | Geometry kernel / boolean ops |
+| Prefix    | Area                                                             |
+| --------- | ---------------------------------------------------------------- |
+| `T-MOD-*` | Modeling primitives / editing                                    |
+| `T-GEO-*` | Geometry kernel / boolean ops                                    |
 | `T-DOC-*` | Documentation (sections, elevations, schedules, layouts, labels) |
-| `T-PAR-*` | Parametric objects / library |
-| `T-VIZ-*` | View management / rendering |
-| `T-ANA-*` | Analysis (energy, structural, clash) |
-| `T-IO-*`  | Import / export / interchange |
-| `T-COL-*` | Collaboration (reserve/release, BCF) |
+| `T-PAR-*` | Parametric objects / library                                     |
+| `T-VIZ-*` | View management / rendering                                      |
+| `T-ANA-*` | Analysis (energy, structural, clash)                             |
+| `T-IO-*`  | Import / export / interchange                                    |
+| `T-COL-*` | Collaboration (reserve/release, BCF)                             |
 
 ## All 52 issues by priority
 
 ### P0 — blocking any serious public demo (4)
 
-| # | File | Title |
-|---|---|---|
-| 01 | [01-wall-junctions.md](01-wall-junctions.md) | Automatic wall junction cleanup (T/L/X intersections) |
-| 02 | [02-seo-min.md](02-seo-min.md) | Solid Element Operations (SEO), minimal subset |
-| 03 | [03-coord-box.md](03-coord-box.md) | Coordinate box + numeric input during any draw/edit |
-| 04 | [04-composite-walls.md](04-composite-walls.md) | Composite wall structures (multi-layer) |
+| #   | File                                           | Title                                                 |
+| --- | ---------------------------------------------- | ----------------------------------------------------- |
+| 01  | [01-wall-junctions.md](01-wall-junctions.md)   | Automatic wall junction cleanup (T/L/X intersections) |
+| 02  | [02-seo-min.md](02-seo-min.md)                 | Solid Element Operations (SEO), minimal subset        |
+| 03  | [03-coord-box.md](03-coord-box.md)             | Coordinate box + numeric input during any draw/edit   |
+| 04  | [04-composite-walls.md](04-composite-walls.md) | Composite wall structures (multi-layer)               |
 
 ### P1 — needed before claiming production readiness (11)
 
-| # | File | Title |
-|---|---|---|
-| 05 | [05-section-cuts.md](05-section-cuts.md) | Section views that cut live 3D geometry |
-| 06 | [06-elevations.md](06-elevations.md) | Named orthographic elevations |
-| 07 | [07-schedules.md](07-schedules.md) | Interactive schedules (door / window / room) |
-| 08 | [08-layout-book.md](08-layout-book.md) | Layout book + title blocks + drawing numbering |
-| 09 | [09-parametric-doors-windows.md](09-parametric-doors-windows.md) | Parametric doors and windows |
-| 21 | [21-axis-lock-smart-guides.md](21-axis-lock-smart-guides.md) | Axis lock + smart guides (inference lines) |
-| 31 | [31-details.md](31-details.md) | Detail drawings with source-view callouts |
-| 33 | [33-dimensions-full.md](33-dimensions-full.md) | Full dimension suite (angular / radial / arc / chain / ordinate) |
-| 34 | [34-labels-autotext.md](34-labels-autotext.md) | Labels with autotext tokens |
-| 35 | [35-zones-room-stamps.md](35-zones-room-stamps.md) | Zones with room stamps |
-| 37 | [37-stories-view-filters.md](37-stories-view-filters.md) | Stories with per-view story filters |
-| 45 | [45-ifc-roundtrip.md](45-ifc-roundtrip.md) | IFC 2x3 / IFC4 round-trip fidelity |
-| 46 | [46-dwg-hardening.md](46-dwg-hardening.md) | DWG / DXF adapter hardening |
+| #   | File                                                             | Title                                                            |
+| --- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 05  | [05-section-cuts.md](05-section-cuts.md)                         | Section views that cut live 3D geometry                          |
+| 06  | [06-elevations.md](06-elevations.md)                             | Named orthographic elevations                                    |
+| 07  | [07-schedules.md](07-schedules.md)                               | Interactive schedules (door / window / room)                     |
+| 08  | [08-layout-book.md](08-layout-book.md)                           | Layout book + title blocks + drawing numbering                   |
+| 09  | [09-parametric-doors-windows.md](09-parametric-doors-windows.md) | Parametric doors and windows                                     |
+| 21  | [21-axis-lock-smart-guides.md](21-axis-lock-smart-guides.md)     | Axis lock + smart guides (inference lines)                       |
+| 31  | [31-details.md](31-details.md)                                   | Detail drawings with source-view callouts                        |
+| 33  | [33-dimensions-full.md](33-dimensions-full.md)                   | Full dimension suite (angular / radial / arc / chain / ordinate) |
+| 34  | [34-labels-autotext.md](34-labels-autotext.md)                   | Labels with autotext tokens                                      |
+| 35  | [35-zones-room-stamps.md](35-zones-room-stamps.md)               | Zones with room stamps                                           |
+| 37  | [37-stories-view-filters.md](37-stories-view-filters.md)         | Stories with per-view story filters                              |
+| 45  | [45-ifc-roundtrip.md](45-ifc-roundtrip.md)                       | IFC 2x3 / IFC4 round-trip fidelity                               |
+| 46  | [46-dwg-hardening.md](46-dwg-hardening.md)                       | DWG / DXF adapter hardening                                      |
 
 ### P2 — parity and polish (24)
 
-| # | File | Title |
-|---|---|---|
-| 10 | [10-rule-based-stairs.md](10-rule-based-stairs.md) | Rule-based stair geometry |
-| 11 | [11-multi-plane-roof.md](11-multi-plane-roof.md) | Multi-plane roof (hip / valley / ridge) |
-| 12 | [12-curtain-wall-grid.md](12-curtain-wall-grid.md) | Curtain wall grid editor |
-| 13 | [13-parametric-object-library.md](13-parametric-object-library.md) | Parametric object library |
-| 14 | [14-layer-combos-overrides.md](14-layer-combos-overrides.md) | Layer Combinations + Graphic Overrides |
-| 15 | [15-trim-extend-split.md](15-trim-extend-split.md) | Trim / extend / split / merge editing |
-| 16 | [16-railing.md](16-railing.md) | Railing with baluster pattern |
-| 19 | [19-mesh-terrain.md](19-mesh-terrain.md) | Mesh terrain / site topography |
-| 20 | [20-complex-profiles.md](20-complex-profiles.md) | Complex structural profiles (I-beam, HSS, custom) |
-| 22 | [22-magic-wand.md](22-magic-wand.md) | Magic wand polygon-from-boundary |
-| 23 | [23-group-ungroup.md](23-group-ungroup.md) | Group / ungroup / suspend groups |
-| 24 | [24-mirror-rotate-array.md](24-mirror-rotate-array.md) | Mirror / rotate / array multi-copy |
-| 25 | [25-pickup-inject.md](25-pickup-inject.md) | Pick up / inject parameters (eyedropper) |
-| 26 | [26-favorites.md](26-favorites.md) | Favorites (saved parameter presets) |
-| 27 | [27-smart-hotspots.md](27-smart-hotspots.md) | Smart hotspots on element edges |
-| 28 | [28-surfaces-vs-materials.md](28-surfaces-vs-materials.md) | Surfaces separated from Building Materials |
-| 29 | [29-physical-properties.md](29-physical-properties.md) | Thermal / acoustic / structural property fields |
-| 32 | [32-worksheets.md](32-worksheets.md) | Worksheets (non-scale drawings) |
-| 36 | [36-drawing-manager.md](36-drawing-manager.md) | Drawing Manager with auto-numbering cross-refs |
-| 38 | [38-3d-filter-partial.md](38-3d-filter-partial.md) | 3D display filter / partial structure |
-| 39 | [39-view-map-templates.md](39-view-map-templates.md) | Named View Map + view templates |
-| 41 | [41-sun-study-animation.md](41-sun-study-animation.md) | Sun study animation |
-| 42 | [42-energy-analysis.md](42-energy-analysis.md) | Energy analysis (envelope + HVAC) |
-| 44 | [44-clash-rules.md](44-clash-rules.md) | Clash detection expansion (named rules) |
-| 47 | [47-rvt-hardening.md](47-rvt-hardening.md) | Revit (RVT) adapter hardening |
-| 48 | [48-skp-hardening.md](48-skp-hardening.md) | SketchUp (SKP) adapter hardening |
-| 49 | [49-3d-export.md](49-3d-export.md) | 3D export (OBJ / FBX / glTF) |
-| 51 | [51-pdf-trace.md](51-pdf-trace.md) | PDF import as trace / background |
-| 52 | [52-reserve-release.md](52-reserve-release.md) | Element reserve / release (CRDT collaboration) |
+| #   | File                                                               | Title                                             |
+| --- | ------------------------------------------------------------------ | ------------------------------------------------- |
+| 10  | [10-rule-based-stairs.md](10-rule-based-stairs.md)                 | Rule-based stair geometry                         |
+| 11  | [11-multi-plane-roof.md](11-multi-plane-roof.md)                   | Multi-plane roof (hip / valley / ridge)           |
+| 12  | [12-curtain-wall-grid.md](12-curtain-wall-grid.md)                 | Curtain wall grid editor                          |
+| 13  | [13-parametric-object-library.md](13-parametric-object-library.md) | Parametric object library                         |
+| 14  | [14-layer-combos-overrides.md](14-layer-combos-overrides.md)       | Layer Combinations + Graphic Overrides            |
+| 15  | [15-trim-extend-split.md](15-trim-extend-split.md)                 | Trim / extend / split / merge editing             |
+| 16  | [16-railing.md](16-railing.md)                                     | Railing with baluster pattern                     |
+| 19  | [19-mesh-terrain.md](19-mesh-terrain.md)                           | Mesh terrain / site topography                    |
+| 20  | [20-complex-profiles.md](20-complex-profiles.md)                   | Complex structural profiles (I-beam, HSS, custom) |
+| 22  | [22-magic-wand.md](22-magic-wand.md)                               | Magic wand polygon-from-boundary                  |
+| 23  | [23-group-ungroup.md](23-group-ungroup.md)                         | Group / ungroup / suspend groups                  |
+| 24  | [24-mirror-rotate-array.md](24-mirror-rotate-array.md)             | Mirror / rotate / array multi-copy                |
+| 25  | [25-pickup-inject.md](25-pickup-inject.md)                         | Pick up / inject parameters (eyedropper)          |
+| 26  | [26-favorites.md](26-favorites.md)                                 | Favorites (saved parameter presets)               |
+| 27  | [27-smart-hotspots.md](27-smart-hotspots.md)                       | Smart hotspots on element edges                   |
+| 28  | [28-surfaces-vs-materials.md](28-surfaces-vs-materials.md)         | Surfaces separated from Building Materials        |
+| 29  | [29-physical-properties.md](29-physical-properties.md)             | Thermal / acoustic / structural property fields   |
+| 32  | [32-worksheets.md](32-worksheets.md)                               | Worksheets (non-scale drawings)                   |
+| 36  | [36-drawing-manager.md](36-drawing-manager.md)                     | Drawing Manager with auto-numbering cross-refs    |
+| 38  | [38-3d-filter-partial.md](38-3d-filter-partial.md)                 | 3D display filter / partial structure             |
+| 39  | [39-view-map-templates.md](39-view-map-templates.md)               | Named View Map + view templates                   |
+| 41  | [41-sun-study-animation.md](41-sun-study-animation.md)             | Sun study animation                               |
+| 42  | [42-energy-analysis.md](42-energy-analysis.md)                     | Energy analysis (envelope + HVAC)                 |
+| 44  | [44-clash-rules.md](44-clash-rules.md)                             | Clash detection expansion (named rules)           |
+| 47  | [47-rvt-hardening.md](47-rvt-hardening.md)                         | Revit (RVT) adapter hardening                     |
+| 48  | [48-skp-hardening.md](48-skp-hardening.md)                         | SketchUp (SKP) adapter hardening                  |
+| 49  | [49-3d-export.md](49-3d-export.md)                                 | 3D export (OBJ / FBX / glTF)                      |
+| 51  | [51-pdf-trace.md](51-pdf-trace.md)                                 | PDF import as trace / background                  |
+| 52  | [52-reserve-release.md](52-reserve-release.md)                     | Element reserve / release (CRDT collaboration)    |
 
 ### P3 — longer-horizon / optional (5)
 
-| # | File | Title |
-|---|---|---|
-| 17 | [17-shell.md](17-shell.md) | Shell (freeform curved surfaces) |
-| 18 | [18-morph.md](18-morph.md) | Morph (free-form modeling) |
-| 30 | [30-user-hatch-patterns.md](30-user-hatch-patterns.md) | User-authorable hatch patterns |
-| 40 | [40-photoreal-render.md](40-photoreal-render.md) | Photoreal rendering |
-| 43 | [43-structural-export.md](43-structural-export.md) | Structural model export |
-| 50 | [50-point-cloud.md](50-point-cloud.md) | Point cloud import |
+| #   | File                                                   | Title                            |
+| --- | ------------------------------------------------------ | -------------------------------- |
+| 17  | [17-shell.md](17-shell.md)                             | Shell (freeform curved surfaces) |
+| 18  | [18-morph.md](18-morph.md)                             | Morph (free-form modeling)       |
+| 30  | [30-user-hatch-patterns.md](30-user-hatch-patterns.md) | User-authorable hatch patterns   |
+| 40  | [40-photoreal-render.md](40-photoreal-render.md)       | Photoreal rendering              |
+| 43  | [43-structural-export.md](43-structural-export.md)     | Structural model export          |
+| 50  | [50-point-cloud.md](50-point-cloud.md)                 | Point cloud import               |
 
 ## Dependency graph (simplified)
 

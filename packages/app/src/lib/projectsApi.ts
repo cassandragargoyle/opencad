@@ -36,9 +36,9 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
 export interface ProjectSummary {
   id: string;
   name: string;
-  updatedAt: number;       // Unix ms
+  updatedAt: number; // Unix ms
   elementCount: number;
-  thumbnail?: string;      // data URL or undefined
+  thumbnail?: string; // data URL or undefined
   tags: string[];
 }
 

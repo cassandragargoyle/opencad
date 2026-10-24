@@ -54,10 +54,14 @@ export const ROOM_SCHEDULE_COLUMNS: ScheduleColumn[] = [
 
 export function getScheduleColumnsForType(type: ScheduleType): ScheduleColumn[] {
   switch (type) {
-    case 'door': return DOOR_SCHEDULE_COLUMNS;
-    case 'window': return WINDOW_SCHEDULE_COLUMNS;
-    case 'room': return ROOM_SCHEDULE_COLUMNS;
-    default: return [{ key: 'mark', label: 'Mark' }];
+    case 'door':
+      return DOOR_SCHEDULE_COLUMNS;
+    case 'window':
+      return WINDOW_SCHEDULE_COLUMNS;
+    case 'room':
+      return ROOM_SCHEDULE_COLUMNS;
+    default:
+      return [{ key: 'mark', label: 'Mark' }];
   }
 }
 
@@ -84,7 +88,11 @@ export function createSchedule(options: ScheduleOptions): Schedule {
   };
 }
 
-export function sortScheduleRows(rows: ScheduleRow[], key: string, direction: 'asc' | 'desc' = 'asc'): ScheduleRow[] {
+export function sortScheduleRows(
+  rows: ScheduleRow[],
+  key: string,
+  direction: 'asc' | 'desc' = 'asc'
+): ScheduleRow[] {
   return [...rows].sort((a, b) => {
     const av = a[key] ?? '';
     const bv = b[key] ?? '';
@@ -96,7 +104,11 @@ export function sortScheduleRows(rows: ScheduleRow[], key: string, direction: 'a
 export function filterScheduleRows(rows: ScheduleRow[], query: string): ScheduleRow[] {
   const q = query.toLowerCase();
   return rows.filter((r) =>
-    Object.values(r).some((v) => String(v ?? '').toLowerCase().includes(q))
+    Object.values(r).some((v) =>
+      String(v ?? '')
+        .toLowerCase()
+        .includes(q)
+    )
   );
 }
 

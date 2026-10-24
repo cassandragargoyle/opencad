@@ -59,7 +59,10 @@ describe('T-SITE-V2-03: windShader', () => {
   // ── generateWindAnimation ───────────────────────────────────────────────────
 
   it('generates correct number of frames', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 1, y: 1 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+    ];
     const anim = generateWindAnimation(pts, DEFAULT_WIND_CONFIG, 24, 2);
     expect(anim.frames).toHaveLength(48);
     expect(anim.fps).toBe(24);
@@ -77,7 +80,11 @@ describe('T-SITE-V2-03: windShader', () => {
   });
 
   it('each frame has an offset per point', () => {
-    const pts = [{ x: 1, y: 2 }, { x: 3, y: 4 }, { x: 5, y: 6 }];
+    const pts = [
+      { x: 1, y: 2 },
+      { x: 3, y: 4 },
+      { x: 5, y: 6 },
+    ];
     const anim = generateWindAnimation(pts, DEFAULT_WIND_CONFIG, 10, 1);
     for (const frame of anim.frames) {
       expect(frame.offsets).toHaveLength(3);

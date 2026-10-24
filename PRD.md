@@ -50,7 +50,7 @@ Build the world's first **browser-native, AI-powered, open-source BIM platform**
 | Dimension     | Archicad / Revit       | Figma                 | **OpenCAD (Us)**                                             |
 | ------------- | ---------------------- | --------------------- | ------------------------------------------------------------ |
 | Platform      | Desktop install        | Browser (WASM)        | **Browser + Desktop (Tauri)**                                |
-| Rendering     | Native GPU             | WASM + Canvas         | **Three.js WebGPU (primary) + WebGL 2.0 fallback**            |
+| Rendering     | Native GPU             | WASM + Canvas         | **Three.js WebGPU (primary) + WebGL 2.0 fallback**           |
 | Collaboration | File-based, slow       | Real-time multiplayer | **Real-time CRDT-based multiplayer**                         |
 | AI Features   | Minimal (add-ons)      | Emerging (FigJam AI)  | **Core AI-first design**                                     |
 | Offline       | Full                   | Limited               | **Full offline-first (browser: IndexedDB, desktop: SQLite)** |
@@ -259,17 +259,17 @@ The convergence of **WebAssembly maturity**, **WebGPU rendering**, **CRDT-based 
 
 ### 6.3 Key Architectural Decisions
 
-| Decision               | Choice                                         | Rationale                                                                      |
-| ---------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------ |
-| **Geometry Kernel**    | Pure-TypeScript mesh math (`packages/app/src/lib/*`); Rust/WASM kernel removed in 2026-Q2 as orphaned; OpenCASCADE BREP revisited only when BREP-level ops (fillet, shell, loft) reach the backlog | Keeps the bundle small and lets every live path run in WebGL without Emscripten-sized payloads |
-| **Rendering**          | Three.js WebGPURenderer (primary) + WebGLRenderer fallback | WebGPU gives compute-shader access + better fill-rate; WebGL fallback keeps the viewport working on any browser where navigator.gpu is missing |
-| **CRDT Library**       | Custom Rust LWW CRDT (`@opencad/sync-rs`, WASM) | Purpose-built for our element schema; avoids Yjs dependency weight and gives full control over merge semantics |
-| **Local Storage**      | OPFS (primary) + IndexedDB (fallback) + localStorage (small items) | OPFS for large document blobs; IndexedDB for pendingSync metadata + fallback when OPFS is unavailable; localStorage for tiny config |
-| **Frontend Framework** | React + TypeScript + Vite                      | Ecosystem, type safety, developer experience, plugin compatibility             |
-| **3D Scene**           | Three.js (WebGPURenderer primary; WebGL 2.0 fallback) | Mature ecosystem, WebGPU + WebGL coverage, large community                |
-| **AI Models**          | Multi-model router (GPT-4o, Claude, local)     | Flexibility, cost optimization, offline capability via local models            |
-| **Build System**       | Turborepo + pnpm monorepo                      | Fast builds, shared packages, test isolation                                   |
-| **Testing**            | Vitest + Playwright + Custom WASM test harness | Unit, integration, E2E, and geometry-specific testing                          |
+| Decision               | Choice                                                                                                                                                                                             | Rationale                                                                                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Geometry Kernel**    | Pure-TypeScript mesh math (`packages/app/src/lib/*`); Rust/WASM kernel removed in 2026-Q2 as orphaned; OpenCASCADE BREP revisited only when BREP-level ops (fillet, shell, loft) reach the backlog | Keeps the bundle small and lets every live path run in WebGL without Emscripten-sized payloads                                                 |
+| **Rendering**          | Three.js WebGPURenderer (primary) + WebGLRenderer fallback                                                                                                                                         | WebGPU gives compute-shader access + better fill-rate; WebGL fallback keeps the viewport working on any browser where navigator.gpu is missing |
+| **CRDT Library**       | Custom Rust LWW CRDT (`@opencad/sync-rs`, WASM)                                                                                                                                                    | Purpose-built for our element schema; avoids Yjs dependency weight and gives full control over merge semantics                                 |
+| **Local Storage**      | OPFS (primary) + IndexedDB (fallback) + localStorage (small items)                                                                                                                                 | OPFS for large document blobs; IndexedDB for pendingSync metadata + fallback when OPFS is unavailable; localStorage for tiny config            |
+| **Frontend Framework** | React + TypeScript + Vite                                                                                                                                                                          | Ecosystem, type safety, developer experience, plugin compatibility                                                                             |
+| **3D Scene**           | Three.js (WebGPURenderer primary; WebGL 2.0 fallback)                                                                                                                                              | Mature ecosystem, WebGPU + WebGL coverage, large community                                                                                     |
+| **AI Models**          | Multi-model router (GPT-4o, Claude, local)                                                                                                                                                         | Flexibility, cost optimization, offline capability via local models                                                                            |
+| **Build System**       | Turborepo + pnpm monorepo                                                                                                                                                                          | Fast builds, shared packages, test isolation                                                                                                   |
+| **Testing**            | Vitest + Playwright + Custom WASM test harness                                                                                                                                                     | Unit, integration, E2E, and geometry-specific testing                                                                                          |
 
 ---
 
@@ -687,41 +687,41 @@ Figma's auto-save blog post reveals the essential complexity: **multiplayer edit
 
 #### Data Loss Prevention Invariants
 
-| Invariant | Enforcement |
-|-----------|-------------|
-| **Disk = Memory** | Local pending changes on disk must exactly match in-memory buffer. Verified on every commit. |
-| **No Close During Sync** | Tab/app cannot close while changes await server acknowledgment. |
-| **Stale Change Erasure** | After reconnect, disk is erased and re-serialized from memory before any changes are sent. |
-| **Server is Authority** | The cloud defines event order. No timestamps needed — server receive order is the truth. |
-| **Checkpoint Before Merge** | A version checkpoint is always created before replaying offline edits. |
-| **Ack Before Clear** | Local disk changes are only cleared after explicit server acknowledgment. |
+| Invariant                   | Enforcement                                                                                  |
+| --------------------------- | -------------------------------------------------------------------------------------------- |
+| **Disk = Memory**           | Local pending changes on disk must exactly match in-memory buffer. Verified on every commit. |
+| **No Close During Sync**    | Tab/app cannot close while changes await server acknowledgment.                              |
+| **Stale Change Erasure**    | After reconnect, disk is erased and re-serialized from memory before any changes are sent.   |
+| **Server is Authority**     | The cloud defines event order. No timestamps needed — server receive order is the truth.     |
+| **Checkpoint Before Merge** | A version checkpoint is always created before replaying offline edits.                       |
+| **Ack Before Clear**        | Local disk changes are only cleared after explicit server acknowledgment.                    |
 
 ### 6.6.3 Subscription Model
 
 #### Pricing Tiers
 
-| Tier | Price | Storage | Version History | AI Credits | Collaboration | Desktop Access |
-|------|-------|---------|-----------------|------------|---------------|----------------|
-| **Trial** | 14 days free | Unlimited projects, 500MB each | 30 days | 50 prompts | 3 editors | ✅ |
-| **Starter** | $29/mo | 25 projects, 500MB each | 30 days | 200 prompts/mo | 3 editors | ✅ |
-| **Professional** | $59/mo | Unlimited projects, 5GB each | 1 year | 1,000 prompts/mo | 10 editors | ✅ |
-| **Team** | $99/user/mo | Unlimited, 20GB each | Unlimited | 5,000 prompts/user/mo | Unlimited editors | ✅ |
-| **Enterprise** | Custom | Unlimited, custom limits | Unlimited + audit log | Unlimited + fine-tuned | Unlimited + SSO | ✅ + MDM |
+| Tier             | Price        | Storage                        | Version History       | AI Credits             | Collaboration     | Desktop Access |
+| ---------------- | ------------ | ------------------------------ | --------------------- | ---------------------- | ----------------- | -------------- |
+| **Trial**        | 14 days free | Unlimited projects, 500MB each | 30 days               | 50 prompts             | 3 editors         | ✅             |
+| **Starter**      | $29/mo       | 25 projects, 500MB each        | 30 days               | 200 prompts/mo         | 3 editors         | ✅             |
+| **Professional** | $59/mo       | Unlimited projects, 5GB each   | 1 year                | 1,000 prompts/mo       | 10 editors        | ✅             |
+| **Team**         | $99/user/mo  | Unlimited, 20GB each           | Unlimited             | 5,000 prompts/user/mo  | Unlimited editors | ✅             |
+| **Enterprise**   | Custom       | Unlimited, custom limits       | Unlimited + audit log | Unlimited + fine-tuned | Unlimited + SSO   | ✅ + MDM       |
 
 #### Trial Period
 
 The 14-day trial gives full access to the platform — no credit card required to start.
 
-| Aspect | Behavior |
-|--------|----------|
-| **Sign-up** | Email + password, no payment method required |
-| **Duration** | 14 days from account creation |
-| **Access** | Full Professional-tier features (unlimited projects, desktop app, AI, collaboration) |
-| **Project Size Limit** | 500MB per project during trial |
-| **Expiry Warning** | Day 10: in-app banner. Day 13: in-app + email. Day 14: in-app + email + desktop notification |
-| **After Trial Expires** | Same as subscription expiry: 14-day grace period → read-only + export access |
-| **Conversion** | User selects a paid tier at any point during trial; billing starts immediately, trial ends |
-| **Re-trial** | Not permitted per email domain or payment method |
+| Aspect                  | Behavior                                                                                     |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| **Sign-up**             | Email + password, no payment method required                                                 |
+| **Duration**            | 14 days from account creation                                                                |
+| **Access**              | Full Professional-tier features (unlimited projects, desktop app, AI, collaboration)         |
+| **Project Size Limit**  | 500MB per project during trial                                                               |
+| **Expiry Warning**      | Day 10: in-app banner. Day 13: in-app + email. Day 14: in-app + email + desktop notification |
+| **After Trial Expires** | Same as subscription expiry: 14-day grace period → read-only + export access                 |
+| **Conversion**          | User selects a paid tier at any point during trial; billing starts immediately, trial ends   |
+| **Re-trial**            | Not permitted per email domain or payment method                                             |
 
 #### Desktop Subscription Enforcement
 
@@ -775,26 +775,26 @@ The desktop app **requires an active subscription** to function. However, we nev
 
 #### Subscription Verification
 
-| Check | Frequency | Method | Offline Behavior |
-|-------|-----------|--------|------------------|
-| **Heartbeat** | Every 5 minutes (online) | REST API call to billing service | Skipped when offline |
-| **Launch Check** | Every app launch | REST API call | Falls back to cached token |
-| **Cached Token** | Stored locally | Signed JWT with expiry | Valid for 30 days offline |
-| **Grace Period** | 14 days after expiry | Server-tracked | Locally tracked with server reconciliation |
-| **Offline Grace** | 30 days | Locally tracked | Full access, reconciles on reconnect |
+| Check             | Frequency                | Method                           | Offline Behavior                           |
+| ----------------- | ------------------------ | -------------------------------- | ------------------------------------------ |
+| **Heartbeat**     | Every 5 minutes (online) | REST API call to billing service | Skipped when offline                       |
+| **Launch Check**  | Every app launch         | REST API call                    | Falls back to cached token                 |
+| **Cached Token**  | Stored locally           | Signed JWT with expiry           | Valid for 30 days offline                  |
+| **Grace Period**  | 14 days after expiry     | Server-tracked                   | Locally tracked with server reconciliation |
+| **Offline Grace** | 30 days                  | Locally tracked                  | Full access, reconciles on reconnect       |
 
 ### 6.6.4 Browser vs Desktop: Same Cloud, Same Data
 
-| Aspect | Browser App | Desktop App |
-|--------|-------------|-------------|
-| **Cloud Sync** | ✅ Same sync service | ✅ Same sync service |
-| **Document Model** | ✅ Identical CRDT | ✅ Identical CRDT |
-| **Version History** | ✅ Same checkpoints | ✅ Same checkpoints |
-| **Collaboration** | ✅ Real-time with all clients | ✅ Real-time with all clients |
-| **Offline Edits** | Buffered in IndexedDB → cloud on reconnect | Buffered in SQLite → cloud on reconnect |
-| **Subscription Required** | Trial then paid | Requires active subscription |
-| **Local Storage** | Cache only (browser quota limits) | Cache only (no quota limits) |
-| **Data Portability** | Export from cloud | Export from cloud + local |
+| Aspect                    | Browser App                                | Desktop App                             |
+| ------------------------- | ------------------------------------------ | --------------------------------------- |
+| **Cloud Sync**            | ✅ Same sync service                       | ✅ Same sync service                    |
+| **Document Model**        | ✅ Identical CRDT                          | ✅ Identical CRDT                       |
+| **Version History**       | ✅ Same checkpoints                        | ✅ Same checkpoints                     |
+| **Collaboration**         | ✅ Real-time with all clients              | ✅ Real-time with all clients           |
+| **Offline Edits**         | Buffered in IndexedDB → cloud on reconnect | Buffered in SQLite → cloud on reconnect |
+| **Subscription Required** | Trial then paid                            | Requires active subscription            |
+| **Local Storage**         | Cache only (browser quota limits)          | Cache only (no quota limits)            |
+| **Data Portability**      | Export from cloud                          | Export from cloud + local               |
 
 **Key guarantee:** A project edited in the browser and the same project edited on desktop are the **exact same document** in the cloud. There is no "browser version" vs "desktop version" — there is one document, accessible from any client.
 
@@ -898,30 +898,30 @@ The desktop app **requires an active subscription** to function. However, we nev
 
 ### 6.6.7 Subscription + Sync Test Requirements
 
-| ID | Test | Priority |
-|----|------|----------|
-| T-SUB-001 | Browser edit → verify persisted to cloud within 2s | P0 |
-| T-SUB-002 | Desktop edit → verify persisted to cloud within 2s | P0 |
-| T-SUB-003 | Browser edit → open in desktop → verify same state | P0 |
-| T-SUB-004 | Desktop edit → open in browser → verify same state | P0 |
-| T-SUB-005 | Offline browser edit → reconnect → verify sync to cloud | P0 |
-| T-SUB-006 | Offline desktop edit → reconnect → verify sync to cloud | P0 |
-| T-SUB-007 | Simultaneous browser + desktop edit → verify CRDT merge | P0 |
-| T-SUB-008 | Force crash during sync → restart → verify no data loss | P0 |
-| T-SUB-009 | Subscription expires → verify 14-day grace period | P0 |
-| T-SUB-010 | Grace period ends → verify read-only + export access | P0 |
-| T-SUB-011 | Offline during grace → verify 30-day offline grace | P0 |
-| T-SUB-012 | Subscription renewed → verify full access restored | P0 |
-| T-SUB-013 | Cancel subscription → verify data preserved 90 days | P0 |
-| T-SUB-014 | Large offline branch (1000 edits) → verify replay succeeds | P0 |
-| T-SUB-015 | Replay creates conflict → verify checkpoint before + after | P0 |
-| T-SUB-016 | Stale local changes → verify conservative erase prevents overwrite | P0 |
-| T-SUB-017 | Tab close during pending sync → verify prevented | P0 |
-| T-SUB-018 | Desktop close during pending sync → verify prevented | P0 |
-| T-SUB-019 | 10 clients editing same doc → verify all changes persisted | P0 |
-| T-SUB-020 | Server crash during sync → verify no partial state corruption | P0 |
-| T-SUB-021 | Trial expiry → verify project limit enforced at cloud level | P1 |
-| T-SUB-022 | Expired subscription → verify user can still export all data | P0 |
+| ID        | Test                                                               | Priority |
+| --------- | ------------------------------------------------------------------ | -------- |
+| T-SUB-001 | Browser edit → verify persisted to cloud within 2s                 | P0       |
+| T-SUB-002 | Desktop edit → verify persisted to cloud within 2s                 | P0       |
+| T-SUB-003 | Browser edit → open in desktop → verify same state                 | P0       |
+| T-SUB-004 | Desktop edit → open in browser → verify same state                 | P0       |
+| T-SUB-005 | Offline browser edit → reconnect → verify sync to cloud            | P0       |
+| T-SUB-006 | Offline desktop edit → reconnect → verify sync to cloud            | P0       |
+| T-SUB-007 | Simultaneous browser + desktop edit → verify CRDT merge            | P0       |
+| T-SUB-008 | Force crash during sync → restart → verify no data loss            | P0       |
+| T-SUB-009 | Subscription expires → verify 14-day grace period                  | P0       |
+| T-SUB-010 | Grace period ends → verify read-only + export access               | P0       |
+| T-SUB-011 | Offline during grace → verify 30-day offline grace                 | P0       |
+| T-SUB-012 | Subscription renewed → verify full access restored                 | P0       |
+| T-SUB-013 | Cancel subscription → verify data preserved 90 days                | P0       |
+| T-SUB-014 | Large offline branch (1000 edits) → verify replay succeeds         | P0       |
+| T-SUB-015 | Replay creates conflict → verify checkpoint before + after         | P0       |
+| T-SUB-016 | Stale local changes → verify conservative erase prevents overwrite | P0       |
+| T-SUB-017 | Tab close during pending sync → verify prevented                   | P0       |
+| T-SUB-018 | Desktop close during pending sync → verify prevented               | P0       |
+| T-SUB-019 | 10 clients editing same doc → verify all changes persisted         | P0       |
+| T-SUB-020 | Server crash during sync → verify no partial state corruption      | P0       |
+| T-SUB-021 | Trial expiry → verify project limit enforced at cloud level        | P1       |
+| T-SUB-022 | Expired subscription → verify user can still export all data       | P0       |
 
 ---
 
@@ -2111,36 +2111,36 @@ Week 11-12: Polish & Beta
 
 ### 15.1 Frontend
 
-| Layer                | Technology                 | Rationale                                        |
-| -------------------- | -------------------------- | ------------------------------------------------ |
-| **Framework**        | React 19 + TypeScript      | Ecosystem, type safety, plugin compatibility     |
-| **Build Tool**       | Vite 6                     | Fast HMR, WASM support, optimized builds         |
-| **State Management** | Zustand + `@opencad/sync-rs` LWW CRDT | Lightweight local state; custom Rust/WASM CRDT for collaboration |
-| **UI Components**    | Radix UI + Tailwind CSS    | Accessible, customizable, small bundle           |
+| Layer                | Technology                                    | Rationale                                                                  |
+| -------------------- | --------------------------------------------- | -------------------------------------------------------------------------- |
+| **Framework**        | React 19 + TypeScript                         | Ecosystem, type safety, plugin compatibility                               |
+| **Build Tool**       | Vite 6                                        | Fast HMR, WASM support, optimized builds                                   |
+| **State Management** | Zustand + `@opencad/sync-rs` LWW CRDT         | Lightweight local state; custom Rust/WASM CRDT for collaboration           |
+| **UI Components**    | Radix UI + Tailwind CSS                       | Accessible, customizable, small bundle                                     |
 | **3D Rendering**     | Three.js (WebGPU primary, WebGL 2.0 fallback) | Compute shaders + better performance on WebGPU; WebGL keeps Safari working |
-| **2D Rendering**     | Canvas 2D + WebGL fallback | Performant 2D drafting                           |
-| **Monorepo**         | Turborepo + pnpm           | Fast builds, shared packages                     |
+| **2D Rendering**     | Canvas 2D + WebGL fallback                    | Performant 2D drafting                                                     |
+| **Monorepo**         | Turborepo + pnpm                              | Fast builds, shared packages                                               |
 
 ### 15.2 Geometry & WASM
 
-| Layer                 | Technology                        | Rationale                                       |
-| --------------------- | --------------------------------- | ----------------------------------------------- |
-| **Geometry Kernel**   | Custom Rust kernel (`@opencad/geometry`, WASM), Phase 1 | Mesh-extrude BIM primitives; small binary, ships today |
-| **BREP / NURBS**      | OpenCASCADE (WASM via Emscripten), Phase 2 | Deferred until BREP-level ops (fillet, shell, loft) are on the roadmap |
-| **WASM Bridge**       | wasm-bindgen                      | Rust→WASM bindings with TypeScript types         |
-| **Spatial Index**     | Custom BVH (Rust/WASM)            | Efficient collision/clash detection             |
+| Layer               | Technology                                              | Rationale                                                              |
+| ------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Geometry Kernel** | Custom Rust kernel (`@opencad/geometry`, WASM), Phase 1 | Mesh-extrude BIM primitives; small binary, ships today                 |
+| **BREP / NURBS**    | OpenCASCADE (WASM via Emscripten), Phase 2              | Deferred until BREP-level ops (fillet, shell, loft) are on the roadmap |
+| **WASM Bridge**     | wasm-bindgen                                            | Rust→WASM bindings with TypeScript types                               |
+| **Spatial Index**   | Custom BVH (Rust/WASM)                                  | Efficient collision/clash detection                                    |
 
 ### 15.3 Storage & Sync
 
-| Layer                      | Technology                        | Rationale                               |
-| -------------------------- | --------------------------------- | --------------------------------------- |
-| **Local DB (Browser)**     | IndexedDB (via `idb` library)     | Browser-native, large quota, ACID       |
-| **Local DB (Desktop)**     | SQLite (via `rusqlite`)           | No quota limits, native performance     |
-| **File Storage (Browser)** | Origin Private File System (OPFS) | Large files, WASM-compatible            |
-| **File Storage (Desktop)** | Native file system                | Unlimited, direct access                |
+| Layer                      | Technology                                       | Rationale                                                               |
+| -------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------- |
+| **Local DB (Browser)**     | IndexedDB (via `idb` library)                    | Browser-native, large quota, ACID                                       |
+| **Local DB (Desktop)**     | SQLite (via `rusqlite`)                          | No quota limits, native performance                                     |
+| **File Storage (Browser)** | Origin Private File System (OPFS)                | Large files, WASM-compatible                                            |
+| **File Storage (Desktop)** | Native file system                               | Unlimited, direct access                                                |
 | **CRDT**                   | `@opencad/sync-rs` — custom Rust LWW CRDT (WASM) | Purpose-built for our element schema; full control over merge semantics |
-| **Sync Protocol**          | WebSocket + HTTP fallback         | Real-time when online, HTTP when not    |
-| **Service Worker**         | Workbox                           | Caching, background sync, offline       |
+| **Sync Protocol**          | WebSocket + HTTP fallback                        | Real-time when online, HTTP when not                                    |
+| **Service Worker**         | Workbox                                          | Caching, background sync, offline                                       |
 
 ### 15.4 Backend
 

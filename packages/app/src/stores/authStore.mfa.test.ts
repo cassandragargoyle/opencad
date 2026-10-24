@@ -79,14 +79,18 @@ describe('T-AUTH-007: authStore MFA TOTP actions', () => {
     it('T-AUTH-007-01: returns secret and qrCodeUrl from TotpMultiFactorGenerator', async () => {
       const mockSecret = {
         secretKey: 'JBSWY3DPEHPK3PXP',
-        generateQrCodeUrl: vi.fn(() => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'),
+        generateQrCodeUrl: vi.fn(
+          () => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'
+        ),
       };
       mockGenerateSecret.mockResolvedValue(mockSecret);
 
       const { useAuthStore } = await import('./authStore');
       const store = useAuthStore.getState();
 
-      const result = await store.enrollTotp(mockCurrentUser as unknown as import('firebase/auth').User);
+      const result = await store.enrollTotp(
+        mockCurrentUser as unknown as import('firebase/auth').User
+      );
 
       expect(mockMultiFactor).toHaveBeenCalledWith(mockCurrentUser);
       expect(mockGetSession).toHaveBeenCalled();
@@ -108,7 +112,9 @@ describe('T-AUTH-007: authStore MFA TOTP actions', () => {
       const { useAuthStore } = await import('./authStore');
       const store = useAuthStore.getState();
 
-      const result = await store.enrollTotp(mockCurrentUser as unknown as import('firebase/auth').User);
+      const result = await store.enrollTotp(
+        mockCurrentUser as unknown as import('firebase/auth').User
+      );
 
       expect(result).toBeNull();
 
@@ -124,7 +130,9 @@ describe('T-AUTH-007: authStore MFA TOTP actions', () => {
 
   describe('verifyTotpEnrollment()', () => {
     it('T-AUTH-007-03: calls assertionForEnrollment and enroll with correct args', async () => {
-      const mockSecret = { secretKey: 'JBSWY3DPEHPK3PXP' } as unknown as import('firebase/auth').TotpSecret;
+      const mockSecret = {
+        secretKey: 'JBSWY3DPEHPK3PXP',
+      } as unknown as import('firebase/auth').TotpSecret;
       const mockAssertion = { factorId: 'totp' };
       mockAssertionForEnrollment.mockReturnValue(mockAssertion);
       mockEnroll.mockResolvedValue(undefined);
@@ -135,7 +143,7 @@ describe('T-AUTH-007: authStore MFA TOTP actions', () => {
       await store.verifyTotpEnrollment(
         mockCurrentUser as unknown as import('firebase/auth').User,
         mockSecret,
-        '123456',
+        '123456'
       );
 
       expect(mockAssertionForEnrollment).toHaveBeenCalledWith(mockSecret, '123456');
@@ -153,10 +161,16 @@ describe('T-AUTH-007: authStore MFA TOTP actions', () => {
 
       const { useAuthStore } = await import('./authStore');
       const store = useAuthStore.getState();
-      const mockSecret = { secretKey: 'JBSWY3DPEHPK3PXP' } as unknown as import('firebase/auth').TotpSecret;
+      const mockSecret = {
+        secretKey: 'JBSWY3DPEHPK3PXP',
+      } as unknown as import('firebase/auth').TotpSecret;
 
       await expect(
-        store.verifyTotpEnrollment(mockCurrentUser as unknown as import('firebase/auth').User, mockSecret, '123456'),
+        store.verifyTotpEnrollment(
+          mockCurrentUser as unknown as import('firebase/auth').User,
+          mockSecret,
+          '123456'
+        )
       ).resolves.toBeUndefined();
 
       expect(mockAssertionForEnrollment).not.toHaveBeenCalled();
@@ -185,7 +199,7 @@ describe('T-AUTH-007: authStore MFA TOTP actions', () => {
 
       await store.resolveMfaChallenge(
         mockResolver as unknown as import('firebase/auth').MultiFactorResolver,
-        '654321',
+        '654321'
       );
 
       expect(mockAssertionForSignIn).toHaveBeenCalledWith(mockHint.uid, '654321');
@@ -211,8 +225,8 @@ describe('T-AUTH-007: authStore MFA TOTP actions', () => {
       await expect(
         store.resolveMfaChallenge(
           mockResolver as unknown as import('firebase/auth').MultiFactorResolver,
-          '654321',
-        ),
+          '654321'
+        )
       ).resolves.toBeUndefined();
 
       expect(mockResolver.resolveSignIn).not.toHaveBeenCalled();
@@ -247,7 +261,7 @@ describe('T-AUTH-007: authStore MFA TOTP actions', () => {
 
       await store.resolveMfaChallenge(
         mockResolver as unknown as import('firebase/auth').MultiFactorResolver,
-        '654321',
+        '654321'
       );
 
       expect(mockResolver.resolveSignIn).toHaveBeenCalledWith(mockAssertion);

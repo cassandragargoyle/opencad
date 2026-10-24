@@ -23,7 +23,9 @@ describe('T-ROLE-006: RoleSwitcher', () => {
 
   it('renders all 7 role options', () => {
     render(<RoleSwitcher />);
-    const select = screen.getByRole('combobox', { name: /dev role override/i }) as HTMLSelectElement;
+    const select = screen.getByRole('combobox', {
+      name: /dev role override/i,
+    }) as HTMLSelectElement;
     const optionValues = Array.from(select.options).map((o) => o.value);
     expect(optionValues).toHaveLength(7);
     expect(optionValues).toContain('architect');
@@ -37,7 +39,9 @@ describe('T-ROLE-006: RoleSwitcher', () => {
 
   it('displays the correct label for each role option', () => {
     render(<RoleSwitcher />);
-    const select = screen.getByRole('combobox', { name: /dev role override/i }) as HTMLSelectElement;
+    const select = screen.getByRole('combobox', {
+      name: /dev role override/i,
+    }) as HTMLSelectElement;
     const optionLabels = Array.from(select.options).map((o) => o.text);
     const expectedLabels = Object.values(ROLE_CONFIGS).map((c) => c.label);
     expectedLabels.forEach((label) => {
@@ -59,7 +63,9 @@ describe('T-ROLE-006: RoleSwitcher', () => {
   it('shows current role as selected option', () => {
     setRole('owner');
     render(<RoleSwitcher />);
-    const select = screen.getByRole('combobox', { name: /dev role override/i }) as HTMLSelectElement;
+    const select = screen.getByRole('combobox', {
+      name: /dev role override/i,
+    }) as HTMLSelectElement;
     expect(select.value).toBe('owner');
   });
 

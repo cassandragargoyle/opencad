@@ -9,11 +9,7 @@ import * as THREE from 'three';
  * Compute the signed volume of a tetrahedron from origin to a triangle face.
  * Formula: V = (v1 · (v2 × v3)) / 6
  */
-function signedTetraVolume(
-  v1: THREE.Vector3,
-  v2: THREE.Vector3,
-  v3: THREE.Vector3,
-): number {
+function signedTetraVolume(v1: THREE.Vector3, v2: THREE.Vector3, v3: THREE.Vector3): number {
   return v1.dot(new THREE.Vector3().crossVectors(v2, v3)) / 6.0;
 }
 

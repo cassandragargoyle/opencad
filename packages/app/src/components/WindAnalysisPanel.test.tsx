@@ -8,7 +8,9 @@ describe('T-GIS-003: WindAnalysisPanel', () => {
   const onRun = vi.fn();
   const onChange = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders Wind Analysis header', () => {
     render(<WindAnalysisPanel onRun={onRun} onChange={onChange} />);
@@ -43,15 +45,19 @@ describe('T-GIS-003: WindAnalysisPanel', () => {
   it('calls onRun when Run clicked', () => {
     render(<WindAnalysisPanel onRun={onRun} onChange={onChange} />);
     fireEvent.click(screen.getByRole('button', { name: /run analysis/i }));
-    expect(onRun).toHaveBeenCalledWith(expect.objectContaining({
-      prevailingDirection: expect.any(Number),
-      averageSpeedMs: expect.any(Number),
-    }));
+    expect(onRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prevailingDirection: expect.any(Number),
+        averageSpeedMs: expect.any(Number),
+      })
+    );
   });
 
   it('calls onChange when wind speed updated', () => {
     render(<WindAnalysisPanel onRun={onRun} onChange={onChange} />);
-    fireEvent.change(screen.getByLabelText(/wind speed|average speed/i), { target: { value: '8.0' } });
+    fireEvent.change(screen.getByLabelText(/wind speed|average speed/i), {
+      target: { value: '8.0' },
+    });
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ averageSpeedMs: 8.0 }));
   });
 

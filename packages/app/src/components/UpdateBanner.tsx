@@ -54,11 +54,12 @@ export function UpdateBanner({ info, onDismiss }: UpdateBannerProps): React.Reac
       }}
     >
       <span data-testid="update-version">
-        {t('update.available', { version: info.version, defaultValue: 'Version {{version}} is available' })}
+        {t('update.available', {
+          version: info.version,
+          defaultValue: 'Version {{version}} is available',
+        })}
       </span>
-      {info.body && (
-        <span style={{ opacity: 0.8, fontSize: '0.875em' }}>{info.body}</span>
-      )}
+      {info.body && <span style={{ opacity: 0.8, fontSize: '0.875em' }}>{info.body}</span>}
       <button
         data-testid="install-update-btn"
         onClick={() => void handleInstall()}

@@ -19,7 +19,7 @@ export function GraphNodeComponent({ id, data }: NodeProps) {
     (paramId: string, value: unknown) => {
       nodeData.onParamChange(id, paramId, value);
     },
-    [id, nodeData],
+    [id, nodeData]
   );
 
   if (!def) {

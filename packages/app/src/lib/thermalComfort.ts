@@ -20,22 +20,22 @@
  * Source: ASHRAE 55-2020 Table 1 / ISO 8996.
  */
 export const ASHRAE55_METABOLIC_RATES: Record<string, number> = {
-  'sleeping':                 0.7,
-  'reclining':                0.8,
-  'seated-quiet':             1.0,
-  'standing-relaxed':         1.2,
-  'sedentary-activity':       1.2,
-  'light-activity-standing':  1.6,
-  'walking-2km-h':            1.9,
-  'walking-3km-h':            2.4,
-  'walking-4km-h':            2.8,
-  'light-machine-work':       2.1,
-  'heavy-machine-work':       3.5,
-  'dancing':                  3.4,
-  'sports-tennis':            3.8,
-  'sports-basketball':        6.3,
-  'cooking':                  1.8,
-  'office-work':              1.1,
+  sleeping: 0.7,
+  reclining: 0.8,
+  'seated-quiet': 1.0,
+  'standing-relaxed': 1.2,
+  'sedentary-activity': 1.2,
+  'light-activity-standing': 1.6,
+  'walking-2km-h': 1.9,
+  'walking-3km-h': 2.4,
+  'walking-4km-h': 2.8,
+  'light-machine-work': 2.1,
+  'heavy-machine-work': 3.5,
+  dancing: 3.4,
+  'sports-tennis': 3.8,
+  'sports-basketball': 6.3,
+  cooking: 1.8,
+  'office-work': 1.1,
 };
 
 // ── Clothing insulation lookup (clo) ─────────────────────────────────────────
@@ -45,18 +45,18 @@ export const ASHRAE55_METABOLIC_RATES: Record<string, number> = {
  * Source: ASHRAE 55-2020 Table 2 / ISO 9920.
  */
 export const ASHRAE55_CLO_VALUES: Record<string, number> = {
-  'naked':                    0.0,
-  'shorts-only':              0.1,
-  'typical-summer-office':    0.5,
-  'light-summer-clothing':    0.3,
-  'light-trousers-shirt':     0.5,
-  'typical-indoor-winter':    1.0,
+  naked: 0.0,
+  'shorts-only': 0.1,
+  'typical-summer-office': 0.5,
+  'light-summer-clothing': 0.3,
+  'light-trousers-shirt': 0.5,
+  'typical-indoor-winter': 1.0,
   'heavy-suit-heavy-sweater': 1.5,
-  'typical-winter-outdoor':   1.5,
-  'heavy-winter-clothing':    1.7,
-  'trousers-long-sleeve':     0.6,
-  'skirt-blouse':             0.55,
-  'dress-slacks':             0.7,
+  'typical-winter-outdoor': 1.5,
+  'heavy-winter-clothing': 1.7,
+  'trousers-long-sleeve': 0.6,
+  'skirt-blouse': 0.55,
+  'dress-slacks': 0.7,
 };
 
 // ── PMV/PPD core computation ──────────────────────────────────────────────────
@@ -96,9 +96,9 @@ export function pmv(input: PMVInput): number {
   } = input;
 
   // Convert units
-  const M   = met * 58.15;           // Metabolic rate W/m²
-  const Icl = clo * 0.155;           // Clothing thermal resistance m²K/W
-  const W   = 0;                     // External work (W/m²), assume 0
+  const M = met * 58.15; // Metabolic rate W/m²
+  const Icl = clo * 0.155; // Clothing thermal resistance m²K/W
+  const W = 0; // External work (W/m²), assume 0
 
   // Saturated vapour pressure at air temperature (Pa) — Antoine equation
   const pa = rh * Math.exp(16.6536 - 4030.183 / (ta + 235.0)); // kPa → Pa
@@ -114,16 +114,15 @@ export function pmv(input: PMVInput): number {
   for (let i = 0; i < 150; i++) {
     // Convective heat transfer coefficient (W/m²K)
     const hcf = 2.38 * Math.pow(Math.abs(Tcl - ta), 0.25); // free convection
-    const hcv = 12.1 * Math.sqrt(var_);                     // forced convection
-    const hc  = Math.max(hcf, hcv);
+    const hcv = 12.1 * Math.sqrt(var_); // forced convection
+    const hc = Math.max(hcf, hcv);
 
     // New Tcl from energy balance
     const TclNew =
       35.7 -
       0.028 * (M - W) -
       Icl *
-        (3.96e-8 * fcl * (Math.pow(Tcl + 273, 4) - Math.pow(tr + 273, 4)) +
-          fcl * hc * (Tcl - ta));
+        (3.96e-8 * fcl * (Math.pow(Tcl + 273, 4) - Math.pow(tr + 273, 4)) + fcl * hc * (Tcl - ta));
 
     if (Math.abs(TclNew - Tcl) < 0.001) {
       Tcl = TclNew;
@@ -132,10 +131,7 @@ export function pmv(input: PMVInput): number {
     Tcl = TclNew;
   }
 
-  const hcFinal = Math.max(
-    2.38 * Math.pow(Math.abs(Tcl - ta), 0.25),
-    12.1 * Math.sqrt(var_),
-  );
+  const hcFinal = Math.max(2.38 * Math.pow(Math.abs(Tcl - ta), 0.25), 12.1 * Math.sqrt(var_));
 
   // Heat loss components (W/m²)
   const L =
@@ -146,16 +142,14 @@ export function pmv(input: PMVInput): number {
     // Heat loss by water vapour diffusion through skin
     3.05e-3 * (5733 - 6.99 * (M - W) - Pa) +
     // Heat loss by evaporation (sweat)
-    (M - W > 58.15
-      ? 0.42 * ((M - W) - 58.15)
-      : 0) +
+    (M - W > 58.15 ? 0.42 * (M - W - 58.15) : 0) +
     // Heat loss by latent respiration
     1.7e-5 * M * (5867 - Pa) +
     // Heat loss by dry respiration
     0.0014 * M * (34 - ta);
 
   // PMV from Fanger's thermal load equation
-  const pmvValue = (0.303 * Math.exp(-0.036 * M) + 0.028) * ((M - W) - L);
+  const pmvValue = (0.303 * Math.exp(-0.036 * M) + 0.028) * (M - W - L);
 
   // Clamp to ASHRAE 55 scale [-3, +3]
   return Math.max(-3, Math.min(3, pmvValue));

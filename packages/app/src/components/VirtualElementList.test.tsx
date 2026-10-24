@@ -5,7 +5,9 @@ import { VirtualElementList } from './VirtualElementList';
 expect.extend(jestDomMatchers);
 
 describe('T-PERF-001: VirtualElementList', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const makeItems = (count: number) =>
     Array.from({ length: count }, (_, i) => ({
@@ -34,7 +36,9 @@ describe('T-PERF-001: VirtualElementList', () => {
 
   it('renders correct items at a scroll offset', () => {
     const items = makeItems(100);
-    render(<VirtualElementList items={items} itemHeight={32} visibleCount={5} scrollOffset={320} />);
+    render(
+      <VirtualElementList items={items} itemHeight={32} visibleCount={5} scrollOffset={320} />
+    );
     expect(screen.getByText('Element 10')).toBeInTheDocument();
   });
 

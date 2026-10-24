@@ -9,6 +9,7 @@ Renovation / restoration / retrofit projects start with a point cloud from a LiD
 ## Scope
 
 ### In scope
+
 - Import LAS / LAZ / PLY / E57 point clouds.
 - Progressive loading for large clouds (octree streaming).
 - Point cloud renders as a non-editable element in the 3D viewport.
@@ -18,6 +19,7 @@ Renovation / restoration / retrofit projects start with a point cloud from a LiD
 - Classifications (ground, building, vegetation) as toggleable layers.
 
 ### Out of scope
+
 - Automatic wall / plane detection from the point cloud (ML task).
 - Exporting points back out.
 

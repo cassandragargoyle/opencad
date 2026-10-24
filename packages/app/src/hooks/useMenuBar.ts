@@ -206,7 +206,9 @@ export function dispatchMenuEvent(
         document.documentElement.setAttribute('data-theme', 'dark');
         try {
           localStorage.setItem('theme', 'dark');
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
       }
       break;
 
@@ -215,7 +217,9 @@ export function dispatchMenuEvent(
         document.documentElement.setAttribute('data-theme', 'light');
         try {
           localStorage.setItem('theme', 'light');
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
       }
       break;
 
@@ -245,10 +249,7 @@ export function dispatchMenuEvent(
 
 /** Tauri v2 event API shape (accessed through the window global). */
 interface TauriEventApi {
-  listen: <T>(
-    event: string,
-    handler: (payload: { payload: T }) => void
-  ) => Promise<() => void>;
+  listen: <T>(event: string, handler: (payload: { payload: T }) => void) => Promise<() => void>;
 }
 
 /** Extended Tauri window global that includes the event submodule. */

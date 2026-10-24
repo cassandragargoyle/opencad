@@ -136,7 +136,17 @@ describe('T-OFF-003: useAutoSave — IndexedDB auto-save', () => {
     });
     vi.mocked(useProjectStore).mockReturnValue({
       activeProjectId: 'proj-1',
-      projects: [{ id: 'proj-1', name: 'Test', thumbnail: null, createdAt: 0, updatedAt: 0, collaborators: [], starred: false }],
+      projects: [
+        {
+          id: 'proj-1',
+          name: 'Test',
+          thumbnail: null,
+          createdAt: 0,
+          updatedAt: 0,
+          collaborators: [],
+          starred: false,
+        },
+      ],
       renameProject: vi.fn(),
     });
     renderHook(() => useAutoSave());
@@ -154,7 +164,17 @@ describe('T-OFF-003: useAutoSave — IndexedDB auto-save', () => {
     });
     vi.mocked(useProjectStore).mockReturnValue({
       activeProjectId: 'proj-1',
-      projects: [{ id: 'proj-1', name: 'Test', thumbnail: null, createdAt: 0, updatedAt: 0, collaborators: [], starred: false }],
+      projects: [
+        {
+          id: 'proj-1',
+          name: 'Test',
+          thumbnail: null,
+          createdAt: 0,
+          updatedAt: 0,
+          collaborators: [],
+          starred: false,
+        },
+      ],
       renameProject: vi.fn(),
     });
     renderHook(() => useAutoSave());
@@ -176,7 +196,17 @@ describe('T-OFF-003: useAutoSave — IndexedDB auto-save', () => {
     });
     vi.mocked(useProjectStore).mockReturnValue({
       activeProjectId: 'proj-1',
-      projects: [{ id: 'proj-1', name: 'Test', thumbnail: null, createdAt: 0, updatedAt: 0, collaborators: [], starred: false }],
+      projects: [
+        {
+          id: 'proj-1',
+          name: 'Test',
+          thumbnail: null,
+          createdAt: 0,
+          updatedAt: 0,
+          collaborators: [],
+          starred: false,
+        },
+      ],
       renameProject: vi.fn(),
     });
     const { rerender } = renderHook(() => useAutoSave());
@@ -201,7 +231,17 @@ describe('T-OFF-003: useAutoSave — IndexedDB auto-save', () => {
     });
     vi.mocked(useProjectStore).mockReturnValue({
       activeProjectId: 'proj-1',
-      projects: [{ id: 'proj-1', name: 'Test', thumbnail: null, createdAt: 0, updatedAt: 0, collaborators: [], starred: false }],
+      projects: [
+        {
+          id: 'proj-1',
+          name: 'Test',
+          thumbnail: null,
+          createdAt: 0,
+          updatedAt: 0,
+          collaborators: [],
+          starred: false,
+        },
+      ],
       renameProject: vi.fn(),
     });
     const { unmount } = renderHook(() => useAutoSave());
@@ -227,7 +267,17 @@ describe('T-OFF-003: useAutoSave — IndexedDB auto-save', () => {
     });
     vi.mocked(useProjectStore).mockReturnValue({
       activeProjectId: 'proj-1',
-      projects: [{ id: 'proj-1', name: 'Test', thumbnail: null, createdAt: 0, updatedAt: 0, collaborators: [], starred: false }],
+      projects: [
+        {
+          id: 'proj-1',
+          name: 'Test',
+          thumbnail: null,
+          createdAt: 0,
+          updatedAt: 0,
+          collaborators: [],
+          starred: false,
+        },
+      ],
       renameProject,
     });
     renderHook(() => useAutoSave());

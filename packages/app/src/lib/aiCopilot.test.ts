@@ -2,12 +2,7 @@
  * T-AI-01 (#428): AI copilot natural-language command parser tests.
  */
 import { describe, it, expect } from 'vitest';
-import {
-  parseCommand,
-  parseCommands,
-  suggestCompletions,
-  isDestructiveIntent,
-} from './aiCopilot';
+import { parseCommand, parseCommands, suggestCompletions, isDestructiveIntent } from './aiCopilot';
 
 describe('T-AI-01: parseCommand() — add-room', () => {
   it('recognizes "add a meeting room"', () => {

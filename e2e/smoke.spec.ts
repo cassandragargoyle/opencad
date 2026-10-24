@@ -101,7 +101,10 @@ test.describe('T-E2E-001: Auth flow', () => {
     // or, in a Firebase-less environment, the modal may not appear at all.
     // Either way, the page must not navigate away (no hard redirect in browser mode).
     await page.waitForTimeout(500);
-    const modalVisible = await page.locator('.auth-modal').isVisible().catch(() => false);
+    const modalVisible = await page
+      .locator('.auth-modal')
+      .isVisible()
+      .catch(() => false);
     const stillOnApp = page.url().includes('localhost');
     // At least one of these must be true: modal shown OR still on the app
     expect(modalVisible || stillOnApp).toBe(true);

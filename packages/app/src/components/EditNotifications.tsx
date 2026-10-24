@@ -27,7 +27,9 @@ interface EditNotificationsProps {
 // Component
 // ---------------------------------------------------------------------------
 
-export function EditNotifications({ editingMap }: EditNotificationsProps): React.ReactElement | null {
+export function EditNotifications({
+  editingMap,
+}: EditNotificationsProps): React.ReactElement | null {
   // Trigger re-renders every second so fade state is updated.
   const [, setTick] = useState(0);
   useEffect(() => {
@@ -76,7 +78,8 @@ export function EditNotifications({ editingMap }: EditNotificationsProps): React
             <strong>{entry.userName}</strong>
             {' is editing '}
             <span style={{ opacity: 0.85 }}>
-              {entry.elementType.charAt(0).toUpperCase() + entry.elementType.slice(1)}-{entry.elementId}
+              {entry.elementType.charAt(0).toUpperCase() + entry.elementType.slice(1)}-
+              {entry.elementId}
             </span>
           </div>
         );

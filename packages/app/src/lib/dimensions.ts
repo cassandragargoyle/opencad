@@ -7,9 +7,18 @@
  * formatted label string the 2D renderer displays.
  */
 
-export interface Point { x: number; y: number }
-export interface LineRef { a: Point; b: Point }
-export interface CircleRef { centre: Point; radius: number }
+export interface Point {
+  x: number;
+  y: number;
+}
+export interface LineRef {
+  a: Point;
+  b: Point;
+}
+export interface CircleRef {
+  centre: Point;
+  radius: number;
+}
 export interface ArcRef {
   centre: Point;
   radius: number;
@@ -18,8 +27,13 @@ export interface ArcRef {
 }
 
 export type DimensionKind =
-  | 'linear' | 'angular' | 'radial' | 'diameter'
-  | 'arc' | 'chain' | 'ordinate';
+  | 'linear'
+  | 'angular'
+  | 'radial'
+  | 'diameter'
+  | 'arc'
+  | 'chain'
+  | 'ordinate';
 
 /** Angle between two infinite lines (unsigned, in [0, π/2]). */
 export function angularDim(a: LineRef, b: LineRef): number {
@@ -69,9 +83,7 @@ export function chainDim(positions: number[]): number[] {
  * each point's X and Y offset from the origin. Returns parallel arrays
  * so callers can align a table of X labels + Y labels.
  */
-export function ordinateDim(
-  origin: Point, targets: Point[],
-): { xs: number[]; ys: number[] } {
+export function ordinateDim(origin: Point, targets: Point[]): { xs: number[]; ys: number[] } {
   return {
     xs: targets.map((p) => p.x - origin.x),
     ys: targets.map((p) => p.y - origin.y),
@@ -84,10 +96,10 @@ export function ordinateDim(
  */
 export interface DimensionFormat {
   kind: DimensionKind;
-  value: number | number[];   // radians for angular, mm for length dims
-  precision?: number;         // decimal places
-  prefix?: string;            // e.g. "R = " for radial
-  suffix?: string;            // e.g. " mm"
+  value: number | number[]; // radians for angular, mm for length dims
+  precision?: number; // decimal places
+  prefix?: string; // e.g. "R = " for radial
+  suffix?: string; // e.g. " mm"
   unit?: 'mm' | 'cm' | 'm' | 'deg' | 'rad';
 }
 
@@ -98,7 +110,7 @@ export function formatDimension(fmt: DimensionFormat): string {
 
   const fmtOne = (n: number): string => {
     if (fmt.kind === 'angular') {
-      const deg = fmt.unit === 'rad' ? n : (n * 180 / Math.PI);
+      const deg = fmt.unit === 'rad' ? n : (n * 180) / Math.PI;
       const u = fmt.unit === 'rad' ? ' rad' : '°';
       return `${deg.toFixed(fmt.precision ?? 1)}${u}`;
     }
@@ -108,8 +120,6 @@ export function formatDimension(fmt: DimensionFormat): string {
     return v.toFixed(p);
   };
 
-  const body = Array.isArray(fmt.value)
-    ? fmt.value.map(fmtOne).join(' | ')
-    : fmtOne(fmt.value);
+  const body = Array.isArray(fmt.value) ? fmt.value.map(fmtOne).join(' | ') : fmtOne(fmt.value);
   return `${prefix}${body}${suffix}`;
 }

@@ -60,16 +60,23 @@ export function parseRFAManifest(json: unknown): RFALibraryEntry {
   const rawFamily = json['family'];
 
   if (typeof rawFamily['name'] !== 'string') throw new Error("Family missing string 'name'");
-  if (typeof rawFamily['category'] !== 'string') throw new Error("Family missing string 'category'");
-  if (typeof rawFamily['geometry'] !== 'string') throw new Error("Family missing string 'geometry'");
+  if (typeof rawFamily['category'] !== 'string')
+    throw new Error("Family missing string 'category'");
+  if (typeof rawFamily['geometry'] !== 'string')
+    throw new Error("Family missing string 'geometry'");
   if (!Array.isArray(rawFamily['parameters'])) throw new Error("Family missing array 'parameters'");
 
   const parameters: RFAFamilyParameter[] = (rawFamily['parameters'] as unknown[]).map((p, i) => {
     if (!isRecord(p)) throw new Error(`Parameter at index ${i} is not an object`);
     if (typeof p['name'] !== 'string') throw new Error(`Parameter at index ${i} missing 'name'`);
     if (typeof p['type'] !== 'string') throw new Error(`Parameter at index ${i} missing 'type'`);
-    if (!isStringOrNumber(p['defaultValue'])) throw new Error(`Parameter at index ${i} defaultValue must be string or number`);
-    return { name: p['name'] as string, type: p['type'] as string, defaultValue: p['defaultValue'] as string | number };
+    if (!isStringOrNumber(p['defaultValue']))
+      throw new Error(`Parameter at index ${i} defaultValue must be string or number`);
+    return {
+      name: p['name'] as string,
+      type: p['type'] as string,
+      defaultValue: p['defaultValue'] as string | number,
+    };
   });
 
   const family: RFAFamily = {
@@ -88,11 +95,13 @@ export function parseRFAManifest(json: unknown): RFALibraryEntry {
     if (!isRecord(t)) throw new Error(`Type at index ${i} is not an object`);
     if (typeof t['id'] !== 'string') throw new Error(`Type at index ${i} missing string 'id'`);
     if (typeof t['name'] !== 'string') throw new Error(`Type at index ${i} missing string 'name'`);
-    if (!isRecord(t['parameterValues'])) throw new Error(`Type at index ${i} missing object 'parameterValues'`);
+    if (!isRecord(t['parameterValues']))
+      throw new Error(`Type at index ${i} missing object 'parameterValues'`);
 
     const parameterValues: Record<string, string | number> = {};
     for (const [k, v] of Object.entries(t['parameterValues'])) {
-      if (!isStringOrNumber(v)) throw new Error(`Type ${t['id']} parameterValues['${k}'] must be string or number`);
+      if (!isStringOrNumber(v))
+        throw new Error(`Type ${t['id']} parameterValues['${k}'] must be string or number`);
       parameterValues[k] = v;
     }
 
@@ -105,7 +114,7 @@ export function parseRFAManifest(json: unknown): RFALibraryEntry {
 export function buildFamilyInstanceProps(
   entry: RFALibraryEntry,
   typeId: string,
-  overrides?: Record<string, string | number>,
+  overrides?: Record<string, string | number>
 ): Record<string, string | number> {
   // Start with defaults from family parameters
   const result: Record<string, string | number> = {};

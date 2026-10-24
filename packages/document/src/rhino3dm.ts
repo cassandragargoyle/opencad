@@ -24,7 +24,11 @@ export interface RhinoModule {
 
 export interface RhinoFile3dm {
   objects(): { count: number; get(i: number): RhinoObject };
-  objects(): { count: number; get(i: number): RhinoObject; add(obj: RhinoGeometry, attr: RhinoAttributes): void };
+  objects(): {
+    count: number;
+    get(i: number): RhinoObject;
+    add(obj: RhinoGeometry, attr: RhinoAttributes): void;
+  };
   toByteArray(): Uint8Array;
   dispose(): void;
 }
@@ -35,7 +39,7 @@ export interface RhinoObject {
 }
 
 export interface RhinoGeometry {
-  objectType: number;  // 1=Point, 4=Curve, 8=Surface, 32=Mesh, 16=Brep
+  objectType: number; // 1=Point, 4=Curve, 8=Surface, 32=Mesh, 16=Brep
 }
 
 export interface RhinoMesh extends RhinoGeometry {
@@ -47,7 +51,11 @@ export interface RhinoMesh extends RhinoGeometry {
 export interface RhinoAttributes {
   name: string;
   layerIndex: number;
-  userStrings: { add(key: string, value: string): void; count: number; getItem(i: number): [string, string] };
+  userStrings: {
+    add(key: string, value: string): void;
+    count: number;
+    getItem(i: number): [string, string];
+  };
 }
 
 // ── Import ───────────────────────────────────────────────────────────────────
@@ -62,10 +70,7 @@ export interface Rhino3dmImportResult {
  * Parse a 3DM file (provided as Uint8Array) into a list of ElementSchema stubs.
  * Pass the initialised `rhino3dm` module instance as the second argument.
  */
-export function importRhino3dm(
-  bytes: Uint8Array,
-  rhino?: RhinoModule,
-): Rhino3dmImportResult {
+export function importRhino3dm(bytes: Uint8Array, rhino?: RhinoModule): Rhino3dmImportResult {
   const warnings: string[] = [];
 
   if (!rhino) {
@@ -78,9 +83,9 @@ export function importRhino3dm(
   const elements: ElementSchema[] = [];
 
   for (let i = 0; i < objs.count; i++) {
-    const obj  = objs.get(i);
+    const obj = objs.get(i);
     const attr = obj.attributes();
-    const geo  = obj.geometry();
+    const geo = obj.geometry();
 
     const el = makeStubElement(i, geo, attr);
     elements.push(el);
@@ -103,10 +108,7 @@ export interface Rhino3dmExportResult {
  * Pass the initialised `rhino3dm` module instance as the second argument.
  * Returns `bytes: null` when the rhino module is unavailable.
  */
-export function exportRhino3dm(
-  doc: DocumentSchema,
-  rhino?: RhinoModule,
-): Rhino3dmExportResult {
+export function exportRhino3dm(doc: DocumentSchema, rhino?: RhinoModule): Rhino3dmExportResult {
   const warnings: string[] = [];
 
   if (!rhino) {
@@ -143,12 +145,8 @@ export function exportRhino3dm(
 const PLACEHOLDER_LEVEL_ID = 'lv0';
 const PLACEHOLDER_LAYER_ID = 'l0';
 
-function makeStubElement(
-  index: number,
-  geo: RhinoGeometry,
-  attr: RhinoAttributes,
-): ElementSchema {
-  const id   = `rhino_${index}`;
+function makeStubElement(index: number, geo: RhinoGeometry, attr: RhinoAttributes): ElementSchema {
+  const id = `rhino_${index}`;
   const name = attr.name || id;
   const type = rhinoObjectTypeToElementType(geo.objectType);
 
@@ -172,8 +170,8 @@ function makeStubElement(
     levelId: PLACEHOLDER_LEVEL_ID,
     transform: {
       translation: { x: 0, y: 0, z: 0 },
-      rotation:    { x: 0, y: 0, z: 0 },
-      scale:       { x: 1, y: 1, z: 1 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
     },
     boundingBox: {
       min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
@@ -213,12 +211,18 @@ function buildMeshForElement(el: ElementSchema, rhino: RhinoModule): RhinoMesh |
   verts.add(min.x, max.y, max.z); // 7
 
   // 12 triangles (2 per face, 6 faces)
-  faces.addFace(0, 1, 2); faces.addFace(0, 2, 3); // bottom
-  faces.addFace(4, 6, 5); faces.addFace(4, 7, 6); // top
-  faces.addFace(0, 4, 5); faces.addFace(0, 5, 1); // front
-  faces.addFace(2, 6, 7); faces.addFace(2, 7, 3); // back
-  faces.addFace(1, 5, 6); faces.addFace(1, 6, 2); // right
-  faces.addFace(3, 7, 4); faces.addFace(3, 4, 0); // left
+  faces.addFace(0, 1, 2);
+  faces.addFace(0, 2, 3); // bottom
+  faces.addFace(4, 6, 5);
+  faces.addFace(4, 7, 6); // top
+  faces.addFace(0, 4, 5);
+  faces.addFace(0, 5, 1); // front
+  faces.addFace(2, 6, 7);
+  faces.addFace(2, 7, 3); // back
+  faces.addFace(1, 5, 6);
+  faces.addFace(1, 6, 2); // right
+  faces.addFace(3, 7, 4);
+  faces.addFace(3, 4, 0); // left
 
   mesh.normals().computeNormals();
   return mesh;
@@ -228,9 +232,15 @@ function buildAttributesForElement(el: ElementSchema, _rhino: RhinoModule): Rhin
   const name = String(el.properties?.Name?.value ?? el.id);
   const userStrings = {
     _pairs: [] as [string, string][],
-    add(key: string, value: string) { this._pairs.push([key, value]); },
-    get count() { return this._pairs.length; },
-    getItem(i: number): [string, string] { return this._pairs[i]; },
+    add(key: string, value: string) {
+      this._pairs.push([key, value]);
+    },
+    get count() {
+      return this._pairs.length;
+    },
+    getItem(i: number): [string, string] {
+      return this._pairs[i];
+    },
   };
   userStrings.add('ElementId', el.id);
   userStrings.add('ElementType', el.type);
@@ -242,11 +252,17 @@ function buildAttributesForElement(el: ElementSchema, _rhino: RhinoModule): Rhin
 
 function rhinoObjectTypeToElementType(objectType: number): ElementSchema['type'] {
   switch (objectType) {
-    case 32:  return 'solid';   // Mesh
-    case 16:  return 'solid';   // Brep
-    case 8:   return 'surface'; // Surface
-    case 4:   return 'line';    // Curve
-    case 1:   return 'point';   // Point
-    default:  return 'solid';
+    case 32:
+      return 'solid'; // Mesh
+    case 16:
+      return 'solid'; // Brep
+    case 8:
+      return 'surface'; // Surface
+    case 4:
+      return 'line'; // Curve
+    case 1:
+      return 'point'; // Point
+    default:
+      return 'solid';
   }
 }

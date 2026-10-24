@@ -9,6 +9,7 @@ A label attached to a door that reads "Door" is useless. A label that reads "D-1
 ## Scope
 
 ### In scope
+
 - **Label** element type: text attached to another element via leader, or free-floating.
 - Label content supports autotext tokens that resolve from the host element's properties.
 - Token library: per element-type, the available tokens (`{{Tag}}`, `{{Width}}`, `{{Height}}`, `{{Material}}`, `{{Level}}`, etc.).
@@ -17,6 +18,7 @@ A label attached to a door that reads "Door" is useless. A label that reads "D-1
 - Formatting: prefix/suffix text, number format (mm / m / ft-in), case (upper / lower / original).
 
 ### Out of scope
+
 - Multi-line rich text (v1 is single-line with tokens).
 - Labels with embedded schedules.
 

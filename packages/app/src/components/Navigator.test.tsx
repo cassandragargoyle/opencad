@@ -178,7 +178,8 @@ describe('T-UI-004: Navigator', () => {
 
   it('T-DOC-007: adding a layer can be undone', () => {
     render(<Navigator />);
-    const layerCount = () => Object.keys(useDocumentStore.getState().document!.organization.layers).length;
+    const layerCount = () =>
+      Object.keys(useDocumentStore.getState().document!.organization.layers).length;
     const before = layerCount();
 
     fireEvent.click(screen.getByTitle('New layer'));

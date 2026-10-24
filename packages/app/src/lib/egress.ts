@@ -29,42 +29,42 @@ export interface OccupantLoadFactor {
  */
 export const IBC_OCCUPANT_FACTORS: Record<string, OccupantLoadFactor> = {
   // Assembly
-  'assembly-less-fixed-seats':  { m2PerOccupant: 0.65, basis: 'gross' },
-  'assembly-standing-space':    { m2PerOccupant: 0.46, basis: 'gross' },
+  'assembly-less-fixed-seats': { m2PerOccupant: 0.65, basis: 'gross' },
+  'assembly-standing-space': { m2PerOccupant: 0.46, basis: 'gross' },
   'assembly-unconcentrated-tables': { m2PerOccupant: 1.39, basis: 'net' },
-  'assembly-concentrated':      { m2PerOccupant: 0.65, basis: 'net' },
-  'assembly-fixed-seating':     { m2PerOccupant: 0, basis: 'net' }, // use seat count
-  'assembly-gaming':            { m2PerOccupant: 1.02, basis: 'gross' },
+  'assembly-concentrated': { m2PerOccupant: 0.65, basis: 'net' },
+  'assembly-fixed-seating': { m2PerOccupant: 0, basis: 'net' }, // use seat count
+  'assembly-gaming': { m2PerOccupant: 1.02, basis: 'gross' },
 
   // Business
-  'business':                   { m2PerOccupant: 9.3, basis: 'gross' },
+  business: { m2PerOccupant: 9.3, basis: 'gross' },
 
   // Educational
-  'educational-classroom':      { m2PerOccupant: 1.86, basis: 'net' },
-  'educational-shop':           { m2PerOccupant: 4.65, basis: 'net' },
+  'educational-classroom': { m2PerOccupant: 1.86, basis: 'net' },
+  'educational-shop': { m2PerOccupant: 4.65, basis: 'net' },
 
   // Factory
-  'factory-industrial':         { m2PerOccupant: 9.3, basis: 'gross' },
+  'factory-industrial': { m2PerOccupant: 9.3, basis: 'gross' },
 
   // Healthcare
-  'healthcare-sleeping':        { m2PerOccupant: 11.1, basis: 'gross' },
-  'healthcare-treatment':       { m2PerOccupant: 22.3, basis: 'gross' },
+  'healthcare-sleeping': { m2PerOccupant: 11.1, basis: 'gross' },
+  'healthcare-treatment': { m2PerOccupant: 22.3, basis: 'gross' },
 
   // Hotel / Residential
-  'hotel-guestroom':            { m2PerOccupant: 18.6, basis: 'gross' },
-  'residential-dwelling':       { m2PerOccupant: 18.6, basis: 'gross' },
+  'hotel-guestroom': { m2PerOccupant: 18.6, basis: 'gross' },
+  'residential-dwelling': { m2PerOccupant: 18.6, basis: 'gross' },
 
   // Mercantile
-  'mercantile-ground-floor':    { m2PerOccupant: 2.8, basis: 'gross' },
-  'mercantile-upper-floors':    { m2PerOccupant: 5.6, basis: 'gross' },
-  'mercantile-storage':         { m2PerOccupant: 27.9, basis: 'gross' },
+  'mercantile-ground-floor': { m2PerOccupant: 2.8, basis: 'gross' },
+  'mercantile-upper-floors': { m2PerOccupant: 5.6, basis: 'gross' },
+  'mercantile-storage': { m2PerOccupant: 27.9, basis: 'gross' },
 
   // Storage
-  'storage':                    { m2PerOccupant: 46.5, basis: 'gross' },
-  'parking':                    { m2PerOccupant: 18.6, basis: 'gross' },
+  storage: { m2PerOccupant: 46.5, basis: 'gross' },
+  parking: { m2PerOccupant: 18.6, basis: 'gross' },
 
   // Default fallback
-  'other':                      { m2PerOccupant: 9.3, basis: 'gross' },
+  other: { m2PerOccupant: 9.3, basis: 'gross' },
 };
 
 /** Calculate occupant load for a space. */
@@ -86,14 +86,14 @@ export function requiredExits(occupantLoad: number, spaceType = 'other'): number
   // IBC 1006.3.4: Special occupancy thresholds
   const specialLimits: Record<string, number> = {
     'assembly-fixed-seating': 49,
-    'assembly-concentrated':  49,
-    'educational-classroom':  49,
+    'assembly-concentrated': 49,
+    'educational-classroom': 49,
   };
   const singleExitMax = specialLimits[spaceType] ?? 49;
 
   if (occupantLoad <= singleExitMax) return 1;
-  if (occupantLoad <= 500)           return 2;
-  if (occupantLoad <= 1000)          return 3;
+  if (occupantLoad <= 500) return 2;
+  if (occupantLoad <= 1000) return 3;
   return 4;
 }
 
@@ -130,29 +130,29 @@ export interface TravelDistanceLimits {
 }
 
 export const TRAVEL_DISTANCE_LIMITS: Record<string, TravelDistanceLimits> = {
-  A:  { commonPath: 30480, unsprinklered: 60960, sprinklered: 76200 },  // Assembly
-  B:  { commonPath: 30480, unsprinklered: 61000, sprinklered: 91440 },  // Business
-  E:  { commonPath: 30480, unsprinklered: 45720, sprinklered: 91440 },  // Educational
-  F1: { commonPath: 30480, unsprinklered: 60960, sprinklered: 91440 },  // Factory mod hazard
-  F2: { commonPath: 30480, unsprinklered: 76200, sprinklered: 91440 },  // Factory low hazard
-  H1: { commonPath: 7620,  unsprinklered: 7620,  sprinklered: 7620 },   // High hazard
+  A: { commonPath: 30480, unsprinklered: 60960, sprinklered: 76200 }, // Assembly
+  B: { commonPath: 30480, unsprinklered: 61000, sprinklered: 91440 }, // Business
+  E: { commonPath: 30480, unsprinklered: 45720, sprinklered: 91440 }, // Educational
+  F1: { commonPath: 30480, unsprinklered: 60960, sprinklered: 91440 }, // Factory mod hazard
+  F2: { commonPath: 30480, unsprinklered: 76200, sprinklered: 91440 }, // Factory low hazard
+  H1: { commonPath: 7620, unsprinklered: 7620, sprinklered: 7620 }, // High hazard
   H2: { commonPath: 15240, unsprinklered: 30480, sprinklered: 30480 },
-  I1: { commonPath: 30480, unsprinklered: 30480, sprinklered: 45720 },  // Institutional
-  M:  { commonPath: 30480, unsprinklered: 45720, sprinklered: 91440 },  // Mercantile
-  R1: { commonPath: 30480, unsprinklered: 30480, sprinklered: 53340 },  // Residential hotel
-  R2: { commonPath: 30480, unsprinklered: 38100, sprinklered: 53340 },  // Residential dwelling
-  S1: { commonPath: 30480, unsprinklered: 45720, sprinklered: 91440 },  // Storage mod hazard
-  S2: { commonPath: 30480, unsprinklered: 60960, sprinklered: 91440 },  // Storage low hazard
+  I1: { commonPath: 30480, unsprinklered: 30480, sprinklered: 45720 }, // Institutional
+  M: { commonPath: 30480, unsprinklered: 45720, sprinklered: 91440 }, // Mercantile
+  R1: { commonPath: 30480, unsprinklered: 30480, sprinklered: 53340 }, // Residential hotel
+  R2: { commonPath: 30480, unsprinklered: 38100, sprinklered: 53340 }, // Residential dwelling
+  S1: { commonPath: 30480, unsprinklered: 45720, sprinklered: 91440 }, // Storage mod hazard
+  S2: { commonPath: 30480, unsprinklered: 60960, sprinklered: 91440 }, // Storage low hazard
 };
 
 /** Check whether a path length (mm) satisfies IBC travel distance limits. */
 export function checkTravelDistance(
   travelMm: number,
   occupancyGroup: string,
-  sprinklered: boolean,
+  sprinklered: boolean
 ): { compliant: boolean; limit: number; excess: number } {
   const limits = TRAVEL_DISTANCE_LIMITS[occupancyGroup] ?? TRAVEL_DISTANCE_LIMITS['B']!;
-  const limit  = sprinklered ? limits.sprinklered : limits.unsprinklered;
+  const limit = sprinklered ? limits.sprinklered : limits.unsprinklered;
   const excess = Math.max(0, travelMm - limit);
   return { compliant: excess === 0, limit, excess };
 }
@@ -194,20 +194,20 @@ export interface EgressPathResult {
  */
 export function bfsToExit(graph: EgressGraph, originId: string): EgressPathResult {
   const nodeMap = new Map<string, EgressNode>(graph.nodes.map((n) => [n.id, n]));
-  const adjMap  = new Map<string, Array<{ id: string; dist: number }>>();
+  const adjMap = new Map<string, Array<{ id: string; dist: number }>>();
 
   for (const edge of graph.edges) {
     if (!adjMap.has(edge.from)) adjMap.set(edge.from, []);
-    if (!adjMap.has(edge.to))   adjMap.set(edge.to, []);
-    adjMap.get(edge.from)!.push({ id: edge.to,   dist: edge.distanceMm });
-    adjMap.get(edge.to)!.push(  { id: edge.from, dist: edge.distanceMm });
+    if (!adjMap.has(edge.to)) adjMap.set(edge.to, []);
+    adjMap.get(edge.from)!.push({ id: edge.to, dist: edge.distanceMm });
+    adjMap.get(edge.to)!.push({ id: edge.from, dist: edge.distanceMm });
   }
 
   // Dijkstra (min-distance to exit)
-  const dist    = new Map<string, number>([[originId, 0]]);
-  const prev    = new Map<string, string>();
+  const dist = new Map<string, number>([[originId, 0]]);
+  const prev = new Map<string, string>();
   const visited = new Set<string>();
-  const queue   = [originId];
+  const queue = [originId];
 
   while (queue.length > 0) {
     // Simple priority: sort by known distance (inefficient but correct for small graphs)
@@ -274,27 +274,35 @@ export interface SpaceEgressResult {
 }
 
 export function checkSpaceEgress(space: SpaceEgressInput): SpaceEgressResult {
-  const occ    = occupantLoad(space.areaSqM, space.occupancyClass);
-  const reqEx  = requiredExits(occ, space.occupancyClass);
-  const travel = checkTravelDistance(space.travelDistanceMm, space.occupancyGroup, space.sprinklered);
+  const occ = occupantLoad(space.areaSqM, space.occupancyClass);
+  const reqEx = requiredExits(occ, space.occupancyClass);
+  const travel = checkTravelDistance(
+    space.travelDistanceMm,
+    space.occupancyGroup,
+    space.sprinklered
+  );
   const issues: string[] = [];
 
   if (space.exitsProvided < reqEx) {
-    issues.push(`Insufficient exits: ${space.exitsProvided} provided, ${reqEx} required for ${occ} occupants`);
+    issues.push(
+      `Insufficient exits: ${space.exitsProvided} provided, ${reqEx} required for ${occ} occupants`
+    );
   }
   if (!travel.compliant) {
-    issues.push(`Travel distance ${Math.round(space.travelDistanceMm / 1000)}m exceeds ${Math.round(travel.limit / 1000)}m limit by ${Math.round(travel.excess / 1000)}m`);
+    issues.push(
+      `Travel distance ${Math.round(space.travelDistanceMm / 1000)}m exceeds ${Math.round(travel.limit / 1000)}m limit by ${Math.round(travel.excess / 1000)}m`
+    );
   }
 
   return {
-    id:                  space.id,
-    occupantLoad:        occ,
-    requiredExits:       reqEx,
-    exitsProvided:       space.exitsProvided,
-    exitsCompliant:      space.exitsProvided >= reqEx,
-    travelDistanceMm:    space.travelDistanceMm,
-    travelCompliant:     travel.compliant,
-    travelLimit:         travel.limit,
+    id: space.id,
+    occupantLoad: occ,
+    requiredExits: reqEx,
+    exitsProvided: space.exitsProvided,
+    exitsCompliant: space.exitsProvided >= reqEx,
+    travelDistanceMm: space.travelDistanceMm,
+    travelCompliant: travel.compliant,
+    travelLimit: travel.limit,
     issues,
   };
 }

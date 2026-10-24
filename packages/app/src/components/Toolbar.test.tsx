@@ -31,7 +31,17 @@ describe('T-2D-010: Toolbar', () => {
 
   it('renders all tool buttons', () => {
     render(<Toolbar />);
-    const toolLabels = ['Select', 'Line', 'Rectangle', 'Circle', 'Wall', 'Door', 'Window', 'Dimension', 'Text'];
+    const toolLabels = [
+      'Select',
+      'Line',
+      'Rectangle',
+      'Circle',
+      'Wall',
+      'Door',
+      'Window',
+      'Dimension',
+      'Text',
+    ];
     for (const label of toolLabels) {
       expect(screen.getByTitle(label)).toBeInTheDocument();
     }

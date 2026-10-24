@@ -15,10 +15,13 @@ function mk(type: ElementSchema['type'], material?: string): ElementSchema {
   const props: Record<string, { type: string; value: unknown }> = {};
   if (material) props.Material = { type: 'string', value: material };
   return {
-    id: `e-${++__id}`, type, layerId: 'l',
+    id: `e-${++__id}`,
+    type,
+    layerId: 'l',
     properties: props,
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
@@ -41,22 +44,33 @@ describe('T-VIZ-038: displayFilter', () => {
   });
 
   it('T-VIZ-038-004: soloIds shows only listed ids (wins over types)', () => {
-    const w = mk('wall'), d = mk('door'), s = mk('slab');
+    const w = mk('wall'),
+      d = mk('door'),
+      s = mk('slab');
     const r = applyFilter([w, d, s], { soloIds: [d.id], types: ['wall'] });
     expect(r).toHaveLength(1);
     expect(r[0]!.id).toBe(d.id);
   });
 
   it('material filter keeps elements with matching Material', () => {
-    const a = mk('wall', 'Concrete'), b = mk('wall', 'Plasterboard');
+    const a = mk('wall', 'Concrete'),
+      b = mk('wall', 'Plasterboard');
     const r = applyFilter([a, b], { materials: ['Concrete'] });
     expect(r).toHaveLength(1);
     expect(r[0]!.id).toBe(a.id);
   });
 
   it('where predicate = matches', () => {
-    const w1 = mk('wall'); (w1.properties as Record<string, { type: string; value: unknown }>).Height = { type: 'number', value: 3000 };
-    const w2 = mk('wall'); (w2.properties as Record<string, { type: string; value: unknown }>).Height = { type: 'number', value: 4500 };
+    const w1 = mk('wall');
+    (w1.properties as Record<string, { type: string; value: unknown }>).Height = {
+      type: 'number',
+      value: 3000,
+    };
+    const w2 = mk('wall');
+    (w2.properties as Record<string, { type: string; value: unknown }>).Height = {
+      type: 'number',
+      value: 4500,
+    };
     expect(isVisible(w1, { where: [{ key: 'Height', op: '=', value: 3000 }] })).toBe(true);
     expect(isVisible(w2, { where: [{ key: 'Height', op: '=', value: 3000 }] })).toBe(false);
   });

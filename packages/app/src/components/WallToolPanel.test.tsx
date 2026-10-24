@@ -81,6 +81,4 @@ describe('T-BIM-001: WallToolPanel', () => {
     fireEvent.change(screen.getByLabelText(/type/i), { target: { value: 'exterior' } });
     expect(store.setToolParam).toHaveBeenCalledWith('wall', 'wallType', 'exterior');
   });
-
-
 });

@@ -40,7 +40,9 @@ describe('T-AUTH-007: MFASettingsPanel', () => {
   it('T-AUTH-007-14: clicking "Set up Authenticator" calls enrollTotp and shows QR code URL', async () => {
     const mockSecret = {
       secretKey: 'JBSWY3DPEHPK3PXP',
-      generateQrCodeUrl: vi.fn(() => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'),
+      generateQrCodeUrl: vi.fn(
+        () => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'
+      ),
     };
     mockEnrollTotp.mockResolvedValue({
       secret: mockSecret,
@@ -62,7 +64,9 @@ describe('T-AUTH-007: MFASettingsPanel', () => {
   it('T-AUTH-007-15: shows OTP input and Confirm button after QR code is displayed', async () => {
     const mockSecret = {
       secretKey: 'JBSWY3DPEHPK3PXP',
-      generateQrCodeUrl: vi.fn(() => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'),
+      generateQrCodeUrl: vi.fn(
+        () => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'
+      ),
     };
     mockEnrollTotp.mockResolvedValue({
       secret: mockSecret,
@@ -81,7 +85,9 @@ describe('T-AUTH-007: MFASettingsPanel', () => {
   it('T-AUTH-007-16: confirming OTP calls verifyTotpEnrollment with correct args', async () => {
     const mockSecret = {
       secretKey: 'JBSWY3DPEHPK3PXP',
-      generateQrCodeUrl: vi.fn(() => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'),
+      generateQrCodeUrl: vi.fn(
+        () => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'
+      ),
     };
     mockEnrollTotp.mockResolvedValue({
       secret: mockSecret,
@@ -105,7 +111,9 @@ describe('T-AUTH-007: MFASettingsPanel', () => {
   it('T-AUTH-007-17: shows success message after successful enrollment', async () => {
     const mockSecret = {
       secretKey: 'JBSWY3DPEHPK3PXP',
-      generateQrCodeUrl: vi.fn(() => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'),
+      generateQrCodeUrl: vi.fn(
+        () => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'
+      ),
     };
     mockEnrollTotp.mockResolvedValue({
       secret: mockSecret,
@@ -130,14 +138,16 @@ describe('T-AUTH-007: MFASettingsPanel', () => {
   it('T-AUTH-007-18: shows error when verifyTotpEnrollment fails', async () => {
     const mockSecret = {
       secretKey: 'JBSWY3DPEHPK3PXP',
-      generateQrCodeUrl: vi.fn(() => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'),
+      generateQrCodeUrl: vi.fn(
+        () => 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP'
+      ),
     };
     mockEnrollTotp.mockResolvedValue({
       secret: mockSecret,
       qrCodeUrl: 'otpauth://totp/OpenCAD:test@example.com?secret=JBSWY3DPEHPK3PXP',
     });
     mockVerifyTotpEnrollment.mockRejectedValue(
-      Object.assign(new Error('Invalid OTP'), { code: 'auth/invalid-verification-code' }),
+      Object.assign(new Error('Invalid OTP'), { code: 'auth/invalid-verification-code' })
     );
 
     render(<MFASettingsPanel />);

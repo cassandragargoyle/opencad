@@ -36,7 +36,10 @@ async function drainOnce(): Promise<void> {
   if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
   try {
     const pending = await listPendingSync();
-    if (pending.length === 0) { backoff = 0; return; }
+    if (pending.length === 0) {
+      backoff = 0;
+      return;
+    }
     const [projectId] = pending;
     const data = await loadDocument(projectId!);
     if (!data) return;
@@ -101,7 +104,10 @@ export function startBackgroundSync(options: BackgroundSyncOptions): () => void 
 
 export function stopBackgroundSync(): void {
   running = false;
-  if (timer) { clearTimeout(timer); timer = null; }
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
   backoff = 0;
 }
 
@@ -118,9 +124,11 @@ export async function registerBackgroundSyncTag(tag = 'opencad-doc-sync'): Promi
   try {
     if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return false;
     const reg = await navigator.serviceWorker.ready;
-    const sync = (reg as ServiceWorkerRegistration & {
-      sync?: { register: (tag: string) => Promise<void> };
-    }).sync;
+    const sync = (
+      reg as ServiceWorkerRegistration & {
+        sync?: { register: (tag: string) => Promise<void> };
+      }
+    ).sync;
     if (!sync) return false;
     await sync.register(tag);
     return true;

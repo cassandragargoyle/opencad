@@ -24,7 +24,11 @@ export interface ElevationSpec {
   cropBox?: { minX: number; minY: number; minZ: number; maxX: number; maxY: number; maxZ: number };
 }
 
-export interface Vec3 { x: number; y: number; z: number }
+export interface Vec3 {
+  x: number;
+  y: number;
+  z: number;
+}
 export interface CameraParams {
   position: Vec3;
   target: Vec3;
@@ -40,8 +44,8 @@ export interface CameraParams {
 export const DEFAULT_ELEVATIONS: ElevationSpec[] = [
   { id: 'elev-north', name: 'North Elevation', compass: 'N' },
   { id: 'elev-south', name: 'South Elevation', compass: 'S' },
-  { id: 'elev-east',  name: 'East Elevation',  compass: 'E' },
-  { id: 'elev-west',  name: 'West Elevation',  compass: 'W' },
+  { id: 'elev-east', name: 'East Elevation', compass: 'E' },
+  { id: 'elev-west', name: 'West Elevation', compass: 'W' },
 ];
 
 /**
@@ -51,7 +55,7 @@ export const DEFAULT_ELEVATIONS: ElevationSpec[] = [
  */
 export function cameraParamsFor(
   elev: ElevationSpec,
-  bbox: { minX: number; minY: number; minZ: number; maxX: number; maxY: number; maxZ: number },
+  bbox: { minX: number; minY: number; minZ: number; maxX: number; maxY: number; maxZ: number }
 ): CameraParams {
   const cx = (bbox.minX + bbox.maxX) / 2;
   const cy = (bbox.minY + bbox.maxY) / 2;
@@ -62,23 +66,27 @@ export function cameraParamsFor(
   const dist = elev.cameraDistance ?? Math.max(w, d) * 2;
 
   const angleDeg =
-    elev.compass === 'N' ?   0 :
-    elev.compass === 'E' ?  90 :
-    elev.compass === 'S' ? 180 :
-    elev.compass === 'W' ? 270 :
-    (elev.angleDeg ?? 0);
+    elev.compass === 'N'
+      ? 0
+      : elev.compass === 'E'
+        ? 90
+        : elev.compass === 'S'
+          ? 180
+          : elev.compass === 'W'
+            ? 270
+            : (elev.angleDeg ?? 0);
 
   const rad = (angleDeg * Math.PI) / 180;
   // +Z is south in our convention; at angle 0 (N) camera sits at +N (= -Z).
   const dirX = Math.sin(rad);
   const dirZ = -Math.cos(rad);
   return {
-    position: { x: cx + dirX * dist, y: cy,              z: cz + dirZ * dist },
-    target:   { x: cx,                 y: cy,              z: cz                 },
-    up:       { x: 0, y: 1, z: 0 },
+    position: { x: cx + dirX * dist, y: cy, z: cz + dirZ * dist },
+    target: { x: cx, y: cy, z: cz },
+    up: { x: 0, y: 1, z: 0 },
     // Orthographic frustum sized to fit the horizontal perpendicular to
     // the view direction + vertical extent, with a small margin.
-    orthoHalfWidth:  Math.max(Math.max(w, d) * 0.55, 100),
+    orthoHalfWidth: Math.max(Math.max(w, d) * 0.55, 100),
     orthoHalfHeight: Math.max(h * 0.55, 100),
   };
 }

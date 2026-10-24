@@ -18,7 +18,7 @@
 
 /** Octave-band center frequencies (Hz) used throughout. */
 export const OCTAVE_BANDS = [125, 250, 500, 1000, 2000, 4000] as const;
-export type OctaveBand = typeof OCTAVE_BANDS[number];
+export type OctaveBand = (typeof OCTAVE_BANDS)[number];
 
 /** Sound absorption coefficients per octave band (αs). */
 export type AbsorptionCoeffs = Record<OctaveBand, number>;
@@ -26,31 +26,76 @@ export type AbsorptionCoeffs = Record<OctaveBand, number>;
 /** Common material absorption coefficients. */
 export const MATERIAL_ABSORPTION: Record<string, AbsorptionCoeffs> = {
   'concrete-bare': {
-    125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.03, 4000: 0.03,
+    125: 0.01,
+    250: 0.01,
+    500: 0.02,
+    1000: 0.02,
+    2000: 0.03,
+    4000: 0.03,
   },
   'brick-painted': {
-    125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.02, 4000: 0.03,
+    125: 0.01,
+    250: 0.01,
+    500: 0.02,
+    1000: 0.02,
+    2000: 0.02,
+    4000: 0.03,
   },
   'carpet-heavy': {
-    125: 0.02, 250: 0.06, 500: 0.14, 1000: 0.37, 2000: 0.60, 4000: 0.65,
+    125: 0.02,
+    250: 0.06,
+    500: 0.14,
+    1000: 0.37,
+    2000: 0.6,
+    4000: 0.65,
   },
   'acoustic-tile-suspended': {
-    125: 0.25, 250: 0.45, 500: 0.81, 1000: 0.97, 2000: 0.93, 4000: 0.82,
+    125: 0.25,
+    250: 0.45,
+    500: 0.81,
+    1000: 0.97,
+    2000: 0.93,
+    4000: 0.82,
   },
   'glass-single': {
-    125: 0.35, 250: 0.25, 500: 0.18, 1000: 0.12, 2000: 0.07, 4000: 0.04,
+    125: 0.35,
+    250: 0.25,
+    500: 0.18,
+    1000: 0.12,
+    2000: 0.07,
+    4000: 0.04,
   },
   'glass-double': {
-    125: 0.20, 250: 0.15, 500: 0.10, 1000: 0.07, 2000: 0.05, 4000: 0.04,
+    125: 0.2,
+    250: 0.15,
+    500: 0.1,
+    1000: 0.07,
+    2000: 0.05,
+    4000: 0.04,
   },
   'gypsum-board': {
-    125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09,
+    125: 0.29,
+    250: 0.1,
+    500: 0.05,
+    1000: 0.04,
+    2000: 0.07,
+    4000: 0.09,
   },
   'wood-floor-hard': {
-    125: 0.04, 250: 0.04, 500: 0.07, 1000: 0.06, 2000: 0.06, 4000: 0.07,
+    125: 0.04,
+    250: 0.04,
+    500: 0.07,
+    1000: 0.06,
+    2000: 0.06,
+    4000: 0.07,
   },
   'audience-seated': {
-    125: 0.60, 250: 0.74, 500: 0.88, 1000: 0.96, 2000: 0.93, 4000: 0.85,
+    125: 0.6,
+    250: 0.74,
+    500: 0.88,
+    1000: 0.96,
+    2000: 0.93,
+    4000: 0.85,
   },
 };
 
@@ -78,7 +123,7 @@ export function sabineT60(input: RoomAcousticsInput): Record<OctaveBand, number>
     let A = 0;
     for (const surf of input.surfaces) {
       const coeffs = MATERIAL_ABSORPTION[surf.materialName];
-      const alpha  = coeffs ? coeffs[band] : 0.05; // default 0.05 for unknown materials
+      const alpha = coeffs ? coeffs[band] : 0.05; // default 0.05 for unknown materials
       A += alpha * surf.areaSqM;
     }
 
@@ -99,12 +144,12 @@ export function eyringT60(input: RoomAcousticsInput): Record<OctaveBand, number>
     let sumAlpha = 0;
     for (const surf of input.surfaces) {
       const coeffs = MATERIAL_ABSORPTION[surf.materialName];
-      const alpha  = coeffs ? coeffs[band] : 0.05;
+      const alpha = coeffs ? coeffs[band] : 0.05;
       sumAlpha += alpha * surf.areaSqM;
     }
     const avgAlpha = S > 0 ? sumAlpha / S : 0;
-    const eyring   = -S * Math.log(Math.max(1e-10, 1 - avgAlpha));
-    const T60      = eyring + 4 * m * V > 0 ? (0.161 * V) / (eyring + 4 * m * V) : Infinity;
+    const eyring = -S * Math.log(Math.max(1e-10, 1 - avgAlpha));
+    const T60 = eyring + 4 * m * V > 0 ? (0.161 * V) / (eyring + 4 * m * V) : Infinity;
     result[band] = T60;
   }
   return result;
@@ -114,17 +159,17 @@ export function eyringT60(input: RoomAcousticsInput): Record<OctaveBand, number>
 
 /** Common partition STC values. */
 export const PARTITION_STC: Record<string, number> = {
-  'gypsum-single-stud':        33,
-  'gypsum-double-layer':       40,
-  'gypsum-double-stud':        55,
-  'cmu-8in-unpainted':         49,
-  'cmu-8in-painted':           51,
-  'poured-concrete-200mm':     55,
-  'glass-single-6mm':          27,
-  'glass-double-igs':          34,
-  'solid-wood-door-50mm':      30,
-  'hollow-core-door':          20,
-  'exterior-wall-typical':     50,
+  'gypsum-single-stud': 33,
+  'gypsum-double-layer': 40,
+  'gypsum-double-stud': 55,
+  'cmu-8in-unpainted': 49,
+  'cmu-8in-painted': 51,
+  'poured-concrete-200mm': 55,
+  'glass-single-6mm': 27,
+  'glass-double-igs': 34,
+  'solid-wood-door-50mm': 30,
+  'hollow-core-door': 20,
+  'exterior-wall-typical': 50,
 };
 
 /**
@@ -166,7 +211,7 @@ export function estimateCompositeSTC(elements: CompositeElement[]): number {
 export function noiseReduction(
   stc: number,
   receivingRoomAbsorption: number, // m² of absorption (Sabine)
-  partitionAreaM2: number,
+  partitionAreaM2: number
 ): number {
   if (partitionAreaM2 <= 0 || receivingRoomAbsorption <= 0) return stc;
   return stc + 10 * Math.log10(receivingRoomAbsorption / partitionAreaM2);
@@ -194,16 +239,16 @@ const ANSI_NOISE_LIMIT = 35; // dBA
 
 export function checkClassroomAcoustics(
   t60Map: Record<OctaveBand, number>,
-  backgroundNoiseDBA?: number,
+  backgroundNoiseDBA?: number
 ): ClassroomAcousticsResult {
   const issues: string[] = [];
-  const T60_500  = t60Map[500]  ?? Infinity;
+  const T60_500 = t60Map[500] ?? Infinity;
   const T60_1000 = t60Map[1000] ?? Infinity;
   const T60Compliant = T60_500 <= ANSI_T60_LIMIT && T60_1000 <= ANSI_T60_LIMIT;
 
   if (!T60Compliant) {
     issues.push(
-      `T60 exceeds ${ANSI_T60_LIMIT}s limit: 500Hz=${T60_500.toFixed(2)}s, 1000Hz=${T60_1000.toFixed(2)}s`,
+      `T60 exceeds ${ANSI_T60_LIMIT}s limit: 500Hz=${T60_500.toFixed(2)}s, 1000Hz=${T60_1000.toFixed(2)}s`
     );
   }
 
@@ -211,7 +256,9 @@ export function checkClassroomAcoustics(
   if (backgroundNoiseDBA !== undefined) {
     noiseCompliant = backgroundNoiseDBA <= ANSI_NOISE_LIMIT;
     if (!noiseCompliant) {
-      issues.push(`Background noise ${backgroundNoiseDBA} dBA exceeds ${ANSI_NOISE_LIMIT} dBA limit`);
+      issues.push(
+        `Background noise ${backgroundNoiseDBA} dBA exceeds ${ANSI_NOISE_LIMIT} dBA limit`
+      );
     }
   }
 

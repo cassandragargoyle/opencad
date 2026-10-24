@@ -25,8 +25,12 @@ function mockStorage() {
   const store: Record<string, string> = {};
   return {
     getItem: vi.fn((key: string) => store[key] ?? null),
-    setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: vi.fn((key: string) => { delete store[key]; }),
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key];
+    }),
     _store: store,
   };
 }
@@ -112,10 +116,7 @@ describe('T-OFF-003: useAutoSaveV2', () => {
       vi.advanceTimersByTime(2100);
     });
 
-    expect(storage.setItem).toHaveBeenCalledWith(
-      'opencad:autosave:proj-abc',
-      expect.any(String),
-    );
+    expect(storage.setItem).toHaveBeenCalledWith('opencad:autosave:proj-abc', expect.any(String));
   });
 
   it('T-OFF-003-005: does not save if document has not changed', async () => {

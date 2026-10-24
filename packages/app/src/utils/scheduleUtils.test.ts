@@ -29,7 +29,11 @@ describe('T-SCHED-001: Schedule Utilities', () => {
     });
 
     it('each column has a non-empty label', () => {
-      for (const col of [...DOOR_SCHEDULE_COLUMNS, ...WINDOW_SCHEDULE_COLUMNS, ...ROOM_SCHEDULE_COLUMNS]) {
+      for (const col of [
+        ...DOOR_SCHEDULE_COLUMNS,
+        ...WINDOW_SCHEDULE_COLUMNS,
+        ...ROOM_SCHEDULE_COLUMNS,
+      ]) {
         expect(col.label.length).toBeGreaterThan(0);
       }
     });

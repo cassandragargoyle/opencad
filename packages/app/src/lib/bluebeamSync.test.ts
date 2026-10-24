@@ -66,12 +66,44 @@ describe('parseBluebeamXML', () => {
 
 describe('mergeMarkups', () => {
   const local: BluebeamMarkup[] = [
-    { id: 'm-1', type: 'highlight', pageId: 'p1', coords: { x: 0, y: 0, width: 10, height: 10 }, text: 'old', author: 'A', createdAt: 100 },
-    { id: 'm-2', type: 'note', pageId: 'p1', coords: { x: 5, y: 5, width: 0, height: 0 }, text: 'local only', author: 'B', createdAt: 200 },
+    {
+      id: 'm-1',
+      type: 'highlight',
+      pageId: 'p1',
+      coords: { x: 0, y: 0, width: 10, height: 10 },
+      text: 'old',
+      author: 'A',
+      createdAt: 100,
+    },
+    {
+      id: 'm-2',
+      type: 'note',
+      pageId: 'p1',
+      coords: { x: 5, y: 5, width: 0, height: 0 },
+      text: 'local only',
+      author: 'B',
+      createdAt: 200,
+    },
   ];
   const remote: BluebeamMarkup[] = [
-    { id: 'm-1', type: 'highlight', pageId: 'p1', coords: { x: 0, y: 0, width: 10, height: 10 }, text: 'new', author: 'A', createdAt: 300 },
-    { id: 'm-3', type: 'stamp', pageId: 'p2', coords: { x: 0, y: 0, width: 50, height: 30 }, text: 'APPROVED', author: 'C', createdAt: 400 },
+    {
+      id: 'm-1',
+      type: 'highlight',
+      pageId: 'p1',
+      coords: { x: 0, y: 0, width: 10, height: 10 },
+      text: 'new',
+      author: 'A',
+      createdAt: 300,
+    },
+    {
+      id: 'm-3',
+      type: 'stamp',
+      pageId: 'p2',
+      coords: { x: 0, y: 0, width: 50, height: 30 },
+      text: 'APPROVED',
+      author: 'C',
+      createdAt: 400,
+    },
   ];
 
   it('returns all unique ids', () => {
@@ -89,7 +121,15 @@ describe('mergeMarkups', () => {
 
   it('keeps local when local has higher createdAt', () => {
     const localNewer: BluebeamMarkup[] = [
-      { id: 'm-1', type: 'highlight', pageId: 'p1', coords: { x: 0, y: 0, width: 10, height: 10 }, text: 'local newer', author: 'A', createdAt: 500 },
+      {
+        id: 'm-1',
+        type: 'highlight',
+        pageId: 'p1',
+        coords: { x: 0, y: 0, width: 10, height: 10 },
+        text: 'local newer',
+        author: 'A',
+        createdAt: 500,
+      },
     ];
     const merged = mergeMarkups(localNewer, remote);
     expect(merged.find((m) => m.id === 'm-1')?.text).toBe('local newer');
@@ -111,7 +151,15 @@ describe('exportToBluebeamXML', () => {
 
   it('includes markup entries', () => {
     const markups: BluebeamMarkup[] = [
-      { id: 'test-1', type: 'note', pageId: 'p1', coords: { x: 1, y: 2, width: 3, height: 4 }, text: 'Hello', author: 'Dev', createdAt: 12345 },
+      {
+        id: 'test-1',
+        type: 'note',
+        pageId: 'p1',
+        coords: { x: 1, y: 2, width: 3, height: 4 },
+        text: 'Hello',
+        author: 'Dev',
+        createdAt: 12345,
+      },
     ];
     const xml = exportToBluebeamXML(markups);
     expect(xml).toContain('id="test-1"');
@@ -122,7 +170,15 @@ describe('exportToBluebeamXML', () => {
 
   it('escapes XML special chars', () => {
     const markups: BluebeamMarkup[] = [
-      { id: 'x&1', type: 'note', pageId: 'p', coords: { x: 0, y: 0, width: 0, height: 0 }, text: '<test> "quoted" & \'apos\'', author: 'A', createdAt: 0 },
+      {
+        id: 'x&1',
+        type: 'note',
+        pageId: 'p',
+        coords: { x: 0, y: 0, width: 0, height: 0 },
+        text: '<test> "quoted" & \'apos\'',
+        author: 'A',
+        createdAt: 0,
+      },
     ];
     const xml = exportToBluebeamXML(markups);
     expect(xml).toContain('&amp;');

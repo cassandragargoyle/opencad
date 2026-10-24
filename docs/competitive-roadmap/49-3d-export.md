@@ -9,6 +9,7 @@ Renderers, game engines, 3D-print services, and web viewers consume OBJ / FBX / 
 ## Scope
 
 ### In scope
+
 - Export the 3D scene as:
   - **OBJ + MTL**: triangle mesh + per-material file.
   - **FBX**: binary and ASCII; include materials, basic lighting, scene hierarchy.
@@ -17,6 +18,7 @@ Renderers, game engines, 3D-print services, and web viewers consume OBJ / FBX / 
 - Supports full project or current selection.
 
 ### Out of scope
+
 - Animation export.
 - Morph targets.
 - Skeletal rigs.

@@ -67,7 +67,9 @@ describe('T-DSK-001: useTauri utilities', () => {
     it('tauriSaveFile rejects in non-Tauri environment', async () => {
       delete (window as Window & { __TAURI__?: unknown }).__TAURI__;
       const { tauriSaveFile } = await import('./useTauri');
-      await expect(tauriSaveFile('/path/file.ifc', 'content')).rejects.toThrow(/Tauri not available/);
+      await expect(tauriSaveFile('/path/file.ifc', 'content')).rejects.toThrow(
+        /Tauri not available/
+      );
     });
 
     it('tauriGetStorageInfo rejects in non-Tauri environment', async () => {
@@ -91,7 +93,9 @@ describe('T-DSK-001: useTauri utilities', () => {
     it('tauriOpenNewWindow rejects in non-Tauri environment', async () => {
       delete (window as Window & { __TAURI__?: unknown }).__TAURI__;
       const { tauriOpenNewWindow } = await import('./useTauri');
-      await expect(tauriOpenNewWindow('/projects', 'Projects')).rejects.toThrow(/Tauri not available/);
+      await expect(tauriOpenNewWindow('/projects', 'Projects')).rejects.toThrow(
+        /Tauri not available/
+      );
     });
   });
 
@@ -113,7 +117,11 @@ describe('T-DSK-001: useTauri utilities', () => {
       mockInvoke.mockResolvedValue(undefined);
       const { tauriSaveProject } = await import('./useTauri');
       await tauriSaveProject('proj-1', 'My Project', '{}');
-      expect(mockInvoke).toHaveBeenCalledWith('save_project', { id: 'proj-1', name: 'My Project', data: '{}' });
+      expect(mockInvoke).toHaveBeenCalledWith('save_project', {
+        id: 'proj-1',
+        name: 'My Project',
+        data: '{}',
+      });
     });
 
     it('tauriLoadProject invokes load_project command', async () => {
@@ -125,9 +133,7 @@ describe('T-DSK-001: useTauri utilities', () => {
     });
 
     it('tauriListProjects returns array of project metas', async () => {
-      const projects = [
-        { id: 'p1', name: 'Project 1', created_at: 1000, updated_at: 2000 },
-      ];
+      const projects = [{ id: 'p1', name: 'Project 1', created_at: 1000, updated_at: 2000 }];
       mockInvoke.mockResolvedValue(projects);
       const { tauriListProjects } = await import('./useTauri');
       const result = await tauriListProjects();
@@ -287,7 +293,9 @@ describe('T-DSK-006: saveFile and saveFileDialog', () => {
     mockInvoke.mockResolvedValue('/Users/me/Desktop/my-project.opencad');
     const { saveFileDialog } = await import('./useTauri');
     const result = await saveFileDialog('my-project.opencad');
-    expect(mockInvoke).toHaveBeenCalledWith('save_file_dialog', { defaultName: 'my-project.opencad' });
+    expect(mockInvoke).toHaveBeenCalledWith('save_file_dialog', {
+      defaultName: 'my-project.opencad',
+    });
     expect(result).toBe('/Users/me/Desktop/my-project.opencad');
   });
 

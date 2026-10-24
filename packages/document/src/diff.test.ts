@@ -7,7 +7,12 @@ import { diffDocuments } from './diff';
 import { createProject } from './document';
 import type { DocumentSchema } from './types';
 
-function addElement(doc: DocumentSchema, id: string, type = 'wall', props: Record<string, unknown> = {}): void {
+function addElement(
+  doc: DocumentSchema,
+  id: string,
+  type = 'wall',
+  props: Record<string, unknown> = {}
+): void {
   doc.content.elements[id] = {
     id,
     type: type as import('./types').ElementType,

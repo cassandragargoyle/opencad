@@ -9,6 +9,7 @@ Drawings communicate material with hatches. Concrete is a dotted pattern; insula
 ## Scope
 
 ### In scope
+
 - Hatch schema: `{ id, name, lines: HatchLine[], scale, rotation }` where each line has angle, offset, dash pattern.
 - Built-in starter set of 10–15 standard patterns (concrete, insulation rigid + batt, sand, gravel, brick, earth, plaster, steel, timber, glass).
 - Hatches referenced from materials: `Material.hatchId`.
@@ -17,6 +18,7 @@ Drawings communicate material with hatches. Concrete is a dotted pattern; insula
 - Hatches export correctly to SVG.
 
 ### Out of scope
+
 - Bitmap / image hatches (lines only in v1).
 - Solid-fill ramps or gradients.
 

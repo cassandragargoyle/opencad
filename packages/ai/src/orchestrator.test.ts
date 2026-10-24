@@ -158,16 +158,22 @@ describe('T-AI-030: AIOrchestrator', () => {
       orchestrator.setProvider('anthropic');
 
       let capturedBody = '';
-      vi.stubGlobal('fetch', vi.fn().mockImplementation((_url: string, options: RequestInit) => {
-        capturedBody = options.body as string;
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({
-            content: [{ text: 'ok' }], model: 'custom-model',
-            usage: { input_tokens: 1, output_tokens: 1 }, stop_reason: 'stop',
-          }),
-        });
-      }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockImplementation((_url: string, options: RequestInit) => {
+          capturedBody = options.body as string;
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                content: [{ text: 'ok' }],
+                model: 'custom-model',
+                usage: { input_tokens: 1, output_tokens: 1 },
+                stop_reason: 'stop',
+              }),
+          });
+        })
+      );
 
       await orchestrator.complete({
         model: 'claude-opus-4-6',
@@ -215,10 +221,7 @@ describe('T-AI-030: AIOrchestrator', () => {
 
     it('throws when provider not configured', async () => {
       await expect(
-        orchestrator.streamComplete(
-          { messages: [{ role: 'user', content: 'test' }] },
-          vi.fn()
-        )
+        orchestrator.streamComplete({ messages: [{ role: 'user', content: 'test' }] }, vi.fn())
       ).rejects.toThrow(/not configured/);
     });
   });

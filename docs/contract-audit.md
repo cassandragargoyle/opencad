@@ -1,6 +1,7 @@
 # Function Contract Audit — 2026-04-19
 
 ## Summary
+
 Scanned `packages/app`, `packages/document`, `packages/shared`, `packages/sync`, `packages/geometry`, `packages/ai` (source files only; test files excluded from dead-code analysis except where noted). The biggest findings: three of the six monorepo TS packages (`@opencad/sync`, `@opencad/geometry`, and most of `@opencad/shared`) have effectively zero non-test consumers — `@opencad/sync` has been wholly replaced by `packages/app/src/lib/syncAdapter.ts` + `@opencad/sync-rs` (WASM). Large swaths of `@opencad/document` (the `level.ts`, `versioning.ts`, `mep.ts`, `bcf.ts`, `structural.ts`, `storage.ts`, `io.ts` helpers, and most of `dwg.ts`'s export variants) exist only in their own tests. There are three independent "compliance engine" implementations, two separate PDF serializers, and a Viewport component that was replaced by SplitViewport but left in the tree. Contract-wise, the most dangerous issues are: the `updateElement(id, updates)` store method takes `Record<string, unknown>` and `Object.assign`s arbitrary keys onto `ElementSchema`, bypassing TS entirely (e.g. `AppLayout.tsx:662` attaches a free-form `material` property that conflicts with the `setElementMaterial` path that writes `properties.MaterialId`); `CompliancePanel.tsx` casts between two incompatible `DocumentSchema` declarations (`@opencad/document` vs `@opencad/ai`'s shadow types) whose `ElementType` unions actually differ; and the store's `updateLevel` / `deleteLevel` silently no-op on missing IDs while `DocumentModel.updateLayer` / `deleteLayer` throw — peers with divergent error contracts.
 
 ---
@@ -85,7 +86,7 @@ Each of these is exported from `index.ts` via `export * from './…'` but greppi
 - `packages/document/src/versioning.ts`: `Version`, `VersionList`, `createVersion` (standalone), `createVersionFromState`, `listVersions`, `getVersion`, `deleteVersion`, `pruneOldVersions`, `compareVersions`, `VersionDiff`. Callers found: 0. `DocumentModel.createVersion / getVersion / restoreVersion / getVersionList` are the live path.
 - `packages/document/src/structural.ts`: `FoundationSchema`, `FootingSchema`, `RebarSchema`, `TrussSchema`, `BraceSchema`, `createFoundation`, `foundationVolume`, `foundationBearingCapacity`, `createFooting`, `footingVolume`, `createRebar`, `rebarWeight`, `createTruss`, `trussRidgeHeight`, `createBrace`, plus all the `*Type` unions. Callers found: 0 (self-test + `properties.test.ts`'s property enumeration).
 - `packages/document/src/mep.ts`: `createDuct`, `ductCrossSection`, `ductVolume`, `createDuctFitting`, `createPipe`, `pipeInnerDiameter`, `pipeFlowArea`, `createPipeFitting`, `createConduit`, `createCableTray`, `createMechanicalEquipment`, `createMEPSystem`, `addElementToSystem`, plus all schema interfaces. Callers found: 0.
-- `packages/document/src/bcf.ts`: `createBCFTopic`, `addBCFComment`, `serializeBCF`, `parseBCF`, `documentToBCF`, `documentToCOBie`, `serializeCOBieCSV` + all BCF/COBie interfaces. Callers found: 0. The app's `BCFPanel.tsx:1-30` defines its own parallel `BCFStatus` / `BCFPriority` / `BCFTopic` with *lowercase* enum values that don't match document-package's Title Case.
+- `packages/document/src/bcf.ts`: `createBCFTopic`, `addBCFComment`, `serializeBCF`, `parseBCF`, `documentToBCF`, `documentToCOBie`, `serializeCOBieCSV` + all BCF/COBie interfaces. Callers found: 0. The app's `BCFPanel.tsx:1-30` defines its own parallel `BCFStatus` / `BCFPriority` / `BCFTopic` with _lowercase_ enum values that don't match document-package's Title Case.
 - `packages/document/src/composite.ts`: `compositeThickness`, `validateComposite`, `migrateLegacyWallToComposite`. Only `BUILT_IN_COMPOSITES` is used (by `document.ts:22`). The three helpers are test-only.
 - `packages/document/src/io.ts`: `FileSizeLimitError`, `CorruptedFileError`, `UnsupportedFormatError`, `ImportParseError`, `ImportProgress`, `ProgressCallback`, `ImportOptions`, `ImportResult<T>`, `ImportError`, `SUPPORTED_IMPORT_FORMATS`, `SUPPORTED_EXPORT_FORMATS`, `SupportedImportFormat`, `SupportedExportFormat`, `getFileExtension`, `isFormatSupported`, `detectFormat`, `createUnsupportedFormatError`, `createCorruptedFileError`, `importWithProgress`, `BatchImportResult`, `batchImportFiles`, `ExportOptions`, `validateDocumentStructure`. Callers found: 0 outside `io.test.ts`.
 
@@ -155,7 +156,7 @@ Dead outside tests: `parseDxf` (lowercase), `dxfToDocument`, `documentToDxf`, `i
 - **Two `VectorClock` type definitions.**
   - `packages/shared/src/document.ts:12` (`readonly clock: Record<string, number>`)
   - `packages/document/src/types.ts:5` (`clock: Record<string, number>`)
-  - Plus a third in `packages/ai/src/types/document.ts:8`. The three are *structurally* compatible but can diverge silently.
+  - Plus a third in `packages/ai/src/types/document.ts:8`. The three are _structurally_ compatible but can diverge silently.
 
 - **Two `ElementType` unions (four if you count `ai/types` and `shared`).**
   - `packages/document/src/types.ts:77` (authoritative, listed `curtain_wall` twice)

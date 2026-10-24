@@ -8,29 +8,44 @@
 import { describe, it, expect } from 'vitest';
 import type { ElementSchema } from '@opencad/document';
 import {
-  matchesFilter, candidatePairs, setClashStatus, DEFAULT_CLASH_RULES,
-  type ClashRule, type Clash,
+  matchesFilter,
+  candidatePairs,
+  setClashStatus,
+  DEFAULT_CLASH_RULES,
+  type ClashRule,
+  type Clash,
 } from './clashRules';
 
 let __id = 0;
-function mk(type: ElementSchema['type'], props: Record<string, number | string> = {}): ElementSchema {
+function mk(
+  type: ElementSchema['type'],
+  props: Record<string, number | string> = {}
+): ElementSchema {
   const propObj: Record<string, { type: string; value: unknown }> = {};
   for (const [k, v] of Object.entries(props)) {
     propObj[k] = { type: typeof v === 'number' ? 'number' : 'string', value: v };
   }
   return {
-    id: `e-${++__id}`, type, layerId: 'l',
+    id: `e-${++__id}`,
+    type,
+    layerId: 'l',
     properties: propObj,
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 1000, y: 1000, z: 3000 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
 describe('T-ANA-044: clash rules', () => {
   it('T-ANA-044-001: wall + pipe rule finds one candidate pair', () => {
     const rule: ClashRule = {
-      id: 'r1', name: 'test', setA: { types: ['wall'] }, setB: { types: ['pipe'] as unknown as string[] },
-      tolerance: 50, severity: 'critical', enabled: true,
+      id: 'r1',
+      name: 'test',
+      setA: { types: ['wall'] },
+      setB: { types: ['pipe'] as unknown as string[] },
+      tolerance: 50,
+      severity: 'critical',
+      enabled: true,
     };
     const wall = mk('wall', {});
     const pipe = { ...mk('wall', {}), type: 'pipe' } as ElementSchema;
@@ -60,8 +75,13 @@ describe('T-ANA-044: clash rules', () => {
 
   it('T-ANA-044-006: setClashStatus transitions lifecycle', () => {
     const clash: Clash = {
-      id: 'c1', ruleId: 'r1', elementIdA: 'a', elementIdB: 'b',
-      point: { x: 0, y: 0, z: 0 }, status: 'new', createdAt: 0,
+      id: 'c1',
+      ruleId: 'r1',
+      elementIdA: 'a',
+      elementIdB: 'b',
+      point: { x: 0, y: 0, z: 0 },
+      status: 'new',
+      createdAt: 0,
     };
     expect(setClashStatus(clash, 'resolved').status).toBe('resolved');
     // Original is unmodified

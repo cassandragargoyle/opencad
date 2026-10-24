@@ -194,11 +194,21 @@ export function markupBBox(markup: Markup): BBox {
     case 'cloud': {
       const xs = markup.points.map((p) => p.x);
       const ys = markup.points.map((p) => p.y);
-      return { minX: Math.min(...xs), minY: Math.min(...ys), maxX: Math.max(...xs), maxY: Math.max(...ys) };
+      return {
+        minX: Math.min(...xs),
+        minY: Math.min(...ys),
+        maxX: Math.max(...xs),
+        maxY: Math.max(...ys),
+      };
     }
     case 'text-box':
     case 'photo-stamp':
-      return { minX: markup.x, minY: markup.y, maxX: markup.x + markup.width, maxY: markup.y + markup.height };
+      return {
+        minX: markup.x,
+        minY: markup.y,
+        maxX: markup.x + markup.width,
+        maxY: markup.y + markup.height,
+      };
     case 'arrow':
     case 'measurement-callout':
       return {

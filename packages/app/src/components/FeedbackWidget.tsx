@@ -23,7 +23,10 @@ const FEASIBILITY_BADGES: Record<string, { label: string; className: string }> =
   out_of_scope: { label: 'Out of scope', className: 'feedback-badge--red' },
 };
 
-export function FeedbackWidget({ open: externalOpen, onClose: externalOnClose }: FeedbackWidgetProps = {}) {
+export function FeedbackWidget({
+  open: externalOpen,
+  onClose: externalOnClose,
+}: FeedbackWidgetProps = {}) {
   const { t } = useTranslation('dialogs');
   const controlled = externalOpen !== undefined;
   const [state, setState] = useState<WidgetState>('closed');
@@ -96,7 +99,9 @@ export function FeedbackWidget({ open: externalOpen, onClose: externalOnClose }:
       setResult(item);
       setState('submitted');
     } catch {
-      setError(t('feedback.submitFailed', { defaultValue: 'Failed to submit feedback. Please try again.' }));
+      setError(
+        t('feedback.submitFailed', { defaultValue: 'Failed to submit feedback. Please try again.' })
+      );
     } finally {
       setSubmitting(false);
     }
@@ -118,7 +123,12 @@ export function FeedbackWidget({ open: externalOpen, onClose: externalOnClose }:
 
       {/* Panel */}
       {state !== 'closed' && (
-        <div className="feedback-overlay" role="dialog" aria-modal="true" aria-label={t('feedback.title')}>
+        <div
+          className="feedback-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('feedback.title')}
+        >
           <div ref={dialogRef} className="feedback-panel">
             {/* Header */}
             <div className="feedback-panel__header">
@@ -154,7 +164,9 @@ export function FeedbackWidget({ open: externalOpen, onClose: externalOnClose }:
 
                 {/* Title */}
                 <div className="feedback-field">
-                  <label className="feedback-label" htmlFor="feedback-title">{t('feedback.titleLabel')}</label>
+                  <label className="feedback-label" htmlFor="feedback-title">
+                    {t('feedback.titleLabel')}
+                  </label>
                   <input
                     id="feedback-title"
                     className="feedback-input"
@@ -169,11 +181,15 @@ export function FeedbackWidget({ open: externalOpen, onClose: externalOnClose }:
 
                 {/* Description */}
                 <div className="feedback-field">
-                  <label className="feedback-label" htmlFor="feedback-desc">{t('feedback.descriptionLabel')}</label>
+                  <label className="feedback-label" htmlFor="feedback-desc">
+                    {t('feedback.descriptionLabel')}
+                  </label>
                   <textarea
                     id="feedback-desc"
                     className="feedback-textarea"
-                    placeholder={t('feedback.descriptionPlaceholder', { defaultValue: 'Describe the issue or idea in detail…' })}
+                    placeholder={t('feedback.descriptionPlaceholder', {
+                      defaultValue: 'Describe the issue or idea in detail…',
+                    })}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={4}
@@ -184,11 +200,7 @@ export function FeedbackWidget({ open: externalOpen, onClose: externalOnClose }:
 
                 {error && <p className="feedback-error">{error}</p>}
 
-                <button
-                  type="submit"
-                  className="feedback-submit"
-                  disabled={submitting}
-                >
+                <button type="submit" className="feedback-submit" disabled={submitting}>
                   {submitting ? (
                     t('feedback.submitting')
                   ) : (
@@ -200,7 +212,9 @@ export function FeedbackWidget({ open: externalOpen, onClose: externalOnClose }:
                 </button>
 
                 <p className="feedback-note">
-                  {t('feedback.note', { defaultValue: 'Feedback is reviewed by the team and tracked as a GitHub issue.' })}
+                  {t('feedback.note', {
+                    defaultValue: 'Feedback is reviewed by the team and tracked as a GitHub issue.',
+                  })}
                 </p>
               </form>
             )}
@@ -210,25 +224,38 @@ export function FeedbackWidget({ open: externalOpen, onClose: externalOnClose }:
               <div className="feedback-success">
                 <CheckCircle size={32} className="feedback-success__icon" />
                 <p className="feedback-success__message">
-                  {t('feedback.successMessage', { defaultValue: 'Your feedback has been received and assessed against the product roadmap.' })}
+                  {t('feedback.successMessage', {
+                    defaultValue:
+                      'Your feedback has been received and assessed against the product roadmap.',
+                  })}
                 </p>
 
                 <div className="feedback-result">
                   <div className="feedback-result__row">
-                    <span className="feedback-result__key">{t('feedback.feasibility', { defaultValue: 'Feasibility' })}</span>
-                    <span className={`feedback-badge ${FEASIBILITY_BADGES[result.feasibility]?.className ?? ''}`}>
+                    <span className="feedback-result__key">
+                      {t('feedback.feasibility', { defaultValue: 'Feasibility' })}
+                    </span>
+                    <span
+                      className={`feedback-badge ${FEASIBILITY_BADGES[result.feasibility]?.className ?? ''}`}
+                    >
                       {FEASIBILITY_BADGES[result.feasibility]?.label ?? result.feasibility}
                     </span>
                   </div>
                   {result.prd_label && (
                     <div className="feedback-result__row">
-                      <span className="feedback-result__key">{t('feedback.prdArea', { defaultValue: 'PRD area' })}</span>
-                      <span className="feedback-badge feedback-badge--blue">{result.prd_label}</span>
+                      <span className="feedback-result__key">
+                        {t('feedback.prdArea', { defaultValue: 'PRD area' })}
+                      </span>
+                      <span className="feedback-badge feedback-badge--blue">
+                        {result.prd_label}
+                      </span>
                     </div>
                   )}
                   {result.github_issue_url && (
                     <div className="feedback-result__row">
-                      <span className="feedback-result__key">{t('feedback.issue', { defaultValue: 'Issue' })}</span>
+                      <span className="feedback-result__key">
+                        {t('feedback.issue', { defaultValue: 'Issue' })}
+                      </span>
                       <a
                         href={result.github_issue_url}
                         target="_blank"

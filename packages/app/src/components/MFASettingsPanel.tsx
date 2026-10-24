@@ -64,7 +64,9 @@ export function MFASettingsPanel() {
       <h3 id="mfa-heading">Two-Factor Authentication (TOTP)</h3>
 
       {error && (
-        <div className="auth-msg auth-msg--error" role="alert">{error}</div>
+        <div className="auth-msg auth-msg--error" role="alert">
+          {error}
+        </div>
       )}
 
       {step === 'success' && (
@@ -87,8 +89,8 @@ export function MFASettingsPanel() {
       {step === 'qr' && qrCodeUrl && (
         <>
           <p className="mfa-instructions">
-            Scan this QR code with your authenticator app (e.g. Google Authenticator,
-            Authy), then enter the 6-digit code below to confirm.
+            Scan this QR code with your authenticator app (e.g. Google Authenticator, Authy), then
+            enter the 6-digit code below to confirm.
           </p>
           <img
             data-testid="mfa-qr-code"
@@ -100,7 +102,9 @@ export function MFASettingsPanel() {
 
           <form onSubmit={handleConfirm} className="mfa-confirm-form" noValidate>
             <div className="form-field">
-              <label htmlFor="mfa-otp-code">{t('settings.mfa.enterCode', { defaultValue: 'Enter code' })}</label>
+              <label htmlFor="mfa-otp-code">
+                {t('settings.mfa.enterCode', { defaultValue: 'Enter code' })}
+              </label>
               <input
                 id="mfa-otp-code"
                 type="text"

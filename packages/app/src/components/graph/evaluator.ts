@@ -98,7 +98,8 @@ export function evaluateGraph(graph: GraphDefinition): EvalResult {
           .map((r) => result.values.get(`${r.sourceId}:${r.sourceHandle}`) ?? null)
           .filter((v) => v !== null);
       } else if (refs.length > 0) {
-        inputs[socketDef.id] = result.values.get(`${refs[0].sourceId}:${refs[0].sourceHandle}`) ?? null;
+        inputs[socketDef.id] =
+          result.values.get(`${refs[0].sourceId}:${refs[0].sourceHandle}`) ?? null;
       } else {
         inputs[socketDef.id] = null;
       }
@@ -118,10 +119,7 @@ export function evaluateGraph(graph: GraphDefinition): EvalResult {
 }
 
 /** Returns a new graph with dirty nodes cleared — used when a param changes. */
-export function dirtyPropagate(
-  graph: GraphDefinition,
-  changedNodeId: string,
-): Set<string> {
+export function dirtyPropagate(graph: GraphDefinition, changedNodeId: string): Set<string> {
   const adj = new Map<string, string[]>(graph.nodes.map((n) => [n.id, []]));
   for (const edge of graph.edges) {
     adj.get(edge.source)?.push(edge.target);

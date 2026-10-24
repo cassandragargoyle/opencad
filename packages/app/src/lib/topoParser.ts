@@ -14,9 +14,12 @@ export interface TerrainParseResult {
   points: TerrainPoint[];
   /** Axis-aligned bounding box of the input point set. */
   bounds: {
-    minX: number; maxX: number;
-    minY: number; maxY: number;
-    minZ: number; maxZ: number;
+    minX: number;
+    maxX: number;
+    minY: number;
+    maxY: number;
+    minZ: number;
+    maxZ: number;
   };
 }
 
@@ -110,10 +113,7 @@ export function parseGeoJSON(json: unknown): TerrainParseResult {
  * @param gridRes Grid resolution: number of cells along the longer axis.
  *                Default 64 (produces 65×65 = 4225 vertices).
  */
-export function buildTerrainGeometry(
-  points: TerrainPoint[],
-  gridRes = 64
-): THREE.BufferGeometry {
+export function buildTerrainGeometry(points: TerrainPoint[], gridRes = 64): THREE.BufferGeometry {
   if (points.length === 0) {
     return new THREE.PlaneGeometry(1000, 1000);
   }
@@ -131,7 +131,7 @@ export function buildTerrainGeometry(
   const vRows = rows + 1;
 
   const positions = new Float32Array(vCols * vRows * 3);
-  const indices   = new Uint32Array(cols * rows * 6);
+  const indices = new Uint32Array(cols * rows * 6);
 
   // Build vertex grid with IDW elevation.
   for (let r = 0; r < vRows; r++) {
@@ -139,8 +139,8 @@ export function buildTerrainGeometry(
       const wx = bounds.minX + (c / cols) * rangeX;
       const wy = bounds.minY + (r / rows) * rangeY;
       const wz = _idwElevation(points, wx, wy);
-      const i  = (r * vCols + c) * 3;
-      positions[i]     = wx;
+      const i = (r * vCols + c) * 3;
+      positions[i] = wx;
       positions[i + 1] = wz; // Three.js Y = CAD elevation
       positions[i + 2] = wy; // Three.js Z = CAD Y
     }
@@ -154,8 +154,12 @@ export function buildTerrainGeometry(
       const b = a + 1;
       const d = a + vCols;
       const e = d + 1;
-      indices[idx++] = a; indices[idx++] = d; indices[idx++] = b;
-      indices[idx++] = b; indices[idx++] = d; indices[idx++] = e;
+      indices[idx++] = a;
+      indices[idx++] = d;
+      indices[idx++] = b;
+      indices[idx++] = b;
+      indices[idx++] = d;
+      indices[idx++] = e;
     }
   }
 
@@ -169,25 +173,31 @@ export function buildTerrainGeometry(
 /** IDW elevation estimate at (qx, qy) from sample points. Power = 2. */
 function _idwElevation(points: TerrainPoint[], qx: number, qy: number): number {
   let weightSum = 0;
-  let valueSum  = 0;
+  let valueSum = 0;
   for (const p of points) {
     const d2 = (p.x - qx) ** 2 + (p.y - qy) ** 2;
     if (d2 < 1e-10) return p.z; // query is on a sample point
     const w = 1 / d2;
     weightSum += w;
-    valueSum  += w * p.z;
+    valueSum += w * p.z;
   }
   return weightSum > 0 ? valueSum / weightSum : 0;
 }
 
 function _computeBounds(points: TerrainPoint[]) {
-  let minX = Infinity, maxX = -Infinity;
-  let minY = Infinity, maxY = -Infinity;
-  let minZ = Infinity, maxZ = -Infinity;
+  let minX = Infinity,
+    maxX = -Infinity;
+  let minY = Infinity,
+    maxY = -Infinity;
+  let minZ = Infinity,
+    maxZ = -Infinity;
   for (const p of points) {
-    if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
-    if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
-    if (p.z < minZ) minZ = p.z; if (p.z > maxZ) maxZ = p.z;
+    if (p.x < minX) minX = p.x;
+    if (p.x > maxX) maxX = p.x;
+    if (p.y < minY) minY = p.y;
+    if (p.y > maxY) maxY = p.y;
+    if (p.z < minZ) minZ = p.z;
+    if (p.z > maxZ) maxZ = p.z;
   }
   if (!Number.isFinite(minX)) {
     minX = minY = minZ = 0;

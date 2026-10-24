@@ -29,9 +29,9 @@ export interface EquirectResolution {
 }
 
 export const EQUIRECT_PRESETS: Record<string, EquirectResolution> = {
-  '2K': { width: 2048,  height: 1024  },
-  '4K': { width: 4096,  height: 2048  },
-  '8K': { width: 8192,  height: 4096  },
+  '2K': { width: 2048, height: 1024 },
+  '4K': { width: 4096, height: 2048 },
+  '8K': { width: 8192, height: 4096 },
 };
 
 // ── Direction ↔ UV math ───────────────────────────────────────────────────────
@@ -43,13 +43,13 @@ export const EQUIRECT_PRESETS: Record<string, EquirectResolution> = {
  * @param v  Vertical fraction [0, 1) — 0 = top (north pole), 1 = bottom (south pole)
  */
 export function equirectUVToDirection(u: number, v: number): Vec3 {
-  const phi   = u * 2 * Math.PI - Math.PI; // longitude: [-π, π]
-  const theta = v * Math.PI;               // co-latitude: [0, π]
+  const phi = u * 2 * Math.PI - Math.PI; // longitude: [-π, π]
+  const theta = v * Math.PI; // co-latitude: [0, π]
   const sinTheta = Math.sin(theta);
   return {
-    x:  sinTheta * Math.sin(phi),
-    y:  Math.cos(theta),
-    z:  sinTheta * Math.cos(phi),
+    x: sinTheta * Math.sin(phi),
+    y: Math.cos(theta),
+    z: sinTheta * Math.cos(phi),
   };
 }
 
@@ -58,8 +58,10 @@ export function equirectUVToDirection(u: number, v: number): Vec3 {
  */
 export function directionToEquirectUV(dir: Vec3): [number, number] {
   const len = Math.sqrt(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
-  const nx = dir.x / len, ny = dir.y / len, nz = dir.z / len;
-  const phi   = Math.atan2(nx, nz);               // [-π, π]
+  const nx = dir.x / len,
+    ny = dir.y / len,
+    nz = dir.z / len;
+  const phi = Math.atan2(nx, nz); // [-π, π]
   const theta = Math.acos(Math.max(-1, Math.min(1, ny))); // [0, π]
   const u = (phi + Math.PI) / (2 * Math.PI);
   const v = theta / Math.PI;
@@ -74,7 +76,9 @@ export function directionToEquirectUV(dir: Vec3): [number, number] {
  */
 export function directionToCubemapFace(dir: Vec3): { face: CubemapFace; u: number; v: number } {
   const { x, y, z } = dir;
-  const ax = Math.abs(x), ay = Math.abs(y), az = Math.abs(z);
+  const ax = Math.abs(x),
+    ay = Math.abs(y),
+    az = Math.abs(z);
   let face: CubemapFace;
   let fu: number, fv: number;
 
@@ -161,7 +165,7 @@ export function generateTurntablePoses(
   centre: Vec3,
   radius: number,
   pitchDeg = 15,
-  startDeg = 0,
+  startDeg = 0
 ): TurntablePose[] {
   const pitchRad = pitchDeg * (Math.PI / 180);
   const poses: TurntablePose[] = [];
@@ -186,7 +190,7 @@ export function isTurntableUniform(poses: TurntablePose[]): boolean {
   if (poses.length < 2) return true;
   const expectedStep = 360 / poses.length;
   for (let i = 0; i < poses.length - 1; i++) {
-    const step = ((poses[i + 1]!.azimuthDeg - poses[i]!.azimuthDeg) + 360) % 360;
+    const step = (poses[i + 1]!.azimuthDeg - poses[i]!.azimuthDeg + 360) % 360;
     if (Math.abs(step - expectedStep) > 0.001) return false;
   }
   return true;
@@ -234,6 +238,9 @@ export interface TurntableExportOptions {
   pathtrace: boolean;
 }
 
-export function turntableResolution(preset: TurntableExportOptions['resolution']): { width: number; height: number } {
+export function turntableResolution(preset: TurntableExportOptions['resolution']): {
+  width: number;
+  height: number;
+} {
   return preset === '4K' ? { width: 3840, height: 2160 } : { width: 1920, height: 1080 };
 }

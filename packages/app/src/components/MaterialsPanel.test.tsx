@@ -27,9 +27,7 @@ const makeStore = (selectedIds: string[] = []) => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.mocked(useDocumentStore).mockReturnValue(
-    makeStore() as ReturnType<typeof useDocumentStore>,
-  );
+  vi.mocked(useDocumentStore).mockReturnValue(makeStore() as ReturnType<typeof useDocumentStore>);
 });
 
 describe('T-BIM-001 MaterialsPanel', () => {
@@ -63,7 +61,7 @@ describe('T-BIM-001 MaterialsPanel', () => {
 
   it('assign button is disabled when no elements are selected in store', () => {
     vi.mocked(useDocumentStore).mockReturnValue(
-      makeStore([]) as ReturnType<typeof useDocumentStore>,
+      makeStore([]) as ReturnType<typeof useDocumentStore>
     );
     render(<MaterialsPanel />);
     // Select a material first

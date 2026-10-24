@@ -144,8 +144,8 @@ describe('T-COL-02: OwnershipStore', () => {
   describe('getLockedElementIds()', () => {
     it('returns ids of locked elements', () => {
       const store = new OwnershipStore();
-      const doc   = createProject('proj-1', 'user-1');
-      const id    = Object.keys(doc.content.elements)[0];
+      const doc = createProject('proj-1', 'user-1');
+      const id = Object.keys(doc.content.elements)[0];
       if (!id) return;
       store.acquire(id, 'peer-A');
       const locked = getLockedElementIds(store, doc, 'peer-B');
@@ -154,8 +154,8 @@ describe('T-COL-02: OwnershipStore', () => {
 
     it('does not include elements locked by viewing peer', () => {
       const store = new OwnershipStore();
-      const doc   = createProject('proj-1', 'user-1');
-      const id    = Object.keys(doc.content.elements)[0];
+      const doc = createProject('proj-1', 'user-1');
+      const id = Object.keys(doc.content.elements)[0];
       if (!id) return;
       store.acquire(id, 'peer-A');
       const locked = getLockedElementIds(store, doc, 'peer-A');

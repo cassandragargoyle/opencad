@@ -63,27 +63,20 @@ describe('T-DOC-007: Document creation invariants (fast-check)', () => {
 
   it('createProject always starts with empty elements', () => {
     fc.assert(
-      fc.property(
-        fc.string({ minLength: 1 }),
-        fc.string({ minLength: 1 }),
-        (id, user) => {
-          const doc = createProject(id, user);
-          return Object.keys(doc.content.elements).length === 0;
-        }
-      ),
+      fc.property(fc.string({ minLength: 1 }), fc.string({ minLength: 1 }), (id, user) => {
+        const doc = createProject(id, user);
+        return Object.keys(doc.content.elements).length === 0;
+      }),
       { numRuns: 100 }
     );
   });
 
   it('project name uses provided name or default', () => {
     fc.assert(
-      fc.property(
-        fc.string({ minLength: 1, maxLength: 100 }),
-        (name) => {
-          const doc = createProject('id', 'user', { name });
-          return doc.name === name;
-        }
-      ),
+      fc.property(fc.string({ minLength: 1, maxLength: 100 }), (name) => {
+        const doc = createProject('id', 'user', { name });
+        return doc.name === name;
+      }),
       { numRuns: 100 }
     );
   });
@@ -150,17 +143,14 @@ describe('T-COL-007: Layer operation invariants (fast-check)', () => {
 
   it('deleteLayer reduces count by 1', () => {
     fc.assert(
-      fc.property(
-        fc.string({ minLength: 1, maxLength: 30 }),
-        (name) => {
-          const model = new DocumentModel('proj', 'user');
-          const id = model.addLayer({ name, color: '#ffffff' });
-          const before = Object.keys(model.layers).length;
-          model.deleteLayer(id);
-          const after = Object.keys(model.layers).length;
-          return after === before - 1;
-        }
-      ),
+      fc.property(fc.string({ minLength: 1, maxLength: 30 }), (name) => {
+        const model = new DocumentModel('proj', 'user');
+        const id = model.addLayer({ name, color: '#ffffff' });
+        const before = Object.keys(model.layers).length;
+        model.deleteLayer(id);
+        const after = Object.keys(model.layers).length;
+        return after === before - 1;
+      }),
       { numRuns: 100 }
     );
   });
@@ -172,51 +162,42 @@ describe('T-COL-008: Element operation invariants (fast-check)', () => {
   it('addElement always creates element with correct type', () => {
     const types = ['wall', 'door', 'window', 'slab', 'column', 'beam'] as const;
     fc.assert(
-      fc.property(
-        fc.constantFrom(...types),
-        (type) => {
-          const model = new DocumentModel('proj', 'user');
-          const layerId = Object.keys(model.layers)[0];
-          const id = model.addElement({ type, layerId });
-          const el = model.getElementById(id);
-          return el?.type === type;
-        }
-      ),
+      fc.property(fc.constantFrom(...types), (type) => {
+        const model = new DocumentModel('proj', 'user');
+        const layerId = Object.keys(model.layers)[0];
+        const id = model.addElement({ type, layerId });
+        const el = model.getElementById(id);
+        return el?.type === type;
+      }),
       { numRuns: 100 }
     );
   });
 
   it('addElement always creates visible, unlocked elements', () => {
     fc.assert(
-      fc.property(
-        fc.constantFrom('wall', 'door', 'window', 'slab', 'column', 'beam'),
-        (type) => {
-          const model = new DocumentModel('proj', 'user');
-          const layerId = Object.keys(model.layers)[0];
-          const id = model.addElement({ type, layerId });
-          const el = model.getElementById(id);
-          return el?.visible === true && el?.locked === false;
-        }
-      ),
+      fc.property(fc.constantFrom('wall', 'door', 'window', 'slab', 'column', 'beam'), (type) => {
+        const model = new DocumentModel('proj', 'user');
+        const layerId = Object.keys(model.layers)[0];
+        const id = model.addElement({ type, layerId });
+        const el = model.getElementById(id);
+        return el?.visible === true && el?.locked === false;
+      }),
       { numRuns: 100 }
     );
   });
 
   it('multiple addElements always increases element count', () => {
     fc.assert(
-      fc.property(
-        fc.integer({ min: 1, max: 20 }),
-        (count) => {
-          const model = new DocumentModel('proj', 'user');
-          const layerId = Object.keys(model.layers)[0];
-          const before = Object.keys(model.elements).length;
-          for (let i = 0; i < count; i++) {
-            model.addElement({ type: 'wall', layerId });
-          }
-          const after = Object.keys(model.elements).length;
-          return after === before + count;
+      fc.property(fc.integer({ min: 1, max: 20 }), (count) => {
+        const model = new DocumentModel('proj', 'user');
+        const layerId = Object.keys(model.layers)[0];
+        const before = Object.keys(model.elements).length;
+        for (let i = 0; i < count; i++) {
+          model.addElement({ type: 'wall', layerId });
         }
-      ),
+        const after = Object.keys(model.elements).length;
+        return after === before + count;
+      }),
       { numRuns: 50 }
     );
   });
@@ -317,19 +298,16 @@ describe('Document JSON serialization invariants', () => {
 
   it('multiple layers survive JSON roundtrip (fast-check)', () => {
     fc.assert(
-      fc.property(
-        fc.integer({ min: 1, max: 10 }),
-        (layerCount) => {
-          const model = new DocumentModel('proj', 'user');
-          for (let i = 0; i < layerCount; i++) {
-            model.addLayer({ name: `Layer ${i}`, color: '#aabbcc' });
-          }
-          const json = JSON.stringify(model.documentData);
-          const parsed = JSON.parse(json);
-          const count = Object.keys(parsed.organization.layers).length;
-          return count === layerCount + 1; // +1 for default layer
+      fc.property(fc.integer({ min: 1, max: 10 }), (layerCount) => {
+        const model = new DocumentModel('proj', 'user');
+        for (let i = 0; i < layerCount; i++) {
+          model.addLayer({ name: `Layer ${i}`, color: '#aabbcc' });
         }
-      ),
+        const json = JSON.stringify(model.documentData);
+        const parsed = JSON.parse(json);
+        const count = Object.keys(parsed.organization.layers).length;
+        return count === layerCount + 1; // +1 for default layer
+      }),
       { numRuns: 50 }
     );
   });

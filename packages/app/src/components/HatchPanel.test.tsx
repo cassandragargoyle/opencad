@@ -6,7 +6,9 @@ expect.extend(jestDomMatchers);
 
 describe('T-2D-009: HatchPanel', () => {
   const defaultProps = { onApply: vi.fn() };
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders Hatch Patterns header', () => {
     render(<HatchPanel {...defaultProps} />);
@@ -57,7 +59,11 @@ describe('T-2D-009: HatchPanel', () => {
     render(<HatchPanel {...defaultProps} />);
     fireEvent.click(screen.getByRole('button', { name: /apply/i }));
     expect(defaultProps.onApply).toHaveBeenCalledWith(
-      expect.objectContaining({ pattern: expect.any(String), scale: expect.any(Number), angle: expect.any(Number) })
+      expect.objectContaining({
+        pattern: expect.any(String),
+        scale: expect.any(Number),
+        angle: expect.any(Number),
+      })
     );
   });
 

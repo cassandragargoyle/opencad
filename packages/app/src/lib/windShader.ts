@@ -42,7 +42,8 @@ export function computeWindOffset(
   const gustFactor = gustiness * Math.sin(0.7 * time);
   const dx = amplitude * Math.sin(frequency * x + speed * time + gustFactor);
   // dy uses y position and a phase offset for variation
-  const dy = amplitude * 0.5 * Math.sin(frequency * y + speed * time * 0.8 + gustFactor + Math.PI * 0.25);
+  const dy =
+    amplitude * 0.5 * Math.sin(frequency * y + speed * time * 0.8 + gustFactor + Math.PI * 0.25);
   return { dx, dy };
 }
 
@@ -79,11 +80,7 @@ export function generateWindAnimation(
  * Linearly interpolate between two wind frames at fractional position `t` (0–1).
  * The interpolated frame's time is also lerped.
  */
-export function interpolateWind(
-  a: WindFrame,
-  b: WindFrame,
-  t: number
-): WindFrame {
+export function interpolateWind(a: WindFrame, b: WindFrame, t: number): WindFrame {
   const clampedT = Math.max(0, Math.min(1, t));
   const time = a.time + (b.time - a.time) * clampedT;
 

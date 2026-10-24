@@ -26,23 +26,34 @@ export async function loadInvites(): Promise<Invite[]> {
   try {
     const fromOpfs = await opfsRead(OPFS_KEY);
     if (fromOpfs) return JSON.parse(fromOpfs) as Invite[];
-  } catch { /* fall through */ }
+  } catch {
+    /* fall through */
+  }
   try {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) return JSON.parse(raw) as Invite[];
-  } catch { /* fall through */ }
+  } catch {
+    /* fall through */
+  }
   return [];
 }
 
 export async function saveInvites(invites: Invite[]): Promise<void> {
   const s = JSON.stringify(invites);
   await opfsWrite(OPFS_KEY, s);
-  try { localStorage.setItem(LS_KEY, s); } catch { /* quota */ }
+  try {
+    localStorage.setItem(LS_KEY, s);
+  } catch {
+    /* quota */
+  }
 }
 
-export function createInvite(
-  params: { orgId: string; email: string; role: RoleId; invitedBy: string },
-): Invite {
+export function createInvite(params: {
+  orgId: string;
+  email: string;
+  role: RoleId;
+  invitedBy: string;
+}): Invite {
   return {
     id: crypto.randomUUID(),
     orgId: params.orgId,

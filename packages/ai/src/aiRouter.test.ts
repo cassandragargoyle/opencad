@@ -32,7 +32,7 @@ describe('T-DSK-005: AIRouter', () => {
           model: 'llama3.2',
           done: true,
         }),
-      }),
+      })
     );
 
     const client = new OllamaClient();

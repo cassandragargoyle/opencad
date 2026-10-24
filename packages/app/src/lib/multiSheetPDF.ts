@@ -30,28 +30,32 @@ export interface PDFExportOptions {
 /** Build the HTML string for a multi-sheet PDF document. Exported for testing. */
 export function buildMultiSheetHTML(sheets: PDFSheet[], opts: PDFExportOptions = {}): string {
   const style = opts.plotStyle ?? 'colour';
-  const filterCss = style === 'greyscale'
-    ? 'filter: grayscale(1);'
-    : style === 'monochrome'
-      ? 'filter: grayscale(1) contrast(100);'
-      : '';
+  const filterCss =
+    style === 'greyscale'
+      ? 'filter: grayscale(1);'
+      : style === 'monochrome'
+        ? 'filter: grayscale(1) contrast(100);'
+        : '';
 
-  const sheetPages = sheets.map((s) => {
-    const wMm = s.widthMm ?? 297;
-    const hMm = s.heightMm ?? 210;
-    const content = s.svgContent
-      ? `<div class="sheet-content">${s.svgContent}</div>`
-      : `<div class="sheet-placeholder"><p>${s.sheetNumber}: ${s.title}</p></div>`;
-    return `<div class="sheet-page" style="width:${wMm}mm;height:${hMm}mm;">
+  const sheetPages = sheets
+    .map((s) => {
+      const wMm = s.widthMm ?? 297;
+      const hMm = s.heightMm ?? 210;
+      const content = s.svgContent
+        ? `<div class="sheet-content">${s.svgContent}</div>`
+        : `<div class="sheet-placeholder"><p>${s.sheetNumber}: ${s.title}</p></div>`;
+      return `<div class="sheet-page" style="width:${wMm}mm;height:${hMm}mm;">
   <div class="sheet-header">
     <span class="sheet-num">${s.sheetNumber}</span>
     <span class="sheet-title">${s.title}</span>
   </div>
   ${content}
 </div>`;
-  }).join('\n');
+    })
+    .join('\n');
 
-  const indexPage = opts.includeSheetIndex ? `<div class="sheet-page" style="width:297mm;height:210mm;">
+  const indexPage = opts.includeSheetIndex
+    ? `<div class="sheet-page" style="width:297mm;height:210mm;">
   <h2>Drawing Index</h2>
   <table>
     <thead><tr><th>Number</th><th>Title</th><th>Scale</th></tr></thead>
@@ -59,7 +63,8 @@ export function buildMultiSheetHTML(sheets: PDFSheet[], opts: PDFExportOptions =
       ${sheets.map((s) => `<tr><td>${s.sheetNumber}</td><td>${s.title}</td><td>–</td></tr>`).join('')}
     </tbody>
   </table>
-</div>` : '';
+</div>`
+    : '';
 
   return `<!DOCTYPE html>
 <html>
@@ -88,15 +93,12 @@ ${sheetPages}
  * Export sheets as a printable HTML file with one sheet per page.
  * Triggers a file download using a Blob URL.
  */
-export function exportMultiSheetPDF(
-  sheets: PDFSheet[],
-  opts: PDFExportOptions = {},
-): void {
+export function exportMultiSheetPDF(sheets: PDFSheet[], opts: PDFExportOptions = {}): void {
   const filename = opts.filename ?? 'drawing-set.pdf';
   const html = buildMultiSheetHTML(sheets, opts);
   const blob = new Blob([html], { type: 'text/html' });
-  const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement('a'), {
+  const url = URL.createObjectURL(blob);
+  const a = Object.assign(document.createElement('a'), {
     href: url,
     download: filename.endsWith('.html') ? filename : filename.replace(/\.pdf$/i, '.html'),
   });

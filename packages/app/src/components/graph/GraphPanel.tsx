@@ -35,7 +35,7 @@ interface Props {
 function toFlowNode(
   nodeData: GraphNodeData,
   onParamChange: (nodeId: string, paramId: string, value: unknown) => void,
-  error?: string,
+  error?: string
 ): Node {
   return {
     id: nodeData.id,
@@ -66,25 +66,31 @@ export function GraphPanel({ graph, onSave }: Props): React.ReactElement {
       setNodes((nds) =>
         nds.map((n) =>
           n.id === nodeId
-            ? { ...n, data: { ...n.data, params: { ...(n.data as unknown as GraphNodeData).params, [paramId]: value } } }
-            : n,
-        ),
+            ? {
+                ...n,
+                data: {
+                  ...n.data,
+                  params: { ...(n.data as unknown as GraphNodeData).params, [paramId]: value },
+                },
+              }
+            : n
+        )
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    []
   );
 
   const initialNodes = useMemo(
     () => graph.nodes.map((n) => toFlowNode(n, onParamChange)),
     // onParamChange is stable — exclude from deps to avoid re-init on every render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [graph.id],
+    [graph.id]
   );
   const initialEdges = useMemo(
     () => graph.edges.map(toFlowEdge),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [graph.id],
+    [graph.id]
   );
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -130,7 +136,7 @@ export function GraphPanel({ graph, onSave }: Props): React.ReactElement {
       };
       setEdges((eds) => addEdge(edge, eds));
     },
-    [setEdges],
+    [setEdges]
   );
 
   const addNode = useCallback(
@@ -155,7 +161,7 @@ export function GraphPanel({ graph, onSave }: Props): React.ReactElement {
       };
       setNodes((nds) => [...nds, newNode]);
     },
-    [setNodes, onParamChange],
+    [setNodes, onParamChange]
   );
 
   // Sync error banners into node data
@@ -165,7 +171,7 @@ export function GraphPanel({ graph, onSave }: Props): React.ReactElement {
         ...n,
         data: { ...n.data, error: evalErrors.get(n.id) },
       })),
-    [nodes, evalErrors],
+    [nodes, evalErrors]
   );
 
   const [palette, setPalette] = useState<Category | null>(null);
@@ -207,7 +213,10 @@ export function GraphPanel({ graph, onSave }: Props): React.ReactElement {
               className="graph-panel__palette-item"
               role="option"
               aria-selected={false}
-              onClick={() => { addNode(def.type); setPalette(null); }}
+              onClick={() => {
+                addNode(def.type);
+                setPalette(null);
+              }}
             >
               {def.label}
             </button>

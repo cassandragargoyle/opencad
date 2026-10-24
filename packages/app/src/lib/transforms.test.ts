@@ -7,9 +7,7 @@
  *   T-MOD-024-004 — polarArray count 4 around origin
  */
 import { describe, it, expect } from 'vitest';
-import {
-  mirrorPoint, rotatePoint, translatePoint, linearArray, polarArray,
-} from './transforms';
+import { mirrorPoint, rotatePoint, translatePoint, linearArray, polarArray } from './transforms';
 
 describe('T-MOD-024: transforms', () => {
   it('T-MOD-024-001: mirror across vertical axis x=5 sends (2,0) → (8,0)', () => {
@@ -51,9 +49,13 @@ describe('T-MOD-024: transforms', () => {
 
   it('T-MOD-024-004: polarArray 4 around origin gives 0°, 90°, 180°, 270°', () => {
     const pts = polarArray({ x: 1, y: 0 }, 4, { x: 0, y: 0 });
-    expect(pts[0]!.x).toBeCloseTo(1, 6); expect(pts[0]!.y).toBeCloseTo(0, 6);
-    expect(pts[1]!.x).toBeCloseTo(0, 6); expect(pts[1]!.y).toBeCloseTo(1, 6);
-    expect(pts[2]!.x).toBeCloseTo(-1, 6); expect(pts[2]!.y).toBeCloseTo(0, 6);
-    expect(pts[3]!.x).toBeCloseTo(0, 6); expect(pts[3]!.y).toBeCloseTo(-1, 6);
+    expect(pts[0]!.x).toBeCloseTo(1, 6);
+    expect(pts[0]!.y).toBeCloseTo(0, 6);
+    expect(pts[1]!.x).toBeCloseTo(0, 6);
+    expect(pts[1]!.y).toBeCloseTo(1, 6);
+    expect(pts[2]!.x).toBeCloseTo(-1, 6);
+    expect(pts[2]!.y).toBeCloseTo(0, 6);
+    expect(pts[3]!.x).toBeCloseTo(0, 6);
+    expect(pts[3]!.y).toBeCloseTo(-1, 6);
   });
 });

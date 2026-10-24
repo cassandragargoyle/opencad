@@ -2,10 +2,10 @@
 
 ## Supported Versions
 
-| Version | Supported |
-|---------|-----------|
-| 0.x.x (Development) | ✅ Latest only |
-| 1.0+ (Stable) | ✅ Current + previous minor |
+| Version             | Supported                   |
+| ------------------- | --------------------------- |
+| 0.x.x (Development) | ✅ Latest only              |
+| 1.0+ (Stable)       | ✅ Current + previous minor |
 
 During the 0.x development phase, we only support the latest release. Once we reach 1.0 GA, we will support the current and previous minor versions with security patches.
 
@@ -38,12 +38,12 @@ Send details to **security@opencad.archi** with:
 
 ### Response Timeline
 
-| Stage | Target Time |
-|-------|-------------|
-| **Acknowledgment** | Within 48 hours |
-| **Initial Assessment** | Within 5 business days |
-| **Status Update** | Within 10 business days |
-| **Fix Released** | Within 30 days (critical: 7 days) |
+| Stage                  | Target Time                       |
+| ---------------------- | --------------------------------- |
+| **Acknowledgment**     | Within 48 hours                   |
+| **Initial Assessment** | Within 5 business days            |
+| **Status Update**      | Within 10 business days           |
+| **Fix Released**       | Within 30 days (critical: 7 days) |
 
 We will keep you informed of the progress throughout the process.
 
@@ -93,11 +93,11 @@ We will keep you informed of the progress throughout the process.
 
 ### Intentional Design Decisions
 
-| Decision | Rationale | Risk |
-|----------|-----------|------|
-| **Reverse-engineered format parsers** (PLN, RVT) | Enables interoperability with proprietary formats | Parsers may have edge cases; fuzz testing ongoing |
-| **Plugin system** | Extensibility | Plugins are sandboxed but complex plugins may find escape vectors |
-| **Local AI models** | Privacy, offline capability | Model files are large; integrity verified via checksums |
+| Decision                                         | Rationale                                         | Risk                                                              |
+| ------------------------------------------------ | ------------------------------------------------- | ----------------------------------------------------------------- |
+| **Reverse-engineered format parsers** (PLN, RVT) | Enables interoperability with proprietary formats | Parsers may have edge cases; fuzz testing ongoing                 |
+| **Plugin system**                                | Extensibility                                     | Plugins are sandboxed but complex plugins may find escape vectors |
+| **Local AI models**                              | Privacy, offline capability                       | Model files are large; integrity verified via checksums           |
 
 ### Under Active Development
 
@@ -128,6 +128,6 @@ We do not currently offer a monetary bug bounty program. However, we do provide:
 
 ## Policy History
 
-| Date | Change |
-|------|--------|
+| Date       | Change                  |
+| ---------- | ----------------------- |
 | 2026-04-12 | Initial security policy |

@@ -137,7 +137,10 @@ describe('summarizeJob', () => {
   });
 
   it('reports all failed for failed job', () => {
-    const job = { ...createBulkImportJob([{ name: 'x.rfa', format: 'rfa' as ImportFormat, sizeBytes: 1 }]), status: 'failed' as const };
+    const job = {
+      ...createBulkImportJob([{ name: 'x.rfa', format: 'rfa' as ImportFormat, sizeBytes: 1 }]),
+      status: 'failed' as const,
+    };
     const summary = summarizeJob(job);
     expect(summary.failed).toBe(1);
     expect(summary.done).toBe(0);

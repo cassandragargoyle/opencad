@@ -16,7 +16,7 @@
 // ── Binary format constants ───────────────────────────────────────────────────
 
 export const OPFS_CHUNK_VERSION = 1;
-export const OPFS_HEADER_BYTES  = 8; // version (4) + length (4)
+export const OPFS_HEADER_BYTES = 8; // version (4) + length (4)
 
 // ── Serialisation helpers ─────────────────────────────────────────────────────
 
@@ -24,12 +24,12 @@ export const OPFS_HEADER_BYTES  = 8; // version (4) + length (4)
  * Encode a JSON-serialisable record into the OPFS binary chunk format.
  */
 export function encodeChunk(data: unknown): Uint8Array {
-  const json    = JSON.stringify(data);
+  const json = JSON.stringify(data);
   const encoder = new TextEncoder();
   const payload = encoder.encode(json);
 
-  const buf    = new ArrayBuffer(OPFS_HEADER_BYTES + payload.byteLength);
-  const view   = new DataView(buf);
+  const buf = new ArrayBuffer(OPFS_HEADER_BYTES + payload.byteLength);
+  const view = new DataView(buf);
   const result = new Uint8Array(buf);
 
   view.setUint32(0, OPFS_CHUNK_VERSION, false); // big-endian
@@ -47,9 +47,9 @@ export function decodeChunk(bytes: Uint8Array): unknown {
   if (bytes.byteLength < OPFS_HEADER_BYTES) {
     throw new Error(`OPFS chunk too short: ${bytes.byteLength} bytes`);
   }
-  const view    = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const version = view.getUint32(0, false);
-  const length  = view.getUint32(4, false);
+  const length = view.getUint32(4, false);
 
   if (version !== OPFS_CHUNK_VERSION) {
     throw new Error(`Unsupported OPFS chunk version: ${version}`);
@@ -133,7 +133,7 @@ export interface OPFSElementStore {
  */
 export async function batchWrite(
   store: OPFSElementStore,
-  entries: Array<{ key: string; data: unknown }>,
+  entries: Array<{ key: string; data: unknown }>
 ): Promise<void> {
   await Promise.all(entries.map((e) => store.write(e.key, e.data)));
 }
@@ -143,11 +143,9 @@ export async function batchWrite(
  */
 export async function batchRead(
   store: OPFSElementStore,
-  keys: string[],
+  keys: string[]
 ): Promise<Map<string, unknown>> {
-  const pairs = await Promise.all(
-    keys.map(async (k) => [k, await store.read(k)] as const),
-  );
+  const pairs = await Promise.all(keys.map(async (k) => [k, await store.read(k)] as const));
   const result = new Map<string, unknown>();
   for (const [k, v] of pairs) {
     if (v !== undefined) result.set(k, v);
@@ -158,9 +156,6 @@ export async function batchRead(
 /**
  * Delete multiple keys in a batch.
  */
-export async function batchDelete(
-  store: OPFSElementStore,
-  keys: string[],
-): Promise<void> {
+export async function batchDelete(store: OPFSElementStore, keys: string[]): Promise<void> {
   await Promise.all(keys.map((k) => store.delete(k)));
 }

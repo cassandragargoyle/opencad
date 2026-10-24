@@ -8,7 +8,9 @@ describe('T-GIS-001: SiteImportPanel', () => {
   const onImport = vi.fn();
   const onSearch = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders Site Import header', () => {
     render(<SiteImportPanel onImport={onImport} onSearch={onSearch} />);
@@ -27,7 +29,9 @@ describe('T-GIS-001: SiteImportPanel', () => {
 
   it('calls onSearch with query when Search clicked', () => {
     render(<SiteImportPanel onImport={onImport} onSearch={onSearch} />);
-    fireEvent.change(screen.getByPlaceholderText(/address|coordinates|location/i), { target: { value: 'London, UK' } });
+    fireEvent.change(screen.getByPlaceholderText(/address|coordinates|location/i), {
+      target: { value: 'London, UK' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /search/i }));
     expect(onSearch).toHaveBeenCalledWith('London, UK');
   });

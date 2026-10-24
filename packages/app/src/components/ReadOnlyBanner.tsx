@@ -51,15 +51,9 @@ export function ReadOnlyBanner(): React.ReactElement | null {
   };
 
   return (
-    <div
-      className="readonly-banner"
-      role="alert"
-      aria-live="polite"
-      data-testid="readonly-banner"
-    >
+    <div className="readonly-banner" role="alert" aria-live="polite" data-testid="readonly-banner">
       <div className="readonly-banner-text">
-        <strong>{t('readonly.title')}</strong>{' '}
-        {readOnlyReason ?? t('readonly.reasonLapsed')}
+        <strong>{t('readonly.title')}</strong> {readOnlyReason ?? t('readonly.reasonLapsed')}
         {error && (
           <>
             {' '}
@@ -71,10 +65,14 @@ export function ReadOnlyBanner(): React.ReactElement | null {
         <button
           type="button"
           className="readonly-banner-cta"
-          onClick={() => { void resubscribe(); }}
+          onClick={() => {
+            void resubscribe();
+          }}
           disabled={busy}
         >
-          {busy ? t('common:action.loading', { defaultValue: 'Loading…' }) : t('readonly.resubscribe')}
+          {busy
+            ? t('common:action.loading', { defaultValue: 'Loading…' })
+            : t('readonly.resubscribe')}
         </button>
       </div>
     </div>

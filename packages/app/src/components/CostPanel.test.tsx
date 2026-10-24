@@ -6,12 +6,38 @@ expect.extend(jestDomMatchers);
 
 describe('T-COST-001: CostPanel', () => {
   const onExport = vi.fn();
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const items: CostItem[] = [
-    { id: 'c1', elementType: 'wall', description: 'External Wall 200mm', quantity: 50, unit: 'm²', unitRate: 120, total: 6000 },
-    { id: 'c2', elementType: 'slab', description: 'Ground Floor Slab', quantity: 80, unit: 'm²', unitRate: 95, total: 7600 },
-    { id: 'c3', elementType: 'door', description: 'Internal Door', quantity: 8, unit: 'nr', unitRate: 450, total: 3600 },
+    {
+      id: 'c1',
+      elementType: 'wall',
+      description: 'External Wall 200mm',
+      quantity: 50,
+      unit: 'm²',
+      unitRate: 120,
+      total: 6000,
+    },
+    {
+      id: 'c2',
+      elementType: 'slab',
+      description: 'Ground Floor Slab',
+      quantity: 80,
+      unit: 'm²',
+      unitRate: 95,
+      total: 7600,
+    },
+    {
+      id: 'c3',
+      elementType: 'door',
+      description: 'Internal Door',
+      quantity: 8,
+      unit: 'nr',
+      unitRate: 450,
+      total: 3600,
+    },
   ];
 
   it('renders Cost Estimate header', () => {

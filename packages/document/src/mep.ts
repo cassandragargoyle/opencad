@@ -14,14 +14,14 @@ export interface DuctSchema {
   id: string;
   type: 'duct';
   shape: DuctShape;
-  width: number;          // mm (rectangular/oval)
-  height: number;         // mm (rectangular/oval)
-  diameter: number;       // mm (round)
-  thickness: number;      // mm wall thickness
-  length: number;         // mm
+  width: number; // mm (rectangular/oval)
+  height: number; // mm (rectangular/oval)
+  diameter: number; // mm (round)
+  thickness: number; // mm wall thickness
+  length: number; // mm
   flowDirection: FlowDirection;
   systemName: string;
-  elevation: number;      // mm bottom of duct from level
+  elevation: number; // mm bottom of duct from level
   startPoint: { x: number; y: number; z: number };
   endPoint: { x: number; y: number; z: number };
   material: string;
@@ -94,7 +94,7 @@ export interface DuctFittingSchema {
   id: string;
   type: 'duct_fitting';
   fittingType: DuctFittingType;
-  angle?: number;         // degrees (for elbows)
+  angle?: number; // degrees (for elbows)
   inletWidth: number;
   inletHeight: number;
   outletWidth: number;
@@ -126,21 +126,29 @@ export function createDuctFitting(params: {
 
 // ─── Pipe ─────────────────────────────────────────────────────────────────────
 
-export type PipeSystem = 'domestic_hot' | 'domestic_cold' | 'chilled_water' | 'heating_hot' | 'fire_suppression' | 'sanitary' | 'storm' | 'gas';
+export type PipeSystem =
+  | 'domestic_hot'
+  | 'domestic_cold'
+  | 'chilled_water'
+  | 'heating_hot'
+  | 'fire_suppression'
+  | 'sanitary'
+  | 'storm'
+  | 'gas';
 
 export interface PipeSchema {
   id: string;
   type: 'pipe';
-  nominalDiameter: number;   // mm (NPS or DN)
-  outerDiameter: number;     // mm
-  wallThickness: number;     // mm
-  length: number;            // mm
+  nominalDiameter: number; // mm (NPS or DN)
+  outerDiameter: number; // mm
+  wallThickness: number; // mm
+  length: number; // mm
   system: PipeSystem;
   material: string;
-  schedule: string;          // e.g., 'SCH40', 'SCH80'
+  schedule: string; // e.g., 'SCH40', 'SCH80'
   insulated: boolean;
   insulationThickness: number;
-  slope: number;             // mm/m (for gravity systems)
+  slope: number; // mm/m (for gravity systems)
   startPoint: { x: number; y: number; z: number };
   endPoint: { x: number; y: number; z: number };
 }
@@ -190,7 +198,15 @@ export function pipeFlowArea(pipe: PipeSchema): number {
 
 // ─── Pipe Fitting ─────────────────────────────────────────────────────────────
 
-export type PipeFittingType = 'elbow_90' | 'elbow_45' | 'tee' | 'cross' | 'reducer' | 'union' | 'valve' | 'cap';
+export type PipeFittingType =
+  | 'elbow_90'
+  | 'elbow_45'
+  | 'tee'
+  | 'cross'
+  | 'reducer'
+  | 'union'
+  | 'valve'
+  | 'cap';
 
 export interface PipeFittingSchema {
   id: string;
@@ -225,12 +241,12 @@ export interface ConduitSchema {
   id: string;
   type: 'conduit';
   conduitType: ConduitType;
-  tradeSize: number;          // inches trade size (0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4)
-  outerDiameter: number;      // mm
-  innerDiameter: number;      // mm
-  length: number;             // mm
+  tradeSize: number; // inches trade size (0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4)
+  outerDiameter: number; // mm
+  innerDiameter: number; // mm
+  length: number; // mm
   material: string;
-  fill: number;               // percent fill (0-100)
+  fill: number; // percent fill (0-100)
   startPoint: { x: number; y: number; z: number };
   endPoint: { x: number; y: number; z: number };
 }
@@ -272,7 +288,7 @@ export interface CableTraySchema {
   length: number;
   material: string;
   style: 'ladder' | 'solid_bottom' | 'ventilated' | 'wire_mesh';
-  fill: number;   // percent fill (0-100)
+  fill: number; // percent fill (0-100)
   startPoint: { x: number; y: number; z: number };
   endPoint: { x: number; y: number; z: number };
 }
@@ -306,12 +322,12 @@ export function createCableTray(params: {
 export interface MechanicalEquipmentSchema {
   id: string;
   type: 'mechanical_equipment';
-  equipmentType: string;     // e.g., 'AHU', 'FCU', 'Chiller', 'Boiler', 'Pump'
+  equipmentType: string; // e.g., 'AHU', 'FCU', 'Chiller', 'Boiler', 'Pump'
   width: number;
   depth: number;
   height: number;
-  weight: number;            // kg
-  capacity: number;          // kW or CFM depending on type
+  weight: number; // kg
+  capacity: number; // kW or CFM depending on type
   capacityUnit: string;
   voltage: number;
   phase: 1 | 3;
@@ -352,9 +368,9 @@ export interface MEPSystem {
   id: string;
   name: string;
   type: 'mechanical' | 'electrical' | 'plumbing';
-  elements: string[];   // element IDs
-  flowRate?: number;    // L/s or m³/s
-  pressure?: number;    // Pa
+  elements: string[]; // element IDs
+  flowRate?: number; // L/s or m³/s
+  pressure?: number; // Pa
   temperature?: number; // °C
 }
 

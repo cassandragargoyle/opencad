@@ -26,18 +26,42 @@ const BOX_FAMILY: FamilyDefinition = {
   category: 'column',
   version: '1.0.0',
   parameters: [
-    { id: 'width',  label: 'Width',  type: 'dimension', default: 300, min: 100, max: 1000, unit: 'mm' },
-    { id: 'height', label: 'Height', type: 'dimension', default: 600, min: 200, max: 4000, unit: 'mm' },
-    { id: 'shape',  label: 'Shape',  type: 'enum', default: 'square',
-      options: [{ value: 'square', label: 'Square' }, { value: 'round', label: 'Round' }] },
-    { id: 'solid',  label: 'Solid',  type: 'boolean', default: true },
+    {
+      id: 'width',
+      label: 'Width',
+      type: 'dimension',
+      default: 300,
+      min: 100,
+      max: 1000,
+      unit: 'mm',
+    },
+    {
+      id: 'height',
+      label: 'Height',
+      type: 'dimension',
+      default: 600,
+      min: 200,
+      max: 4000,
+      unit: 'mm',
+    },
+    {
+      id: 'shape',
+      label: 'Shape',
+      type: 'enum',
+      default: 'square',
+      options: [
+        { value: 'square', label: 'Square' },
+        { value: 'round', label: 'Round' },
+      ],
+    },
+    { id: 'solid', label: 'Solid', type: 'boolean', default: true },
   ],
   geometry: ({ width, height }) => {
     const w = (width as number) / 1000;
     const h = (height as number) / 1000;
     return {
-      vertices: [0, 0, 0,  w, 0, 0,  w, 0, h,  0, 0, h],
-      faces: [0, 1, 2,  0, 2, 3],
+      vertices: [0, 0, 0, w, 0, 0, w, 0, h, 0, 0, h],
+      faces: [0, 1, 2, 0, 2, 3],
     };
   },
 };
@@ -86,7 +110,9 @@ describe('T-EXT-01: familyRegistry', () => {
   });
 
   describe('normalizeParams', () => {
-    beforeEach(() => { registerFamily(BOX_FAMILY); });
+    beforeEach(() => {
+      registerFamily(BOX_FAMILY);
+    });
 
     it('clamps number below min to min', () => {
       const def = resolveFamily('test:box')!;
@@ -120,7 +146,9 @@ describe('T-EXT-01: familyRegistry', () => {
   });
 
   describe('evalGeometry', () => {
-    beforeEach(() => { registerFamily(BOX_FAMILY); });
+    beforeEach(() => {
+      registerFamily(BOX_FAMILY);
+    });
 
     it('returns geometry for valid params', () => {
       const def = resolveFamily('test:box')!;
@@ -142,7 +170,9 @@ describe('T-EXT-01: familyRegistry', () => {
       const badFamily: FamilyDefinition = {
         ...BOX_FAMILY,
         id: 'test:throws',
-        geometry: () => { throw new Error('oops'); },
+        geometry: () => {
+          throw new Error('oops');
+        },
       };
       registerFamily(badFamily);
       const def = resolveFamily('test:throws')!;
@@ -155,10 +185,10 @@ describe('T-EXT-01: familyRegistry', () => {
     it('geometry dimensions scale with width/height params', () => {
       const def = resolveFamily('test:box')!;
       const narrow = evalGeometry(def, { ...defaultParams(def), width: 100 })!;
-      const wide   = evalGeometry(def, { ...defaultParams(def), width: 1000 })!;
+      const wide = evalGeometry(def, { ...defaultParams(def), width: 1000 })!;
       // max X in narrow < max X in wide
       const maxXNarrow = Math.max(...narrow.vertices.filter((_, i) => i % 3 === 0));
-      const maxXWide   = Math.max(...wide.vertices.filter((_, i) => i % 3 === 0));
+      const maxXWide = Math.max(...wide.vertices.filter((_, i) => i % 3 === 0));
       expect(maxXNarrow).toBeLessThan(maxXWide);
     });
   });
@@ -166,7 +196,7 @@ describe('T-EXT-01: familyRegistry', () => {
   describe('boundingBoxFromGeometry', () => {
     it('computes correct bounding box from vertices', () => {
       const geom: FamilyGeometry = {
-        vertices: [-1, -2, -3,  4, 5, 6],
+        vertices: [-1, -2, -3, 4, 5, 6],
         faces: [],
       };
       const bb = boundingBoxFromGeometry(geom);
@@ -175,7 +205,11 @@ describe('T-EXT-01: familyRegistry', () => {
 
     it('returns pre-computed boundingBox if present', () => {
       const precomputed = { minX: 0, minY: 0, minZ: 0, maxX: 10, maxY: 10, maxZ: 10 };
-      const geom: FamilyGeometry = { vertices: [100, 200, 300], faces: [], boundingBox: precomputed };
+      const geom: FamilyGeometry = {
+        vertices: [100, 200, 300],
+        faces: [],
+        boundingBox: precomputed,
+      };
       const bb = boundingBoxFromGeometry(geom);
       expect(bb).toBe(precomputed);
     });

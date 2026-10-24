@@ -4,7 +4,10 @@
  * revision cloud appearance.
  */
 
-export interface Point2D { x: number; y: number; }
+export interface Point2D {
+  x: number;
+  y: number;
+}
 
 export interface CloudBump {
   /** Arc center in model space. */
@@ -23,10 +26,7 @@ export interface CloudBump {
  * @param polygon  Closed polygon vertices.
  * @param arcSize  Approximate arc chord length in model units.
  */
-export function computeRevisionCloudBumps(
-  polygon: Point2D[],
-  arcSize: number,
-): CloudBump[] {
+export function computeRevisionCloudBumps(polygon: Point2D[], arcSize: number): CloudBump[] {
   if (polygon.length < 2) return [];
 
   const r = arcSize / 2;
@@ -43,14 +43,14 @@ export function computeRevisionCloudBumps(
     if (edgeLen < 1) continue;
 
     const count = Math.max(1, Math.floor(edgeLen / arcSize));
-    const step  = edgeLen / count;
+    const step = edgeLen / count;
 
     // Unit vectors along edge and perpendicular (inward for bumps)
     const ux = dx / edgeLen;
     const uy = dy / edgeLen;
     // Normal points "outside" (left of direction = -uy, ux)
     const nx = -uy;
-    const ny =  ux;
+    const ny = ux;
 
     for (let k = 0; k < count; k++) {
       const t0 = (k + 0.5) * step;
@@ -64,7 +64,7 @@ export function computeRevisionCloudBumps(
 
       // Angle from center to start point
       const startAngle = Math.atan2(sy - cy, sx - cx) * (180 / Math.PI);
-      const endAngle   = startAngle + 180; // half arc
+      const endAngle = startAngle + 180; // half arc
 
       bumps.push({ cx, cy, r, startAngle, endAngle });
     }
@@ -77,10 +77,7 @@ export function computeRevisionCloudBumps(
  * Build an SVG path string for the revision cloud.
  * Uses arc commands to draw each bump.
  */
-export function buildRevisionCloudPath(
-  polygon: Point2D[],
-  arcSize: number,
-): string {
+export function buildRevisionCloudPath(polygon: Point2D[], arcSize: number): string {
   if (polygon.length < 2) return '';
 
   const r = arcSize / 2;
@@ -98,11 +95,11 @@ export function buildRevisionCloudPath(
     if (edgeLen < 1) continue;
 
     const count = Math.max(1, Math.floor(edgeLen / arcSize));
-    const step  = edgeLen / count;
+    const step = edgeLen / count;
     const ux = dx / edgeLen;
     const uy = dy / edgeLen;
     const nx = -uy;
-    const ny =  ux;
+    const ny = ux;
 
     for (let k = 0; k < count; k++) {
       const x0 = a.x + ux * (k * step);

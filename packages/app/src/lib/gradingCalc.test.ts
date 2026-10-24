@@ -14,9 +14,11 @@ describe('T-SITE-08: gradingCalc', () => {
   // ── computeCutFill ──────────────────────────────────────────────────────────
 
   function makeGrid(
-    cols: number, rows: number,
+    cols: number,
+    rows: number,
     elevFn: (c: number, r: number) => number,
-    rangeX = 10000, rangeY = 10000
+    rangeX = 10000,
+    rangeY = 10000
   ): ElevationGrid {
     const elevations = new Float32Array(cols * rows);
     for (let r = 0; r < rows; r++) {
@@ -78,7 +80,7 @@ describe('T-SITE-08: gradingCalc', () => {
   });
 
   it('classifies cells as cut/fill/flat correctly', () => {
-    const existing = makeGrid(3, 2, (c) => c * 500);   // 0, 500, 1000
+    const existing = makeGrid(3, 2, (c) => c * 500); // 0, 500, 1000
     const proposed = makeGrid(3, 2, (c) => (2 - c) * 500); // 1000, 500, 0
     const result = computeCutFill(existing, proposed);
     // Left cells: proposed > existing → fill
@@ -90,8 +92,8 @@ describe('T-SITE-08: gradingCalc', () => {
   // ── spotLevelsToArrow ────────────────────────────────────────────────────────
 
   it('computes 2% slope for 1m rise over 50m horizontal', () => {
-    const from = { x: 0,     y: 0, z: 0    };
-    const to   = { x: 50000, y: 0, z: 1000 };
+    const from = { x: 0, y: 0, z: 0 };
+    const to = { x: 50000, y: 0, z: 1000 };
     const arrow = spotLevelsToArrow(from, to);
     expect(arrow.slope).toBeCloseTo(0.02, 4);
     expect(arrow.x1).toBe(0);
@@ -99,8 +101,8 @@ describe('T-SITE-08: gradingCalc', () => {
   });
 
   it('returns negative slope for downhill direction', () => {
-    const from = { x: 0,     y: 0, z: 1000 };
-    const to   = { x: 10000, y: 0, z: 0    };
+    const from = { x: 0, y: 0, z: 1000 };
+    const to = { x: 10000, y: 0, z: 0 };
     const arrow = spotLevelsToArrow(from, to);
     expect(arrow.slope).toBeLessThan(0);
   });

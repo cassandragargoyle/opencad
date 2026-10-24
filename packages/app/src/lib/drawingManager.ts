@@ -8,17 +8,24 @@
  */
 
 export type DrawingCategory =
-  | 'plan' | 'section' | 'elevation' | 'detail' | 'schedule' | '3d' | 'worksheet' | 'rendering';
+  | 'plan'
+  | 'section'
+  | 'elevation'
+  | 'detail'
+  | 'schedule'
+  | '3d'
+  | 'worksheet'
+  | 'rendering';
 
 /** Prefix conventions. Matches the construction-document drawing-list
  *  pattern common to most firms. */
 const PREFIX: Record<DrawingCategory, string> = {
-  plan:      'A-1',
-  section:   'A-3',
+  plan: 'A-1',
+  section: 'A-3',
   elevation: 'A-2',
-  detail:    'A-5',
-  schedule:  'A-6',
-  '3d':      'A-7',
+  detail: 'A-5',
+  schedule: 'A-6',
+  '3d': 'A-7',
   worksheet: 'A-9',
   rendering: 'A-8',
 };
@@ -45,10 +52,7 @@ export interface DrawingIndex {
 
 /** Generate the next sheet number for a category. Looks at existing sheets
  *  and returns the lowest unused number ≥ the category's starting range. */
-export function nextSheetNumber(
-  category: DrawingCategory,
-  existing: Sheet[],
-): string {
+export function nextSheetNumber(category: DrawingCategory, existing: Sheet[]): string {
   const prefix = PREFIX[category];
   const usedSuffixes = new Set<number>();
   for (const s of existing) {
@@ -65,10 +69,7 @@ export function nextSheetNumber(
 
 /** Resolve a view's display reference — "<viewportNumber> / <sheetNumber>"
  *  or empty string when the view hasn't been placed. */
-export function resolveViewReference(
-  viewId: string,
-  index: DrawingIndex,
-): string {
+export function resolveViewReference(viewId: string, index: DrawingIndex): string {
   const p = index.placements[viewId];
   if (!p) return '';
   const sheet = index.sheets[p.sheetId];
@@ -81,7 +82,7 @@ export function placeOnSheet(
   index: DrawingIndex,
   viewId: string,
   sheetId: string,
-  viewportNumber?: number,
+  viewportNumber?: number
 ): DrawingIndex {
   // If no explicit number, use the next available viewport number on that sheet.
   const used = Object.values(index.placements)

@@ -39,7 +39,11 @@ export interface SunDir {
 
 // ─── Core equirectangular builder ────────────────────────────────────────────
 
-type Shader = (u: number, v: number, sunUV: { x: number; y: number } | null) => [number, number, number];
+type Shader = (
+  u: number,
+  v: number,
+  sunUV: { x: number; y: number } | null
+) => [number, number, number];
 
 const W = 512;
 const H = 256;
@@ -78,7 +82,7 @@ function sunDirectionToUV(sun: SunDir): { x: number; y: number } {
   const azRad = (sun.azimuthDeg * Math.PI) / 180;
   const x = (azRad / (2 * Math.PI) + 0.5) % 1;
   // Map elevation [0, 90] → v [0.5, 0] (top half of the image is sky).
-  const y = 0.5 - (sun.elevationDeg / 180);
+  const y = 0.5 - sun.elevationDeg / 180;
   return { x, y };
 }
 
@@ -98,14 +102,14 @@ function sunFalloff(u: number, v: number, sunUV: { x: number; y: number }, radiu
 export async function buildEnvPreset(
   preset: EnvPresetId,
   _renderer: THREE.WebGLRenderer,
-  sun: SunDir,
+  sun: SunDir
 ): Promise<EnvPreset> {
   switch (preset) {
     case 'studio': {
       // Uniform soft studio grey with very slight gradient — no hotspot.
       const shader: Shader = (_u, v) => {
         const top = 0.95;
-        const bot = 0.70;
+        const bot = 0.7;
         const t = 1 - v;
         const g = bot + (top - bot) * t;
         return [g, g, g];
@@ -123,18 +127,20 @@ export async function buildEnvPreset(
           const t = 1 - v * 2;
           r = 0.45 + 0.35 * t;
           g = 0.65 + 0.25 * t;
-          b = 0.90 + 0.10 * t;
+          b = 0.9 + 0.1 * t;
         } else {
           const t = (v - 0.5) * 2;
           r = 0.35 - 0.15 * t;
           g = 0.37 - 0.12 * t;
-          b = 0.28 - 0.10 * t;
+          b = 0.28 - 0.1 * t;
         }
         if (sunUV) {
           const f = sunFalloff(u, v, sunUV, 0.04);
           if (f > 0) {
             const i = 6 * f * f;
-            r += i; g += i; b += 0.9 * i;
+            r += i;
+            g += i;
+            b += 0.9 * i;
           }
         }
         return [r, g, b];
@@ -150,12 +156,14 @@ export async function buildEnvPreset(
         const t = 1 - v;
         let r = 0.95 * (0.35 + 0.55 * t);
         let g = 0.55 * (0.25 + 0.45 * t);
-        let b = 0.40 * (0.20 + 0.30 * t);
+        let b = 0.4 * (0.2 + 0.3 * t);
         if (sunUV) {
           const f = sunFalloff(u, v, sunUV, 0.06);
           if (f > 0) {
             const i = 8 * f * f;
-            r += 1.2 * i; g += 0.7 * i; b += 0.3 * i;
+            r += 1.2 * i;
+            g += 0.7 * i;
+            b += 0.3 * i;
           }
         }
         return [r, g, b];

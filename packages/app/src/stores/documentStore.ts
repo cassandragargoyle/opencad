@@ -1,6 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { DocumentModel, computeBoundingBox, type DocumentSchema, type ElementSchema, type PropertyValue, type PropertySet } from '@opencad/document';
+import {
+  DocumentModel,
+  computeBoundingBox,
+  type DocumentSchema,
+  type ElementSchema,
+  type PropertyValue,
+  type PropertySet,
+} from '@opencad/document';
 import {
   resolveFamily,
   defaultParams,
@@ -89,13 +96,16 @@ interface HistoryEntry {
 
 /** Undo state for a freshly opened document: one baseline snapshot, so the
  *  first edit (snapshotted by pushHistory after the change) can be undone. */
-function historyBaseline(document: DocumentSchema): Pick<
-  DocumentState,
-  'history' | 'historyIndex' | 'canUndo' | 'canRedo'
-> {
+function historyBaseline(
+  document: DocumentSchema
+): Pick<DocumentState, 'history' | 'historyIndex' | 'canUndo' | 'canRedo'> {
   return {
     history: [
-      { document: JSON.parse(JSON.stringify(document)), timestamp: Date.now(), description: 'Open project' },
+      {
+        document: JSON.parse(JSON.stringify(document)),
+        timestamp: Date.now(),
+        description: 'Open project',
+      },
     ],
     historyIndex: 0,
     canUndo: false,
@@ -120,17 +130,16 @@ const MAX_CHANGE_HISTORY = 200;
  *  enough that a working session produces several points per hour. */
 const AUTO_VERSION_THRESHOLD = 25;
 
-function maybeAutoVersion(
-  model: DocumentModel | null,
-  priorCount: number,
-  newCount: number,
-): void {
+function maybeAutoVersion(model: DocumentModel | null, priorCount: number, newCount: number): void {
   if (!model) return;
   const prior = Math.floor(priorCount / AUTO_VERSION_THRESHOLD);
-  const next  = Math.floor(newCount  / AUTO_VERSION_THRESHOLD);
+  const next = Math.floor(newCount / AUTO_VERSION_THRESHOLD);
   if (next > prior) {
-    try { model.createVersion(`auto @ ${newCount} changes`); }
-    catch { /* version write failure is non-fatal */ }
+    try {
+      model.createVersion(`auto @ ${newCount} changes`);
+    } catch {
+      /* version write failure is non-fatal */
+    }
   }
 }
 
@@ -184,7 +193,11 @@ interface DocumentState {
 
   // T-EXT-01: Parametric families
   /** Place a new instance of a registered family. Returns the element id or ''. */
-  placeFamilyInstance: (familyId: string, layerId: string, params?: Record<string, ParamValue>) => string;
+  placeFamilyInstance: (
+    familyId: string,
+    layerId: string,
+    params?: Record<string, ParamValue>
+  ) => string;
   /** Update one parameter of a placed family instance and recompute geometry. */
   updateFamilyParam: (elementId: string, paramId: string, value: ParamValue) => void;
 
@@ -202,7 +215,10 @@ interface DocumentState {
 
   setToolParam: (tool: string, key: string, value: unknown) => void;
 
-  addPset: (elementId: string, pset: { name: string; properties: Record<string, string | number | boolean> }) => void;
+  addPset: (
+    elementId: string,
+    pset: { name: string; properties: Record<string, string | number | boolean> }
+  ) => void;
   updatePsetProperty: (elementId: string, psetId: string, key: string, value: unknown) => void;
   removePset: (elementId: string, psetId: string) => void;
 
@@ -220,12 +236,22 @@ interface DocumentState {
   /** Add a section, elevation, or detail view to the document. */
   addView: (view: import('@opencad/document').ViewSchema) => string | null;
   /** T-VIZ-040 v2: Save a finished photoreal render as a 'render'-type view. */
-  addRendering: (params: { name: string; png: string; width: number; height: number; samples: number; envPreset?: string }) => string | null;
+  addRendering: (params: {
+    name: string;
+    png: string;
+    width: number;
+    height: number;
+    samples: number;
+    envPreset?: string;
+  }) => string | null;
   deleteRendering: (viewId: string) => void;
 
   setActiveLevel: (levelId: string) => void;
   addLevel: (params: { name: string; elevation: number; height?: number }) => string;
-  updateLevel: (levelId: string, updates: { name?: string; elevation?: number; height?: number }) => void;
+  updateLevel: (
+    levelId: string,
+    updates: { name?: string; elevation?: number; height?: number }
+  ) => void;
   deleteLevel: (levelId: string) => void;
   renameLevel: (levelId: string, name: string) => void;
   renameProject: (name: string) => void;
@@ -281,7 +307,9 @@ export const useDocumentStore = create<DocumentState>()(
               if (legacyId && !localStorage.getItem(docKey(legacyId))) {
                 localStorage.setItem(docKey(legacyId), legacy);
               }
-            } catch { /* ignore — legacy payload unparseable */ }
+            } catch {
+              /* ignore — legacy payload unparseable */
+            }
             localStorage.removeItem(LEGACY_DOC_KEY);
           }
 
@@ -309,7 +337,11 @@ export const useDocumentStore = create<DocumentState>()(
         } catch (err) {
           // eslint-disable-next-line no-console
           console.warn('[doc] initProject parse/init failed, starting fresh:', err);
-          try { localStorage.removeItem(perProjectKey); } catch { /* ignore */ }
+          try {
+            localStorage.removeItem(perProjectKey);
+          } catch {
+            /* ignore */
+          }
           model = new DocumentModel(projectId, userId);
         }
         const document = model.documentData;
@@ -338,11 +370,9 @@ export const useDocumentStore = create<DocumentState>()(
             isFirebaseConfigured
               ? () => {
                   const auth = firebaseAuth();
-                  return auth.currentUser
-                    ? auth.currentUser.getIdToken()
-                    : Promise.resolve(null);
+                  return auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(null);
                 }
-              : undefined,
+              : undefined
           );
         });
       },
@@ -366,11 +396,9 @@ export const useDocumentStore = create<DocumentState>()(
             isFirebaseConfigured
               ? () => {
                   const auth = firebaseAuth();
-                  return auth.currentUser
-                    ? auth.currentUser.getIdToken()
-                    : Promise.resolve(null);
+                  return auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(null);
                 }
-              : undefined,
+              : undefined
           );
         });
       },
@@ -404,15 +432,19 @@ export const useDocumentStore = create<DocumentState>()(
         // When transitioning from offline → online, flush any pending offline edits.
         if (online && !isOnline) {
           crdtFlushOfflineQueue();
-          void listPendingSync().then((pendingIds) => {
-            for (const pid of pendingIds) {
-              void offlineLoadDocument(pid).then((data) => {
-                if (!data) return;
-                // Re-save locally to mark synced (no server API on this branch)
-                void markSynced(pid).catch(() => {});
-              }).catch(() => {});
-            }
-          }).catch(() => {});
+          void listPendingSync()
+            .then((pendingIds) => {
+              for (const pid of pendingIds) {
+                void offlineLoadDocument(pid)
+                  .then((data) => {
+                    if (!data) return;
+                    // Re-save locally to mark synced (no server API on this branch)
+                    void markSynced(pid).catch(() => {});
+                  })
+                  .catch(() => {});
+              }
+            })
+            .catch(() => {});
         }
       },
 
@@ -587,14 +619,21 @@ export const useDocumentStore = create<DocumentState>()(
         for (const schema of def.parameters) {
           const v = params[schema.id];
           properties[schema.id] = {
-            type: schema.type === 'dimension' ? 'number' : schema.type === 'material-ref' ? 'reference' : schema.type as PropertyValue['type'],
+            type:
+              schema.type === 'dimension'
+                ? 'number'
+                : schema.type === 'material-ref'
+                  ? 'reference'
+                  : (schema.type as PropertyValue['type']),
             value: v,
             unit: schema.unit,
           };
         }
 
         // Build bounding box from geometry
-        const bb = geom ? boundingBoxFromGeometry(geom) : { minX: -0.5, minY: -0.5, minZ: 0, maxX: 0.5, maxY: 0.5, maxZ: 1 };
+        const bb = geom
+          ? boundingBoxFromGeometry(geom)
+          : { minX: -0.5, minY: -0.5, minZ: 0, maxX: 0.5, maxY: 0.5, maxZ: 1 };
         const elementGeom = geom
           ? { type: 'mesh' as const, data: { vertices: geom.vertices, faces: geom.faces } }
           : { type: 'mesh' as const, data: {} };
@@ -655,7 +694,12 @@ export const useDocumentStore = create<DocumentState>()(
         const nextProperties: Record<string, PropertyValue> = { ...el.properties };
         for (const schema of def.parameters) {
           nextProperties[schema.id] = {
-            type: schema.type === 'dimension' ? 'number' : schema.type === 'material-ref' ? 'reference' : schema.type as PropertyValue['type'],
+            type:
+              schema.type === 'dimension'
+                ? 'number'
+                : schema.type === 'material-ref'
+                  ? 'reference'
+                  : (schema.type as PropertyValue['type']),
             value: nextParams[schema.id],
             unit: schema.unit,
           };
@@ -666,11 +710,17 @@ export const useDocumentStore = create<DocumentState>()(
           ...el,
           family: { ...el.family, params: nextParams },
           properties: nextProperties,
-          ...(geom ? { geometry: { type: 'mesh', data: { vertices: geom.vertices, faces: geom.faces } } } : {}),
-          ...(bb ? { boundingBox: {
-            min: { _type: 'Point3D', x: bb.minX, y: bb.minY, z: bb.minZ },
-            max: { _type: 'Point3D', x: bb.maxX, y: bb.maxY, z: bb.maxZ },
-          } } : {}),
+          ...(geom
+            ? { geometry: { type: 'mesh', data: { vertices: geom.vertices, faces: geom.faces } } }
+            : {}),
+          ...(bb
+            ? {
+                boundingBox: {
+                  min: { _type: 'Point3D', x: bb.minX, y: bb.minY, z: bb.minZ },
+                  max: { _type: 'Point3D', x: bb.maxX, y: bb.maxY, z: bb.maxZ },
+                },
+              }
+            : {}),
         };
 
         model.documentData.content.elements[elementId] = nextElement;
@@ -700,9 +750,8 @@ export const useDocumentStore = create<DocumentState>()(
         const lib = model.documentData.library;
         const existing = lib.graphs ?? [];
         const idx = existing.findIndex((g) => g.id === graph.id);
-        const next = idx >= 0
-          ? existing.map((g, i) => (i === idx ? graph : g))
-          : [...existing, graph];
+        const next =
+          idx >= 0 ? existing.map((g, i) => (i === idx ? graph : g)) : [...existing, graph];
         model.documentData.library = { ...lib, graphs: next };
         const doc = { ...model.documentData };
         set({ document: doc, lastSaved: Date.now() });
@@ -713,7 +762,10 @@ export const useDocumentStore = create<DocumentState>()(
         const { model } = get();
         if (!model) return;
         const lib = model.documentData.library;
-        model.documentData.library = { ...lib, graphs: (lib.graphs ?? []).filter((g) => g.id !== graphId) };
+        model.documentData.library = {
+          ...lib,
+          graphs: (lib.graphs ?? []).filter((g) => g.id !== graphId),
+        };
         const doc = { ...model.documentData };
         set({ document: doc, lastSaved: Date.now() });
         persistDocument(doc);
@@ -729,7 +781,11 @@ export const useDocumentStore = create<DocumentState>()(
         if (!el || el.visible === false) return;
         model.documentData.content.elements[id] = { ...el, visible: false };
         const doc = { ...model.documentData };
-        set({ document: doc, lastSaved: Date.now(), selectedIds: get().selectedIds.filter((s) => s !== id) });
+        set({
+          document: doc,
+          lastSaved: Date.now(),
+          selectedIds: get().selectedIds.filter((s) => s !== id),
+        });
         persistDocument(doc);
       },
 
@@ -758,7 +814,11 @@ export const useDocumentStore = create<DocumentState>()(
         }
         const hiddenSet = new Set(ids);
         const doc = { ...model.documentData };
-        set({ document: doc, lastSaved: Date.now(), selectedIds: get().selectedIds.filter((s) => !hiddenSet.has(s)) });
+        set({
+          document: doc,
+          lastSaved: Date.now(),
+          selectedIds: get().selectedIds.filter((s) => !hiddenSet.has(s)),
+        });
         persistDocument(doc);
       },
 
@@ -782,7 +842,9 @@ export const useDocumentStore = create<DocumentState>()(
 
       setToolParam: (tool, key, value) => {
         const { toolParams } = get();
-        set({ toolParams: { ...toolParams, [tool]: { ...(toolParams[tool] ?? {}), [key]: value } } });
+        set({
+          toolParams: { ...toolParams, [tool]: { ...(toolParams[tool] ?? {}), [key]: value } },
+        });
       },
 
       addPset: (elementId, pset) => {
@@ -797,7 +859,11 @@ export const useDocumentStore = create<DocumentState>()(
             Object.entries(pset.properties).map(([k, v]) => [
               k,
               {
-                type: (typeof v === 'boolean' ? 'boolean' : typeof v === 'number' ? 'number' : 'string') as 'boolean' | 'number' | 'string',
+                type: (typeof v === 'boolean'
+                  ? 'boolean'
+                  : typeof v === 'number'
+                    ? 'number'
+                    : 'string') as 'boolean' | 'number' | 'string',
                 value: v,
               },
             ])
@@ -818,7 +884,13 @@ export const useDocumentStore = create<DocumentState>()(
         element.propertySets = (element.propertySets ?? []).map((pset: PropertySet) => {
           if (pset.id !== psetId) return pset;
           const existing = pset.properties[key];
-          const type = existing?.type ?? (typeof value === 'boolean' ? 'boolean' : typeof value === 'number' ? 'number' : 'string');
+          const type =
+            existing?.type ??
+            (typeof value === 'boolean'
+              ? 'boolean'
+              : typeof value === 'number'
+                ? 'number'
+                : 'string');
           return {
             ...pset,
             properties: {
@@ -837,7 +909,9 @@ export const useDocumentStore = create<DocumentState>()(
         if (!model) return;
         const element = model.getElementById(elementId);
         if (!element) return;
-        element.propertySets = (element.propertySets ?? []).filter((pset: PropertySet) => pset.id !== psetId);
+        element.propertySets = (element.propertySets ?? []).filter(
+          (pset: PropertySet) => pset.id !== psetId
+        );
         const doc = { ...model.documentData };
         set({ document: doc, lastSaved: Date.now() });
         persistDocument(doc);
@@ -866,7 +940,14 @@ export const useDocumentStore = create<DocumentState>()(
        * rendering survives refresh without external blob storage.
        * Returns the new view id so the caller can surface / select it.
        */
-      addRendering: (params: { name: string; png: string; width: number; height: number; samples: number; envPreset?: string }): string | null => {
+      addRendering: (params: {
+        name: string;
+        png: string;
+        width: number;
+        height: number;
+        samples: number;
+        envPreset?: string;
+      }): string | null => {
         if (!assertWritable()) return null;
         const { model } = get();
         if (!model) return null;
@@ -875,7 +956,14 @@ export const useDocumentStore = create<DocumentState>()(
           id,
           name: params.name,
           type: 'render',
-          camera: { position: { x: 0, y: 0, z: 0 }, target: { x: 0, y: 0, z: 0 }, up: { x: 0, y: 1, z: 0 }, fov: 50, near: 0.1, far: 10_000 },
+          camera: {
+            position: { x: 0, y: 0, z: 0 },
+            target: { x: 0, y: 0, z: 0 },
+            up: { x: 0, y: 1, z: 0 },
+            fov: 50,
+            near: 0.1,
+            far: 10_000,
+          },
           render: {
             png: params.png,
             width: params.width,
@@ -1012,7 +1100,11 @@ export const useDocumentStore = create<DocumentState>()(
         const { model } = get();
         if (!model) throw new Error('No document loaded');
 
-        const levelId = model.addLevel({ name: params.name, elevation: params.elevation, height: params.height });
+        const levelId = model.addLevel({
+          name: params.name,
+          elevation: params.elevation,
+          height: params.height,
+        });
         const doc = { ...model.documentData };
         set({
           document: doc,
@@ -1100,12 +1192,15 @@ setOnDocumentSync((data: string) => {
   try {
     const schema = JSON.parse(data) as DocumentSchema;
     const { document, loadDocumentSchema } = useDocumentStore.getState();
-    const hasLocalContent =
-      document ? Object.keys(document.content?.elements ?? {}).length > 0 : false;
+    const hasLocalContent = document
+      ? Object.keys(document.content?.elements ?? {}).length > 0
+      : false;
     if (!hasLocalContent) {
       loadDocumentSchema(schema);
     }
-  } catch { /* ignore malformed sync data */ }
+  } catch {
+    /* ignore malformed sync data */
+  }
 });
 
 setOnRemoteDelta((delta: RemoteDelta) => {

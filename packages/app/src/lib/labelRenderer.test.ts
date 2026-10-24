@@ -16,10 +16,13 @@ function door(props: Record<string, number | string>): ElementSchema {
     propObj[k] = { type: typeof v === 'number' ? 'number' : 'string', value: v };
   }
   return {
-    id: 'd-1', type: 'door', layerId: 'l',
+    id: 'd-1',
+    type: 'door',
+    layerId: 'l',
     properties: propObj,
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
@@ -51,8 +54,12 @@ describe('T-DOC-034: labelRenderer', () => {
   });
 
   it('multiple tokens render together', () => {
-    expect(renderLabelText('{{Tag}} — {{Width}}×{{Height}}', door({ Tag: 'D-103', Width: 900, Height: 2100 })))
-      .toBe('D-103 — 900×2100');
+    expect(
+      renderLabelText(
+        '{{Tag}} — {{Width}}×{{Height}}',
+        door({ Tag: 'D-103', Width: 900, Height: 2100 })
+      )
+    ).toBe('D-103 — 900×2100');
   });
 
   it('built-in `type` autotext resolves to element type', () => {

@@ -19,8 +19,15 @@ function withWall(doc: ReturnType<typeof makeDoc>, id = 'w1', name = 'Wall A') {
     geometry: { type: 'brep', data: null },
     layerId: 'fixed-layer',
     levelId: 'fixed-level',
-    transform: { translation: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, scale: { x: 1, y: 1, z: 1 } },
-    boundingBox: { min: { x: 0, y: 0, z: 0, _type: 'Point3D' }, max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' } },
+    transform: {
+      translation: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+    },
+    boundingBox: {
+      min: { x: 0, y: 0, z: 0, _type: 'Point3D' },
+      max: { x: 5000, y: 200, z: 3000, _type: 'Point3D' },
+    },
     metadata: { id, createdBy: 'test', createdAt: 0, updatedAt: 0, version: { clock: {} } },
     visible: true,
     locked: false,

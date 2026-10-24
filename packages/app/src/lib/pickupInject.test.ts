@@ -15,16 +15,24 @@ function mk(type: ElementSchema['type'], props: Record<string, number | string>)
     propObj[k] = { type: typeof v === 'number' ? 'number' : 'string', value: v };
   }
   return {
-    id: 'e', type, layerId: 'l',
+    id: 'e',
+    type,
+    layerId: 'l',
     properties: propObj,
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
 describe('T-MOD-025: pickup/inject', () => {
   it('T-MOD-025-001: pickup on a wall captures WallType, Width, Material', () => {
-    const w = mk('wall', { Width: 300, Material: 'Concrete', WallType: 'exterior', RandomExtra: 'x' });
+    const w = mk('wall', {
+      Width: 300,
+      Material: 'Concrete',
+      WallType: 'exterior',
+      RandomExtra: 'x',
+    });
     const held = pickup(w);
     expect(held).not.toBeNull();
     expect(held!.type).toBe('wall');
@@ -46,8 +54,8 @@ describe('T-MOD-025: pickup/inject', () => {
   });
 
   it('T-MOD-025-003: cross-type inject returns null', () => {
-    const wall = mk('wall',  { Width: 300, Material: 'Concrete' });
-    const slab = mk('slab',  { Thickness: 200, Material: 'Concrete' });
+    const wall = mk('wall', { Width: 300, Material: 'Concrete' });
+    const slab = mk('slab', { Thickness: 200, Material: 'Concrete' });
     const held = pickup(wall)!;
     expect(inject(slab, held)).toBeNull();
   });

@@ -9,6 +9,7 @@ Every plan drawing labels its rooms: a stamp in each room shows the room's numbe
 ## Scope
 
 ### In scope
+
 - **Zone**: already present as `space` element; rename/expand schema: `number`, `name`, `Area`, `occupancyType`, `occupantLoad`, `finishFloor`, `finishWalls`, `finishCeiling`.
 - **Room stamp**: a composable stamp rendered inside each zone in plan view, showing a configurable subset of zone fields. User picks which fields from the Display panel.
 - Auto-computed area: polygon area of the zone's boundary in m².
@@ -18,6 +19,7 @@ Every plan drawing labels its rooms: a stamp in each room shows the room's numbe
 - Colour-coding by occupancy or floor finish for quick plan-at-a-glance.
 
 ### Out of scope
+
 - Parametric zone relationships (e.g., "Bedroom must be adjacent to Bathroom").
 - Egress path analysis (that's a larger compliance topic; T-ANA-044).
 

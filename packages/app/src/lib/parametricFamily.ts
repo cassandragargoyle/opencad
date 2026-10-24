@@ -41,7 +41,10 @@ function tokenize(expr: string): Token[] {
   let i = 0;
   while (i < expr.length) {
     const ch = expr[i];
-    if (/\s/.test(ch)) { i++; continue; }
+    if (/\s/.test(ch)) {
+      i++;
+      continue;
+    }
     if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(expr[i + 1] ?? ''))) {
       let num = '';
       while (i < expr.length && /[0-9.]/.test(expr[i])) {
@@ -54,13 +57,25 @@ function tokenize(expr: string): Token[] {
         ident += expr[i++];
       }
       tokens.push({ type: 'ident', value: ident });
-    } else if (ch === '+') { tokens.push({ type: '+' }); i++; }
-    else if (ch === '-') { tokens.push({ type: '-' }); i++; }
-    else if (ch === '*') { tokens.push({ type: '*' }); i++; }
-    else if (ch === '/') { tokens.push({ type: '/' }); i++; }
-    else if (ch === '(') { tokens.push({ type: '(' }); i++; }
-    else if (ch === ')') { tokens.push({ type: ')' }); i++; }
-    else {
+    } else if (ch === '+') {
+      tokens.push({ type: '+' });
+      i++;
+    } else if (ch === '-') {
+      tokens.push({ type: '-' });
+      i++;
+    } else if (ch === '*') {
+      tokens.push({ type: '*' });
+      i++;
+    } else if (ch === '/') {
+      tokens.push({ type: '/' });
+      i++;
+    } else if (ch === '(') {
+      tokens.push({ type: '(' });
+      i++;
+    } else if (ch === ')') {
+      tokens.push({ type: ')' });
+      i++;
+    } else {
       throw new Error(`Unexpected character '${ch}' in expression`);
     }
   }
@@ -78,10 +93,16 @@ class Parser {
     this.variables = variables;
   }
 
-  private peek(): Token { return this.tokens[this.pos]; }
-  private consume(): Token { return this.tokens[this.pos++]; }
+  private peek(): Token {
+    return this.tokens[this.pos];
+  }
+  private consume(): Token {
+    return this.tokens[this.pos++];
+  }
 
-  parseExpr(): number { return this.parseAddSub(); }
+  parseExpr(): number {
+    return this.parseAddSub();
+  }
 
   private parseAddSub(): number {
     let left = this.parseMulDiv();
@@ -140,10 +161,7 @@ class Parser {
   }
 }
 
-export function evaluateFormula(
-  formula: FamilyFormula,
-  values: Record<string, number>,
-): number {
+export function evaluateFormula(formula: FamilyFormula, values: Record<string, number>): number {
   const tokens = tokenize(formula.expression);
   const parser = new Parser(tokens, values);
   return parser.parseExpr();
@@ -151,7 +169,7 @@ export function evaluateFormula(
 
 export function validateParameterValue(
   param: FamilyParameter,
-  value: string | number | boolean,
+  value: string | number | boolean
 ): boolean {
   if (param.type === 'string' || param.type === 'material') {
     return typeof value === 'string';
@@ -170,7 +188,7 @@ export function validateParameterValue(
 
 export function resolveFamily(
   family: ParametricFamily,
-  overrides: Record<string, string | number | boolean>,
+  overrides: Record<string, string | number | boolean>
 ): Record<string, string | number | boolean> {
   // Start with defaults
   const values: Record<string, string | number | boolean> = {};

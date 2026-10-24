@@ -29,8 +29,14 @@ export interface UsePresenceResult {
 }
 
 const DEFAULT_COLORS = [
-  '#e53935', '#8e24aa', '#1e88e5', '#00897b',
-  '#43a047', '#fb8c00', '#6d4c41', '#546e7a',
+  '#e53935',
+  '#8e24aa',
+  '#1e88e5',
+  '#00897b',
+  '#43a047',
+  '#fb8c00',
+  '#6d4c41',
+  '#546e7a',
 ];
 
 let colorIndex = 0;

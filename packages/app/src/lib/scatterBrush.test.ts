@@ -45,7 +45,10 @@ describe('T-SITE-V2-01: scatterBrush', () => {
   });
 
   it('assigns elementTypes from config list', () => {
-    const pts = generateScatterPoints({ x: 0, y: 0 }, { ...BASE_CONFIG, radius: 20, density: 0.05 });
+    const pts = generateScatterPoints(
+      { x: 0, y: 0 },
+      { ...BASE_CONFIG, radius: 20, density: 0.05 }
+    );
     const types = new Set(pts.map((p) => p.elementType));
     for (const t of types) {
       expect(BASE_CONFIG.elementTypes).toContain(t);
@@ -53,14 +56,22 @@ describe('T-SITE-V2-01: scatterBrush', () => {
   });
 
   it('each point has unique id', () => {
-    const pts = generateScatterPoints({ x: 0, y: 0 }, { ...BASE_CONFIG, radius: 20, density: 0.05 });
+    const pts = generateScatterPoints(
+      { x: 0, y: 0 },
+      { ...BASE_CONFIG, radius: 20, density: 0.05 }
+    );
     const ids = pts.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it('avoidOverlap mode produces points farther apart', () => {
     const center: Point2D = { x: 0, y: 0 };
-    const cfg: ScatterBrushConfig = { ...BASE_CONFIG, radius: 20, density: 0.05, avoidOverlap: true };
+    const cfg: ScatterBrushConfig = {
+      ...BASE_CONFIG,
+      radius: 20,
+      density: 0.05,
+      avoidOverlap: true,
+    };
     const pts = generateScatterPoints(center, cfg);
     expect(pts.length).toBeGreaterThan(0);
     // Verify all points are distinct
@@ -85,7 +96,10 @@ describe('T-SITE-V2-01: scatterBrush', () => {
 
   it('keeps points inside polygon and discards outside', () => {
     const square: Point2D[] = [
-      { x: 0, y: 0 }, { x: 10, y: 0 }, { x: 10, y: 10 }, { x: 0, y: 10 },
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
     ];
     const inside = { id: 'a', x: 5, y: 5, rotation: 0, scale: 1, elementType: 'tree' };
     const outside = { id: 'b', x: 20, y: 20, rotation: 0, scale: 1, elementType: 'tree' };
@@ -96,11 +110,20 @@ describe('T-SITE-V2-01: scatterBrush', () => {
 
   it('returns empty array when polygon has fewer than 3 vertices', () => {
     const pts = [{ id: 'a', x: 1, y: 1, rotation: 0, scale: 1, elementType: 'tree' }];
-    expect(filterByMask(pts, [{ x: 0, y: 0 }, { x: 1, y: 0 }])).toHaveLength(0);
+    expect(
+      filterByMask(pts, [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+      ])
+    ).toHaveLength(0);
   });
 
   it('returns empty when all points are outside mask', () => {
-    const triangle: Point2D[] = [{ x: 0, y: 0 }, { x: 5, y: 0 }, { x: 2.5, y: 5 }];
+    const triangle: Point2D[] = [
+      { x: 0, y: 0 },
+      { x: 5, y: 0 },
+      { x: 2.5, y: 5 },
+    ];
     const pts = [{ id: 'a', x: 100, y: 100, rotation: 0, scale: 1, elementType: 'tree' }];
     expect(filterByMask(pts, triangle)).toHaveLength(0);
   });

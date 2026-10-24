@@ -14,16 +14,16 @@ export interface FoundationSchema {
   id: string;
   type: 'foundation';
   foundationType: FoundationType;
-  width: number;          // mm
-  depth: number;          // mm (below grade)
-  thickness: number;      // mm
-  length: number;         // mm (for strip foundations)
+  width: number; // mm
+  depth: number; // mm (below grade)
+  thickness: number; // mm
+  length: number; // mm (for strip foundations)
   material: string;
-  concreteGrade: string;  // e.g., 'C25/30'
-  soilBearing: number;    // kPa
+  concreteGrade: string; // e.g., 'C25/30'
+  soilBearing: number; // kPa
   soilClass: SoilBearingClass;
   reinforced: boolean;
-  coverDepth: number;     // mm cover to rebar
+  coverDepth: number; // mm cover to rebar
   position: { x: number; y: number; z: number };
 }
 
@@ -76,13 +76,13 @@ export interface FootingSchema {
   id: string;
   type: 'footing';
   shape: FootingShape;
-  width: number;       // mm
-  depth: number;       // mm (plan dimension for rectangular)
-  thickness: number;   // mm
-  diameter: number;    // mm (for circular)
+  width: number; // mm
+  depth: number; // mm (plan dimension for rectangular)
+  thickness: number; // mm
+  diameter: number; // mm (for circular)
   concreteGrade: string;
   rebarCount: number;
-  rebarDiameter: number;  // mm
+  rebarDiameter: number; // mm
   position: { x: number; y: number; z: number };
 }
 
@@ -131,13 +131,13 @@ export interface RebarSchema {
   type: 'reinforcement';
   rebarType: RebarType;
   shape: RebarShape;
-  diameter: number;       // mm
-  length: number;         // mm total length
-  weight: number;         // kg
-  spacing?: number;       // mm (for distributed bars)
+  diameter: number; // mm
+  length: number; // mm total length
+  weight: number; // kg
+  spacing?: number; // mm (for distributed bars)
   quantity: number;
-  coverDepth: number;     // mm
-  bendAngle?: number;     // degrees (for bent bars)
+  coverDepth: number; // mm
+  bendAngle?: number; // degrees (for bent bars)
   hostElementId?: string; // the concrete element being reinforced
 }
 
@@ -155,7 +155,7 @@ export function createRebar(params: {
   const d = params.diameter ?? 16;
   // Unit weight of steel = 7850 kg/m³
   const crossSection = Math.PI * (d / 2) ** 2; // mm²
-  const weight = (crossSection * params.length * params.quantity! / 1e9) * 7850;
+  const weight = ((crossSection * params.length * params.quantity!) / 1e9) * 7850;
   return {
     id: crypto.randomUUID(),
     type: 'reinforcement',
@@ -174,7 +174,7 @@ export function createRebar(params: {
 
 export function rebarWeight(rebar: RebarSchema): number {
   const crossSection = Math.PI * (rebar.diameter / 2) ** 2;
-  return (crossSection * rebar.length * rebar.quantity / 1e9) * 7850;
+  return ((crossSection * rebar.length * rebar.quantity) / 1e9) * 7850;
 }
 
 // ─── Truss ────────────────────────────────────────────────────────────────────
@@ -186,15 +186,15 @@ export interface TrussSchema {
   id: string;
   type: 'truss';
   trussType: TrussType;
-  span: number;         // mm
-  depth: number;        // mm overall depth
-  spacing: number;      // mm centre-to-centre spacing between trusses
-  pitch: number;        // degrees (0 for flat)
+  span: number; // mm
+  depth: number; // mm overall depth
+  spacing: number; // mm centre-to-centre spacing between trusses
+  pitch: number; // degrees (0 for flat)
   material: TrussMaterial;
-  topChordSection: string;   // e.g., 'L75x75x6' or '2x4'
+  topChordSection: string; // e.g., 'L75x75x6' or '2x4'
   bottomChordSection: string;
   webSection: string;
-  load: number;         // kN/m² design load
+  load: number; // kN/m² design load
   startPoint: { x: number; y: number; z: number };
   endPoint: { x: number; y: number; z: number };
 }
@@ -244,11 +244,11 @@ export interface BraceSchema {
   id: string;
   type: 'brace';
   braceType: BraceType;
-  section: string;     // e.g., 'HSS50x50x3'
-  length: number;      // mm
-  angle: number;       // degrees from horizontal
+  section: string; // e.g., 'HSS50x50x3'
+  length: number; // mm
+  angle: number; // degrees from horizontal
   material: string;
-  axialCapacity: number;  // kN
+  axialCapacity: number; // kN
   startPoint: { x: number; y: number; z: number };
   endPoint: { x: number; y: number; z: number };
 }

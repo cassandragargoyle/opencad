@@ -51,7 +51,7 @@ function violatingSchema(): DocumentSchema {
       type: 'space',
       properties: {
         spaceType: makeStringValue('bedroom'),
-        area: makePropertyValue(6),    // 6 m² — violates IBC 1208.3 (min 7.43 m²)
+        area: makePropertyValue(6), // 6 m² — violates IBC 1208.3 (min 7.43 m²)
         height: makePropertyValue(2.8),
         width: makePropertyValue(0),
       },
@@ -69,7 +69,10 @@ function violatingSchema(): DocumentSchema {
         max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
       },
       metadata: {
-        id: 'bedroom-1', createdBy: 'test', createdAt: 0, updatedAt: 0,
+        id: 'bedroom-1',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
         version: { clock: {} },
       },
       visible: true,
@@ -80,7 +83,7 @@ function violatingSchema(): DocumentSchema {
       type: 'space',
       properties: {
         spaceType: makeStringValue('corridor'),
-        width: makePropertyValue(0.7),  // 0.7 m — violates IBC 1005.1 (min 0.9 m)
+        width: makePropertyValue(0.7), // 0.7 m — violates IBC 1005.1 (min 0.9 m)
         area: makePropertyValue(5),
         height: makePropertyValue(2.8),
       },
@@ -98,7 +101,10 @@ function violatingSchema(): DocumentSchema {
         max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
       },
       metadata: {
-        id: 'corridor-1', createdBy: 'test', createdAt: 0, updatedAt: 0,
+        id: 'corridor-1',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
         version: { clock: {} },
       },
       visible: true,
@@ -108,7 +114,7 @@ function violatingSchema(): DocumentSchema {
       id: 'door-egress-1',
       type: 'door',
       properties: {
-        width: makePropertyValue(0.7),  // 0.7 m — violates IBC 1010.1.1 (min 0.813 m)
+        width: makePropertyValue(0.7), // 0.7 m — violates IBC 1010.1.1 (min 0.813 m)
         isEgress: { type: 'boolean', value: true },
         height: makePropertyValue(2.1),
       },
@@ -126,7 +132,10 @@ function violatingSchema(): DocumentSchema {
         max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
       },
       metadata: {
-        id: 'door-egress-1', createdBy: 'test', createdAt: 0, updatedAt: 0,
+        id: 'door-egress-1',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
         version: { clock: {} },
       },
       visible: true,
@@ -138,7 +147,7 @@ function violatingSchema(): DocumentSchema {
       properties: {
         spaceType: makeStringValue('bedroom'),
         area: makePropertyValue(12),
-        height: makePropertyValue(2.1),  // 2.1 m — violates IBC 1208.2 (min 2.29 m)
+        height: makePropertyValue(2.1), // 2.1 m — violates IBC 1208.2 (min 2.29 m)
         width: makePropertyValue(0),
       },
       propertySets: [],
@@ -155,7 +164,10 @@ function violatingSchema(): DocumentSchema {
         max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
       },
       metadata: {
-        id: 'room-low-ceiling', createdBy: 'test', createdAt: 0, updatedAt: 0,
+        id: 'room-low-ceiling',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
         version: { clock: {} },
       },
       visible: true,
@@ -176,7 +188,7 @@ function compliantSchema(): DocumentSchema {
       type: 'space',
       properties: {
         spaceType: makeStringValue('bedroom'),
-        area: makePropertyValue(9),     // 9 m² — above 7.43 m² minimum
+        area: makePropertyValue(9), // 9 m² — above 7.43 m² minimum
         height: makePropertyValue(2.5), // 2.5 m — above 2.29 m minimum
         width: makePropertyValue(0),
       },
@@ -194,7 +206,10 @@ function compliantSchema(): DocumentSchema {
         max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
       },
       metadata: {
-        id: 'bedroom-ok', createdBy: 'test', createdAt: 0, updatedAt: 0,
+        id: 'bedroom-ok',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
         version: { clock: {} },
       },
       visible: true,
@@ -205,7 +220,7 @@ function compliantSchema(): DocumentSchema {
       type: 'space',
       properties: {
         spaceType: makeStringValue('corridor'),
-        width: makePropertyValue(1.0),  // 1.0 m — above 0.9 m minimum
+        width: makePropertyValue(1.0), // 1.0 m — above 0.9 m minimum
         area: makePropertyValue(8),
         height: makePropertyValue(2.5),
       },
@@ -223,7 +238,10 @@ function compliantSchema(): DocumentSchema {
         max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
       },
       metadata: {
-        id: 'corridor-ok', createdBy: 'test', createdAt: 0, updatedAt: 0,
+        id: 'corridor-ok',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
         version: { clock: {} },
       },
       visible: true,
@@ -233,7 +251,7 @@ function compliantSchema(): DocumentSchema {
       id: 'door-egress-ok',
       type: 'door',
       properties: {
-        width: makePropertyValue(0.9),  // 0.9 m — above 0.813 m minimum
+        width: makePropertyValue(0.9), // 0.9 m — above 0.813 m minimum
         isEgress: { type: 'boolean', value: true },
         height: makePropertyValue(2.1),
       },
@@ -251,7 +269,10 @@ function compliantSchema(): DocumentSchema {
         max: { x: 1, y: 1, z: 1, _type: 'Point3D' },
       },
       metadata: {
-        id: 'door-egress-ok', createdBy: 'test', createdAt: 0, updatedAt: 0,
+        id: 'door-egress-ok',
+        createdBy: 'test',
+        createdAt: 0,
+        updatedAt: 0,
         version: { clock: {} },
       },
       visible: true,
@@ -334,25 +355,33 @@ describe('T-AI-021: No false positives on compliant model', () => {
 describe('T-AI-022: Correct code sections cited', () => {
   it('bedroom area violation cites IBC Section 1208.3', () => {
     const report: ComplianceReport = checkCompliance(violatingSchema());
-    const v = report.violations.find((v) => v.elementId === 'bedroom-1' && v.ruleId === 'IBC-1208.3');
+    const v = report.violations.find(
+      (v) => v.elementId === 'bedroom-1' && v.ruleId === 'IBC-1208.3'
+    );
     expect(v?.section).toBe('IBC Section 1208.3');
   });
 
   it('corridor width violation cites IBC Section 1005.1', () => {
     const report: ComplianceReport = checkCompliance(violatingSchema());
-    const v = report.violations.find((v) => v.elementId === 'corridor-1' && v.ruleId === 'IBC-1005.1');
+    const v = report.violations.find(
+      (v) => v.elementId === 'corridor-1' && v.ruleId === 'IBC-1005.1'
+    );
     expect(v?.section).toBe('IBC Section 1005.1');
   });
 
   it('egress door width violation cites IBC Section 1010.1.1', () => {
     const report: ComplianceReport = checkCompliance(violatingSchema());
-    const v = report.violations.find((v) => v.elementId === 'door-egress-1' && v.ruleId === 'IBC-1010.1.1');
+    const v = report.violations.find(
+      (v) => v.elementId === 'door-egress-1' && v.ruleId === 'IBC-1010.1.1'
+    );
     expect(v?.section).toBe('IBC Section 1010.1.1');
   });
 
   it('ceiling height violation cites IBC Section 1208.2', () => {
     const report: ComplianceReport = checkCompliance(violatingSchema());
-    const v = report.violations.find((v) => v.elementId === 'room-low-ceiling' && v.ruleId === 'IBC-1208.2');
+    const v = report.violations.find(
+      (v) => v.elementId === 'room-low-ceiling' && v.ruleId === 'IBC-1208.2'
+    );
     expect(v?.section).toBe('IBC Section 1208.2');
   });
 });
@@ -430,9 +459,7 @@ describe('T-AI-024: Offline — purely synchronous rule engine', () => {
   it('applyFix is synchronous (returns DocumentSchema, not Promise)', () => {
     const schema = violatingSchema();
     const report = checkCompliance(schema);
-    const violation = report.violations.find(
-      (v) => v.ruleId === 'IBC-1208.3'
-    ) as Violation;
+    const violation = report.violations.find((v) => v.ruleId === 'IBC-1208.3') as Violation;
     const result = applyFix(schema, violation);
     expect(result).not.toBeInstanceOf(Promise);
     expect(typeof result.id).toBe('string');

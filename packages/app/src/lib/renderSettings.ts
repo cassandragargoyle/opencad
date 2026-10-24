@@ -13,18 +13,18 @@ export type RenderPreset = 'Presentation' | 'Technical Drawing' | 'Wireframe';
 export interface RenderSettings {
   /** Screen-space ambient occlusion */
   ssao: boolean;
-  ssaoRadius: number;      // 0–2
-  ssaoIntensity: number;   // 0–1
+  ssaoRadius: number; // 0–2
+  ssaoIntensity: number; // 0–1
 
   /** Bloom post-processing */
   bloom: boolean;
-  bloomStrength: number;   // 0–2
-  bloomRadius: number;     // 0–1
-  bloomThreshold: number;  // 0–1
+  bloomStrength: number; // 0–2
+  bloomRadius: number; // 0–1
+  bloomThreshold: number; // 0–1
 
   /** Tone mapping */
   toneMapping: ToneMappingOption;
-  exposure: number;        // 0.5–3
+  exposure: number; // 0.5–3
 
   /** Shadow settings */
   shadows: boolean;
@@ -66,11 +66,15 @@ export const DEFAULT_RENDER_SETTINGS: RenderSettings = {
  */
 export function toThreeToneMapping(opt: ToneMappingOption): THREE.ToneMapping {
   switch (opt) {
-    case 'Reinhard':   return THREE.ReinhardToneMapping;
-    case 'Cineon':     return THREE.CineonToneMapping;
-    case 'ACESFilmic': return THREE.ACESFilmicToneMapping;
+    case 'Reinhard':
+      return THREE.ReinhardToneMapping;
+    case 'Cineon':
+      return THREE.CineonToneMapping;
+    case 'ACESFilmic':
+      return THREE.ACESFilmicToneMapping;
     case 'None':
-    default:           return THREE.NoToneMapping;
+    default:
+      return THREE.NoToneMapping;
   }
 }
 
@@ -79,10 +83,13 @@ export function toThreeToneMapping(opt: ToneMappingOption): THREE.ToneMapping {
  */
 export function toThreeShadowType(opt: ShadowTypeOption): THREE.ShadowMapType {
   switch (opt) {
-    case 'PCF':     return THREE.PCFShadowMap;
-    case 'PCFSoft': return THREE.PCFSoftShadowMap;
+    case 'PCF':
+      return THREE.PCFShadowMap;
+    case 'PCFSoft':
+      return THREE.PCFSoftShadowMap;
     case 'Basic':
-    default:        return THREE.BasicShadowMap;
+    default:
+      return THREE.BasicShadowMap;
   }
 }
 
@@ -126,9 +133,6 @@ export const RENDER_PRESETS: Record<RenderPreset, Partial<RenderSettings>> = {
 /**
  * Apply a named preset on top of existing settings.
  */
-export function applyPreset(
-  current: RenderSettings,
-  preset: RenderPreset
-): RenderSettings {
+export function applyPreset(current: RenderSettings, preset: RenderPreset): RenderSettings {
   return { ...current, ...RENDER_PRESETS[preset] };
 }

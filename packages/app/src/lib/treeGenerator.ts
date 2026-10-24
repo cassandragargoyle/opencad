@@ -44,9 +44,9 @@ function makeLcg(seed: number): () => number {
 
 interface StyleParams {
   trunkRadiusFraction: number; // trunk radius as fraction of height
-  branchAngle: number;         // radians from vertical
-  branchLengthRatio: number;   // child length as fraction of parent
-  branchRadiusRatio: number;   // child radius as fraction of parent
+  branchAngle: number; // radians from vertical
+  branchLengthRatio: number; // child length as fraction of parent
+  branchRadiusRatio: number; // child radius as fraction of parent
   branchCountPerLevel: number;
   canopyRadiusFraction: number;
 }
@@ -186,15 +186,23 @@ function _addBranches(
 /**
  * Compute the axis-aligned bounding box of a generated tree in 3D.
  */
-export function treeCanopyAABB(
-  tree: GeneratedTree
-): { minX: number; maxX: number; minY: number; maxY: number; minZ: number; maxZ: number } {
+export function treeCanopyAABB(tree: GeneratedTree): {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  minZ: number;
+  maxZ: number;
+} {
   if (tree.nodes.length === 0) {
     return { minX: 0, maxX: 0, minY: 0, maxY: 0, minZ: 0, maxZ: 0 };
   }
-  let minX = Infinity, maxX = -Infinity;
-  let minY = Infinity, maxY = -Infinity;
-  let minZ = Infinity, maxZ = -Infinity;
+  let minX = Infinity,
+    maxX = -Infinity;
+  let minY = Infinity,
+    maxY = -Infinity;
+  let minZ = Infinity,
+    maxZ = -Infinity;
 
   for (const n of tree.nodes) {
     if (n.x < minX) minX = n.x;

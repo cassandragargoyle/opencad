@@ -8,11 +8,27 @@ describe('T-API-001: APIKeyPanel', () => {
   const onCreate = vi.fn();
   const onRevoke = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const keys: APIKey[] = [
-    { id: 'k1', name: 'CI/CD Pipeline', prefix: 'oc_live_xxxx', scopes: ['read', 'write'], createdAt: '2024-01-10', lastUsed: '2024-01-20' },
-    { id: 'k2', name: 'Read-only Analytics', prefix: 'oc_live_yyyy', scopes: ['read'], createdAt: '2024-01-05', lastUsed: null },
+    {
+      id: 'k1',
+      name: 'CI/CD Pipeline',
+      prefix: 'oc_live_xxxx',
+      scopes: ['read', 'write'],
+      createdAt: '2024-01-10',
+      lastUsed: '2024-01-20',
+    },
+    {
+      id: 'k2',
+      name: 'Read-only Analytics',
+      prefix: 'oc_live_yyyy',
+      scopes: ['read'],
+      createdAt: '2024-01-05',
+      lastUsed: null,
+    },
   ];
 
   it('renders API Keys header', () => {

@@ -19,7 +19,7 @@ describe('T-DSK-005: OllamaClient', () => {
   it('uses correct default baseUrl', () => {
     const client = new OllamaClient();
     expect((client as unknown as { config: { baseUrl: string } }).config.baseUrl).toBe(
-      'http://localhost:11434',
+      'http://localhost:11434'
     );
   });
 
@@ -41,7 +41,7 @@ describe('T-DSK-005: OllamaClient', () => {
   it('isAvailable returns true when /api/tags responds 200', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue({ models: [] }) }),
+      vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue({ models: [] }) })
     );
     const client = new OllamaClient();
     const result = await client.isAvailable();
@@ -69,7 +69,7 @@ describe('T-DSK-005: OllamaClient', () => {
         method: 'POST',
         headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
         body: expect.stringContaining('test prompt'),
-      }),
+      })
     );
   });
 
@@ -84,7 +84,7 @@ describe('T-DSK-005: OllamaClient', () => {
           model: 'llama3.2',
           done: true,
         }),
-      }),
+      })
     );
 
     const client = new OllamaClient();
@@ -106,7 +106,7 @@ describe('T-DSK-005: OllamaClient', () => {
           model: 'llama3.2',
           done: true,
         }),
-      }),
+      })
     );
 
     const client = new OllamaClient();

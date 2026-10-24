@@ -55,19 +55,23 @@ export function computeMenuPosition(
   clickX: number,
   clickY: number,
   viewportW: number,
-  viewportH: number,
+  viewportH: number
 ): MenuPosition {
   // Clamp click point so the arc stays within the viewport
-  const cx = Math.min(Math.max(clickX, RADIAL_RADIUS + EDGE_MARGIN), viewportW - RADIAL_RADIUS - EDGE_MARGIN);
-  const cy = Math.min(Math.max(clickY, RADIAL_RADIUS + EDGE_MARGIN), viewportH - RADIAL_RADIUS - EDGE_MARGIN);
+  const cx = Math.min(
+    Math.max(clickX, RADIAL_RADIUS + EDGE_MARGIN),
+    viewportW - RADIAL_RADIUS - EDGE_MARGIN
+  );
+  const cy = Math.min(
+    Math.max(clickY, RADIAL_RADIUS + EDGE_MARGIN),
+    viewportH - RADIAL_RADIUS - EDGE_MARGIN
+  );
 
-  const isRight  = cx > viewportW / 2;
+  const isRight = cx > viewportW / 2;
   const isBottom = cy > viewportH / 2;
 
   const quadrant: MenuQuadrant =
-    !isRight && !isBottom ? 'TL' :
-     isRight && !isBottom ? 'TR' :
-    !isRight &&  isBottom ? 'BL' : 'BR';
+    !isRight && !isBottom ? 'TL' : isRight && !isBottom ? 'TR' : !isRight && isBottom ? 'BL' : 'BR';
 
   // Secondary panel anchors.
   // Panel is always vertically centred on cy (blue dot): top = cy - PANEL_H/2, clamped.
@@ -76,12 +80,15 @@ export function computeMenuPosition(
   //   TR fan → LEFT  semicircle → panel goes RIGHT (left:  CSS)
   //   BL fan → TOP   semicircle → panel goes RIGHT (left:  CSS)
   //   BR fan → TOP   semicircle → panel goes LEFT  (right: CSS)
-  const panelTop = Math.min(Math.max(cy - PANEL_H / 2, EDGE_MARGIN), viewportH - PANEL_H - EDGE_MARGIN);
+  const panelTop = Math.min(
+    Math.max(cy - PANEL_H / 2, EDGE_MARGIN),
+    viewportH - PANEL_H - EDGE_MARGIN
+  );
 
   // right: N → panel's right edge is N px from viewport right → panel sits LEFT of cx
   const rightCss = Math.min(viewportW - cx + PANEL_GAP, viewportW - PANEL_W - EDGE_MARGIN);
   // left: N → panel's left edge is N px from viewport left → panel sits RIGHT of cx
-  const leftCss  = Math.min(cx + PANEL_GAP, viewportW - PANEL_W - EDGE_MARGIN);
+  const leftCss = Math.min(cx + PANEL_GAP, viewportW - PANEL_W - EDGE_MARGIN);
 
   let panelAnchor: MenuPosition['panelAnchor'];
   if (quadrant === 'TL') {
@@ -104,17 +111,13 @@ export function computeMenuPosition(
  * The arc sweeps through ~180° in the "open" half of the quadrant so that
  * the buttons never overlap the click target.
  */
-export function radialItemAngle(
-  index: number,
-  total: number,
-  quadrant: MenuQuadrant,
-): number {
+export function radialItemAngle(index: number, total: number, quadrant: MenuQuadrant): number {
   // Sweep range: a 180° arc starting from the base angle for the quadrant
   const _baseAngle: Record<MenuQuadrant, number> = {
-    TL: Math.PI,        // left half  → opens right (0° to 180°, i.e. 3 o'clock to 9 o'clock going CW)
-    TR: Math.PI,        // right half → opens left  (same arc, mirrored by negating cx offset)
-    BL: -Math.PI / 2,   // bottom-left → opens up-right
-    BR: -Math.PI / 2,   // bottom-right → opens up-left
+    TL: Math.PI, // left half  → opens right (0° to 180°, i.e. 3 o'clock to 9 o'clock going CW)
+    TR: Math.PI, // right half → opens left  (same arc, mirrored by negating cx offset)
+    BL: -Math.PI / 2, // bottom-left → opens up-right
+    BR: -Math.PI / 2, // bottom-right → opens up-left
   };
 
   // Arc for TL/TR: sweep from -90° to +90° (pointing right/left)

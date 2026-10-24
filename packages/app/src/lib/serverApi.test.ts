@@ -18,7 +18,7 @@ function mockFetch(status: number, body: unknown): void {
     new Response(JSON.stringify(body), {
       status,
       headers: { 'Content-Type': 'application/json' },
-    }),
+    })
   );
 }
 
@@ -131,7 +131,11 @@ describe('T-AUTH-P0-003: authStore wires token provider and profile is stored af
       }),
       updateProfile: vi.fn(),
       multiFactor: vi.fn(),
-      TotpMultiFactorGenerator: { generateSecret: vi.fn(), assertionForEnrollment: vi.fn(), assertionForSignIn: vi.fn() },
+      TotpMultiFactorGenerator: {
+        generateSecret: vi.fn(),
+        assertionForEnrollment: vi.fn(),
+        assertionForSignIn: vi.fn(),
+      },
       getAuth: vi.fn(() => ({ currentUser: mockUser })),
     }));
 
@@ -151,7 +155,14 @@ describe('T-AUTH-P0-003: authStore wires token provider and profile is stored af
 
     const registerSpy = vi.fn();
     vi.doMock('./serverApi', () => ({
-      authApi: { me: vi.fn().mockResolvedValue({ uid: 'user-123', email: 'test@example.com', role: 'user', trialEndsAt: null }) },
+      authApi: {
+        me: vi.fn().mockResolvedValue({
+          uid: 'user-123',
+          email: 'test@example.com',
+          role: 'user',
+          trialEndsAt: null,
+        }),
+      },
       registerTokenProvider: registerSpy,
     }));
 
@@ -181,7 +192,11 @@ describe('T-AUTH-P0-003: authStore wires token provider and profile is stored af
       }),
       updateProfile: vi.fn(),
       multiFactor: vi.fn(),
-      TotpMultiFactorGenerator: { generateSecret: vi.fn(), assertionForEnrollment: vi.fn(), assertionForSignIn: vi.fn() },
+      TotpMultiFactorGenerator: {
+        generateSecret: vi.fn(),
+        assertionForEnrollment: vi.fn(),
+        assertionForSignIn: vi.fn(),
+      },
       getAuth: vi.fn(() => ({ currentUser: mockUser })),
     }));
 
@@ -202,7 +217,14 @@ describe('T-AUTH-P0-003: authStore wires token provider and profile is stored af
     }));
 
     vi.doMock('./serverApi', () => ({
-      authApi: { me: vi.fn().mockResolvedValue({ uid: 'user-456', email: 'user@example.com', role: 'user', trialEndsAt: null }) },
+      authApi: {
+        me: vi.fn().mockResolvedValue({
+          uid: 'user-456',
+          email: 'user@example.com',
+          role: 'user',
+          trialEndsAt: null,
+        }),
+      },
       registerTokenProvider: vi.fn((fn: () => Promise<string | null>) => {
         capturedProvider = fn;
       }),

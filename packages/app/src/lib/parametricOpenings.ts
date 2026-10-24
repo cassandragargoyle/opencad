@@ -15,7 +15,7 @@ export type WindowOperation = 'fixed' | 'casement' | 'awning' | 'double-hung' | 
 export interface DoorFrame {
   material: string;
   thickness: number; // mm
-  profile?: string;  // optional profile id for complex profile T-MOD-020
+  profile?: string; // optional profile id for complex profile T-MOD-020
 }
 export interface DoorLeaf {
   count: 1 | 2;
@@ -86,7 +86,7 @@ export function validateWindow(w: Partial<WindowParametric>): string[] {
 
 /** Migrate a legacy flat door property bag to the parametric schema. */
 export function migrateLegacyDoor(
-  props: Record<string, { type: string; value: unknown }>,
+  props: Record<string, { type: string; value: unknown }>
 ): DoorParametric {
   const num = (k: string, fb: number): number => {
     const v = props[k]?.value;
@@ -101,16 +101,16 @@ export function migrateLegacyDoor(
     leaf: {
       count: 1,
       material: str('Material', 'Wood'),
-      panelLayout: (str('PanelLayout', 'flush') as DoorPanelLayout),
-      handing: (str('Handing', 'R') as DoorHanding),
+      panelLayout: str('PanelLayout', 'flush') as DoorPanelLayout,
+      handing: str('Handing', 'R') as DoorHanding,
     },
-    width:  num('Width', 900),
+    width: num('Width', 900),
     height: num('Height', 2100),
   };
 }
 
 export function migrateLegacyWindow(
-  props: Record<string, { type: string; value: unknown }>,
+  props: Record<string, { type: string; value: unknown }>
 ): WindowParametric {
   const num = (k: string, fb: number): number => {
     const v = props[k]?.value;
@@ -123,7 +123,7 @@ export function migrateLegacyWindow(
   return {
     frame: { material: str('FrameMaterial', 'Aluminium'), thickness: num('FrameThickness', 50) },
     panes: { rows: 1, cols: 1 },
-    operation: (str('Operation', 'fixed') as WindowOperation),
+    operation: str('Operation', 'fixed') as WindowOperation,
     width: num('Width', 1200),
     height: num('Height', 1200),
     sillHeight: num('SillHeight', 900),
@@ -134,20 +134,23 @@ export function migrateLegacyWindow(
 export const DOOR_LIBRARY: Record<string, DoorParametric> = {
   'int-single-flush-900': {
     frame: { material: 'Wood', thickness: 45 },
-    leaf:  { count: 1, material: 'Wood', panelLayout: 'flush', handing: 'R' },
-    width: 900, height: 2100,
+    leaf: { count: 1, material: 'Wood', panelLayout: 'flush', handing: 'R' },
+    width: 900,
+    height: 2100,
   },
   'ext-single-4panel-900': {
     frame: { material: 'Wood', thickness: 60 },
-    leaf:  { count: 1, material: 'Wood', panelLayout: '4-panel', handing: 'R' },
+    leaf: { count: 1, material: 'Wood', panelLayout: '4-panel', handing: 'R' },
     threshold: { material: 'Aluminium', depth: 150 },
-    width: 900, height: 2100,
+    width: 900,
+    height: 2100,
   },
   'ext-double-glass-1800': {
     frame: { material: 'Aluminium', thickness: 60 },
-    leaf:  { count: 2, material: 'Aluminium', panelLayout: 'glass', handing: 'R' },
+    leaf: { count: 2, material: 'Aluminium', panelLayout: 'glass', handing: 'R' },
     threshold: { material: 'Aluminium', depth: 150 },
-    width: 1800, height: 2100,
+    width: 1800,
+    height: 2100,
   },
 };
 
@@ -156,18 +159,24 @@ export const WINDOW_LIBRARY: Record<string, WindowParametric> = {
     frame: { material: 'Aluminium', thickness: 50 },
     panes: { rows: 2, cols: 1 },
     operation: 'casement',
-    width: 1200, height: 1200, sillHeight: 900,
+    width: 1200,
+    height: 1200,
+    sillHeight: 900,
   },
   'fixed-2400x600': {
     frame: { material: 'Aluminium', thickness: 50 },
     panes: { rows: 1, cols: 3 },
     operation: 'fixed',
-    width: 2400, height: 600, sillHeight: 1500,
+    width: 2400,
+    height: 600,
+    sillHeight: 1500,
   },
   'double-hung-1200x1800': {
     frame: { material: 'Wood', thickness: 50 },
     panes: { rows: 2, cols: 1 },
     operation: 'double-hung',
-    width: 1200, height: 1800, sillHeight: 900,
+    width: 1200,
+    height: 1800,
+    sillHeight: 900,
   },
 };

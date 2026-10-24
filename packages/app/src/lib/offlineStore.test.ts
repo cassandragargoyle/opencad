@@ -14,12 +14,20 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 expect.extend(jestDomMatchers);
 
 // Mock idb so tests run in jsdom without a real IndexedDB
-const mockStore: Map<string, { projectId: string; data: string; pendingSync: boolean; savedAt: number }> = new Map();
+const mockStore: Map<
+  string,
+  { projectId: string; data: string; pendingSync: boolean; savedAt: number }
+> = new Map();
 
 const mockDb = {
-  put: vi.fn(async (_store: string, record: { projectId: string; data: string; pendingSync: boolean; savedAt: number }) => {
-    mockStore.set(record.projectId, record);
-  }),
+  put: vi.fn(
+    async (
+      _store: string,
+      record: { projectId: string; data: string; pendingSync: boolean; savedAt: number }
+    ) => {
+      mockStore.set(record.projectId, record);
+    }
+  ),
   get: vi.fn(async (_store: string, key: string) => {
     return mockStore.get(key) ?? undefined;
   }),
@@ -93,7 +101,12 @@ describe('T-OFF-002: offlineStore', () => {
     });
 
     it('retrieves stored document data', async () => {
-      const record = { projectId: 'proj-5', data: '{"name":"retrieved"}', pendingSync: true, savedAt: Date.now() };
+      const record = {
+        projectId: 'proj-5',
+        data: '{"name":"retrieved"}',
+        pendingSync: true,
+        savedAt: Date.now(),
+      };
       mockDb.get.mockResolvedValueOnce(record);
       const result = await loadDocument('proj-5');
       expect(result).toBe('{"name":"retrieved"}');

@@ -9,6 +9,7 @@ We already have a `curtain` wallType that produces a 60 mm-thick Clear Glass wal
 ## Scope
 
 ### In scope
+
 - Curtain wall gains `gridH: number[]` (horizontal mullion positions, as fractions of wall height) and `gridV: number[]` (vertical mullion positions, as fractions of wall length).
 - Mullions: vertical + horizontal members at each grid intersection, `mullionProfile: 50 × 120 mm` default.
 - Panels: the cells between mullions, each filled with a glass material (default `Clear Glass`, can be overridden per panel to allow opaque spandrel panels or operable sashes).
@@ -16,6 +17,7 @@ We already have a `curtain` wallType that produces a 60 mm-thick Clear Glass wal
 - Plan view shows mullion positions as short perpendicular ticks on the wall.
 
 ### Out of scope
+
 - Inclined / cable-hung curtain walls.
 - Structural silicone glazing vs. capped glazing detail — single generic mullion profile in v1.
 - Operable vents / doors within the curtain wall grid.

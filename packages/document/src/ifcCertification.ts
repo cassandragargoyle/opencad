@@ -19,11 +19,11 @@
 export type MVD = 'IFC2x3 CV 2.0' | 'IFC4 RV' | 'IFC4 DTV';
 
 export type ConformanceStatus =
-  | 'full'        // serialize + parse both exercise every required attribute
-  | 'partial'     // serialize + parse exist but some attributes are lossy
-  | 'serialize'   // export-only
-  | 'parse'       // import-only
-  | 'none';       // entity is not yet handled
+  | 'full' // serialize + parse both exercise every required attribute
+  | 'partial' // serialize + parse exist but some attributes are lossy
+  | 'serialize' // export-only
+  | 'parse' // import-only
+  | 'none'; // entity is not yet handled
 
 export interface IfcEntityCoverage {
   /** IFC entity name (e.g. IFCWALL, IFCDOOR). */
@@ -235,7 +235,11 @@ export function coverageFor(mvd: MVD): IfcEntityCoverage[] {
 export function coverageSummary(mvd: MVD): Record<ConformanceStatus, number> {
   const rows = coverageFor(mvd);
   const summary: Record<ConformanceStatus, number> = {
-    full: 0, partial: 0, serialize: 0, parse: 0, none: 0,
+    full: 0,
+    partial: 0,
+    serialize: 0,
+    parse: 0,
+    none: 0,
   };
   for (const row of rows) summary[row.status]++;
   return summary;

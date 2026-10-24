@@ -65,11 +65,7 @@ export interface FeedbackItem {
 }
 
 export const feedbackApi = {
-  submit: (
-    category: FeedbackCategory,
-    title: string,
-    description: string,
-  ): Promise<FeedbackItem> =>
+  submit: (category: FeedbackCategory, title: string, description: string): Promise<FeedbackItem> =>
     apiFetch<FeedbackItem>('/feedback', {
       method: 'POST',
       body: JSON.stringify({ category, title, description }),
@@ -114,8 +110,9 @@ export const authApi = {
 export const SERVER_URL = (import.meta.env.VITE_SERVER_URL as string | undefined) ?? '';
 
 /** WebSocket URL for real-time sync. */
-export const SERVER_WS_URL = (import.meta.env.VITE_SERVER_WS_URL as string | undefined)
-  ?? (SERVER_URL ? SERVER_URL.replace(/^http/, 'ws') : 'ws://localhost:47821');
+export const SERVER_WS_URL =
+  (import.meta.env.VITE_SERVER_WS_URL as string | undefined) ??
+  (SERVER_URL ? SERVER_URL.replace(/^http/, 'ws') : 'ws://localhost:47821');
 
 /**
  * Returns true if the OpenCAD backend is reachable.
@@ -152,8 +149,7 @@ export const projectsApi = {
       method: 'PATCH',
       body: JSON.stringify({ name }),
     }),
-  delete: (id: string): Promise<void> =>
-    apiFetch<void>(`/projects/${id}`, { method: 'DELETE' }),
+  delete: (id: string): Promise<void> => apiFetch<void>(`/projects/${id}`, { method: 'DELETE' }),
 };
 
 // ── Subscriptions ─────────────────────────────────────────────────────────────
@@ -168,8 +164,14 @@ export type AccessMode = 'active' | 'trial' | 'grace' | 'expired';
  *  subscribed. See
  *  https://docs.stripe.com/api/subscriptions/object#subscription_object-status */
 export type StripeSubscriptionStatus =
-  | 'trialing' | 'active' | 'past_due' | 'canceled' | 'unpaid'
-  | 'incomplete' | 'incomplete_expired' | 'paused';
+  | 'trialing'
+  | 'active'
+  | 'past_due'
+  | 'canceled'
+  | 'unpaid'
+  | 'incomplete'
+  | 'incomplete_expired'
+  | 'paused';
 
 export interface SubscriptionStatus {
   tier: SubscriptionTier;
@@ -186,9 +188,9 @@ export interface Invoice {
   number: string | null;
   /** Seconds since epoch (Stripe uses seconds, not ms). */
   created: number;
-  amountPaid: number;   // cents
-  currency: string;     // ISO code, lowercase
-  status: string;       // Stripe invoice status
+  amountPaid: number; // cents
+  currency: string; // ISO code, lowercase
+  status: string; // Stripe invoice status
   hostedInvoiceUrl: string | null;
   invoicePdf: string | null;
 }
@@ -206,8 +208,7 @@ export const subscriptionApi = {
   openPortal: (): Promise<{ url: string }> =>
     apiFetch<{ url: string }>('/subscription/portal', { method: 'POST' }),
 
-  listInvoices: (): Promise<Invoice[]> =>
-    apiFetch<Invoice[]>('/subscription/invoices'),
+  listInvoices: (): Promise<Invoice[]> => apiFetch<Invoice[]>('/subscription/invoices'),
 };
 
 // ── Project members ─────────────────────────────────────────────────────────
@@ -249,7 +250,7 @@ export const versionsApi = {
 
   get: (projectId: string, versionId: string): Promise<ServerVersion> =>
     apiFetch<ServerVersion>(
-      `/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`,
+      `/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`
     ),
 };
 
@@ -259,7 +260,7 @@ export const projectMembersApi = {
 
   add: (
     projectId: string,
-    params: { firebaseUid: string; email?: string; displayName?: string; role: string },
+    params: { firebaseUid: string; email?: string; displayName?: string; role: string }
   ): Promise<ProjectMember> =>
     apiFetch<ProjectMember>(`/projects/${encodeURIComponent(projectId)}/members`, {
       method: 'POST',
@@ -274,12 +275,12 @@ export const projectMembersApi = {
   updateRole: (projectId: string, uid: string, role: string): Promise<ProjectMember> =>
     apiFetch<ProjectMember>(
       `/projects/${encodeURIComponent(projectId)}/members/${encodeURIComponent(uid)}`,
-      { method: 'PATCH', body: JSON.stringify({ role }) },
+      { method: 'PATCH', body: JSON.stringify({ role }) }
     ),
 
   remove: (projectId: string, uid: string): Promise<void> =>
     apiFetch<void>(
       `/projects/${encodeURIComponent(projectId)}/members/${encodeURIComponent(uid)}`,
-      { method: 'DELETE' },
+      { method: 'DELETE' }
     ),
 };

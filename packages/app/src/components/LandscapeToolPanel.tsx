@@ -58,15 +58,27 @@ export function LandscapeToolPanel(): React.ReactElement {
     let cancelled = false;
     fetch('/assets/landscape/starter/manifest.json')
       .then((r) => r.json())
-      .then((data: Manifest) => { if (!cancelled) { setManifest(data); setLoading(false); } })
-      .catch(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .then((data: Manifest) => {
+        if (!cancelled) {
+          setManifest(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Handle keyboard while in placing mode
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (!placingRef.current) return;
-    if (e.key === 'Escape') { setPlacing(null); setRotation(0); }
+    if (e.key === 'Escape') {
+      setPlacing(null);
+      setRotation(0);
+    }
     if (e.key === 'r' || e.key === 'R') {
       const delta = e.shiftKey ? -45 : 45;
       setRotation((r) => (r + delta + 360) % 360);
@@ -78,50 +90,60 @@ export function LandscapeToolPanel(): React.ReactElement {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
-  const handleThumbnailClick = useCallback((asset: ManifestAsset) => {
-    if (isReadOnly) return;
-    setPlacing((prev) => (prev?.id === asset.id ? null : asset));
-    setRotation(0);
-  }, [isReadOnly]);
+  const handleThumbnailClick = useCallback(
+    (asset: ManifestAsset) => {
+      if (isReadOnly) return;
+      setPlacing((prev) => (prev?.id === asset.id ? null : asset));
+      setRotation(0);
+    },
+    [isReadOnly]
+  );
 
   /** Called when user clicks in the viewport while placing mode is armed. */
-  const handleViewportPlace = useCallback((x: number, y: number, z: number) => {
-    const asset = placingRef.current;
-    if (!asset || !document || isReadOnly) return;
+  const handleViewportPlace = useCallback(
+    (x: number, y: number, z: number) => {
+      const asset = placingRef.current;
+      if (!asset || !document || isReadOnly) return;
 
-    const layers = Object.values(document.organization.layers);
-    const layerId = layers[0]?.id ?? 'default';
-    const elementType = TAB_ELEMENT_TYPE[activeTab as LandscapeTab] ?? 'planting';
+      const layers = Object.values(document.organization.layers);
+      const layerId = layers[0]?.id ?? 'default';
+      const elementType = TAB_ELEMENT_TYPE[activeTab as LandscapeTab] ?? 'planting';
 
-    pushHistory('Place landscape element');
-    addElement({
-      type: elementType,
-      layerId,
-      properties: {
-        SpeciesId: { type: 'string', value: asset.id },
-        LibraryId: { type: 'string', value: 'starter' },
-        Scale: { type: 'number', value: 1.0 },
-        Rotation: { type: 'number', value: rotation },
-        Variation: { type: 'number', value: 0 },
-        X: { type: 'number', value: x },
-        Y: { type: 'number', value: y },
-        Z: { type: 'number', value: z },
-        Name: { type: 'string', value: t(asset.displayNameKey, asset.id) },
-      },
-    });
-  }, [document, isReadOnly, addElement, pushHistory, activeTab, rotation, t]);
+      pushHistory('Place landscape element');
+      addElement({
+        type: elementType,
+        layerId,
+        properties: {
+          SpeciesId: { type: 'string', value: asset.id },
+          LibraryId: { type: 'string', value: 'starter' },
+          Scale: { type: 'number', value: 1.0 },
+          Rotation: { type: 'number', value: rotation },
+          Variation: { type: 'number', value: 0 },
+          X: { type: 'number', value: x },
+          Y: { type: 'number', value: y },
+          Z: { type: 'number', value: z },
+          Name: { type: 'string', value: t(asset.displayNameKey, asset.id) },
+        },
+      });
+    },
+    [document, isReadOnly, addElement, pushHistory, activeTab, rotation, t]
+  );
 
   // Expose the place handler so the viewport can call it
   // (In a real integration useThreeViewport would subscribe via a store action)
   useEffect(() => {
     (window as unknown as Record<string, unknown>).__landscapePlaceHandler = handleViewportPlace;
-    return () => { delete (window as unknown as Record<string, unknown>).__landscapePlaceHandler; };
+    return () => {
+      delete (window as unknown as Record<string, unknown>).__landscapePlaceHandler;
+    };
   }, [handleViewportPlace]);
 
   const tabAssets = manifest?.assets.filter((a) => a.tab === activeTab) ?? [];
 
-  if (!document) return <div className="landscape-panel__empty">{t('panels.landscape.noAssets')}</div>;
-  if (isReadOnly) return <div className="landscape-panel__empty">{t('panels.landscape.readOnly')}</div>;
+  if (!document)
+    return <div className="landscape-panel__empty">{t('panels.landscape.noAssets')}</div>;
+  if (isReadOnly)
+    return <div className="landscape-panel__empty">{t('panels.landscape.readOnly')}</div>;
 
   return (
     <div className="landscape-panel" role="region" aria-label={t('panels.landscape.title')}>
@@ -133,7 +155,10 @@ export function LandscapeToolPanel(): React.ReactElement {
             role="tab"
             aria-selected={activeTab === tab}
             className={`landscape-panel__tab${activeTab === tab ? ' active' : ''}`}
-            onClick={() => { setActiveTab(tab); setPlacing(null); }}
+            onClick={() => {
+              setActiveTab(tab);
+              setPlacing(null);
+            }}
           >
             {t(`panels.landscape.tabs.${tab}`)}
           </button>
@@ -143,8 +168,8 @@ export function LandscapeToolPanel(): React.ReactElement {
       {/* Placing status bar */}
       {placing && (
         <div className="landscape-panel__status" role="status" aria-live="polite">
-          {t('panels.landscape.placePrompt', { name: t(placing.displayNameKey, placing.id) })}
-          {' '}<span className="landscape-panel__rotation">↻ {rotation}°</span>
+          {t('panels.landscape.placePrompt', { name: t(placing.displayNameKey, placing.id) })}{' '}
+          <span className="landscape-panel__rotation">↻ {rotation}°</span>
           <span className="landscape-panel__hint"> · R to rotate · Esc to cancel</span>
         </div>
       )}

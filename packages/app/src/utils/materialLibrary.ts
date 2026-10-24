@@ -23,7 +23,7 @@ export type MaterialCategory =
   | 'membrane';
 
 export interface MaterialProperties {
-  density?: number;        // kg/m³
+  density?: number; // kg/m³
   thermalConductivity?: number; // W/m·K
   fireRating?: string;
   acousticRating?: number; // dB

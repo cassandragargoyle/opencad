@@ -109,9 +109,9 @@ export interface ElementDiff {
 }
 
 export interface BranchDiff {
-  added:     ElementDiff[];
-  removed:   ElementDiff[];
-  modified:  ElementDiff[];
+  added: ElementDiff[];
+  removed: ElementDiff[];
+  modified: ElementDiff[];
   unchanged: ElementDiff[];
   totalCount: number;
 }
@@ -124,15 +124,15 @@ export interface BranchDiff {
 export function diffBranches(
   snapshotA: DocumentSchema,
   snapshotB: DocumentSchema,
-  options: { includeUnchanged?: boolean } = {},
+  options: { includeUnchanged?: boolean } = {}
 ): BranchDiff {
   const elA = snapshotA.content.elements;
   const elB = snapshotB.content.elements;
   const allIds = new Set([...Object.keys(elA), ...Object.keys(elB)]);
 
-  const added:     ElementDiff[] = [];
-  const removed:   ElementDiff[] = [];
-  const modified:  ElementDiff[] = [];
+  const added: ElementDiff[] = [];
+  const removed: ElementDiff[] = [];
+  const modified: ElementDiff[] = [];
   const unchanged: ElementDiff[] = [];
 
   for (const id of allIds) {
@@ -145,26 +145,48 @@ export function diffBranches(
       removed.push({ elementId: id, elementType: a.type, status: 'removed', propertyDiffs: [] });
     } else if (a && b) {
       const propDiffs = _diffProperties(a.properties ?? {}, b.properties ?? {});
-      if (propDiffs.length > 0 || a.type !== b.type || a.levelId !== b.levelId || a.layerId !== b.layerId) {
-        modified.push({ elementId: id, elementType: b.type, status: 'modified', propertyDiffs: propDiffs });
+      if (
+        propDiffs.length > 0 ||
+        a.type !== b.type ||
+        a.levelId !== b.levelId ||
+        a.layerId !== b.layerId
+      ) {
+        modified.push({
+          elementId: id,
+          elementType: b.type,
+          status: 'modified',
+          propertyDiffs: propDiffs,
+        });
       } else if (options.includeUnchanged) {
-        unchanged.push({ elementId: id, elementType: a.type, status: 'unchanged', propertyDiffs: [] });
+        unchanged.push({
+          elementId: id,
+          elementType: a.type,
+          status: 'unchanged',
+          propertyDiffs: [],
+        });
       }
     }
   }
 
-  const sortById = (arr: ElementDiff[]) => arr.sort((x, y) => x.elementId.localeCompare(y.elementId));
-  sortById(added); sortById(removed); sortById(modified); sortById(unchanged);
+  const sortById = (arr: ElementDiff[]) =>
+    arr.sort((x, y) => x.elementId.localeCompare(y.elementId));
+  sortById(added);
+  sortById(removed);
+  sortById(modified);
+  sortById(unchanged);
 
   return {
-    added, removed, modified, unchanged,
+    added,
+    removed,
+    modified,
+    unchanged,
     totalCount: added.length + removed.length + modified.length + unchanged.length,
   };
 }
 
 function _diffProperties(
   propsA: Record<string, { type: string; value: unknown }>,
-  propsB: Record<string, { type: string; value: unknown }>,
+  propsB: Record<string, { type: string; value: unknown }>
 ): PropertyDiff[] {
   const diffs: PropertyDiff[] = [];
   const allKeys = new Set([...Object.keys(propsA), ...Object.keys(propsB)]);
@@ -180,9 +202,9 @@ function _diffProperties(
 
 /** Diff highlight colours per status (matches T-COL-01 spec). */
 export const DIFF_COLORS: Record<DiffStatus, string> = {
-  added:     '#22c55e',
-  removed:   '#ef4444',
-  modified:  '#f59e0b',
+  added: '#22c55e',
+  removed: '#ef4444',
+  modified: '#f59e0b',
   unchanged: 'transparent',
 };
 

@@ -95,10 +95,18 @@ export function BillingPanel({ onUpgrade }: BillingPanelProps = {}): React.React
     setInvoicesLoading(true);
     subscriptionApi
       .listInvoices()
-      .then((list) => { if (active) setInvoices(list); })
-      .catch(() => { if (active) setInvoices([]); })
-      .finally(() => { if (active) setInvoicesLoading(false); });
-    return () => { active = false; };
+      .then((list) => {
+        if (active) setInvoices(list);
+      })
+      .catch(() => {
+        if (active) setInvoices([]);
+      })
+      .finally(() => {
+        if (active) setInvoicesLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   if (isLoading) {
@@ -236,7 +244,9 @@ export function BillingPanel({ onUpgrade }: BillingPanelProps = {}): React.React
           data-testid="cancel-confirm-dialog"
           role="dialog"
           aria-modal="true"
-          aria-label={t('settings.billing.cancelConfirmAria', { defaultValue: 'Cancel subscription confirmation' })}
+          aria-label={t('settings.billing.cancelConfirmAria', {
+            defaultValue: 'Cancel subscription confirmation',
+          })}
         >
           <div className="billing-cancel-dialog">
             <h4 className="billing-cancel-dialog-title">{t('billing.cancelConfirmTitle')}</h4>

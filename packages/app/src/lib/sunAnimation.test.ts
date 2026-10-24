@@ -8,7 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import { sunDirectionAt, buildSunTimeline, type SiteLocation } from './sunAnimation';
 
-const NYC: SiteLocation = { latitudeDeg: 40.7128, longitudeDeg: -74.0060 };
+const NYC: SiteLocation = { latitudeDeg: 40.7128, longitudeDeg: -74.006 };
 
 describe('T-VIZ-041: sunAnimation', () => {
   it('T-VIZ-041-001: sun direction is a unit vector', () => {

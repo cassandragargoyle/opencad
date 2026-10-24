@@ -8,33 +8,34 @@ import { createCalloutMarker, resolveCalloutLabel } from '../lib/callout';
 
 export function CalloutPanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document    = useDocumentStore((s) => s.document);
-  const addElement  = useDocumentStore((s) => s.addElement);
+  const document = useDocumentStore((s) => s.document);
+  const addElement = useDocumentStore((s) => s.addElement);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
-  const isReadOnly  = isDocumentReadOnly();
+  const isReadOnly = isDocumentReadOnly();
 
   const [targetViewId, setTargetViewId] = useState<string>('');
   const [status, setStatus] = useState('');
 
   const views = useMemo(
-    () => document
-      ? Object.values(document.presentation.views).filter(
-          (v) => v.type === 'detail' || v.type === 'section' || v.type === 'elevation',
-        )
-      : [],
-    [document],
+    () =>
+      document
+        ? Object.values(document.presentation.views).filter(
+            (v) => v.type === 'detail' || v.type === 'section' || v.type === 'elevation'
+          )
+        : [],
+    [document]
   );
 
   const layers = useMemo(
     () => (document ? Object.values(document.organization.layers) : []),
-    [document],
+    [document]
   );
 
   const placeCallout = () => {
     if (isReadOnly || !document || !targetViewId) return;
     const layerId = layers[0]?.id ?? 'default';
     const marker = createCalloutMarker({ x: 0, y: 0 }, targetViewId);
-    const label  = resolveCalloutLabel(targetViewId, views);
+    const label = resolveCalloutLabel(targetViewId, views);
 
     pushHistory(`Place callout → ${label}`);
     addElement({
@@ -81,12 +82,14 @@ export function CalloutPanel(): React.ReactElement {
         </button>
 
         {views.length === 0 && (
-          <p className="panel-hint">
-            No section, elevation, or detail views. Create views first.
-          </p>
+          <p className="panel-hint">No section, elevation, or detail views. Create views first.</p>
         )}
 
-        {status && <p className="panel-status" role="status">{status}</p>}
+        {status && (
+          <p className="panel-status" role="status">
+            {status}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ Drawing should reward intent. If the user is dragging mostly along the X axis, h
 ## Scope
 
 ### In scope
+
 - **Axis lock**: while dragging, `Shift` locks to the dominant axis (X / Y / along the active wall's direction). Locked axis draws a colored line through the drag start. `Shift+Shift` cycles through X → Y → free.
 - **Smart guides (inference lines)**:
   - When cursor comes within N px of an existing vertex's X or Y, a dotted inference line appears aligned with that vertex, and snapping engages.
@@ -18,6 +19,7 @@ Drawing should reward intent. If the user is dragging mostly along the X axis, h
 - Status bar or HUD shows which snap/guide is currently active in plain English ("aligned to endpoint of Wall-014").
 
 ### Out of scope
+
 - Distance-constraint lines between points (that's parametric constraints; separate).
 - Polar tracking at custom angles beyond X, Y, wall-parallel.
 

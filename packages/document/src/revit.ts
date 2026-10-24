@@ -235,7 +235,7 @@ export function detectFormat(buffer: ArrayBuffer): boolean {
   // Full CFBF signature is D0 CF 11 E0 A1 B1 1A E1; Revit files are CFBF
   // containers so check either the legacy "DOC-rvt" tag or the CFBF magic.
   const cfbf = view[0] === 0xd0 && view[1] === 0xcf && view[2] === 0x11 && view[3] === 0xe0;
-  const rvt  = view[0] === 0x44 && view[1] === 0x4f && view[2] === 0xc8 && view[3] === 0xf4;
+  const rvt = view[0] === 0x44 && view[1] === 0x4f && view[2] === 0xc8 && view[3] === 0xf4;
   return cfbf || rvt;
 }
 
@@ -265,9 +265,9 @@ function scrapeRVTMetadata(buffer: ArrayBuffer): RVTMeta {
     return m ? m[1]!.trim() : '';
   };
   return {
-    version:     pickFirst(/Version:\s*([\d.]+)/i) || pickFirst(/Revit\s+([\d]{4})/),
+    version: pickFirst(/Version:\s*([\d.]+)/i) || pickFirst(/Revit\s+([\d]{4})/),
     productName: pickFirst(/Product:\s*([^\r\n]{1,80})/i) || 'Autodesk Revit',
-    locale:      pickFirst(/Locale:\s*([A-Za-z_-]{2,20})/i),
+    locale: pickFirst(/Locale:\s*([A-Za-z_-]{2,20})/i),
     buildNumber: pickFirst(/Build:\s*([^\r\n\s]{1,40})/i),
   };
 }
@@ -282,7 +282,7 @@ function scrapeRVTMetadata(buffer: ArrayBuffer): RVTMeta {
  */
 export function importFile(
   buffer: ArrayBuffer,
-  projectId: string,
+  projectId: string
 ): { schema: DocumentSchema; warnings: string[] } {
   const warnings: string[] = [];
   const schema = createProject(projectId, 'revit-import');
@@ -302,7 +302,7 @@ export function importFile(
   };
   warnings.push(
     'Revit binary geometry is not decoded — metadata only. ' +
-    'Export RVT → IFC from Revit and re-import via IFC for full fidelity.',
+      'Export RVT → IFC from Revit and re-import via IFC for full fidelity.'
   );
   return { schema, warnings };
 }

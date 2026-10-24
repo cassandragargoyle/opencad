@@ -18,9 +18,9 @@ export interface HatchPattern {
   id: string;
   name: string;
   type: HatchPatternType;
-  angle: number;       // degrees
-  spacing: number;     // mm at 1:1
-  lineWeight: number;  // pt
+  angle: number; // degrees
+  spacing: number; // mm at 1:1
+  lineWeight: number; // pt
   description: string;
 }
 
@@ -160,7 +160,7 @@ export function generateHatchLines(options: HatchFillOptions): HatchLine[] {
 
     for (let i = -steps; i <= steps; i++) {
       const offset = i * spacing;
-      const px = cx + offset * (-sin);
+      const px = cx + offset * -sin;
       const py = cy + offset * cos;
       lines.push({
         x1: px - cos * diag,
@@ -185,7 +185,7 @@ export function generateHatchLines(options: HatchFillOptions): HatchLine[] {
       const sin = Math.sin(rad);
       for (let i = -steps; i <= steps; i++) {
         const offset = i * spacing;
-        const px = cx + offset * (-sin);
+        const px = cx + offset * -sin;
         const py = cy + offset * cos;
         lines.push({
           x1: px - cos * diag,

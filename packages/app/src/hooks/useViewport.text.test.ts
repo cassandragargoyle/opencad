@@ -51,7 +51,7 @@ vi.stubGlobal(
     observe = vi.fn();
     unobserve = vi.fn();
     disconnect = vi.fn();
-  },
+  }
 );
 
 // ── helpers ────────────────────────────────────────────────────────────────────
@@ -89,8 +89,15 @@ describe.skip('T-2D-011: text tool — drawingText state', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
@@ -111,8 +118,15 @@ describe.skip('T-2D-011: text tool — drawingText state', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
@@ -151,8 +165,15 @@ describe.skip('T-2D-011: text tool — confirmText adds element', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
@@ -180,8 +201,15 @@ describe.skip('T-2D-011: text tool — confirmText adds element', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
@@ -205,8 +233,15 @@ describe.skip('T-2D-011: text tool — confirmText adds element', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
@@ -222,10 +257,16 @@ describe.skip('T-2D-011: text tool — confirmText adds element', () => {
     const store = useDocumentStore.getState();
     // Find the text element with our specific content (multiple text elements may exist from previous tests)
     const textEl = Object.values(store.document!.content.elements).find(
-      (el) => el.type === 'text' && (el.geometry.data as { content?: string }).content === 'OpenCAD',
+      (el) => el.type === 'text' && (el.geometry.data as { content?: string }).content === 'OpenCAD'
     );
     expect(textEl).toBeDefined();
-    const data = textEl!.geometry.data as { content: string; x: number; y: number; fontSize: number; fontFamily: string };
+    const data = textEl!.geometry.data as {
+      content: string;
+      x: number;
+      y: number;
+      fontSize: number;
+      fontFamily: string;
+    };
     expect(data.content).toBe('OpenCAD');
     // Canvas centre (400, 300) → world (0, 0) with Y-flipped coordinate system
     expect(data.x).toBe(0);
@@ -240,8 +281,15 @@ describe.skip('T-2D-011: text tool — confirmText adds element', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
@@ -263,14 +311,23 @@ describe.skip('T-2D-011: text tool — confirmText adds element', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
     }
 
-    const elementsBefore = Object.keys(useDocumentStore.getState().document!.content.elements).length;
+    const elementsBefore = Object.keys(
+      useDocumentStore.getState().document!.content.elements
+    ).length;
 
     act(() => {
       result.current.handleCanvasMouseDown(makeMouseEvent(400, 300));
@@ -279,7 +336,9 @@ describe.skip('T-2D-011: text tool — confirmText adds element', () => {
       result.current.confirmText('');
     });
 
-    const elementsAfter = Object.keys(useDocumentStore.getState().document!.content.elements).length;
+    const elementsAfter = Object.keys(
+      useDocumentStore.getState().document!.content.elements
+    ).length;
     expect(elementsAfter).toBe(elementsBefore);
     expect(result.current.drawingText).toBeNull();
   });
@@ -301,14 +360,23 @@ describe.skip('T-2D-011: text tool — cancelText (Escape)', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
     }
 
-    const elementsBefore = Object.keys(useDocumentStore.getState().document!.content.elements).length;
+    const elementsBefore = Object.keys(
+      useDocumentStore.getState().document!.content.elements
+    ).length;
 
     act(() => {
       result.current.handleCanvasMouseDown(makeMouseEvent(400, 300));
@@ -320,7 +388,9 @@ describe.skip('T-2D-011: text tool — cancelText (Escape)', () => {
     });
 
     expect(result.current.drawingText).toBeNull();
-    const elementsAfter = Object.keys(useDocumentStore.getState().document!.content.elements).length;
+    const elementsAfter = Object.keys(
+      useDocumentStore.getState().document!.content.elements
+    ).length;
     expect(elementsAfter).toBe(elementsBefore);
   });
 
@@ -330,8 +400,15 @@ describe.skip('T-2D-011: text tool — cancelText (Escape)', () => {
     const canvas = result.current.canvasRef.current;
     if (canvas) {
       vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-        left: 0, top: 0, width: 800, height: 600,
-        right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+        right: 800,
+        bottom: 600,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
       } as DOMRect);
       Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
       Object.defineProperty(canvas, 'height', { value: 600, configurable: true });

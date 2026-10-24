@@ -24,16 +24,16 @@ type CanFn = (action: string) => boolean;
 
 /** All possible radial items, keyed by their tool action. */
 const ALL_RADIAL_ITEMS: ContextMenuItem[] = [
-  { action: 'tool:wall',       label: 'Wall' },
-  { action: 'tool:door',       label: 'Door' },
-  { action: 'tool:window',     label: 'Window' },
-  { action: 'tool:column',     label: 'Column' },
-  { action: 'tool:beam',       label: 'Beam' },
-  { action: 'tool:slab',       label: 'Slab' },
-  { action: 'tool:dimension',  label: 'Dimension' },
-  { action: 'tool:section',    label: 'Section' },
+  { action: 'tool:wall', label: 'Wall' },
+  { action: 'tool:door', label: 'Door' },
+  { action: 'tool:window', label: 'Window' },
+  { action: 'tool:column', label: 'Column' },
+  { action: 'tool:beam', label: 'Beam' },
+  { action: 'tool:slab', label: 'Slab' },
+  { action: 'tool:dimension', label: 'Dimension' },
+  { action: 'tool:section', label: 'Section' },
   { action: 'tool:annotation', label: 'Annotation' },
-  { action: 'tool:text',       label: 'Text' },
+  { action: 'tool:text', label: 'Text' },
 ];
 
 /** List items that are always present for all roles. */
@@ -41,8 +41,8 @@ const PROPERTIES_ITEM: ContextMenuItem = { action: 'properties', label: 'Propert
 
 /** Additional list items available for roles with edit access. */
 const ALL_LIST_ITEMS: ContextMenuItem[] = [
-  { action: 'tool:select',    label: 'Select' },
-  { action: 'tool:line',      label: 'Draw Line' },
+  { action: 'tool:select', label: 'Select' },
+  { action: 'tool:line', label: 'Draw Line' },
   { action: 'tool:rectangle', label: 'Draw Rectangle' },
 ];
 

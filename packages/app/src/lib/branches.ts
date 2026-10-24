@@ -65,7 +65,9 @@ function branchFromServer(row: ServerBranch): BranchRecord {
 async function fetchServerBranches(projectId: string): Promise<BranchStore | null> {
   try {
     if (!(await isServerAvailable())) return null;
-    const rows = await serverFetch<ServerBranch[]>(`/projects/${encodeURIComponent(projectId)}/branches`);
+    const rows = await serverFetch<ServerBranch[]>(
+      `/projects/${encodeURIComponent(projectId)}/branches`
+    );
     const branches: Record<string, BranchRecord> = {};
     for (const row of rows) branches[row.id] = branchFromServer(row);
     // activeBranchId is client-local — server doesn't track which branch
@@ -82,12 +84,16 @@ export async function loadBranches(projectId: string): Promise<BranchStore> {
   try {
     const fromOpfs = await opfsRead(opfsKey(projectId));
     if (fromOpfs) local = JSON.parse(fromOpfs) as BranchStore;
-  } catch { /* fall through */ }
+  } catch {
+    /* fall through */
+  }
   if (!local) {
     try {
       const raw = localStorage.getItem(lsKey(projectId));
       if (raw) local = JSON.parse(raw) as BranchStore;
-    } catch { /* fall through */ }
+    } catch {
+      /* fall through */
+    }
   }
 
   const remote = await fetchServerBranches(projectId);
@@ -106,7 +112,11 @@ export async function loadBranches(projectId: string): Promise<BranchStore> {
 async function saveBranchesLocal(store: BranchStore): Promise<void> {
   const serialized = JSON.stringify(store);
   await opfsWrite(opfsKey(store.projectId), serialized);
-  try { localStorage.setItem(lsKey(store.projectId), serialized); } catch { /* quota */ }
+  try {
+    localStorage.setItem(lsKey(store.projectId), serialized);
+  } catch {
+    /* quota */
+  }
 }
 
 /**
@@ -123,7 +133,7 @@ export async function saveBranches(store: BranchStore): Promise<void> {
 export async function pushBranchToServer(
   projectId: string,
   record: BranchRecord,
-  baseBranchId?: string,
+  baseBranchId?: string
 ): Promise<BranchRecord> {
   const body = {
     id: record.id,
@@ -134,19 +144,16 @@ export async function pushBranchToServer(
   };
   const row = await serverFetch<ServerBranch>(
     `/projects/${encodeURIComponent(projectId)}/branches`,
-    { method: 'POST', body: JSON.stringify(body) },
+    { method: 'POST', body: JSON.stringify(body) }
   );
   return branchFromServer(row);
 }
 
 /** Delete a branch server-side. Caller is responsible for updating cache. */
-export async function removeBranchFromServer(
-  projectId: string,
-  branchId: string,
-): Promise<void> {
+export async function removeBranchFromServer(projectId: string, branchId: string): Promise<void> {
   await serverFetch<void>(
     `/projects/${encodeURIComponent(projectId)}/branches/${encodeURIComponent(branchId)}`,
-    { method: 'DELETE' },
+    { method: 'DELETE' }
   );
 }
 
@@ -154,7 +161,7 @@ export async function removeBranchFromServer(
 
 export function createBranch(
   store: BranchStore,
-  params: { name: string; message?: string; document: DocumentSchema },
+  params: { name: string; message?: string; document: DocumentSchema }
 ): BranchStore {
   const id = crypto.randomUUID();
   const record: BranchRecord = {
@@ -187,22 +194,23 @@ export function switchBranch(store: BranchStore, id: string): BranchStore {
   return { ...store, activeBranchId: id };
 }
 
-export function getBranchDocument(
-  store: BranchStore,
-  id: string,
-): DocumentSchema | null {
+export function getBranchDocument(store: BranchStore, id: string): DocumentSchema | null {
   if (id === 'main') return null; // caller reads the live document for main
   const rec = store.branches[id];
   if (!rec) return null;
-  try { return JSON.parse(rec.snapshot) as DocumentSchema; } catch { return null; }
+  try {
+    return JSON.parse(rec.snapshot) as DocumentSchema;
+  } catch {
+    return null;
+  }
 }
 
 // ─── Diff ───────────────────────────────────────────────────────────────────
 
 export interface BranchDiff {
-  added: string[];    // element ids present in B but not in A
-  removed: string[];  // element ids present in A but not in B
-  changed: string[];  // element ids whose JSON differs between A and B
+  added: string[]; // element ids present in B but not in A
+  removed: string[]; // element ids present in A but not in B
+  changed: string[]; // element ids whose JSON differs between A and B
   unchanged: string[];
 }
 
@@ -234,7 +242,7 @@ export type MergeStrategy = 'prefer-mine' | 'prefer-theirs';
 export function mergeBranches(
   mine: DocumentSchema,
   theirs: DocumentSchema,
-  strategy: MergeStrategy,
+  strategy: MergeStrategy
 ): DocumentSchema {
   const merged: DocumentSchema = JSON.parse(JSON.stringify(mine));
   const theirEls = theirs.content.elements;

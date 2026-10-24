@@ -22,10 +22,10 @@ export interface LayerCombination {
 }
 
 export interface OverrideStyle {
-  strokeColor?: string;   // hex
+  strokeColor?: string; // hex
   fillColor?: string;
-  strokeWidth?: number;   // mm in world
-  opacity?: number;       // 0..1
+  strokeWidth?: number; // mm in world
+  opacity?: number; // 0..1
   hatchId?: string;
 }
 
@@ -74,12 +74,8 @@ function matches(el: ElementSchema, filter: ElementFilter): boolean {
  * priority order (lowest first). Later (higher-priority) overrides
  * merge their style over earlier ones.
  */
-export function resolveStyle(
-  el: ElementSchema, overrides: GraphicOverride[],
-): OverrideStyle {
-  const sorted = [...overrides]
-    .filter((o) => o.enabled)
-    .sort((a, b) => a.priority - b.priority);
+export function resolveStyle(el: ElementSchema, overrides: GraphicOverride[]): OverrideStyle {
+  const sorted = [...overrides].filter((o) => o.enabled).sort((a, b) => a.priority - b.priority);
   let style: OverrideStyle = {};
   for (const o of sorted) {
     if (matches(el, o.filter)) style = { ...style, ...o.style };
@@ -96,7 +92,7 @@ export function visibleLayerIds(combo: LayerCombination): string[] {
 
 /** Default combinations seeded on every new project. */
 export const DEFAULT_COMBINATIONS: LayerCombination[] = [
-  { id: 'combo-all',        name: 'All On',             layers: {} },
-  { id: 'combo-structural', name: 'Structural Only',    layers: {} },
-  { id: 'combo-arch',       name: 'Architectural Only', layers: {} },
+  { id: 'combo-all', name: 'All On', layers: {} },
+  { id: 'combo-structural', name: 'Structural Only', layers: {} },
+  { id: 'combo-arch', name: 'Architectural Only', layers: {} },
 ];

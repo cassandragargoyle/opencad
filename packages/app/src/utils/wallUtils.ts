@@ -10,17 +10,35 @@ export const DEFAULT_WALL_THICKNESS = 200;
 export const DEFAULT_WALL_MATERIAL = 'Concrete';
 export const DEFAULT_WALL_TYPE: WallType = 'interior';
 
-export interface Point { x: number; y: number; }
+export interface Point {
+  x: number;
+  y: number;
+}
 export interface WallOptions {
-  height?: number; thickness?: number; wallType?: WallType;
-  material?: string; layerId?: string;
+  height?: number;
+  thickness?: number;
+  wallType?: WallType;
+  material?: string;
+  layerId?: string;
 }
 export interface WallElementParams {
-  type: 'wall'; layerId?: string; properties: Record<string, PropertyValue>;
+  type: 'wall';
+  layerId?: string;
+  properties: Record<string, PropertyValue>;
 }
 
-export function createWallElement(start: Point, end: Point, options: WallOptions = {}): WallElementParams {
-  const { height = DEFAULT_WALL_HEIGHT, thickness = DEFAULT_WALL_THICKNESS, wallType = DEFAULT_WALL_TYPE, material = DEFAULT_WALL_MATERIAL, layerId } = options;
+export function createWallElement(
+  start: Point,
+  end: Point,
+  options: WallOptions = {}
+): WallElementParams {
+  const {
+    height = DEFAULT_WALL_HEIGHT,
+    thickness = DEFAULT_WALL_THICKNESS,
+    wallType = DEFAULT_WALL_TYPE,
+    material = DEFAULT_WALL_MATERIAL,
+    layerId,
+  } = options;
   const label = wallType.charAt(0).toUpperCase() + wallType.slice(1);
   return {
     type: 'wall',

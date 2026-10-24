@@ -48,15 +48,20 @@ function parsePoints(el: ElementSchema): Array<{ x: number; y: number }> | null 
   }
 }
 
-function pointInPolygon(pt: { x: number; y: number }, poly: Array<{ x: number; y: number }>): boolean {
+function pointInPolygon(
+  pt: { x: number; y: number },
+  poly: Array<{ x: number; y: number }>
+): boolean {
   let inside = false;
   const n = poly.length;
   for (let i = 0, j = n - 1; i < n; j = i++) {
-    const xi = poly[i]!.x, yi = poly[i]!.y;
-    const xj = poly[j]!.x, yj = poly[j]!.y;
+    const xi = poly[i]!.x,
+      yi = poly[i]!.y;
+    const xj = poly[j]!.x,
+      yj = poly[j]!.y;
     const denom = yj - yi;
     const intersect =
-      ((yi > pt.y) !== (yj > pt.y)) &&
+      yi > pt.y !== yj > pt.y &&
       pt.x < ((xj - xi) * (pt.y - yi)) / (denom === 0 ? 1e-9 : denom) + xi;
     if (intersect) inside = !inside;
   }
@@ -64,18 +69,41 @@ function pointInPolygon(pt: { x: number; y: number }, poly: Array<{ x: number; y
 }
 
 function collectByType(doc: DocumentSchema): {
-  walls: ElementSchema[]; slabs: ElementSchema[]; roofs: ElementSchema[];
-  stairs: ElementSchema[]; columns: ElementSchema[]; beams: ElementSchema[];
+  walls: ElementSchema[];
+  slabs: ElementSchema[];
+  roofs: ElementSchema[];
+  stairs: ElementSchema[];
+  columns: ElementSchema[];
+  beams: ElementSchema[];
 } {
-  const out = { walls: [] as ElementSchema[], slabs: [] as ElementSchema[], roofs: [] as ElementSchema[], stairs: [] as ElementSchema[], columns: [] as ElementSchema[], beams: [] as ElementSchema[] };
+  const out = {
+    walls: [] as ElementSchema[],
+    slabs: [] as ElementSchema[],
+    roofs: [] as ElementSchema[],
+    stairs: [] as ElementSchema[],
+    columns: [] as ElementSchema[],
+    beams: [] as ElementSchema[],
+  };
   for (const el of Object.values(doc.content.elements)) {
     switch (el.type) {
-      case 'wall':   out.walls.push(el); break;
-      case 'slab':   out.slabs.push(el); break;
-      case 'roof':   out.roofs.push(el); break;
-      case 'stair':  out.stairs.push(el); break;
-      case 'column': out.columns.push(el); break;
-      case 'beam':   out.beams.push(el); break;
+      case 'wall':
+        out.walls.push(el);
+        break;
+      case 'slab':
+        out.slabs.push(el);
+        break;
+      case 'roof':
+        out.roofs.push(el);
+        break;
+      case 'stair':
+        out.stairs.push(el);
+        break;
+      case 'column':
+        out.columns.push(el);
+        break;
+      case 'beam':
+        out.beams.push(el);
+        break;
     }
   }
   return out;
@@ -103,7 +131,7 @@ export function resolveOperations(doc: DocumentSchema): SEOp[] {
           id: `wrc-${wall.id}-${roof.id}`,
           kind: 'wall-roof-clip',
           operatorId: roof.id,
-          targetId:   wall.id,
+          targetId: wall.id,
           enabled: true,
         });
       }
@@ -124,7 +152,7 @@ export function resolveOperations(doc: DocumentSchema): SEOp[] {
           id: `ssc-${stair.id}-${slab.id}`,
           kind: 'slab-stair-cut',
           operatorId: stair.id,
-          targetId:   slab.id,
+          targetId: slab.id,
           enabled: true,
         });
       }
@@ -134,17 +162,22 @@ export function resolveOperations(doc: DocumentSchema): SEOp[] {
   // Rule 3: beam-column-trim — beam trims at each column whose centre
   // sits within beam halfWidth + column halfSection of the beam line.
   for (const beam of g.beams) {
-    const bx1 = numProp(beam, 'StartX'), by1 = numProp(beam, 'StartY');
-    const bx2 = numProp(beam, 'EndX'),   by2 = numProp(beam, 'EndY');
+    const bx1 = numProp(beam, 'StartX'),
+      by1 = numProp(beam, 'StartY');
+    const bx2 = numProp(beam, 'EndX'),
+      by2 = numProp(beam, 'EndY');
     const bLen = Math.hypot(bx2 - bx1, by2 - by1) || 1;
-    const bDirX = (bx2 - bx1) / bLen, bDirY = (by2 - by1) / bLen;
+    const bDirX = (bx2 - bx1) / bLen,
+      bDirY = (by2 - by1) / bLen;
     const bW = numProp(beam, 'Width', 200);
     for (const col of g.columns) {
-      const cx = numProp(col, 'X'), cy = numProp(col, 'Y');
+      const cx = numProp(col, 'X'),
+        cy = numProp(col, 'Y');
       const colDia = numProp(col, 'Diameter', numProp(col, 'Width', 300));
       const rad = colDia / 2 + bW / 2;
       // Distance from column centre to beam line
-      const dx = cx - bx1, dy = cy - by1;
+      const dx = cx - bx1,
+        dy = cy - by1;
       const tAlong = dx * bDirX + dy * bDirY;
       const perp = Math.abs(dx * bDirY - dy * bDirX);
       // Column centre within beam corridor AND its projection between the ends
@@ -153,7 +186,7 @@ export function resolveOperations(doc: DocumentSchema): SEOp[] {
           id: `bct-${beam.id}-${col.id}`,
           kind: 'beam-column-trim',
           operatorId: col.id,
-          targetId:   beam.id,
+          targetId: beam.id,
           enabled: true,
         });
       }
@@ -174,17 +207,22 @@ export function operationsForTarget(ops: SEOp[], targetId: string): SEOp[] {
  */
 export function trimBeamAtColumns(
   beam: ElementSchema,
-  columns: ElementSchema[],
+  columns: ElementSchema[]
 ): { start: { x: number; y: number }; end: { x: number; y: number } } {
-  const x1 = numProp(beam, 'StartX'), y1 = numProp(beam, 'StartY');
-  const x2 = numProp(beam, 'EndX'),   y2 = numProp(beam, 'EndY');
+  const x1 = numProp(beam, 'StartX'),
+    y1 = numProp(beam, 'StartY');
+  const x2 = numProp(beam, 'EndX'),
+    y2 = numProp(beam, 'EndY');
   const len = Math.hypot(x2 - x1, y2 - y1) || 1;
-  const dx = (x2 - x1) / len, dy = (y2 - y1) / len;
+  const dx = (x2 - x1) / len,
+    dy = (y2 - y1) / len;
 
   // For each column on the line, find the nearer face along the beam.
-  let startT = 0, endT = len;
+  let startT = 0,
+    endT = len;
   for (const col of columns) {
-    const cx = numProp(col, 'X'), cy = numProp(col, 'Y');
+    const cx = numProp(col, 'X'),
+      cy = numProp(col, 'Y');
     const colDia = numProp(col, 'Diameter', numProp(col, 'Width', 300));
     const half = colDia / 2;
     // Project column centre onto beam line
@@ -198,9 +236,12 @@ export function trimBeamAtColumns(
     }
   }
   // Clamp so the beam doesn't invert
-  if (endT < startT) { startT = 0; endT = len; }
+  if (endT < startT) {
+    startT = 0;
+    endT = len;
+  }
   return {
     start: { x: x1 + dx * startT, y: y1 + dy * startT },
-    end:   { x: x1 + dx * endT,   y: y1 + dy * endT   },
+    end: { x: x1 + dx * endT, y: y1 + dy * endT },
   };
 }

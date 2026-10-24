@@ -9,7 +9,7 @@ import { parseCSV, parseGeoJSON } from '../lib/topoParser';
 
 export function TopoImportPanel(): React.ReactElement {
   const { t } = useTranslation();
-  const document  = useDocumentStore((s) => s.document);
+  const document = useDocumentStore((s) => s.document);
   const addElement = useDocumentStore((s) => s.addElement);
   const pushHistory = useDocumentStore((s) => s.pushHistory);
   const isReadOnly = isDocumentReadOnly();
@@ -46,11 +46,21 @@ export function TopoImportPanel(): React.ReactElement {
 
       const bb = points.reduce(
         (acc, p) => ({
-          minX: Math.min(acc.minX, p.x), maxX: Math.max(acc.maxX, p.x),
-          minY: Math.min(acc.minY, p.y), maxY: Math.max(acc.maxY, p.y),
-          minZ: Math.min(acc.minZ, p.z), maxZ: Math.max(acc.maxZ, p.z),
+          minX: Math.min(acc.minX, p.x),
+          maxX: Math.max(acc.maxX, p.x),
+          minY: Math.min(acc.minY, p.y),
+          maxY: Math.max(acc.maxY, p.y),
+          minZ: Math.min(acc.minZ, p.z),
+          maxZ: Math.max(acc.maxZ, p.z),
         }),
-        { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity, minZ: Infinity, maxZ: -Infinity }
+        {
+          minX: Infinity,
+          maxX: -Infinity,
+          minY: Infinity,
+          maxY: -Infinity,
+          minZ: Infinity,
+          maxZ: -Infinity,
+        }
       );
 
       const layers = Object.values(document.organization.layers);
@@ -62,11 +72,11 @@ export function TopoImportPanel(): React.ReactElement {
         layerId,
         properties: {
           Points: { type: 'string', value: JSON.stringify(points) },
-          Name:   { type: 'string', value: t('panels.topoImport.defaultName') },
-          X:      { type: 'number', value: bb.minX },
-          Y:      { type: 'number', value: bb.minY },
-          Width:  { type: 'number', value: bb.maxX - bb.minX },
-          Depth:  { type: 'number', value: bb.maxY - bb.minY },
+          Name: { type: 'string', value: t('panels.topoImport.defaultName') },
+          X: { type: 'number', value: bb.minX },
+          Y: { type: 'number', value: bb.minY },
+          Width: { type: 'number', value: bb.maxX - bb.minX },
+          Depth: { type: 'number', value: bb.maxY - bb.minY },
         },
       });
 
@@ -101,7 +111,9 @@ export function TopoImportPanel(): React.ReactElement {
       />
 
       {error && (
-        <div className="topo-import-panel__error" role="alert">{error}</div>
+        <div className="topo-import-panel__error" role="alert">
+          {error}
+        </div>
       )}
 
       <button
@@ -110,9 +122,7 @@ export function TopoImportPanel(): React.ReactElement {
         disabled={importing || !text.trim()}
         aria-busy={importing}
       >
-        {importing
-          ? t('panels.topoImport.importing')
-          : t('panels.topoImport.importBtn')}
+        {importing ? t('panels.topoImport.importing') : t('panels.topoImport.importBtn')}
       </button>
     </div>
   );

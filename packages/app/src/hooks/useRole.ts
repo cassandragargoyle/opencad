@@ -12,14 +12,18 @@ export function getCanForRole(role: RoleId): (action: string) => boolean {
     const [ns, id] = action.split(':');
     if (!ns || !id) return false;
     switch (ns) {
-      case 'tool':    return config.tools.includes(id);
-      case 'panel':   return config.panels.includes(id);
+      case 'tool':
+        return config.tools.includes(id);
+      case 'panel':
+        return config.panels.includes(id);
       case 'layer': {
         if (config.writableLayers === 'all') return true;
         return (config.writableLayers as string[]).includes(id);
       }
-      case 'view':    return config.views.includes(id);
-      default:        return false;
+      case 'view':
+        return config.views.includes(id);
+      default:
+        return false;
     }
   };
 }

@@ -60,7 +60,10 @@ export interface RoomGeometry {
    * [125, 250, 500, 1000, 2000, 4000] Hz.
    * Surfaces: 'floor' | 'ceiling' | 'wall-n' | 'wall-s' | 'wall-e' | 'wall-w'
    */
-  absorptionCoeffs: Record<'floor' | 'ceiling' | 'wall-n' | 'wall-s' | 'wall-e' | 'wall-w', number[]>;
+  absorptionCoeffs: Record<
+    'floor' | 'ceiling' | 'wall-n' | 'wall-s' | 'wall-e' | 'wall-w',
+    number[]
+  >;
 }
 
 // ── Reflection data ───────────────────────────────────────────────────────────
@@ -101,7 +104,7 @@ const SPEED_OF_SOUND = 343; // m/s at 20°C
 export function computeImageSources(
   room: RoomGeometry,
   source: AcousticSource,
-  maxOrder: number,
+  maxOrder: number
 ): Reflection[] {
   const Lx = room.width;
   const Ly = room.depth;
@@ -113,20 +116,20 @@ export function computeImageSources(
     return coeffs.reduce((s, c) => s + c, 0) / coeffs.length;
   }
 
-  const alphaFloor   = meanAlpha('floor');
+  const alphaFloor = meanAlpha('floor');
   const alphaCeiling = meanAlpha('ceiling');
-  const alphaWallN   = meanAlpha('wall-n');
-  const alphaWallS   = meanAlpha('wall-s');
-  const alphaWallE   = meanAlpha('wall-e');
-  const alphaWallW   = meanAlpha('wall-w');
+  const alphaWallN = meanAlpha('wall-n');
+  const alphaWallS = meanAlpha('wall-s');
+  const alphaWallE = meanAlpha('wall-e');
+  const alphaWallW = meanAlpha('wall-w');
 
   // Reflection coefficient ρ = √(1 - α)
-  const rhoFloor   = Math.sqrt(Math.max(0, 1 - alphaFloor));
+  const rhoFloor = Math.sqrt(Math.max(0, 1 - alphaFloor));
   const rhoCeiling = Math.sqrt(Math.max(0, 1 - alphaCeiling));
-  const rhoWallN   = Math.sqrt(Math.max(0, 1 - alphaWallN));
-  const rhoWallS   = Math.sqrt(Math.max(0, 1 - alphaWallS));
-  const rhoWallE   = Math.sqrt(Math.max(0, 1 - alphaWallE));
-  const rhoWallW   = Math.sqrt(Math.max(0, 1 - alphaWallW));
+  const rhoWallN = Math.sqrt(Math.max(0, 1 - alphaWallN));
+  const rhoWallS = Math.sqrt(Math.max(0, 1 - alphaWallS));
+  const rhoWallE = Math.sqrt(Math.max(0, 1 - alphaWallE));
+  const rhoWallW = Math.sqrt(Math.max(0, 1 - alphaWallW));
 
   const sx = source.position.x;
   const sy = source.position.y;
@@ -144,8 +147,8 @@ export function computeImageSources(
   // Direct sound (order 0)
   const directDist = Math.sqrt((sx - rx) ** 2 + (sy - ry) ** 2 + (sz - rz) ** 2);
   reflections.push({
-    order:         0,
-    delay:         directDist / SPEED_OF_SOUND,
+    order: 0,
+    delay: directDist / SPEED_OF_SOUND,
     attenuationDB: 20 * Math.log10(Math.max(0.001, directDist)),
   });
 
@@ -163,40 +166,36 @@ export function computeImageSources(
               const imgY = 2 * q * Ly + (ys === 0 ? sy : -sy + 2 * Ly);
               const imgZ = 2 * r * Lz + (zs === 0 ? sz : -sz + 2 * Lz);
 
-              const dist = Math.sqrt(
-                (imgX - rx) ** 2 + (imgY - ry) ** 2 + (imgZ - rz) ** 2,
-              );
+              const dist = Math.sqrt((imgX - rx) ** 2 + (imgY - ry) ** 2 + (imgZ - rz) ** 2);
 
               // Skip if too far (limit to 2-second window)
               if (dist / SPEED_OF_SOUND > 2.0) continue;
 
               // Count bounces per wall pair from image indices
-              const bouncesX  = Math.abs(p) + (xs === 1 ? 1 : 0);
-              const bouncesY  = Math.abs(q) + (ys === 1 ? 1 : 0);
-              const bouncesZ  = Math.abs(r) + (zs === 1 ? 1 : 0);
-              const order     = bouncesX + bouncesY + bouncesZ;
+              const bouncesX = Math.abs(p) + (xs === 1 ? 1 : 0);
+              const bouncesY = Math.abs(q) + (ys === 1 ? 1 : 0);
+              const bouncesZ = Math.abs(r) + (zs === 1 ? 1 : 0);
+              const order = bouncesX + bouncesY + bouncesZ;
 
               if (order > maxOrder || order < 1) continue;
 
               // Total reflection coefficient: each x-bounce alternates wall-w / wall-e
               // Approximate by using geometric mean of opposing walls
-              const rhoX  = Math.sqrt(rhoWallW * rhoWallE);
-              const rhoY  = Math.sqrt(rhoWallN * rhoWallS);
-              const rhoZ  = Math.sqrt(rhoFloor * rhoCeiling);
+              const rhoX = Math.sqrt(rhoWallW * rhoWallE);
+              const rhoY = Math.sqrt(rhoWallN * rhoWallS);
+              const rhoZ = Math.sqrt(rhoFloor * rhoCeiling);
 
               const totalRho =
-                Math.pow(rhoX, bouncesX) *
-                Math.pow(rhoY, bouncesY) *
-                Math.pow(rhoZ, bouncesZ);
+                Math.pow(rhoX, bouncesX) * Math.pow(rhoY, bouncesY) * Math.pow(rhoZ, bouncesZ);
 
               // Attenuation dB: spherical spreading + absorption
-              const spreadingDB    = 20 * Math.log10(Math.max(0.001, dist));
-              const absorptionDB   = -20 * Math.log10(Math.max(1e-10, totalRho));
-              const attenuationDB  = spreadingDB + absorptionDB;
+              const spreadingDB = 20 * Math.log10(Math.max(0.001, dist));
+              const absorptionDB = -20 * Math.log10(Math.max(1e-10, totalRho));
+              const attenuationDB = spreadingDB + absorptionDB;
 
               reflections.push({
                 order,
-                delay:         dist / SPEED_OF_SOUND,
+                delay: dist / SPEED_OF_SOUND,
                 attenuationDB,
               });
             }
@@ -228,10 +227,10 @@ export function computeImageSources(
 export function computeImpulseResponse(
   reflections: Reflection[],
   sampleRate: number,
-  durationMs: number,
+  durationMs: number
 ): Float32Array {
   const numSamples = Math.ceil((durationMs / 1000) * sampleRate);
-  const ir         = new Float32Array(numSamples);
+  const ir = new Float32Array(numSamples);
 
   for (const ref of reflections) {
     const sampleIndex = Math.round(ref.delay * sampleRate);
@@ -297,16 +296,16 @@ export function iso3382EDT(impulseResponse: Float32Array, sampleRate: number): n
  * @returns C80 in dB
  */
 export function iso3382C80(impulseResponse: Float32Array, sampleRate: number): number {
-  const cutoffSample = Math.round(0.080 * sampleRate); // 80 ms
+  const cutoffSample = Math.round(0.08 * sampleRate); // 80 ms
   let earlyEnergy = 0;
-  let lateEnergy  = 0;
+  let lateEnergy = 0;
 
   for (let i = 0; i < impulseResponse.length; i++) {
     const e = (impulseResponse[i]! ?? 0) ** 2;
     if (i <= cutoffSample) {
       earlyEnergy += e;
     } else {
-      lateEnergy  += e;
+      lateEnergy += e;
     }
   }
 
@@ -326,7 +325,7 @@ export function iso3382C80(impulseResponse: Float32Array, sampleRate: number): n
  * @returns D50 (dimensionless fraction)
  */
 export function iso3382D50(impulseResponse: Float32Array, sampleRate: number): number {
-  const cutoffSample = Math.round(0.050 * sampleRate); // 50 ms
+  const cutoffSample = Math.round(0.05 * sampleRate); // 50 ms
   let earlyEnergy = 0;
   let totalEnergy = 0;
 
@@ -356,11 +355,11 @@ export function iso3382D50(impulseResponse: Float32Array, sampleRate: number): n
 export function octaveBandEnergy(
   impulseResponse: Float32Array,
   sampleRate: number,
-  centerHz: number,
+  centerHz: number
 ): number {
-  const N   = impulseResponse.length;
-  const lo  = centerHz / Math.SQRT2;
-  const hi  = centerHz * Math.SQRT2;
+  const N = impulseResponse.length;
+  const lo = centerHz / Math.SQRT2;
+  const hi = centerHz * Math.SQRT2;
   const bin = sampleRate / N; // Hz per FFT bin
 
   // DFT energy summation in the band (no windowing for simplicity)

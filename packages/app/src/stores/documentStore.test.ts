@@ -151,8 +151,7 @@ describe('T-BIM-006: Level operations', () => {
     const levelIds = Object.keys(doc?.organization.levels ?? {});
     expect(levelIds.length).toBe(1);
 
-    expect(() => useDocumentStore.getState().deleteLevel(levelIds[0]!))
-      .toThrow(/last level/);
+    expect(() => useDocumentStore.getState().deleteLevel(levelIds[0]!)).toThrow(/last level/);
     const docAfter = useDocumentStore.getState().document;
     expect(Object.keys(docAfter?.organization.levels ?? {}).length).toBe(1);
   });
@@ -188,7 +187,12 @@ describe('T-DOC-021: Mutating actions persist to localStorage', () => {
     useDocumentStore.getState().initProject('persist-proj', 'user-001');
   });
 
-  function readPersisted(): { organization?: { layers?: Record<string, unknown>; levels?: Record<string, unknown> }; content?: { elements?: Record<string, { properties?: Record<string, { value: unknown }> }> }; name?: string; presentation?: { views?: Record<string, unknown> } } | null {
+  function readPersisted(): {
+    organization?: { layers?: Record<string, unknown>; levels?: Record<string, unknown> };
+    content?: { elements?: Record<string, { properties?: Record<string, { value: unknown }> }> };
+    name?: string;
+    presentation?: { views?: Record<string, unknown> };
+  } | null {
     const raw = localStorage.getItem('opencad-document:persist-proj');
     return raw ? JSON.parse(raw) : null;
   }
@@ -196,7 +200,9 @@ describe('T-DOC-021: Mutating actions persist to localStorage', () => {
   it('addElement persists', () => {
     const layerId = useDocumentStore.getState().addLayer({ name: 'L', color: '#fff' });
     const elId = useDocumentStore.getState().addElement({
-      type: 'wall', layerId, properties: { Height: { type: 'number', value: 3000 } },
+      type: 'wall',
+      layerId,
+      properties: { Height: { type: 'number', value: 3000 } },
     });
     const persisted = readPersisted();
     expect(persisted?.content?.elements?.[elId]).toBeDefined();
@@ -205,7 +211,9 @@ describe('T-DOC-021: Mutating actions persist to localStorage', () => {
   it('updateElement persists the edit (regression for save loss)', () => {
     const layerId = useDocumentStore.getState().addLayer({ name: 'L', color: '#fff' });
     const elId = useDocumentStore.getState().addElement({
-      type: 'wall', layerId, properties: { Height: { type: 'number', value: 3000 } },
+      type: 'wall',
+      layerId,
+      properties: { Height: { type: 'number', value: 3000 } },
     });
     useDocumentStore.getState().updateElement(elId, {
       properties: { Height: { type: 'number', value: 4200 } },
@@ -258,10 +266,16 @@ describe('T-DOC-021: Mutating actions persist to localStorage', () => {
 
   it('addRendering persists the render view', () => {
     const id = useDocumentStore.getState().addRendering({
-      name: 'Test render', png: 'data:image/png;base64,AAAA', width: 1920, height: 1080, samples: 16,
+      name: 'Test render',
+      png: 'data:image/png;base64,AAAA',
+      width: 1920,
+      height: 1080,
+      samples: 16,
     });
     expect(id).toBeTruthy();
-    const views = readPersisted()?.presentation?.views as Record<string, { type: string }> | undefined;
+    const views = readPersisted()?.presentation?.views as
+      | Record<string, { type: string }>
+      | undefined;
     expect(views?.[id!]?.type).toBe('render');
   });
 });

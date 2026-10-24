@@ -173,7 +173,7 @@ export function adminListQueue(): Promise<Plugin[]> {
 export function adminSetModeration(
   id: string,
   status: 'pending' | 'approved' | 'rejected',
-  notes?: string,
+  notes?: string
 ): Promise<Plugin> {
   return apiFetch<Plugin>(`/admin/plugins/${encodeURIComponent(id)}/moderation`, {
     method: 'PATCH',
@@ -181,11 +181,7 @@ export function adminSetModeration(
   });
 }
 
-export function adminRevoke(
-  id: string,
-  revoked: boolean,
-  reason?: string,
-): Promise<Plugin> {
+export function adminRevoke(id: string, revoked: boolean, reason?: string): Promise<Plugin> {
   return apiFetch<Plugin>(`/admin/plugins/${encodeURIComponent(id)}/revoke`, {
     method: 'PATCH',
     body: JSON.stringify({ revoked, reason }),
@@ -233,7 +229,7 @@ export function getOnboardingUrl(): Promise<{ url: string }> {
  *  entrypoint URL and SRI hash the manifest will reference. */
 export async function uploadBundle(
   pluginId: string,
-  bundle: File,
+  bundle: File
 ): Promise<{ entrypoint: string; sriHash: string }> {
   const url = `${baseUrl()}/plugins/${encodeURIComponent(pluginId)}/bundle`;
   const token = _getToken ? await _getToken().catch(() => null) : null;

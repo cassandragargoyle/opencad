@@ -89,5 +89,14 @@ export function useSectionBox(initialBounds?: Partial<SectionBoxBounds>): UseSec
     setSectionBox((s) => ({ ...s, linkedLevelId: null }));
   }, []);
 
-  return { sectionBox, enable, disable, toggle, setBounds, resetBounds, linkToLevel, unlinkFromLevel };
+  return {
+    sectionBox,
+    enable,
+    disable,
+    toggle,
+    setBounds,
+    resetBounds,
+    linkToLevel,
+    unlinkFromLevel,
+  };
 }

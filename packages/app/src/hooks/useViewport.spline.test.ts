@@ -63,7 +63,7 @@ vi.stubGlobal(
     observe = vi.fn();
     unobserve = vi.fn();
     disconnect = vi.fn();
-  },
+  }
 );
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -74,8 +74,15 @@ function attachCanvas(canvasRef: React.RefObject<HTMLCanvasElement | null>): HTM
   Object.defineProperty(canvas, 'width', { value: 800, configurable: true });
   Object.defineProperty(canvas, 'height', { value: 600, configurable: true });
   vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
-    left: 0, top: 0, width: 800, height: 600,
-    right: 800, bottom: 600, x: 0, y: 0, toJSON: () => ({}),
+    left: 0,
+    top: 0,
+    width: 800,
+    height: 600,
+    right: 800,
+    bottom: 600,
+    x: 0,
+    y: 0,
+    toJSON: () => ({}),
   } as DOMRect);
   (canvasRef as React.MutableRefObject<HTMLCanvasElement>).current = canvas;
   return canvas;
@@ -83,7 +90,10 @@ function attachCanvas(canvasRef: React.RefObject<HTMLCanvasElement | null>): HTM
 
 function makeClick(x: number, y: number): React.MouseEvent<HTMLCanvasElement> {
   return {
-    clientX: x, clientY: y, shiftKey: false, preventDefault: vi.fn(),
+    clientX: x,
+    clientY: y,
+    shiftKey: false,
+    preventDefault: vi.fn(),
   } as unknown as React.MouseEvent<HTMLCanvasElement>;
 }
 
@@ -96,7 +106,10 @@ describe.skip('T-2D-012: catmullRomToBezier pure helper', () => {
   });
 
   it('returns one segment for exactly 2 points', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 0 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 0 },
+    ];
     const segs = catmullRomToBezier(pts);
     expect(segs).toHaveLength(1);
   });
@@ -113,7 +126,10 @@ describe.skip('T-2D-012: catmullRomToBezier pure helper', () => {
   });
 
   it('each segment has cp1, cp2, and end fields', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 100 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+    ];
     const segs = catmullRomToBezier(pts);
     const seg = segs[0]!;
     expect(seg).toHaveProperty('cp1');
@@ -122,7 +138,10 @@ describe.skip('T-2D-012: catmullRomToBezier pure helper', () => {
   });
 
   it('cp1 and cp2 are Point2D objects with x and y numbers', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 100 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 100 },
+    ];
     const segs = catmullRomToBezier(pts);
     const seg = segs[0]!;
     expect(typeof seg.cp1.x).toBe('number');
@@ -132,7 +151,10 @@ describe.skip('T-2D-012: catmullRomToBezier pure helper', () => {
   });
 
   it('end point matches the destination control point', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 100, y: 50 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 100, y: 50 },
+    ];
     const segs = catmullRomToBezier(pts);
     expect(segs[0]!.end).toEqual({ x: 100, y: 50 });
   });
@@ -140,7 +162,11 @@ describe.skip('T-2D-012: catmullRomToBezier pure helper', () => {
   it('for collinear points the control points lie along the line', () => {
     // Three collinear horizontal points: (0,0), (50,0), (100,0)
     // All y-values should stay at 0
-    const pts = [{ x: 0, y: 0 }, { x: 50, y: 0 }, { x: 100, y: 0 }];
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 50, y: 0 },
+      { x: 100, y: 0 },
+    ];
     const segs = catmullRomToBezier(pts);
     expect(segs[0]!.cp1.y).toBeCloseTo(0);
     expect(segs[0]!.cp2.y).toBeCloseTo(0);
@@ -193,9 +219,15 @@ describe.skip('T-2D-012: spline tool — click interactions', () => {
     const { result } = renderHook(() => useViewport());
     attachCanvas(result.current.canvasRef);
 
-    act(() => { result.current.handleCanvasMouseDown(makeClick(200, 200)); });
-    act(() => { result.current.handleCanvasMouseDown(makeClick(300, 250)); });
-    act(() => { result.current.handleCanvasMouseDown(makeClick(400, 200)); });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(200, 200));
+    });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(300, 250));
+    });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(400, 200));
+    });
 
     expect(result.current.drawingState.points).toHaveLength(3);
   });
@@ -207,7 +239,9 @@ describe.skip('T-2D-012: spline tool — click interactions', () => {
     const { result } = renderHook(() => useViewport());
     attachCanvas(result.current.canvasRef);
 
-    act(() => { result.current.handleCanvasMouseDown(makeClick(200, 200)); });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(200, 200));
+    });
     expect(result.current.drawingState.points).toHaveLength(1);
 
     act(() => {
@@ -226,8 +260,12 @@ describe.skip('T-2D-012: spline tool — click interactions', () => {
     const { result } = renderHook(() => useViewport());
     attachCanvas(result.current.canvasRef);
 
-    act(() => { result.current.handleCanvasMouseDown(makeClick(200, 200)); });
-    act(() => { result.current.handleCanvasMouseDown(makeClick(300, 300)); });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(200, 200));
+    });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(300, 300));
+    });
 
     act(() => {
       result.current.handleCanvasDoubleClick(makeClick(400, 250));
@@ -238,7 +276,10 @@ describe.skip('T-2D-012: spline tool — click interactions', () => {
     expect(callArgs.type).toBe('polyline');
 
     // geometry.data.smooth should be true
-    const geomData = callArgs.geometry as { type: string; data: { smooth: boolean; points: unknown[] } };
+    const geomData = callArgs.geometry as {
+      type: string;
+      data: { smooth: boolean; points: unknown[] };
+    };
     expect(geomData.data.smooth).toBe(true);
     expect(Array.isArray(geomData.data.points)).toBe(true);
     expect(geomData.data.points.length).toBeGreaterThanOrEqual(2);
@@ -259,10 +300,14 @@ describe.skip('T-2D-012: spline tool — click interactions', () => {
     addElementSpy.mockClear();
 
     // Add only one point
-    act(() => { result.current.handleCanvasMouseDown(makeClick(200, 200)); });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(200, 200));
+    });
 
     // Double-click — only 1 prior point, so prev.points.length < 2, should NOT commit
-    act(() => { result.current.handleCanvasDoubleClick(makeClick(300, 300)); });
+    act(() => {
+      result.current.handleCanvasDoubleClick(makeClick(300, 300));
+    });
 
     expect(addElementSpy).not.toHaveBeenCalled();
     expect(result.current.drawingState.isDrawing).toBe(false);
@@ -279,14 +324,23 @@ describe.skip('T-2D-012: spline tool — click interactions', () => {
     // Clear any calls from hook initialization
     addElementSpy.mockClear();
 
-    act(() => { result.current.handleCanvasMouseDown(makeClick(100, 100)); });
-    act(() => { result.current.handleCanvasMouseDown(makeClick(200, 150)); });
-    act(() => { result.current.handleCanvasMouseDown(makeClick(300, 100)); });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(100, 100));
+    });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(200, 150));
+    });
+    act(() => {
+      result.current.handleCanvasMouseDown(makeClick(300, 100));
+    });
 
-    act(() => { result.current.handleCanvasDoubleClick(makeClick(400, 120)); });
+    act(() => {
+      result.current.handleCanvasDoubleClick(makeClick(400, 120));
+    });
 
     expect(addElementSpy).toHaveBeenCalledOnce();
-    const geomData = (addElementSpy.mock.calls[0]![0].geometry as { data: { points: unknown[] } }).data;
+    const geomData = (addElementSpy.mock.calls[0]![0].geometry as { data: { points: unknown[] } })
+      .data;
     // 3 single clicks + 1 point from double-click = 4 points
     expect(geomData.points.length).toBe(4);
   });

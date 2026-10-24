@@ -312,11 +312,11 @@ function scrapeBinaryMetadata(buffer: ArrayBuffer): PLNMetadata {
   // no-control-regex lint rule on the static regex literal.
   const nul = String.fromCharCode(0);
   const nameRe = new RegExp(`Project Name\\s*[:=]\\s*([^${nul}\\r\\n]{1,120})`, 'i');
-  const genRe  = new RegExp(`Generator\\s*[:=]\\s*([^${nul}\\r\\n]{1,120})`, 'i');
+  const genRe = new RegExp(`Generator\\s*[:=]\\s*([^${nul}\\r\\n]{1,120})`, 'i');
   return {
-    version:     pickFirst(/ArchiCAD\s+([\d.]+)/i) || pickFirst(/Archicad\s+([0-9]+)/i),
+    version: pickFirst(/ArchiCAD\s+([\d.]+)/i) || pickFirst(/Archicad\s+([0-9]+)/i),
     projectName: pickFirst(nameRe),
-    generator:   pickFirst(genRe) || 'Archicad',
+    generator: pickFirst(genRe) || 'Archicad',
   };
 }
 
@@ -336,7 +336,7 @@ function scrapeBinaryMetadata(buffer: ArrayBuffer): PLNMetadata {
  */
 export async function importFile(
   buffer: ArrayBuffer,
-  projectId: string,
+  projectId: string
 ): Promise<{ schema: DocumentSchema; warnings: string[] }> {
   const warnings: string[] = [];
   const schema = createProject(projectId, 'archicad-import');
@@ -374,16 +374,18 @@ export async function importFile(
         if (pn && !meta.projectName) schema.name = pn.trim();
         const ver = /<ArchicadVersion>([^<]+)<\/ArchicadVersion>/i.exec(text)?.[1];
         if (ver) source.version = ver.trim();
-      } catch { /* non-UTF-8 XML fragment — skip */ }
+      } catch {
+        /* non-UTF-8 XML fragment — skip */
+      }
     }
     warnings.push(
       `Archicad PLN: extracted ${innerNames.length} inner entries via ZIP; ` +
-      'geometry streams remain proprietary. Export PLN → IFC for full fidelity.',
+        'geometry streams remain proprietary. Export PLN → IFC for full fidelity.'
     );
   } else {
     warnings.push(
       'Archicad PLN binary geometry is not decoded — only metadata survives. ' +
-      'Export PLN → IFC from Archicad and re-import via IFC for full fidelity.',
+        'Export PLN → IFC from Archicad and re-import via IFC for full fidelity.'
     );
   }
 

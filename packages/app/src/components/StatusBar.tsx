@@ -35,11 +35,21 @@ export function StatusBar({ viewType }: StatusBarProps = {}) {
       try {
         const { used, quota } = await getStorageUsage();
         if (active) setStorageWarning(isStorageQuotaWarning(used, quota));
-      } catch { /* non-fatal */ }
+      } catch {
+        /* non-fatal */
+      }
     };
     void check();
-    const id = setInterval(() => { void check(); }, 5 * 60 * 1000);
-    return () => { active = false; clearInterval(id); };
+    const id = setInterval(
+      () => {
+        void check();
+      },
+      5 * 60 * 1000
+    );
+    return () => {
+      active = false;
+      clearInterval(id);
+    };
   }, []);
 
   // ── FPS counter — only active when in 3D view ──────────────────────────────
@@ -61,21 +71,21 @@ export function StatusBar({ viewType }: StatusBarProps = {}) {
       }
       setFpsDisplay({ fps, color });
     }, 500);
-    return () => { clearInterval(id); };
+    return () => {
+      clearInterval(id);
+    };
   }, [viewType]);
 
   return (
     <footer className="app-status-bar">
       <div className="status-left">
-        <SyncStatusBar
-          status={syncStatus}
-          pendingOps={0}
-          lastSynced={lastSaved}
-        />
+        <SyncStatusBar status={syncStatus} pendingOps={0} lastSynced={lastSaved} />
         {storageWarning && (
           <span
             className="status-storage-warning"
-            title={t('status.storageWarningTooltip', { defaultValue: 'Storage usage is above 80% — consider exporting your projects' })}
+            title={t('status.storageWarningTooltip', {
+              defaultValue: 'Storage usage is above 80% — consider exporting your projects',
+            })}
           >
             {t('status.storageAlmostFull', { defaultValue: '⚠ Storage almost full' })}
           </span>
@@ -85,12 +95,22 @@ export function StatusBar({ viewType }: StatusBarProps = {}) {
       <div className="status-right">
         {selectedIds.length > 0 && (
           <div className="status-item">
-            <span>{t('status.selected', { count: selectedIds.length, defaultValue: '{{count}} selected' })}</span>
+            <span>
+              {t('status.selected', {
+                count: selectedIds.length,
+                defaultValue: '{{count}} selected',
+              })}
+            </span>
           </div>
         )}
         {doc && (
           <div className="status-item">
-            <span>{t('status.elements', { count: Object.keys(doc.content.elements).length, defaultValue: '{{count}} elements' })}</span>
+            <span>
+              {t('status.elements', {
+                count: Object.keys(doc.content.elements).length,
+                defaultValue: '{{count}} elements',
+              })}
+            </span>
           </div>
         )}
         {fpsDisplay && (
@@ -112,8 +132,12 @@ export function StatusBar({ viewType }: StatusBarProps = {}) {
             className="status-item status-backend"
             title={
               backend === 'webgpu'
-                ? t('status.webgpuTooltip', { defaultValue: 'Three.js WebGPURenderer — compute shaders enabled' })
-                : t('status.webglTooltip', { defaultValue: 'WebGL 2.0 fallback — WebGPU unavailable or disabled' })
+                ? t('status.webgpuTooltip', {
+                    defaultValue: 'Three.js WebGPURenderer — compute shaders enabled',
+                  })
+                : t('status.webglTooltip', {
+                    defaultValue: 'WebGL 2.0 fallback — WebGPU unavailable or disabled',
+                  })
             }
           >
             <span className={`backend-badge backend-badge--${backend}`}>
@@ -123,7 +147,10 @@ export function StatusBar({ viewType }: StatusBarProps = {}) {
         )}
         <div
           className="status-item"
-          title={t('status.currentRole', { label: config.label, defaultValue: 'Current role: {{label}}' })}
+          title={t('status.currentRole', {
+            label: config.label,
+            defaultValue: 'Current role: {{label}}',
+          })}
         >
           <span className={`role-badge role-badge--${role}`}>{config.label}</span>
         </div>

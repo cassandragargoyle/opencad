@@ -7,7 +7,10 @@
  * (AISC/ISO), plus helpers for area + section properties.
  */
 
-export interface Point2D { x: number; y: number }
+export interface Point2D {
+  x: number;
+  y: number;
+}
 
 export interface Profile {
   id: string;
@@ -44,11 +47,12 @@ export function sweepVolume(profile: Profile, lenMm: number): number {
 
 /** Build an I-beam (W-shape) profile by dimensions. */
 export function buildWShape(params: {
-  id: string; name: string;
-  depth: number;   // overall depth, mm
-  bf: number;      // flange width, mm
-  tw: number;      // web thickness
-  tf: number;      // flange thickness
+  id: string;
+  name: string;
+  depth: number; // overall depth, mm
+  bf: number; // flange width, mm
+  tw: number; // web thickness
+  tf: number; // flange thickness
   publishedAreaMm2?: number;
 }): Profile {
   const { depth: d, bf, tw, tf } = params;
@@ -57,63 +61,145 @@ export function buildWShape(params: {
   const htw = tw / 2;
   const outer: Point2D[] = [
     { x: -hbf, y: -d / 2 },
-    { x:  hbf, y: -d / 2 },
-    { x:  hbf, y: -d / 2 + tf },
-    { x:  htw, y: -d / 2 + tf },
-    { x:  htw, y:  d / 2 - tf },
-    { x:  hbf, y:  d / 2 - tf },
-    { x:  hbf, y:  d / 2 },
-    { x: -hbf, y:  d / 2 },
-    { x: -hbf, y:  d / 2 - tf },
-    { x: -htw, y:  d / 2 - tf },
+    { x: hbf, y: -d / 2 },
+    { x: hbf, y: -d / 2 + tf },
+    { x: htw, y: -d / 2 + tf },
+    { x: htw, y: d / 2 - tf },
+    { x: hbf, y: d / 2 - tf },
+    { x: hbf, y: d / 2 },
+    { x: -hbf, y: d / 2 },
+    { x: -hbf, y: d / 2 - tf },
+    { x: -htw, y: d / 2 - tf },
     { x: -htw, y: -d / 2 + tf },
     { x: -hbf, y: -d / 2 + tf },
   ];
-  return { id: params.id, name: params.name, category: 'W', outer, publishedAreaMm2: params.publishedAreaMm2 };
+  return {
+    id: params.id,
+    name: params.name,
+    category: 'W',
+    outer,
+    publishedAreaMm2: params.publishedAreaMm2,
+  };
 }
 
 /** Build a rectangular hollow section (HSS) profile. */
 export function buildHSS(params: {
-  id: string; name: string;
-  outerW: number; outerH: number;
+  id: string;
+  name: string;
+  outerW: number;
+  outerH: number;
   wallThickness: number;
   publishedAreaMm2?: number;
 }): Profile {
   const { outerW, outerH, wallThickness: t } = params;
-  const ox = outerW / 2, oy = outerH / 2;
-  const ix = ox - t, iy = oy - t;
+  const ox = outerW / 2,
+    oy = outerH / 2;
+  const ix = ox - t,
+    iy = oy - t;
   const outer: Point2D[] = [
-    { x: -ox, y: -oy }, { x: ox, y: -oy }, { x: ox, y: oy }, { x: -ox, y: oy },
+    { x: -ox, y: -oy },
+    { x: ox, y: -oy },
+    { x: ox, y: oy },
+    { x: -ox, y: oy },
   ];
   const inner: Point2D[] = [
-    { x: -ix, y: -iy }, { x: -ix, y: iy }, { x: ix, y: iy }, { x: ix, y: -iy },
+    { x: -ix, y: -iy },
+    { x: -ix, y: iy },
+    { x: ix, y: iy },
+    { x: ix, y: -iy },
   ];
-  return { id: params.id, name: params.name, category: 'HSS', outer, holes: [inner], publishedAreaMm2: params.publishedAreaMm2 };
+  return {
+    id: params.id,
+    name: params.name,
+    category: 'HSS',
+    outer,
+    holes: [inner],
+    publishedAreaMm2: params.publishedAreaMm2,
+  };
 }
 
 /** Built-in catalogue of standard profiles (subset — a starter set). */
 export const BUILT_IN_PROFILES: Profile[] = [
   // AISC W-shapes (dimensions from AISC Steel Construction Manual, rounded).
-  buildWShape({ id: 'W8x31',   name: 'W8×31',   depth: 203, bf: 203, tw: 7.24, tf: 11.0,  publishedAreaMm2: 5870 }),
-  buildWShape({ id: 'W10x49',  name: 'W10×49',  depth: 254, bf: 254, tw: 8.64, tf: 14.2,  publishedAreaMm2: 9290 }),
-  buildWShape({ id: 'W12x50',  name: 'W12×50',  depth: 310, bf: 205, tw: 9.4,  tf: 16.3,  publishedAreaMm2: 9480 }),
-  buildWShape({ id: 'W14x90',  name: 'W14×90',  depth: 356, bf: 368, tw: 11.2, tf: 18.0,  publishedAreaMm2: 17100 }),
+  buildWShape({
+    id: 'W8x31',
+    name: 'W8×31',
+    depth: 203,
+    bf: 203,
+    tw: 7.24,
+    tf: 11.0,
+    publishedAreaMm2: 5870,
+  }),
+  buildWShape({
+    id: 'W10x49',
+    name: 'W10×49',
+    depth: 254,
+    bf: 254,
+    tw: 8.64,
+    tf: 14.2,
+    publishedAreaMm2: 9290,
+  }),
+  buildWShape({
+    id: 'W12x50',
+    name: 'W12×50',
+    depth: 310,
+    bf: 205,
+    tw: 9.4,
+    tf: 16.3,
+    publishedAreaMm2: 9480,
+  }),
+  buildWShape({
+    id: 'W14x90',
+    name: 'W14×90',
+    depth: 356,
+    bf: 368,
+    tw: 11.2,
+    tf: 18.0,
+    publishedAreaMm2: 17100,
+  }),
   // AISC HSS (square + rect).
-  buildHSS({ id: 'HSS4x4x1/4', name: 'HSS4×4×¼',       outerW: 102, outerH: 102, wallThickness: 6.35, publishedAreaMm2: 2230 }),
-  buildHSS({ id: 'HSS6x6x3/8', name: 'HSS6×6×⅜',       outerW: 152, outerH: 152, wallThickness: 9.5,  publishedAreaMm2: 4990 }),
-  buildHSS({ id: 'HSS8x4x1/4', name: 'HSS8×4×¼',       outerW: 203, outerH: 102, wallThickness: 6.35, publishedAreaMm2: 3610 }),
+  buildHSS({
+    id: 'HSS4x4x1/4',
+    name: 'HSS4×4×¼',
+    outerW: 102,
+    outerH: 102,
+    wallThickness: 6.35,
+    publishedAreaMm2: 2230,
+  }),
+  buildHSS({
+    id: 'HSS6x6x3/8',
+    name: 'HSS6×6×⅜',
+    outerW: 152,
+    outerH: 152,
+    wallThickness: 9.5,
+    publishedAreaMm2: 4990,
+  }),
+  buildHSS({
+    id: 'HSS8x4x1/4',
+    name: 'HSS8×4×¼',
+    outerW: 203,
+    outerH: 102,
+    wallThickness: 6.35,
+    publishedAreaMm2: 3610,
+  }),
   // Solid rectangular (architectural column).
   {
-    id: 'col-300x300', name: 'Concrete 300×300', category: 'rect',
+    id: 'col-300x300',
+    name: 'Concrete 300×300',
+    category: 'rect',
     outer: [
-      { x: -150, y: -150 }, { x: 150, y: -150 },
-      { x:  150, y:  150 }, { x: -150, y:  150 },
+      { x: -150, y: -150 },
+      { x: 150, y: -150 },
+      { x: 150, y: 150 },
+      { x: -150, y: 150 },
     ],
     publishedAreaMm2: 90000,
   },
   // Round (circular column) — 300 mm diameter, 32-sided approximation.
   {
-    id: 'col-round-300', name: 'Round 300 mm Ø', category: 'round',
+    id: 'col-round-300',
+    name: 'Round 300 mm Ø',
+    category: 'round',
     outer: Array.from({ length: 32 }, (_, i) => {
       const a = (i / 32) * 2 * Math.PI;
       return { x: 150 * Math.cos(a), y: 150 * Math.sin(a) };

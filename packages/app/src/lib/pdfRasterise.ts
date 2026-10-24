@@ -15,7 +15,7 @@ export interface RasterisedPage {
 export async function rasterisePDFPage(
   file: File,
   pageIndex = 0,
-  targetWidth = 2000,
+  targetWidth = 2000
 ): Promise<RasterisedPage> {
   // Dynamic import so pdfjs-dist only hits the network on demand.
   const pdfjs = await import('pdfjs-dist');
@@ -23,8 +23,9 @@ export async function rasterisePDFPage(
   // resolve the `?url` suffix to a fingerprinted asset URL at build time.
   try {
     const workerUrl = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
-    (pdfjs as unknown as { GlobalWorkerOptions: { workerSrc: string } }).GlobalWorkerOptions.workerSrc =
-      (workerUrl as unknown as { default: string }).default;
+    (
+      pdfjs as unknown as { GlobalWorkerOptions: { workerSrc: string } }
+    ).GlobalWorkerOptions.workerSrc = (workerUrl as unknown as { default: string }).default;
   } catch {
     // Worker URL unavailable in tests / SSR — pdfjs falls back to main-thread parsing.
   }

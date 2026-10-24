@@ -32,7 +32,14 @@ const BASE_BBOX = {
   max: { _type: 'Point3D' as const, x: 0, y: 0, z: 0 },
 };
 
-function makeWall(id: string, x1: number, y1: number, x2: number, y2: number, thickness = 200): ElementSchema {
+function makeWall(
+  id: string,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  thickness = 200
+): ElementSchema {
   return {
     id,
     type: 'wall',
@@ -82,7 +89,14 @@ function makeColumn(id: string, x: number, y: number, size = 400): ElementSchema
   };
 }
 
-function makeBeam(id: string, x1: number, y1: number, x2: number, y2: number, height = 400): ElementSchema {
+function makeBeam(
+  id: string,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  height = 400
+): ElementSchema {
   return {
     id,
     type: 'beam',

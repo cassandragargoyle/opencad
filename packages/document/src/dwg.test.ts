@@ -398,7 +398,7 @@ describe('T-DXF-PARSE: Minimal DXF with 1 LINE and 1 CIRCLE', () => {
     const poly = Object.values(doc.content.elements).find((e) => e.type === 'polyline')!;
     expect(poly).toBeDefined();
     // The Points JSON should have 4 entries
-    const pts = JSON.parse(poly.properties['Points']?.value as string ?? '[]') as unknown[];
+    const pts = JSON.parse((poly.properties['Points']?.value as string) ?? '[]') as unknown[];
     expect(pts.length).toBe(4);
   });
 
@@ -531,7 +531,7 @@ describe('T-DXF-EXPORT: exportDXF output structure', () => {
       properties: {
         CenterX: { type: 'number', value: 10 },
         CenterY: { type: 'number', value: 20 },
-        Radius:  { type: 'number', value: 5 },
+        Radius: { type: 'number', value: 5 },
       },
       layerId,
       levelId,
@@ -546,19 +546,19 @@ describe('T-DXF-EXPORT: exportDXF output structure', () => {
     addElement(doc, {
       type: 'arc',
       properties: {
-        CenterX:    { type: 'number', value: 0 },
-        CenterY:    { type: 'number', value: 0 },
-        Radius:     { type: 'number', value: 10 },
+        CenterX: { type: 'number', value: 0 },
+        CenterY: { type: 'number', value: 0 },
+        Radius: { type: 'number', value: 10 },
         StartAngle: { type: 'number', value: 0 },
-        EndAngle:   { type: 'number', value: 180 },
+        EndAngle: { type: 'number', value: 180 },
       },
       layerId,
       levelId,
     });
     const dxf = exportDXF(doc);
     expect(dxf).toContain('ARC');
-    expect(dxf).toContain('50');   // start-angle group code
-    expect(dxf).toContain('51');   // end-angle group code
+    expect(dxf).toContain('50'); // start-angle group code
+    expect(dxf).toContain('51'); // end-angle group code
   });
 
   it('exports polyline elements as LWPOLYLINE entities', () => {
@@ -585,8 +585,8 @@ describe('T-DXF-EXPORT: exportDXF output structure', () => {
     addElement(doc, {
       type: 'text',
       properties: {
-        X:       { type: 'number', value: 0 },
-        Y:       { type: 'number', value: 0 },
+        X: { type: 'number', value: 0 },
+        Y: { type: 'number', value: 0 },
         Content: { type: 'string', value: 'Label' },
       },
       layerId,
@@ -618,11 +618,11 @@ describe('T-DXF-ROUNDTRIP: exportDXF(schema) → importDXF(result) → verify el
       properties: {
         StartX: { type: 'number', value: 0 },
         StartY: { type: 'number', value: 0 },
-        EndX:   { type: 'number', value: 200 },
-        EndY:   { type: 'number', value: 100 },
+        EndX: { type: 'number', value: 200 },
+        EndY: { type: 'number', value: 100 },
       },
       points: [
-        { x: 0,   y: 0,   z: 0, _type: 'Point3D' },
+        { x: 0, y: 0, z: 0, _type: 'Point3D' },
         { x: 200, y: 100, z: 0, _type: 'Point3D' },
       ],
       layerId,
@@ -648,7 +648,7 @@ describe('T-DXF-ROUNDTRIP: exportDXF(schema) → importDXF(result) → verify el
       properties: {
         CenterX: { type: 'number', value: 50 },
         CenterY: { type: 'number', value: 50 },
-        Radius:  { type: 'number', value: 25 },
+        Radius: { type: 'number', value: 25 },
       },
       layerId,
       levelId,
@@ -673,7 +673,7 @@ describe('T-DXF-ROUNDTRIP: exportDXF(schema) → importDXF(result) → verify el
       properties: {
         CenterX: { type: 'number', value: 0 },
         CenterY: { type: 'number', value: 0 },
-        Radius:  { type: 'number', value: 42 },
+        Radius: { type: 'number', value: 42 },
       },
       layerId,
       levelId,
@@ -717,7 +717,9 @@ describe('T-DXF-ROUNDTRIP: exportDXF(schema) → importDXF(result) → verify el
 
     const poly = Object.values(result.value.content.elements).find((e) => e.type === 'polyline')!;
     expect(poly).toBeDefined();
-    const importedPts = JSON.parse(poly.properties['Points']?.value as string ?? '[]') as unknown[];
+    const importedPts = JSON.parse(
+      (poly.properties['Points']?.value as string) ?? '[]'
+    ) as unknown[];
     expect(importedPts.length).toBe(4);
   });
 
@@ -766,7 +768,7 @@ describe('T-DXF-ROUNDTRIP: exportDXF(schema) → importDXF(result) → verify el
       properties: {
         CenterX: { type: 'number', value: 50 },
         CenterY: { type: 'number', value: 50 },
-        Radius:  { type: 'number', value: 10 },
+        Radius: { type: 'number', value: 10 },
       },
       layerId,
       levelId,
@@ -837,12 +839,12 @@ describe('T-IO-06: DWG polish — linetypes', () => {
 describe('T-IO-06: DWG polish — true colour', () => {
   it('parseDxfTrueColour converts integer to hex', () => {
     // 0xFF0000 = red
-    expect(parseDxfTrueColour(0xFF0000)).toBe('#FF0000');
+    expect(parseDxfTrueColour(0xff0000)).toBe('#FF0000');
   });
 
   it('hexToTrueColour converts hex to integer', () => {
-    expect(hexToTrueColour('#FF0000')).toBe(0xFF0000);
-    expect(hexToTrueColour('#0000FF')).toBe(0x0000FF);
+    expect(hexToTrueColour('#FF0000')).toBe(0xff0000);
+    expect(hexToTrueColour('#0000FF')).toBe(0x0000ff);
   });
 
   it('round-trip: hex → int → hex', () => {
@@ -901,8 +903,12 @@ describe('T-IO-06: DWG polish — xref', () => {
     const lines = buildXrefInsert('0', 'X1', {
       path: '../survey/site.dwg',
       name: 'site',
-      x: 0, y: 0, z: 0,
-      scaleX: 1, scaleY: 1, scaleZ: 1,
+      x: 0,
+      y: 0,
+      z: 0,
+      scaleX: 1,
+      scaleY: 1,
+      scaleZ: 1,
       rotation: 0,
     });
     expect(lines[1]).toBe('INSERT');
@@ -912,8 +918,12 @@ describe('T-IO-06: DWG polish — xref', () => {
     const lines = buildXrefInsert('0', 'X1', {
       path: '../survey/site.dwg',
       name: 'site',
-      x: 0, y: 0, z: 0,
-      scaleX: 1, scaleY: 1, scaleZ: 1,
+      x: 0,
+      y: 0,
+      z: 0,
+      scaleX: 1,
+      scaleY: 1,
+      scaleZ: 1,
       rotation: 0,
     });
     expect(lines).toContain('../survey/site.dwg');
@@ -924,8 +934,12 @@ describe('T-IO-06: DWG polish — xref', () => {
     const lines = buildXrefInsert('0', 'X1', {
       path: 'survey.dwg',
       name: 'SURVEY',
-      x: 10, y: 20, z: 0,
-      scaleX: 1, scaleY: 1, scaleZ: 1,
+      x: 10,
+      y: 20,
+      z: 0,
+      scaleX: 1,
+      scaleY: 1,
+      scaleZ: 1,
       rotation: 45,
     });
     const dxf = '0\nSECTION\n2\nENTITIES\n' + lines.join('\n') + '\n0\nENDSEC\n0\nEOF';

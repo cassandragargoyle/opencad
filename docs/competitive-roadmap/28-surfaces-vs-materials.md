@@ -4,7 +4,8 @@
 
 ## Why
 
-Today a wall carries a single `Material` string used for both its 3D render appearance *and* its cost / takeoff calculation. These are conceptually different:
+Today a wall carries a single `Material` string used for both its 3D render appearance _and_ its cost / takeoff calculation. These are conceptually different:
+
 - **Building Material**: what the element is made of (Concrete, Plasterboard). Drives cost, carbon, thickness, thermal.
 - **Surface**: how it looks in the rendered image (matte white paint, oak veneer, polished concrete). Drives PBR material properties (roughness, metalness, color, texture).
 
@@ -13,6 +14,7 @@ Real workflows change surface finishes per elevation (exterior brick + interior 
 ## Scope
 
 ### In scope
+
 - Split the current `Material` concept into two:
   - `buildingMaterialId`: references `doc.buildingMaterials[]` (existing concept, renamed + isolated to construction/cost/thermal).
   - `surfaces: { exterior?: surfaceId, interior?: surfaceId, both?: surfaceId }`: per-face surface override.
@@ -22,6 +24,7 @@ Real workflows change surface finishes per elevation (exterior brick + interior 
 - Properties panel: separate "Construction" and "Surfaces" sections.
 
 ### Out of scope
+
 - PBR texture uploads by user (v1 ships textures from a bundled library).
 - Per-layer surface overrides within composites — v1 is per-element per-face.
 

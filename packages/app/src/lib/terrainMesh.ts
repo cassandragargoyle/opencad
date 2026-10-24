@@ -9,10 +9,19 @@
  * Pure — no THREE.js / DOM dependencies.
  */
 
-export interface Point2D { x: number; y: number }
-export interface Point3D extends Point2D { z: number }
+export interface Point2D {
+  x: number;
+  y: number;
+}
+export interface Point3D extends Point2D {
+  z: number;
+}
 
-export interface TriangleIdx { a: number; b: number; c: number }
+export interface TriangleIdx {
+  a: number;
+  b: number;
+  c: number;
+}
 
 export interface TerrainMesh {
   points: Point3D[];
@@ -27,19 +36,24 @@ export function triangulate(points: Point3D[]): TerrainMesh {
   if (points.length < 3) return { points: [...points], triangles: [] };
 
   // Compute a super-triangle that contains every point.
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
   for (const p of points) {
     if (p.x < minX) minX = p.x;
     if (p.y < minY) minY = p.y;
     if (p.x > maxX) maxX = p.x;
     if (p.y > maxY) maxY = p.y;
   }
-  const dx = maxX - minX, dy = maxY - minY;
+  const dx = maxX - minX,
+    dy = maxY - minY;
   const dmax = Math.max(dx, dy) * 10;
-  const midX = (minX + maxX) / 2, midY = (minY + maxY) / 2;
+  const midX = (minX + maxX) / 2,
+    midY = (minY + maxY) / 2;
   const verts: Point3D[] = [...points];
   verts.push({ x: midX - dmax, y: midY - dmax, z: 0 });
-  verts.push({ x: midX,        y: midY + dmax, z: 0 });
+  verts.push({ x: midX, y: midY + dmax, z: 0 });
   verts.push({ x: midX + dmax, y: midY - dmax, z: 0 });
   const superA = points.length;
   const superB = points.length + 1;
@@ -56,9 +70,15 @@ export function triangulate(points: Point3D[]): TerrainMesh {
     // Find polygon boundary
     const edges: Array<[number, number]> = [];
     for (const t of badTris) {
-      const e: Array<[number, number]> = [[t.a, t.b], [t.b, t.c], [t.c, t.a]];
+      const e: Array<[number, number]> = [
+        [t.a, t.b],
+        [t.b, t.c],
+        [t.c, t.a],
+      ];
       for (const edge of e) {
-        const shared = badTris.some((other) => other !== t && other !== undefined && edgeInTriangle(other, edge));
+        const shared = badTris.some(
+          (other) => other !== t && other !== undefined && edgeInTriangle(other, edge)
+        );
         if (!shared) edges.push(edge);
       }
     }
@@ -67,7 +87,9 @@ export function triangulate(points: Point3D[]): TerrainMesh {
   }
 
   // Drop any triangle touching the super-triangle
-  const resultTris = triangles.filter((t) => t.a < points.length && t.b < points.length && t.c < points.length);
+  const resultTris = triangles.filter(
+    (t) => t.a < points.length && t.b < points.length && t.c < points.length
+  );
   return { points, triangles: resultTris };
 }
 
@@ -78,17 +100,24 @@ export function triangulate(points: Point3D[]): TerrainMesh {
  * on orientation).
  */
 function inCircumcircle(a: Point2D, b: Point2D, c: Point2D, p: Point2D): boolean {
-  const ax = a.x, ay = a.y;
-  const bx = b.x, by = b.y;
-  const cx = c.x, cy = c.y;
+  const ax = a.x,
+    ay = a.y;
+  const bx = b.x,
+    by = b.y;
+  const cx = c.x,
+    cy = c.y;
   const d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
-  if (Math.abs(d) < 1e-12) return false;   // degenerate (collinear)
-  const ux = ((ax * ax + ay * ay) * (by - cy) +
-              (bx * bx + by * by) * (cy - ay) +
-              (cx * cx + cy * cy) * (ay - by)) / d;
-  const uy = ((ax * ax + ay * ay) * (cx - bx) +
-              (bx * bx + by * by) * (ax - cx) +
-              (cx * cx + cy * cy) * (bx - ax)) / d;
+  if (Math.abs(d) < 1e-12) return false; // degenerate (collinear)
+  const ux =
+    ((ax * ax + ay * ay) * (by - cy) +
+      (bx * bx + by * by) * (cy - ay) +
+      (cx * cx + cy * cy) * (ay - by)) /
+    d;
+  const uy =
+    ((ax * ax + ay * ay) * (cx - bx) +
+      (bx * bx + by * by) * (ax - cx) +
+      (cx * cx + cy * cy) * (bx - ax)) /
+    d;
   const rSq = (ax - ux) * (ax - ux) + (ay - uy) * (ay - uy);
   const dSq = (p.x - ux) * (p.x - ux) + (p.y - uy) * (p.y - uy);
   return dSq < rSq - 1e-9;
@@ -96,7 +125,8 @@ function inCircumcircle(a: Point2D, b: Point2D, c: Point2D, p: Point2D): boolean
 
 function edgeInTriangle(t: TriangleIdx, edge: [number, number]): boolean {
   const [a, b] = edge;
-  const has = (x: number, y: number) => (x === t.a || x === t.b || x === t.c) && (y === t.a || y === t.b || y === t.c);
+  const has = (x: number, y: number) =>
+    (x === t.a || x === t.b || x === t.c) && (y === t.a || y === t.b || y === t.c);
   return has(a, b);
 }
 
@@ -109,18 +139,22 @@ function edgeInTriangle(t: TriangleIdx, edge: [number, number]): boolean {
 export function computeCutFill(
   mesh: TerrainMesh,
   footprint: Point2D[],
-  slabZ: number,
+  slabZ: number
 ): { cutM3: number; fillM3: number } {
-  let cutMm3 = 0, fillMm3 = 0;
+  let cutMm3 = 0,
+    fillMm3 = 0;
   for (const tri of mesh.triangles) {
-    const a = mesh.points[tri.a]!, b = mesh.points[tri.b]!, c = mesh.points[tri.c]!;
+    const a = mesh.points[tri.a]!,
+      b = mesh.points[tri.b]!,
+      c = mesh.points[tri.c]!;
     const centroid = { x: (a.x + b.x + c.x) / 3, y: (a.y + b.y + c.y) / 3 };
     if (!pointInPolygon(centroid, footprint)) continue;
     const triArea = Math.abs((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)) / 2;
     const avgZ = (a.z + b.z + c.z) / 3;
     const dz = avgZ - slabZ;
     const vol = triArea * dz;
-    if (vol > 0) cutMm3 += vol; else fillMm3 += -vol;
+    if (vol > 0) cutMm3 += vol;
+    else fillMm3 += -vol;
   }
   return { cutM3: cutMm3 / 1e9, fillM3: fillMm3 / 1e9 };
 }
@@ -129,10 +163,13 @@ function pointInPolygon(pt: Point2D, poly: Point2D[]): boolean {
   let inside = false;
   const n = poly.length;
   for (let i = 0, j = n - 1; i < n; j = i++) {
-    const xi = poly[i]!.x, yi = poly[i]!.y;
-    const xj = poly[j]!.x, yj = poly[j]!.y;
+    const xi = poly[i]!.x,
+      yi = poly[i]!.y;
+    const xj = poly[j]!.x,
+      yj = poly[j]!.y;
     const denom = yj - yi;
-    const cross = ((yi > pt.y) !== (yj > pt.y)) &&
+    const cross =
+      yi > pt.y !== yj > pt.y &&
       pt.x < ((xj - xi) * (pt.y - yi)) / (denom === 0 ? 1e-9 : denom) + xi;
     if (cross) inside = !inside;
   }
@@ -143,13 +180,17 @@ function pointInPolygon(pt: Point2D, poly: Point2D[]): boolean {
  * Generate contour line segments at a single elevation z. Walks every
  * triangle, finds where z crosses each edge, connects the crossings.
  */
-export function generateContour(
-  mesh: TerrainMesh, z: number,
-): Array<{ a: Point2D; b: Point2D }> {
+export function generateContour(mesh: TerrainMesh, z: number): Array<{ a: Point2D; b: Point2D }> {
   const segments: Array<{ a: Point2D; b: Point2D }> = [];
   for (const tri of mesh.triangles) {
-    const a = mesh.points[tri.a]!, b = mesh.points[tri.b]!, c = mesh.points[tri.c]!;
-    const edges: Array<[Point3D, Point3D]> = [[a, b], [b, c], [c, a]];
+    const a = mesh.points[tri.a]!,
+      b = mesh.points[tri.b]!,
+      c = mesh.points[tri.c]!;
+    const edges: Array<[Point3D, Point3D]> = [
+      [a, b],
+      [b, c],
+      [c, a],
+    ];
     const crossings: Point2D[] = [];
     for (const [p, q] of edges) {
       if ((p.z - z) * (q.z - z) < 0) {

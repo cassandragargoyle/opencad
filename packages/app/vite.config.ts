@@ -101,8 +101,7 @@ export default defineConfig({
         changeOrigin: true,
       },
       '/ws': {
-        target: (process.env.VITE_SERVER_URL ?? 'http://localhost:47821')
-          .replace(/^http/, 'ws'),
+        target: (process.env.VITE_SERVER_URL ?? 'http://localhost:47821').replace(/^http/, 'ws'),
         ws: true,
         changeOrigin: true,
       },

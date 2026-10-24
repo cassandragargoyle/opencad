@@ -78,21 +78,21 @@ export function addChainPoint(
     levelId?: string;
     layerId?: string;
     screenToWorld?: number; // scale factor px→mm (default 1)
-  } = {},
+  } = {}
 ): WallChainState {
   if (state.status !== 'drawing') return state;
 
   const { points } = state;
   const thickness = opts.thickness ?? DEFAULT_WALL_THICKNESS_MM;
-  const height    = opts.height    ?? DEFAULT_WALL_HEIGHT_MM;
-  const levelId   = opts.levelId   ?? 'default-level';
-  const layerId   = opts.layerId   ?? 'default-layer';
-  const scale     = opts.screenToWorld ?? 1;
+  const height = opts.height ?? DEFAULT_WALL_HEIGHT_MM;
+  const levelId = opts.levelId ?? 'default-level';
+  const layerId = opts.layerId ?? 'default-layer';
+  const scale = opts.screenToWorld ?? 1;
 
   // Check for loop close
   const first = points[0]!;
   const screenDist = euclidean2D(point, first) / scale;
-  const canClose   = points.length >= 3 && screenDist <= snapPx;
+  const canClose = points.length >= 3 && screenDist <= snapPx;
 
   if (canClose) {
     // Close the loop: add the first point as final anchor, then build segments
@@ -124,7 +124,7 @@ export function isNearLoopClose(
   state: WallChainState,
   cursor: Point2D,
   snapPx = LOOP_CLOSE_SNAP_PX,
-  scale = 1,
+  scale = 1
 ): boolean {
   if (state.status !== 'drawing' || state.points.length < 3) return false;
   return euclidean2D(cursor, state.points[0]!) / scale <= snapPx;
@@ -137,14 +137,14 @@ function buildSegments(
   thickness: number,
   height: number,
   levelId: string,
-  layerId: string,
+  layerId: string
 ): WallSegment[] {
   const segs: WallSegment[] = [];
   for (let i = 0; i < points.length - 1; i++) {
     segs.push({
       id: `wall-${i}-${Date.now()}`,
       start: points[i]!,
-      end:   points[i + 1]!,
+      end: points[i + 1]!,
       thickness,
       height,
       levelId,
@@ -164,7 +164,7 @@ export function ghostSegment(state: WallChainState): { start: Point2D; end: Poin
   if (state.status !== 'drawing' || state.points.length === 0) return null;
   return {
     start: state.points[state.points.length - 1]!,
-    end:   state.pendingEnd,
+    end: state.pendingEnd,
   };
 }
 
@@ -173,7 +173,7 @@ export function previewSegments(state: WallChainState): Array<{ start: Point2D; 
   if (state.status !== 'drawing') return [];
   return state.points.slice(0, -1).map((p, i) => ({
     start: p,
-    end:   state.points[i + 1]!,
+    end: state.points[i + 1]!,
   }));
 }
 

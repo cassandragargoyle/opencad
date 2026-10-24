@@ -62,8 +62,12 @@ describe('parseHitTestResult', () => {
 
 describe('computePlacementTransform', () => {
   const flatHit: ARHitResult = {
-    worldX: 1, worldY: 0, worldZ: 2,
-    normalX: 0, normalY: 1, normalZ: 0,
+    worldX: 1,
+    worldY: 0,
+    worldZ: 2,
+    normalX: 0,
+    normalY: 1,
+    normalZ: 0,
     confidence: 1.0,
   };
 
@@ -102,23 +106,55 @@ describe('computePlacementTransform', () => {
 
 describe('isValidARSurface', () => {
   it('returns true when confidence >= default threshold (0.5)', () => {
-    const hit: ARHitResult = { worldX: 0, worldY: 0, worldZ: 0, normalX: 0, normalY: 1, normalZ: 0, confidence: 0.8 };
+    const hit: ARHitResult = {
+      worldX: 0,
+      worldY: 0,
+      worldZ: 0,
+      normalX: 0,
+      normalY: 1,
+      normalZ: 0,
+      confidence: 0.8,
+    };
     expect(isValidARSurface(hit)).toBe(true);
   });
 
   it('returns false when confidence < default threshold', () => {
-    const hit: ARHitResult = { worldX: 0, worldY: 0, worldZ: 0, normalX: 0, normalY: 1, normalZ: 0, confidence: 0.3 };
+    const hit: ARHitResult = {
+      worldX: 0,
+      worldY: 0,
+      worldZ: 0,
+      normalX: 0,
+      normalY: 1,
+      normalZ: 0,
+      confidence: 0.3,
+    };
     expect(isValidARSurface(hit)).toBe(false);
   });
 
   it('uses custom minConfidence', () => {
-    const hit: ARHitResult = { worldX: 0, worldY: 0, worldZ: 0, normalX: 0, normalY: 1, normalZ: 0, confidence: 0.4 };
+    const hit: ARHitResult = {
+      worldX: 0,
+      worldY: 0,
+      worldZ: 0,
+      normalX: 0,
+      normalY: 1,
+      normalZ: 0,
+      confidence: 0.4,
+    };
     expect(isValidARSurface(hit, 0.3)).toBe(true);
     expect(isValidARSurface(hit, 0.5)).toBe(false);
   });
 
   it('accepts exactly at threshold', () => {
-    const hit: ARHitResult = { worldX: 0, worldY: 0, worldZ: 0, normalX: 0, normalY: 1, normalZ: 0, confidence: 0.5 };
+    const hit: ARHitResult = {
+      worldX: 0,
+      worldY: 0,
+      worldZ: 0,
+      normalX: 0,
+      normalY: 1,
+      normalZ: 0,
+      confidence: 0.5,
+    };
     expect(isValidARSurface(hit, 0.5)).toBe(true);
   });
 });

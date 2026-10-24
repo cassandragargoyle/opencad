@@ -5,7 +5,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { parseSKP, serializeSKP, detectFormat as detectSKP, importFile as importSKP } from './sketchup';
+import {
+  parseSKP,
+  serializeSKP,
+  detectFormat as detectSKP,
+  importFile as importSKP,
+} from './sketchup';
 
 const SAMPLE_SKP = `<?xml version="1.0" encoding="UTF-8"?>
 <SketchUp>

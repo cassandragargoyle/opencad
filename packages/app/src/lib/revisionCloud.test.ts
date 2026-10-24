@@ -2,10 +2,7 @@
  * T-VIEW-04: Unit tests for revisionCloud — arc-bump polygon path generation.
  */
 import { describe, it, expect } from 'vitest';
-import {
-  buildRevisionCloudPath,
-  computeRevisionCloudBumps,
-} from './revisionCloud';
+import { buildRevisionCloudPath, computeRevisionCloudBumps } from './revisionCloud';
 
 describe('T-VIEW-04: revisionCloud', () => {
   const squarePoly = [
@@ -60,7 +57,11 @@ describe('T-VIEW-04: revisionCloud', () => {
   });
 
   it('triangle polygon produces bumps', () => {
-    const tri = [{ x: 0, y: 0 }, { x: 500, y: 866 }, { x: 1000, y: 0 }];
+    const tri = [
+      { x: 0, y: 0 },
+      { x: 500, y: 866 },
+      { x: 1000, y: 0 },
+    ];
     const bumps = computeRevisionCloudBumps(tri, 100);
     expect(bumps.length).toBeGreaterThan(0);
   });

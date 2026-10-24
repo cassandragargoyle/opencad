@@ -9,12 +9,14 @@ SketchUp is the most-used tool in early design and the default asset format for 
 ## Scope
 
 ### In scope
+
 - Import: faces, edges, groups, components, materials, layers (`Tags` in SketchUp).
 - Mapping: face → polygon / morph, group → Group, component → parametric object instance.
 - Test corpus of 15 SKP files (various versions + 3D warehouse samples).
 - Export: OpenCAD → SKP with best-effort mapping.
 
 ### Out of scope
+
 - SketchUp dynamic components (their own parametric system).
 - Scene / animation tabs.
 - Ruby plugin round-trip.

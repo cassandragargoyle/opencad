@@ -72,7 +72,9 @@ export function APIKeyPanel({ keys: propKeys = [], onCreate, onRevoke }: APIKeyP
         <div className="create-key-form">
           <input
             type="text"
-            placeholder={t('settings.apiKeys.keyNamePlaceholder', { defaultValue: 'Key name (e.g. CI/CD Pipeline)' })}
+            placeholder={t('settings.apiKeys.keyNamePlaceholder', {
+              defaultValue: 'Key name (e.g. CI/CD Pipeline)',
+            })}
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             className="key-name-input"
@@ -97,7 +99,9 @@ export function APIKeyPanel({ keys: propKeys = [], onCreate, onRevoke }: APIKeyP
             >
               Generate Key
             </button>
-            <button onClick={() => setCreating(false)} className="btn-cancel">Cancel</button>
+            <button onClick={() => setCreating(false)} className="btn-cancel">
+              Cancel
+            </button>
           </div>
         </div>
       )}
@@ -123,7 +127,11 @@ export function APIKeyPanel({ keys: propKeys = [], onCreate, onRevoke }: APIKeyP
             </button>
           </div>
         ))}
-        {keys.length === 0 && <div className="keys-empty">{t('settings.apiKeys.empty', { defaultValue: 'No API keys yet.' })}</div>}
+        {keys.length === 0 && (
+          <div className="keys-empty">
+            {t('settings.apiKeys.empty', { defaultValue: 'No API keys yet.' })}
+          </div>
+        )}
       </div>
     </div>
   );

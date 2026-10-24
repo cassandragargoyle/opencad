@@ -11,7 +11,12 @@ import { computeGridPanels, computeMullions } from './curtainWallGrid';
 
 describe('T-MOD-012: curtain wall grid', () => {
   it('T-MOD-012-001: 4800×3000 with gridV [0.25,0.5,0.75] → 4 panels of 1200×3000', () => {
-    const panels = computeGridPanels({ len: 4800, height: 3000, gridV: [0.25, 0.5, 0.75], gridH: [] });
+    const panels = computeGridPanels({
+      len: 4800,
+      height: 3000,
+      gridV: [0.25, 0.5, 0.75],
+      gridH: [],
+    });
     expect(panels).toHaveLength(4);
     for (const p of panels) {
       expect(p.width).toBeCloseTo(1200, 1);
@@ -20,18 +25,33 @@ describe('T-MOD-012: curtain wall grid', () => {
   });
 
   it('T-MOD-012-002: adding gridH [0.5] → 8 panels', () => {
-    const panels = computeGridPanels({ len: 4800, height: 3000, gridV: [0.25, 0.5, 0.75], gridH: [0.5] });
+    const panels = computeGridPanels({
+      len: 4800,
+      height: 3000,
+      gridV: [0.25, 0.5, 0.75],
+      gridH: [0.5],
+    });
     expect(panels).toHaveLength(8);
   });
 
   it('T-MOD-012-003: values outside 0..1 are ignored', () => {
-    const panels = computeGridPanels({ len: 1000, height: 1000, gridV: [-1, 1.5, 0.5, 2], gridH: [] });
+    const panels = computeGridPanels({
+      len: 1000,
+      height: 1000,
+      gridV: [-1, 1.5, 0.5, 2],
+      gridH: [],
+    });
     // After filter → just [0.5] → 2 panels
     expect(panels).toHaveLength(2);
   });
 
   it('T-MOD-012-004: duplicate fractions collapse to one', () => {
-    const panels = computeGridPanels({ len: 1000, height: 1000, gridV: [0.5, 0.5, 0.5], gridH: [] });
+    const panels = computeGridPanels({
+      len: 1000,
+      height: 1000,
+      gridV: [0.5, 0.5, 0.5],
+      gridH: [],
+    });
     expect(panels).toHaveLength(2);
   });
 
@@ -52,6 +72,8 @@ describe('T-MOD-012: curtain wall grid', () => {
   });
 
   it('computeMullions excludes 0 + 1 fractions (those are wall edges)', () => {
-    expect(computeMullions({ len: 1000, height: 1000, gridV: [0, 0.5, 1], gridH: [] })).toHaveLength(1);
+    expect(
+      computeMullions({ len: 1000, height: 1000, gridV: [0, 0.5, 1], gridH: [] })
+    ).toHaveLength(1);
   });
 });

@@ -110,12 +110,12 @@ describe('T-COL-006: WebSocket hook', () => {
 
   it('calls onConnect when WS opens', () => {
     const onConnect = vi.fn();
-    renderHook(() =>
-      useWebSocket({ url: 'ws://localhost:8080', enabled: true, onConnect })
-    );
+    renderHook(() => useWebSocket({ url: 'ws://localhost:8080', enabled: true, onConnect }));
     const ws = lastWS();
     expect(ws).toBeDefined();
-    act(() => { ws!.triggerOpen(); });
+    act(() => {
+      ws!.triggerOpen();
+    });
     expect(onConnect).toHaveBeenCalled();
   });
 
@@ -124,7 +124,9 @@ describe('T-COL-006: WebSocket hook', () => {
       useWebSocket({ url: 'ws://localhost:8080', enabled: true })
     );
     const ws = lastWS();
-    act(() => { ws?.triggerOpen(); });
+    act(() => {
+      ws?.triggerOpen();
+    });
     // readyState reads directly from wsRef.current.readyState OR React state
     expect(['open', 'connecting']).toContain(result.current.readyState);
   });
@@ -142,8 +144,12 @@ describe('T-COL-006: WebSocket hook', () => {
       })
     );
     const ws = lastWS();
-    act(() => { ws!.triggerOpen(); });
-    act(() => { ws!.triggerClose(); });
+    act(() => {
+      ws!.triggerOpen();
+    });
+    act(() => {
+      ws!.triggerClose();
+    });
     vi.clearAllTimers(); // prevent reconnect
     expect(onDisconnect).toHaveBeenCalled();
   });
@@ -152,11 +158,11 @@ describe('T-COL-006: WebSocket hook', () => {
 
   it('delivers parsed messages to onMessage', () => {
     const onMessage = vi.fn();
-    renderHook(() =>
-      useWebSocket({ url: 'ws://localhost:8080', enabled: true, onMessage })
-    );
+    renderHook(() => useWebSocket({ url: 'ws://localhost:8080', enabled: true, onMessage }));
     const ws = lastWS();
-    act(() => { ws!.triggerOpen(); });
+    act(() => {
+      ws!.triggerOpen();
+    });
     act(() => {
       ws!.triggerMessage(JSON.stringify({ type: 'ping', payload: null }));
     });
@@ -165,12 +171,14 @@ describe('T-COL-006: WebSocket hook', () => {
 
   it('ignores malformed JSON messages without throwing', () => {
     const onMessage = vi.fn();
-    renderHook(() =>
-      useWebSocket({ url: 'ws://localhost:8080', enabled: true, onMessage })
-    );
+    renderHook(() => useWebSocket({ url: 'ws://localhost:8080', enabled: true, onMessage }));
     const ws = lastWS();
-    act(() => { ws!.triggerOpen(); });
-    act(() => { ws!.triggerMessage('not valid json {{{'); });
+    act(() => {
+      ws!.triggerOpen();
+    });
+    act(() => {
+      ws!.triggerMessage('not valid json {{{');
+    });
     expect(onMessage).not.toHaveBeenCalled();
   });
 
@@ -181,7 +189,9 @@ describe('T-COL-006: WebSocket hook', () => {
       useWebSocket({ url: 'ws://localhost:8080', enabled: true })
     );
     const ws = lastWS();
-    act(() => { ws!.triggerOpen(); });
+    act(() => {
+      ws!.triggerOpen();
+    });
     act(() => {
       result.current.send({ type: 'update', payload: { id: '1' } });
     });
@@ -196,7 +206,9 @@ describe('T-COL-006: WebSocket hook', () => {
       result.current.send({ type: 'queued', payload: null });
     });
     const ws = lastWS();
-    act(() => { ws!.triggerOpen(); });
+    act(() => {
+      ws!.triggerOpen();
+    });
     // The queued message should have been flushed
     expect(ws!.sent.some((s) => s.includes('"queued"'))).toBe(true);
   });
@@ -208,8 +220,12 @@ describe('T-COL-006: WebSocket hook', () => {
       useWebSocket({ url: 'ws://localhost:8080', enabled: true })
     );
     const ws = lastWS();
-    act(() => { ws!.triggerOpen(); });
-    act(() => { result.current.disconnect(); });
+    act(() => {
+      ws!.triggerOpen();
+    });
+    act(() => {
+      result.current.disconnect();
+    });
     vi.clearAllTimers();
     expect(result.current.readyState).toBe('closed');
   });
@@ -226,9 +242,15 @@ describe('T-COL-006: WebSocket hook', () => {
       })
     );
     const ws = lastWS();
-    act(() => { ws!.triggerOpen(); });
-    act(() => { ws!.triggerClose(); });
-    act(() => { vi.advanceTimersByTime(100); });
+    act(() => {
+      ws!.triggerOpen();
+    });
+    act(() => {
+      ws!.triggerClose();
+    });
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
     expect(result.current.reconnectCount).toBeGreaterThanOrEqual(1);
   });
 
@@ -246,9 +268,15 @@ describe('T-COL-006: WebSocket hook', () => {
     for (let i = 0; i < 3; i++) {
       const ws = lastWS();
       if (ws) {
-        act(() => { ws.triggerOpen(); });
-        act(() => { ws.triggerClose(); });
-        act(() => { vi.advanceTimersByTime(100); });
+        act(() => {
+          ws.triggerOpen();
+        });
+        act(() => {
+          ws.triggerClose();
+        });
+        act(() => {
+          vi.advanceTimersByTime(100);
+        });
       }
     }
 

@@ -32,12 +32,7 @@ export const DEFAULT_SECTION_BOX: SectionBox = {
  * - If the box is disabled, always returns true (everything is visible).
  * - If the box is degenerate (min > max on any axis), treat as disabled.
  */
-export function sectionBoxContains(
-  box: SectionBox,
-  x: number,
-  y: number,
-  z: number,
-): boolean {
+export function sectionBoxContains(box: SectionBox, x: number, y: number, z: number): boolean {
   if (!box.enabled) return true;
 
   // Degenerate box (inverted bounds) — treat as disabled
@@ -46,9 +41,12 @@ export function sectionBoxContains(
   }
 
   return (
-    x >= box.minX && x <= box.maxX &&
-    y >= box.minY && y <= box.maxY &&
-    z >= box.minZ && z <= box.maxZ
+    x >= box.minX &&
+    x <= box.maxX &&
+    y >= box.minY &&
+    y <= box.maxY &&
+    z >= box.minZ &&
+    z <= box.maxZ
   );
 }
 
@@ -57,14 +55,18 @@ export function sectionBoxContains(
  * Returns DEFAULT_SECTION_BOX when the array is empty.
  */
 export function sectionBoxFromElements(
-  elements: Array<{ x?: number; y?: number; z?: number }>,
+  elements: Array<{ x?: number; y?: number; z?: number }>
 ): SectionBox {
   if (elements.length === 0) {
     return { ...DEFAULT_SECTION_BOX };
   }
 
-  let minX = Infinity, minY = Infinity, minZ = Infinity;
-  let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+  let minX = Infinity,
+    minY = Infinity,
+    minZ = Infinity;
+  let maxX = -Infinity,
+    maxY = -Infinity,
+    maxZ = -Infinity;
 
   for (const el of elements) {
     const x = el.x ?? 0;

@@ -88,24 +88,21 @@ class AIProvider {
       const systemMsg = messages.find((m) => m.role === 'system');
       const otherMessages = messages.filter((m) => m.role !== 'system');
 
-      const response = await fetch(
-        this.config.baseUrl || 'https://api.anthropic.com/v1/messages',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': this.config.apiKey || '',
-            'anthropic-version': '2023-06-01',
-          },
-          body: JSON.stringify({
-            model: this.config.model,
-            system: systemMsg?.content,
-            messages: otherMessages,
-            temperature: 0.3,
-            max_tokens: 4096,
-          }),
-        }
-      );
+      const response = await fetch(this.config.baseUrl || 'https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.config.apiKey || '',
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: this.config.model,
+          system: systemMsg?.content,
+          messages: otherMessages,
+          temperature: 0.3,
+          max_tokens: 4096,
+        }),
+      });
 
       const data = await response.json();
       return { content: data.content?.[0]?.text || '' };

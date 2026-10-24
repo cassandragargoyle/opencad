@@ -38,7 +38,15 @@ describe('SEED_LIBRARY', () => {
 
   it('contains objects in all 7 categories', () => {
     const categories = new Set(SEED_LIBRARY.map((o) => o.category));
-    const expected: ObjectCategory[] = ['doors', 'windows', 'fixtures', 'furniture', 'equipment', 'lighting', 'landscape'];
+    const expected: ObjectCategory[] = [
+      'doors',
+      'windows',
+      'fixtures',
+      'furniture',
+      'equipment',
+      'lighting',
+      'landscape',
+    ];
     for (const cat of expected) {
       expect(categories.has(cat)).toBe(true);
     }
@@ -54,7 +62,8 @@ describe('searchLibrary', () => {
     const results = searchLibrary('door');
     expect(results.length).toBeGreaterThan(0);
     results.forEach((r) => {
-      const matches = r.name.toLowerCase().includes('door') ||
+      const matches =
+        r.name.toLowerCase().includes('door') ||
         r.tags.some((t) => t.toLowerCase().includes('door'));
       expect(matches).toBe(true);
     });
@@ -124,7 +133,15 @@ describe('groupByCategory', () => {
 
   it('returns all 7 category keys', () => {
     const grouped = groupByCategory(SEED_LIBRARY);
-    const keys: ObjectCategory[] = ['doors', 'windows', 'fixtures', 'furniture', 'equipment', 'lighting', 'landscape'];
+    const keys: ObjectCategory[] = [
+      'doors',
+      'windows',
+      'fixtures',
+      'furniture',
+      'equipment',
+      'lighting',
+      'landscape',
+    ];
     keys.forEach((k) => expect(grouped).toHaveProperty(k));
   });
 

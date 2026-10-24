@@ -64,10 +64,14 @@ export function parseArchiCADJSON(json: unknown): ArchiCADProject {
   const elements: ArchiCADElement[] = (json['elements'] as unknown[]).map((el, i) => {
     if (!isRecord(el)) throw new Error(`Element at index ${i} is not an object`);
     if (typeof el['id'] !== 'string') throw new Error(`Element at index ${i} missing string 'id'`);
-    if (typeof el['elementType'] !== 'string') throw new Error(`Element at index ${i} missing string 'elementType'`);
-    if (typeof el['layerId'] !== 'string') throw new Error(`Element at index ${i} missing string 'layerId'`);
-    if (typeof el['floorIndex'] !== 'number') throw new Error(`Element at index ${i} missing number 'floorIndex'`);
-    if (!isRecord(el['attributes'])) throw new Error(`Element at index ${i} missing object 'attributes'`);
+    if (typeof el['elementType'] !== 'string')
+      throw new Error(`Element at index ${i} missing string 'elementType'`);
+    if (typeof el['layerId'] !== 'string')
+      throw new Error(`Element at index ${i} missing string 'layerId'`);
+    if (typeof el['floorIndex'] !== 'number')
+      throw new Error(`Element at index ${i} missing number 'floorIndex'`);
+    if (!isRecord(el['attributes']))
+      throw new Error(`Element at index ${i} missing object 'attributes'`);
 
     return {
       id: el['id'] as string,
@@ -80,10 +84,17 @@ export function parseArchiCADJSON(json: unknown): ArchiCADProject {
 
   const floors = (json['floors'] as unknown[]).map((fl, i) => {
     if (!isRecord(fl)) throw new Error(`Floor at index ${i} is not an object`);
-    if (typeof fl['index'] !== 'number') throw new Error(`Floor at index ${i} missing number 'index'`);
-    if (typeof fl['elevation'] !== 'number') throw new Error(`Floor at index ${i} missing number 'elevation'`);
-    if (typeof fl['name'] !== 'string') throw new Error(`Floor at index ${i} missing string 'name'`);
-    return { index: fl['index'] as number, elevation: fl['elevation'] as number, name: fl['name'] as string };
+    if (typeof fl['index'] !== 'number')
+      throw new Error(`Floor at index ${i} missing number 'index'`);
+    if (typeof fl['elevation'] !== 'number')
+      throw new Error(`Floor at index ${i} missing number 'elevation'`);
+    if (typeof fl['name'] !== 'string')
+      throw new Error(`Floor at index ${i} missing string 'name'`);
+    return {
+      index: fl['index'] as number,
+      elevation: fl['elevation'] as number,
+      name: fl['name'] as string,
+    };
   });
 
   const rawInfo = json['projectInfo'] as Record<string, unknown>;

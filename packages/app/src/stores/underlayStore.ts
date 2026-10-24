@@ -20,7 +20,10 @@ interface UnderlayEntry {
 
 interface UnderlayState {
   entries: Record<string, UnderlayEntry>;
-  setUnderlay: (underlay: PDFUnderlay, image: { dataUrl: string; width: number; height: number }) => void;
+  setUnderlay: (
+    underlay: PDFUnderlay,
+    image: { dataUrl: string; width: number; height: number }
+  ) => void;
   updateUnderlay: (id: string, patch: Partial<PDFUnderlay>) => void;
   removeUnderlay: (id: string) => void;
   clearAll: () => void;
@@ -28,31 +31,34 @@ interface UnderlayState {
 
 export const useUnderlayStore = create<UnderlayState>((set) => ({
   entries: {},
-  setUnderlay: (underlay, image) => set((state) => ({
-    entries: {
-      ...state.entries,
-      [underlay.id]: {
-        underlay,
-        imageDataUrl: image.dataUrl,
-        pixelWidth: image.width,
-        pixelHeight: image.height,
-      },
-    },
-  })),
-  updateUnderlay: (id, patch) => set((state) => {
-    const existing = state.entries[id];
-    if (!existing) return state;
-    return {
+  setUnderlay: (underlay, image) =>
+    set((state) => ({
       entries: {
         ...state.entries,
-        [id]: { ...existing, underlay: { ...existing.underlay, ...patch } },
+        [underlay.id]: {
+          underlay,
+          imageDataUrl: image.dataUrl,
+          pixelWidth: image.width,
+          pixelHeight: image.height,
+        },
       },
-    };
-  }),
-  removeUnderlay: (id) => set((state) => {
-    const { [id]: _removed, ...rest } = state.entries;
-    void _removed;
-    return { entries: rest };
-  }),
+    })),
+  updateUnderlay: (id, patch) =>
+    set((state) => {
+      const existing = state.entries[id];
+      if (!existing) return state;
+      return {
+        entries: {
+          ...state.entries,
+          [id]: { ...existing, underlay: { ...existing.underlay, ...patch } },
+        },
+      };
+    }),
+  removeUnderlay: (id) =>
+    set((state) => {
+      const { [id]: _removed, ...rest } = state.entries;
+      void _removed;
+      return { entries: rest };
+    }),
   clearAll: () => set({ entries: {} }),
 }));

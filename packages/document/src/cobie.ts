@@ -22,16 +22,13 @@ export interface CobieSheet {
 }
 
 /** Export a DocumentSchema as a COBie 2.4 CSV bundle. */
-export function exportCOBie(
-  doc: DocumentSchema,
-  opts: CobieExportOptions = {},
-): CobieSheet[] {
-  const createdBy  = opts.createdBy  ?? 'OpenCAD';
-  const createdOn  = opts.createdOn  ?? new Date().toISOString().slice(0, 10);
-  const elements   = Object.values(doc.content.elements ?? {});
-  const levels     = Object.values(doc.organization.levels ?? {});
-  const layers     = Object.values(doc.organization.layers ?? {});
-  const materials  = Object.values(doc.library.materials ?? {});
+export function exportCOBie(doc: DocumentSchema, opts: CobieExportOptions = {}): CobieSheet[] {
+  const createdBy = opts.createdBy ?? 'OpenCAD';
+  const createdOn = opts.createdOn ?? new Date().toISOString().slice(0, 10);
+  const elements = Object.values(doc.content.elements ?? {});
+  const levels = Object.values(doc.organization.levels ?? {});
+  const layers = Object.values(doc.organization.layers ?? {});
+  const materials = Object.values(doc.library.materials ?? {});
 
   return [
     buildFacilitySheet(doc, createdBy, createdOn),
@@ -56,36 +53,64 @@ export function cobieToCSVMap(sheets: CobieSheet[]): Record<string, string> {
 
 // ── Sheet builders ───────────────────────────────────────────────────────────
 
-function buildFacilitySheet(
-  doc: DocumentSchema,
-  createdBy: string,
-  createdOn: string,
-): CobieSheet {
+function buildFacilitySheet(doc: DocumentSchema, createdBy: string, createdOn: string): CobieSheet {
   return {
     name: 'Facility',
     rows: [
-      ['Name', 'CreatedBy', 'CreatedOn', 'Category', 'ProjectName', 'SiteName', 'LinearUnits', 'AreaUnits', 'VolumeUnits'],
-      [esc(doc.name), createdBy, createdOn, 'Facility', esc(doc.name), 'n/a', 'millimeters', 'squaremeters', 'cubicmeters'],
+      [
+        'Name',
+        'CreatedBy',
+        'CreatedOn',
+        'Category',
+        'ProjectName',
+        'SiteName',
+        'LinearUnits',
+        'AreaUnits',
+        'VolumeUnits',
+      ],
+      [
+        esc(doc.name),
+        createdBy,
+        createdOn,
+        'Facility',
+        esc(doc.name),
+        'n/a',
+        'millimeters',
+        'squaremeters',
+        'cubicmeters',
+      ],
     ],
   };
 }
 
-function buildFloorSheet(
-  levels: LevelSchema[],
-  createdBy: string,
-  createdOn: string,
-): CobieSheet {
+function buildFloorSheet(levels: LevelSchema[], createdBy: string, createdOn: string): CobieSheet {
   const header = ['Name', 'CreatedBy', 'CreatedOn', 'Category', 'Elevation', 'Height'];
-  const rows = levels.map((lv) => [esc(lv.name), createdBy, createdOn, 'Floor', String(lv.elevation), String(lv.height)]);
+  const rows = levels.map((lv) => [
+    esc(lv.name),
+    createdBy,
+    createdOn,
+    'Floor',
+    String(lv.elevation),
+    String(lv.height),
+  ]);
   return { name: 'Floor', rows: [header, ...rows] };
 }
 
 function buildSpaceSheet(
   elements: ElementSchema[],
   createdBy: string,
-  createdOn: string,
+  createdOn: string
 ): CobieSheet {
-  const header = ['Name', 'CreatedBy', 'CreatedOn', 'Category', 'FloorName', 'Description', 'GrossArea', 'NetArea'];
+  const header = [
+    'Name',
+    'CreatedBy',
+    'CreatedOn',
+    'Category',
+    'FloorName',
+    'Description',
+    'GrossArea',
+    'NetArea',
+  ];
   const spaces = elements.filter((e) => e.type === 'space');
   const rows = spaces.map((sp) => {
     const name = String(sp.properties?.Name?.value ?? sp.id);
@@ -98,7 +123,7 @@ function buildSpaceSheet(
 function buildZoneSheet(
   layers: Array<{ id: string; name: string }>,
   createdBy: string,
-  createdOn: string,
+  createdOn: string
 ): CobieSheet {
   const header = ['Name', 'CreatedBy', 'CreatedOn', 'Category', 'SpaceNames'];
   const rows = layers.map((ly) => [esc(ly.name), createdBy, createdOn, 'Zone', 'n/a']);
@@ -108,21 +133,27 @@ function buildZoneSheet(
 function buildTypeSheet(
   materials: Array<{ id: string; name: string; category: string }>,
   createdBy: string,
-  createdOn: string,
+  createdOn: string
 ): CobieSheet {
   const header = ['Name', 'CreatedBy', 'CreatedOn', 'Category', 'Description'];
-  const rows = materials.map((m) => [esc(m.name), createdBy, createdOn, esc(m.category), esc(m.name)]);
+  const rows = materials.map((m) => [
+    esc(m.name),
+    createdBy,
+    createdOn,
+    esc(m.category),
+    esc(m.name),
+  ]);
   return { name: 'Type', rows: [header, ...rows] };
 }
 
 function buildComponentSheet(
   elements: ElementSchema[],
   createdBy: string,
-  createdOn: string,
+  createdOn: string
 ): CobieSheet {
   const header = ['Name', 'CreatedBy', 'CreatedOn', 'TypeName', 'Space', 'Description'];
   const physical: ElementSchema[] = elements.filter((e) =>
-    ['wall', 'door', 'window', 'slab', 'roof', 'column', 'beam', 'stair', 'ramp'].includes(e.type),
+    ['wall', 'door', 'window', 'slab', 'roof', 'column', 'beam', 'stair', 'ramp'].includes(e.type)
   );
   const rows = physical.map((el) => {
     const name = String(el.properties?.Name?.value ?? el.id);
@@ -134,11 +165,19 @@ function buildComponentSheet(
 function buildSystemSheet(
   elements: ElementSchema[],
   createdBy: string,
-  createdOn: string,
+  createdOn: string
 ): CobieSheet {
   const header = ['Name', 'CreatedBy', 'CreatedOn', 'Category', 'ComponentNames'];
   const mep = elements.filter((e) =>
-    ['duct', 'pipe', 'cable_tray', 'conduit', 'mechanical_equipment', 'plumbing_fixture', 'electrical_equipment'].includes(e.type),
+    [
+      'duct',
+      'pipe',
+      'cable_tray',
+      'conduit',
+      'mechanical_equipment',
+      'plumbing_fixture',
+      'electrical_equipment',
+    ].includes(e.type)
   );
   const rows = mep.map((el) => {
     const name = String(el.properties?.Name?.value ?? el.id);
@@ -150,9 +189,18 @@ function buildSystemSheet(
 function buildAttributeSheet(
   elements: ElementSchema[],
   createdBy: string,
-  createdOn: string,
+  createdOn: string
 ): CobieSheet {
-  const header = ['Name', 'CreatedBy', 'CreatedOn', 'Category', 'SheetName', 'RowName', 'Value', 'Unit'];
+  const header = [
+    'Name',
+    'CreatedBy',
+    'CreatedOn',
+    'Category',
+    'SheetName',
+    'RowName',
+    'Value',
+    'Unit',
+  ];
   const rows: string[][] = [];
   for (const el of elements) {
     for (const [key, pv] of Object.entries(el.properties ?? {})) {

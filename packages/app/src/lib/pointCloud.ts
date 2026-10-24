@@ -38,7 +38,7 @@ const DEFAULT_MAX_POINTS = 500_000;
 
 function emptyBounds() {
   return {
-    min: { x:  Infinity, y:  Infinity, z:  Infinity },
+    min: { x: Infinity, y: Infinity, z: Infinity },
     max: { x: -Infinity, y: -Infinity, z: -Infinity },
   };
 }
@@ -110,7 +110,7 @@ export function parseXYZ(source: string, options: ParseOptions = {}): PointCloud
     if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) continue;
 
     if (written >= estimated) break;
-    positions[written * 3]     = x;
+    positions[written * 3] = x;
     positions[written * 3 + 1] = y;
     positions[written * 3 + 2] = z;
     expandBounds(bounds, x, y, z);
@@ -120,7 +120,7 @@ export function parseXYZ(source: string, options: ParseOptions = {}): PointCloud
       const g = parseFloat(parts[4]!);
       const b = parseFloat(parts[5]!);
       if (Number.isFinite(r) && Number.isFinite(g) && Number.isFinite(b)) {
-        colors![written * 3]     = r > 1 ? r / 255 : r;
+        colors![written * 3] = r > 1 ? r / 255 : r;
         colors![written * 3 + 1] = g > 1 ? g / 255 : g;
         colors![written * 3 + 2] = b > 1 ? b / 255 : b;
         hasColors = true;
@@ -138,7 +138,11 @@ export function parseXYZ(source: string, options: ParseOptions = {}): PointCloud
 
   return {
     positions: written === estimated ? positions : positions.slice(0, written * 3),
-    colors: hasColors ? (written === estimated ? colors! : colors!.slice(0, written * 3)) : undefined,
+    colors: hasColors
+      ? written === estimated
+        ? colors!
+        : colors!.slice(0, written * 3)
+      : undefined,
     bounds,
     pointCount: totalLines,
     renderedCount: written,
@@ -196,7 +200,8 @@ export function parsePLY(source: string, options: ParseOptions = {}): PointCloud
     return {
       positions: new Float32Array(0),
       bounds: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-      pointCount: 0, renderedCount: 0,
+      pointCount: 0,
+      renderedCount: 0,
     };
   }
 
@@ -229,8 +234,14 @@ export function parsePLY(source: string, options: ParseOptions = {}): PointCloud
 
     const line = body.slice(lineStart, i).trim();
     lineStart = i + 1;
-    if (line.length === 0) { lineIndex++; continue; }
-    if (lineIndex % stride !== 0) { lineIndex++; continue; }
+    if (line.length === 0) {
+      lineIndex++;
+      continue;
+    }
+    if (lineIndex % stride !== 0) {
+      lineIndex++;
+      continue;
+    }
     lineIndex++;
 
     const parts = line.split(/\s+/);
@@ -239,7 +250,7 @@ export function parsePLY(source: string, options: ParseOptions = {}): PointCloud
     const z = parseFloat(parts[zIdx]!) * scale;
     if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) continue;
 
-    positions[written * 3]     = x;
+    positions[written * 3] = x;
     positions[written * 3 + 1] = y;
     positions[written * 3 + 2] = z;
     expandBounds(bounds, x, y, z);
@@ -248,7 +259,7 @@ export function parsePLY(source: string, options: ParseOptions = {}): PointCloud
       const r = parseFloat(parts[rIdx]!);
       const g = parseFloat(parts[gIdx]!);
       const b = parseFloat(parts[bIdx]!);
-      colors![written * 3]     = r > 1 ? r / 255 : r;
+      colors![written * 3] = r > 1 ? r / 255 : r;
       colors![written * 3 + 1] = g > 1 ? g / 255 : g;
       colors![written * 3 + 2] = b > 1 ? b / 255 : b;
     }
@@ -262,7 +273,11 @@ export function parsePLY(source: string, options: ParseOptions = {}): PointCloud
 
   return {
     positions: written === estimated ? positions : positions.slice(0, written * 3),
-    colors: hasColors ? (written === estimated ? colors : colors!.slice(0, written * 3)) : undefined,
+    colors: hasColors
+      ? written === estimated
+        ? colors
+        : colors!.slice(0, written * 3)
+      : undefined,
     bounds,
     pointCount: header.elementCount,
     renderedCount: written,
@@ -282,7 +297,7 @@ export function detectFormat(filename: string, content: string): PointCloudForma
 export function parsePointCloud(
   filename: string,
   content: string,
-  options: ParseOptions = {},
+  options: ParseOptions = {}
 ): PointCloudData {
   const fmt = detectFormat(filename, content);
   return fmt === 'ply' ? parsePLY(content, options) : parseXYZ(content, options);

@@ -68,7 +68,7 @@ export const DEFAULT_TOUR_STEPS: TourStep[] = [
   },
   {
     centred: true,
-    title: 'You\'re ready',
+    title: "You're ready",
     body: 'Press W and click anywhere to draw your first wall.',
   },
 ];
@@ -79,7 +79,12 @@ export interface GuidedTourProps {
   onClose: () => void;
 }
 
-interface Rect { top: number; left: number; width: number; height: number }
+interface Rect {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
 
 export function GuidedTour({ open, steps = DEFAULT_TOUR_STEPS, onClose }: GuidedTourProps) {
   const { t } = useTranslation('common');
@@ -108,7 +113,10 @@ export function GuidedTour({ open, steps = DEFAULT_TOUR_STEPS, onClose }: Guided
     }
     const update = () => {
       const target = findTarget();
-      if (!target) { setTargetRect(null); return; }
+      if (!target) {
+        setTargetRect(null);
+        return;
+      }
       const r = target.getBoundingClientRect();
       setTargetRect({ top: r.top, left: r.left, width: r.width, height: r.height });
       target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
@@ -132,7 +140,10 @@ export function GuidedTour({ open, steps = DEFAULT_TOUR_STEPS, onClose }: Guided
   }, [open, stepIdx]);
 
   const next = () => {
-    if (stepIdx >= steps.length - 1) { onClose(); return; }
+    if (stepIdx >= steps.length - 1) {
+      onClose();
+      return;
+    }
     setStepIdx(stepIdx + 1);
   };
   const prev = () => setStepIdx(Math.max(0, stepIdx - 1));
@@ -152,15 +163,26 @@ export function GuidedTour({ open, steps = DEFAULT_TOUR_STEPS, onClose }: Guided
     const r = targetRect;
     let top: number, left: number;
     switch (placement) {
-      case 'top':    top = r.top - TT_H - PADDING;          left = r.left + r.width / 2 - TT_W / 2; break;
-      case 'left':   top = r.top + r.height / 2 - TT_H / 2; left = r.left - TT_W - PADDING;        break;
-      case 'right':  top = r.top + r.height / 2 - TT_H / 2; left = r.left + r.width + PADDING;     break;
+      case 'top':
+        top = r.top - TT_H - PADDING;
+        left = r.left + r.width / 2 - TT_W / 2;
+        break;
+      case 'left':
+        top = r.top + r.height / 2 - TT_H / 2;
+        left = r.left - TT_W - PADDING;
+        break;
+      case 'right':
+        top = r.top + r.height / 2 - TT_H / 2;
+        left = r.left + r.width + PADDING;
+        break;
       case 'bottom':
-      default:       top = r.top + r.height + PADDING;      left = r.left + r.width / 2 - TT_W / 2;
+      default:
+        top = r.top + r.height + PADDING;
+        left = r.left + r.width / 2 - TT_W / 2;
     }
     // Clamp inside viewport
-    top  = Math.max(PADDING, Math.min(top,  window.innerHeight - TT_H - PADDING));
-    left = Math.max(PADDING, Math.min(left, window.innerWidth  - TT_W - PADDING));
+    top = Math.max(PADDING, Math.min(top, window.innerHeight - TT_H - PADDING));
+    left = Math.max(PADDING, Math.min(left, window.innerWidth - TT_W - PADDING));
     return { top, left, width: TT_W };
   };
 
@@ -168,7 +190,11 @@ export function GuidedTour({ open, steps = DEFAULT_TOUR_STEPS, onClose }: Guided
   const isLast = stepIdx === steps.length - 1;
 
   return (
-    <div className="tour-root" role="dialog" aria-label={t('tour.title', { defaultValue: 'Guided tour' })}>
+    <div
+      className="tour-root"
+      role="dialog"
+      aria-label={t('tour.title', { defaultValue: 'Guided tour' })}
+    >
       {/* Soft dimming + spotlight cutout */}
       <svg className="tour-mask" width="100%" height="100%" preserveAspectRatio="none">
         <defs>
@@ -186,7 +212,14 @@ export function GuidedTour({ open, steps = DEFAULT_TOUR_STEPS, onClose }: Guided
             )}
           </mask>
         </defs>
-        <rect x="0" y="0" width="100%" height="100%" fill="rgba(8,12,20,0.55)" mask="url(#tour-cutout)" />
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="rgba(8,12,20,0.55)"
+          mask="url(#tour-cutout)"
+        />
         {targetRect && (
           <rect
             className="tour-spotlight-stroke"
@@ -205,20 +238,41 @@ export function GuidedTour({ open, steps = DEFAULT_TOUR_STEPS, onClose }: Guided
       {/* Tooltip card */}
       <div ref={tooltipRef} className="tour-tooltip" style={tooltipStyle()}>
         <div className="tour-tooltip-header">
-          <span className="tour-step-counter">{stepIdx + 1} / {steps.length}</span>
-          <button className="tour-close" onClick={onClose} aria-label={t('tour.close', { defaultValue: 'Close tour' })}><X size={14} /></button>
+          <span className="tour-step-counter">
+            {stepIdx + 1} / {steps.length}
+          </span>
+          <button
+            className="tour-close"
+            onClick={onClose}
+            aria-label={t('tour.close', { defaultValue: 'Close tour' })}
+          >
+            <X size={14} />
+          </button>
         </div>
         <h3 className="tour-title">{step.title}</h3>
         <p className="tour-body">{step.body}</p>
         <div className="tour-actions">
-          <button className="tour-skip" onClick={onClose}>{t('tour.skip', { defaultValue: 'Skip tour' })}</button>
+          <button className="tour-skip" onClick={onClose}>
+            {t('tour.skip', { defaultValue: 'Skip tour' })}
+          </button>
           <div className="tour-progress">
             {steps.map((_, i) => (
-              <span key={i} className={`tour-dot ${i === stepIdx ? 'active' : ''} ${i < stepIdx ? 'done' : ''}`} />
+              <span
+                key={i}
+                className={`tour-dot ${i === stepIdx ? 'active' : ''} ${i < stepIdx ? 'done' : ''}`}
+              />
             ))}
           </div>
           <button className="tour-next" onClick={next}>
-            {isLast ? <>{t('action.done', { defaultValue: 'Done' })} <Check size={14} /></> : <>{t('action.next', { defaultValue: 'Next' })} <ArrowRight size={14} /></>}
+            {isLast ? (
+              <>
+                {t('action.done', { defaultValue: 'Done' })} <Check size={14} />
+              </>
+            ) : (
+              <>
+                {t('action.next', { defaultValue: 'Next' })} <ArrowRight size={14} />
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -230,8 +284,16 @@ export function GuidedTour({ open, steps = DEFAULT_TOUR_STEPS, onClose }: Guided
 export const TOUR_SEEN_KEY = 'opencad-tour-seen';
 
 export function hasSeenTour(): boolean {
-  try { return localStorage.getItem(TOUR_SEEN_KEY) === '1'; } catch { return false; }
+  try {
+    return localStorage.getItem(TOUR_SEEN_KEY) === '1';
+  } catch {
+    return false;
+  }
 }
 export function markTourSeen(): void {
-  try { localStorage.setItem(TOUR_SEEN_KEY, '1'); } catch { /* */ }
+  try {
+    localStorage.setItem(TOUR_SEEN_KEY, '1');
+  } catch {
+    /* */
+  }
 }

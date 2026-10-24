@@ -66,17 +66,14 @@ export function useDraggable(options?: DraggableOptions): DraggableResult {
   const dragOffset = useRef<Position>({ x: 0, y: 0 });
   const isDraggingRef = useRef(false);
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isDraggingRef.current) return;
-      const newPos: Position = {
-        x: e.clientX - dragOffset.current.x,
-        y: e.clientY - dragOffset.current.y,
-      };
-      setPos(newPos);
-    },
-    [],
-  );
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDraggingRef.current) return;
+    const newPos: Position = {
+      x: e.clientX - dragOffset.current.x,
+      y: e.clientY - dragOffset.current.y,
+    };
+    setPos(newPos);
+  }, []);
 
   const handleMouseUp = useCallback(() => {
     if (!isDraggingRef.current) return;
@@ -115,7 +112,7 @@ export function useDraggable(options?: DraggableOptions): DraggableResult {
       isDraggingRef.current = true;
       setIsDragging(true);
     },
-    [pos],
+    [pos]
   );
 
   const resetPos = useCallback(() => {

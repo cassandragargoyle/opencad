@@ -9,6 +9,7 @@ Users routinely want to treat a collection of elements as a single unit — a wi
 ## Scope
 
 ### In scope
+
 - A **Group** schema: an element with `children: elementId[]` and a displayed name.
 - Group creation from selection (`Ctrl+G`).
 - Ungroup (`Ctrl+Shift+G`).
@@ -19,6 +20,7 @@ Users routinely want to treat a collection of elements as a single unit — a wi
 - Group shows as a row in the Layers / Navigator tree with expand/collapse.
 
 ### Out of scope
+
 - Instance-based groups (edits to one replicate to all copies). Defer — it's a big scope expansion.
 
 ## Proposed approach

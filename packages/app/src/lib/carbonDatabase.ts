@@ -11,12 +11,30 @@ export interface MaterialCarbonData {
 
 // Based on Inventory of Carbon and Energy (ICE) v3.0
 export const CARBON_DATABASE: MaterialCarbonData[] = [
-  { materialId: 'Concrete', name: 'Concrete (general mix)', gwp: 0.159, density: 2400, source: 'ICE v3.0' },
+  {
+    materialId: 'Concrete',
+    name: 'Concrete (general mix)',
+    gwp: 0.159,
+    density: 2400,
+    source: 'ICE v3.0',
+  },
   { materialId: 'Steel', name: 'Structural steel', gwp: 1.74, density: 7850, source: 'ICE v3.0' },
-  { materialId: 'Wood', name: 'Softwood timber (sawn)', gwp: 0.263, density: 460, source: 'ICE v3.0' },
+  {
+    materialId: 'Wood',
+    name: 'Softwood timber (sawn)',
+    gwp: 0.263,
+    density: 460,
+    source: 'ICE v3.0',
+  },
   { materialId: 'Brick', name: 'Fired clay brick', gwp: 0.213, density: 1900, source: 'ICE v3.0' },
   { materialId: 'Glass', name: 'Float glass', gwp: 1.35, density: 2500, source: 'ICE v3.0' },
-  { materialId: 'Aluminum', name: 'Aluminum (general)', gwp: 9.16, density: 2700, source: 'ICE v3.0' },
+  {
+    materialId: 'Aluminum',
+    name: 'Aluminum (general)',
+    gwp: 9.16,
+    density: 2700,
+    source: 'ICE v3.0',
+  },
   { materialId: 'Insulation', name: 'Mineral wool', gwp: 1.28, density: 25, source: 'ICE v3.0' },
 ];
 
@@ -80,9 +98,7 @@ function resolveVolume(element: ElementSchema): number | null {
  */
 function lookupCarbonData(materialId: string): MaterialCarbonData | null {
   const id = materialId.toLowerCase();
-  return (
-    CARBON_DATABASE.find((d) => id.startsWith(d.materialId.toLowerCase())) ?? null
-  );
+  return CARBON_DATABASE.find((d) => id.startsWith(d.materialId.toLowerCase())) ?? null;
 }
 
 /**

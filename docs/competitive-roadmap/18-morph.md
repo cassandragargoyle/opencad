@@ -9,6 +9,7 @@ Not every element is a wall, slab, or roof. Built-in furniture, niches, custom c
 ## Scope
 
 ### In scope
+
 - Morph schema: a mesh described as `vertices: Point3D[]`, `faces: FaceIndex[][]`, `edges: EdgeRef[]`, plus UV and material refs.
 - Construction primitives to seed a morph: Box, Prism, Pyramid, Cone, Cylinder.
 - **Push/Pull face**: click a face, drag perpendicular — face translates, adjacent faces re-form.
@@ -20,6 +21,7 @@ Not every element is a wall, slab, or roof. Built-in furniture, niches, custom c
 - Historyless (non-parametric) for v1.
 
 ### Out of scope
+
 - Parametric history tree.
 - Subdivision surfaces, smooth shading control.
 - Boolean ops with morph (defer to SEO).

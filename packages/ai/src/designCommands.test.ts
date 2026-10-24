@@ -225,10 +225,7 @@ describe('applyDesignCommand scale multiplies element dimensions', () => {
     const elements: Record<string, DesignElement> = {
       e1: makeElement('e1'),
     };
-    const result = applyDesignCommand(
-      { type: 'scale', factor: 2, target: 'all' },
-      elements
-    );
+    const result = applyDesignCommand({ type: 'scale', factor: 2, target: 'all' }, elements);
     expect(result['e1']!.transform.scale.x).toBe(2);
     expect(result['e1']!.transform.scale.y).toBe(2);
     expect(result['e1']!.transform.scale.z).toBe(2);
@@ -238,10 +235,7 @@ describe('applyDesignCommand scale multiplies element dimensions', () => {
     const elements: Record<string, DesignElement> = {
       e1: makeElement('e1'),
     };
-    const result = applyDesignCommand(
-      { type: 'scale', factor: 0.5, target: 'all' },
-      elements
-    );
+    const result = applyDesignCommand({ type: 'scale', factor: 0.5, target: 'all' }, elements);
     expect(result['e1']!.transform.scale.x).toBe(0.5);
     expect(result['e1']!.transform.scale.y).toBe(0.5);
   });
@@ -259,10 +253,7 @@ describe('applyDesignCommand scale multiplies element dimensions', () => {
       e1: makeElement('e1'),
       e2: makeElement('e2'),
     };
-    const result = applyDesignCommand(
-      { type: 'scale', factor: 1.5, target: 'all' },
-      elements
-    );
+    const result = applyDesignCommand({ type: 'scale', factor: 1.5, target: 'all' }, elements);
     expect(result['e1']!.transform.scale.x).toBe(1.5);
     expect(result['e2']!.transform.scale.x).toBe(1.5);
   });
@@ -284,10 +275,7 @@ describe('applyDesignCommand setMaterial updates element material property', () 
     const elements: Record<string, DesignElement> = {
       e1: makeElement('e1'),
     };
-    applyDesignCommand(
-      { type: 'setMaterial', material: 'glass', target: 'all' },
-      elements
-    );
+    applyDesignCommand({ type: 'setMaterial', material: 'glass', target: 'all' }, elements);
     expect(elements['e1']!.properties['Material']?.value).toBe('brick'); // unchanged
   });
 
@@ -310,10 +298,7 @@ describe('applyDesignCommand rotate updates element transform rotation', () => {
     const elements: Record<string, DesignElement> = {
       e1: makeElement('e1'),
     };
-    const result = applyDesignCommand(
-      { type: 'rotate', degrees: 90, target: 'all' },
-      elements
-    );
+    const result = applyDesignCommand({ type: 'rotate', degrees: 90, target: 'all' }, elements);
     expect(result['e1']!.transform.rotation.z).toBe(90);
   });
 });
@@ -355,10 +340,7 @@ describe('applyDesignCommand unknown leaves elements unchanged', () => {
     const elements: Record<string, DesignElement> = {
       e1: makeElement('e1'),
     };
-    const result = applyDesignCommand(
-      { type: 'unknown', raw: 'do nothing' },
-      elements
-    );
+    const result = applyDesignCommand({ type: 'unknown', raw: 'do nothing' }, elements);
     expect(result['e1']!.transform.scale.x).toBe(1);
     expect(result['e1']!.properties['Material']?.value).toBe('brick');
   });

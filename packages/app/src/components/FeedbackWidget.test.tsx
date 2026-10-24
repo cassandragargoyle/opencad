@@ -103,7 +103,7 @@ describe('T-UI-020: FeedbackWidget', () => {
     expect(mockSubmit).toHaveBeenCalledWith(
       'feature',
       'Add snap to grid',
-      'It would be helpful to snap to grid while drawing',
+      'It would be helpful to snap to grid while drawing'
     );
   });
 
@@ -159,7 +159,9 @@ describe('T-UI-020: FeedbackWidget', () => {
     fireEvent.click(screen.getByRole('button', { name: /send feedback/i }));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     // The X button has no accessible name — find it by its proximity to the dialog
-    const closeBtn = screen.getByRole('dialog').querySelector('.feedback-panel__close') as HTMLElement;
+    const closeBtn = screen
+      .getByRole('dialog')
+      .querySelector('.feedback-panel__close') as HTMLElement;
     fireEvent.click(closeBtn);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
@@ -186,7 +188,9 @@ describe('T-UI-020: FeedbackWidget', () => {
     render(<FeedbackWidget />);
     fireEvent.click(screen.getByRole('button', { name: /send feedback/i }));
     fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Something typed' } });
-    const closeBtn = screen.getByRole('dialog').querySelector('.feedback-panel__close') as HTMLElement;
+    const closeBtn = screen
+      .getByRole('dialog')
+      .querySelector('.feedback-panel__close') as HTMLElement;
     fireEvent.click(closeBtn);
     fireEvent.click(screen.getByRole('button', { name: /send feedback/i }));
     expect((screen.getByLabelText(/title/i) as HTMLInputElement).value).toBe('');

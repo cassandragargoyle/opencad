@@ -51,7 +51,7 @@ describe('T-PERF-02: Quadtree', () => {
 
   it('query returns entries in region', () => {
     const tree = createQuadtree(worldBounds);
-    tree.insert(makeEntry('in',  50, 50));
+    tree.insert(makeEntry('in', 50, 50));
     tree.insert(makeEntry('out', 800, 800));
     const results = tree.query({ minX: 0, minY: 0, maxX: 200, maxY: 200 });
     const ids = results.map((r) => r.id);
@@ -104,7 +104,7 @@ describe('T-PERF-02: buildTileDescriptors()', () => {
     const tree = createQuadtree(worldBounds);
     tree.insert(makeEntry('a', 50, 50));
     const closeTiles = buildTileDescriptors(tree, worldBounds, 5);
-    const farTiles   = buildTileDescriptors(tree, worldBounds, 300);
+    const farTiles = buildTileDescriptors(tree, worldBounds, 300);
     expect(farTiles[0]!.lodLevel).toBeGreaterThan(closeTiles[0]!.lodLevel);
   });
 
@@ -122,8 +122,8 @@ describe('T-PERF-02: frustumCull()', () => {
     const tree = createQuadtree(worldBounds);
     tree.insert(makeEntry('near', 50, 50));
     tree.insert(makeEntry('far', 800, 800));
-    const allTiles  = buildTileDescriptors(tree, worldBounds, 10);
-    const culled    = frustumCull(allTiles, { minX: 0, minY: 0, maxX: 200, maxY: 200 });
+    const allTiles = buildTileDescriptors(tree, worldBounds, 10);
+    const culled = frustumCull(allTiles, { minX: 0, minY: 0, maxX: 200, maxY: 200 });
     expect(culled.length).toBeLessThanOrEqual(allTiles.length);
   });
 });

@@ -9,6 +9,7 @@ The Railing element exists in the schema but renders as a bounding-box placehold
 ## Scope
 
 ### In scope
+
 - Railing schema: `path: Point[]` (polyline), `topRailHeight`, `postSpacing`, `balusterSpacing`, `balusterProfile: 'square' | 'turned' | 'cable' | 'glass'`, `followsElement?: elementId`.
 - 3D geometry: top rail as a swept profile along the path; posts at `postSpacing` intervals; balusters at `balusterSpacing` intervals; glass panels (if `balusterProfile === 'glass'`) as quads between posts.
 - 2D plan: draw the path with short perpendicular tick marks at post positions.
@@ -16,6 +17,7 @@ The Railing element exists in the schema but renders as a bounding-box placehold
 - Compliance: integrate with R008 (minimum railing height — new rule at 900 mm residential, 1100 mm commercial, IBC 1015.3).
 
 ### Out of scope
+
 - Handrail brackets, returns at ends.
 - Curved railings with non-linear paths (v1: polyline only).
 

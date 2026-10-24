@@ -15,10 +15,13 @@ function mkZone(props: Record<string, string | number>): ElementSchema {
     propObj[k] = { type: typeof v === 'number' ? 'number' : 'string', value: v };
   }
   return {
-    id: `z-${++__id}`, type: 'space', layerId: 'l1',
+    id: `z-${++__id}`,
+    type: 'space',
+    layerId: 'l1',
     properties: propObj,
     boundingBox: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
-    createdAt: 0, updatedAt: 0,
+    createdAt: 0,
+    updatedAt: 0,
   } as ElementSchema;
 }
 
@@ -27,8 +30,10 @@ describe('T-DOC-035: zoneStamp', () => {
     const zone = mkZone({
       Name: 'Living',
       Points: JSON.stringify([
-        { x: 0, y: 0 }, { x: 5000, y: 0 },
-        { x: 5000, y: 4000 }, { x: 0, y: 4000 },
+        { x: 0, y: 0 },
+        { x: 5000, y: 0 },
+        { x: 5000, y: 4000 },
+        { x: 0, y: 4000 },
       ]),
     });
     const stamp = buildZoneStamp(zone);
@@ -38,8 +43,10 @@ describe('T-DOC-035: zoneStamp', () => {
   it('handles counter-clockwise winding (area positive)', () => {
     const zone = mkZone({
       Points: JSON.stringify([
-        { x: 0, y: 4000 }, { x: 5000, y: 4000 },
-        { x: 5000, y: 0 }, { x: 0, y: 0 },
+        { x: 0, y: 4000 },
+        { x: 5000, y: 4000 },
+        { x: 5000, y: 0 },
+        { x: 0, y: 0 },
       ]),
     });
     const stamp = buildZoneStamp(zone);
@@ -50,8 +57,10 @@ describe('T-DOC-035: zoneStamp', () => {
     const zone = mkZone({
       Name: 'Living',
       Points: JSON.stringify([
-        { x: 0, y: 0 }, { x: 4000, y: 0 },
-        { x: 4000, y: 4000 }, { x: 0, y: 4000 },
+        { x: 0, y: 0 },
+        { x: 4000, y: 0 },
+        { x: 4000, y: 4000 },
+        { x: 0, y: 4000 },
       ]),
     });
     const stamp = buildZoneStamp(zone);
@@ -63,8 +72,10 @@ describe('T-DOC-035: zoneStamp', () => {
     const zone = mkZone({
       Name: 'Bedroom',
       Points: JSON.stringify([
-        { x: 0, y: 0 }, { x: 3000, y: 0 },
-        { x: 3000, y: 3000 }, { x: 0, y: 3000 },
+        { x: 0, y: 0 },
+        { x: 3000, y: 0 },
+        { x: 3000, y: 3000 },
+        { x: 0, y: 3000 },
       ]),
     });
     const stamp = buildZoneStamp(zone, ['tag', 'name', 'area']);
@@ -83,12 +94,16 @@ describe('T-DOC-035: zoneStamp', () => {
     const zone = mkZone({
       Name: 'Living',
       Points: JSON.stringify([
-        { x: 0, y: 0 }, { x: 5000, y: 0 },
-        { x: 5000, y: 4000 }, { x: 0, y: 4000 },
+        { x: 0, y: 0 },
+        { x: 5000, y: 0 },
+        { x: 5000, y: 4000 },
+        { x: 0, y: 4000 },
       ]),
     });
     const wall: ElementSchema = {
-      ...zone, id: 'w-1', type: 'wall',
+      ...zone,
+      id: 'w-1',
+      type: 'wall',
     } as ElementSchema;
     const elements: Record<string, ElementSchema> = { [zone.id]: zone, [wall.id]: wall };
     const stamps = buildAllStamps(elements);

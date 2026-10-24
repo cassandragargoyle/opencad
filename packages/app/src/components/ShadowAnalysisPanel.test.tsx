@@ -8,7 +8,9 @@ describe('T-GIS-002: ShadowAnalysisPanel', () => {
   const onRun = vi.fn();
   const onChange = vi.fn();
 
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders Shadow Analysis header', () => {
     render(<ShadowAnalysisPanel onRun={onRun} onChange={onChange} />);
@@ -49,10 +51,12 @@ describe('T-GIS-002: ShadowAnalysisPanel', () => {
   it('calls onRun when Run clicked', () => {
     render(<ShadowAnalysisPanel onRun={onRun} onChange={onChange} />);
     fireEvent.click(screen.getByRole('button', { name: /run analysis/i }));
-    expect(onRun).toHaveBeenCalledWith(expect.objectContaining({
-      latitude: expect.any(Number),
-      longitude: expect.any(Number),
-    }));
+    expect(onRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        latitude: expect.any(Number),
+        longitude: expect.any(Number),
+      })
+    );
   });
 
   it('calls onChange when date updated', () => {

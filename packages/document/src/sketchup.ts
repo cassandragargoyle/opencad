@@ -163,7 +163,7 @@ function scrapeSKPHeader(buffer: ArrayBuffer): SKPHeader {
     text += c >= 0x20 && c <= 0x7e ? String.fromCharCode(c) : ' ';
   }
   const version = /SketchUp\s+(?:Model,\s*)?Ver(?:sion)?\s*([\d.]+)/i.exec(text)?.[1] ?? '';
-  const locale  = /Locale\s*[:=]\s*([A-Za-z_-]{2,20})/i.exec(text)?.[1] ?? '';
+  const locale = /Locale\s*[:=]\s*([A-Za-z_-]{2,20})/i.exec(text)?.[1] ?? '';
   return { version, locale };
 }
 
@@ -177,7 +177,7 @@ function scrapeSKPHeader(buffer: ArrayBuffer): SKPHeader {
  */
 export function importFile(
   buffer: ArrayBuffer,
-  projectId: string,
+  projectId: string
 ): { schema: DocumentSchema; warnings: string[] } {
   const warnings: string[] = [];
   const schema = createProject(projectId, 'sketchup-import');
@@ -193,7 +193,7 @@ export function importFile(
   };
   warnings.push(
     'SketchUp binary geometry is not decoded — metadata only. ' +
-    'Export SKP → DAE/OBJ/IFC from SketchUp for re-import with geometry.',
+      'Export SKP → DAE/OBJ/IFC from SketchUp for re-import with geometry.'
   );
   return { schema, warnings };
 }

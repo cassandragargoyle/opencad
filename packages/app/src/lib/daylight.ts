@@ -25,9 +25,9 @@
 // ── EPW record ───────────────────────────────────────────────────────────────
 
 export interface EPWHour {
-  month: number;     // 1-12
-  day: number;       // 1-31
-  hour: number;      // 1-24 (EPW convention)
+  month: number; // 1-12
+  day: number; // 1-31
+  hour: number; // 1-24 (EPW convention)
   /** Direct Normal Irradiance (W/m²) */
   dni: number;
   /** Diffuse Horizontal Irradiance (W/m²) */
@@ -39,15 +39,15 @@ export interface EPWHour {
 export interface EPWMetadata {
   city: string;
   country: string;
-  latitude: number;   // degrees, north positive
-  longitude: number;  // degrees, east positive
-  timezone: number;   // hours offset from UTC
-  elevation: number;  // m
+  latitude: number; // degrees, north positive
+  longitude: number; // degrees, east positive
+  timezone: number; // hours offset from UTC
+  elevation: number; // m
 }
 
 export interface EPWFile {
   metadata: EPWMetadata;
-  hours: EPWHour[];   // 8760 entries
+  hours: EPWHour[]; // 8760 entries
 }
 
 /** Parse an EPW CSV string into structured data. */
@@ -61,11 +61,11 @@ export function parseEPW(text: string): EPWFile {
     throw new Error('EPW line 1 must start with LOCATION');
   }
   const metadata: EPWMetadata = {
-    city:      (loc[1] ?? '').trim(),
-    country:   (loc[3] ?? '').trim(),
-    latitude:  parseFloat(loc[6] ?? '0'),
+    city: (loc[1] ?? '').trim(),
+    country: (loc[3] ?? '').trim(),
+    latitude: parseFloat(loc[6] ?? '0'),
     longitude: parseFloat(loc[7] ?? '0'),
-    timezone:  parseFloat(loc[8] ?? '0'),
+    timezone: parseFloat(loc[8] ?? '0'),
     elevation: parseFloat(loc[9] ?? '0'),
   };
 
@@ -76,11 +76,11 @@ export function parseEPW(text: string): EPWFile {
     if (row.length < 20) continue;
     hours.push({
       month: parseInt(row[1] ?? '1', 10),
-      day:   parseInt(row[2] ?? '1', 10),
-      hour:  parseInt(row[3] ?? '1', 10),
-      dni:   parseFloat(row[14] ?? '0'),
-      dhi:   parseFloat(row[15] ?? '0'),
-      dbt:   parseFloat(row[6] ?? '0'),
+      day: parseInt(row[2] ?? '1', 10),
+      hour: parseInt(row[3] ?? '1', 10),
+      dni: parseFloat(row[14] ?? '0'),
+      dhi: parseFloat(row[15] ?? '0'),
+      dbt: parseFloat(row[6] ?? '0'),
     });
   }
 
@@ -102,10 +102,10 @@ export function solarAngles(
   hourDecimal: number, // 0-24, local standard time
   latDeg: number,
   lonDeg: number,
-  timezonehours: number,
+  timezonehours: number
 ): SolarAngles {
-  const lat  = latDeg  * (Math.PI / 180);
-  const tz   = timezonehours;
+  const lat = latDeg * (Math.PI / 180);
+  const tz = timezonehours;
 
   // Equation of time (approximate, degrees)
   const B = (360 / 365) * (dayOfYear - 81) * (Math.PI / 180);
@@ -122,11 +122,14 @@ export function solarAngles(
   const decl = 23.45 * Math.sin((360 / 365) * (dayOfYear - 81) * (Math.PI / 180)) * (Math.PI / 180);
 
   // Solar altitude
-  const sinAlt = Math.sin(lat) * Math.sin(decl) + Math.cos(lat) * Math.cos(decl) * Math.cos(hourAngle);
+  const sinAlt =
+    Math.sin(lat) * Math.sin(decl) + Math.cos(lat) * Math.cos(decl) * Math.cos(hourAngle);
   const altitude = Math.asin(Math.max(-1, Math.min(1, sinAlt))) * (180 / Math.PI);
 
   // Solar azimuth
-  const cosAz  = (Math.sin(decl) - Math.sin(lat) * sinAlt) / (Math.cos(lat) * Math.cos(altitude * Math.PI / 180));
+  const cosAz =
+    (Math.sin(decl) - Math.sin(lat) * sinAlt) /
+    (Math.cos(lat) * Math.cos((altitude * Math.PI) / 180));
   let azimuth = Math.acos(Math.max(-1, Math.min(1, cosAz))) * (180 / Math.PI);
   if (hourAngle > 0) azimuth = 360 - azimuth; // afternoon
 
@@ -143,9 +146,9 @@ export function solarAngles(
  * translate irradiance → illuminance, then blends with direct component.
  */
 export function perezIlluminance(
-  dni: number,   // W/m²
-  dhi: number,   // W/m²
-  solarAlt: number, // degrees
+  dni: number, // W/m²
+  dhi: number, // W/m²
+  solarAlt: number // degrees
 ): number {
   if (solarAlt <= 0) return 0;
 
@@ -153,11 +156,11 @@ export function perezIlluminance(
   const sinAlt = Math.sin(altRad);
 
   // Luminous efficacy (Perez 1990 simplified): ~110–120 lm/W for sky
-  const skyEfficacy     = 115; // lm/W (diffuse)
-  const directEfficacy  = 80;  // lm/W (beam, more spectrally narrow)
+  const skyEfficacy = 115; // lm/W (diffuse)
+  const directEfficacy = 80; // lm/W (beam, more spectrally narrow)
 
-  const diffuseH  = dhi * skyEfficacy;              // lux, horizontal
-  const directH   = dni * directEfficacy * sinAlt;  // lux, horizontal component
+  const diffuseH = dhi * skyEfficacy; // lux, horizontal
+  const directH = dni * directEfficacy * sinAlt; // lux, horizontal component
 
   return Math.max(0, diffuseH + directH);
 }
@@ -178,9 +181,9 @@ export function tregenzaWeights(): Float64Array {
   let idx = 0;
   for (let r = 0; r < rowCounts.length; r++) {
     const n = rowCounts[r];
-    const altLow  = (r * 12)       * (Math.PI / 180);
-    const altHigh = ((r + 1) * 12) * (Math.PI / 180);
-    const w = (2 * Math.PI / n) * (Math.sin(altHigh) - Math.sin(altLow));
+    const altLow = r * 12 * (Math.PI / 180);
+    const altHigh = (r + 1) * 12 * (Math.PI / 180);
+    const w = ((2 * Math.PI) / n) * (Math.sin(altHigh) - Math.sin(altLow));
     for (let j = 0; j < n; j++) {
       weights[idx++] = w;
     }
@@ -217,10 +220,10 @@ export function generateGrid(
   minY: number,
   maxX: number,
   maxY: number,
-  config: GridConfig = {},
+  config: GridConfig = {}
 ): GridPoint[] {
-  const spacing    = config.spacing         ?? 600;
-  const wallOffset = config.wallOffset      ?? 500;
+  const spacing = config.spacing ?? 600;
+  const wallOffset = config.wallOffset ?? 500;
 
   const x0 = minX + wallOffset;
   const y0 = minY + wallOffset;
@@ -253,11 +256,11 @@ export interface DaylightMetrics {
   UDI: number;
 }
 
-const DA_THRESHOLD   = 300;  // lux, LM-83-12
-const ASE_THRESHOLD  = 1000; // lux
-const ASE_HOURS      = 250;  // hours/year
-const UDI_LOW        = 100;
-const UDI_HIGH       = 2000;
+const DA_THRESHOLD = 300; // lux, LM-83-12
+const ASE_THRESHOLD = 1000; // lux
+const ASE_HOURS = 250; // hours/year
+const UDI_LOW = 100;
+const UDI_HIGH = 2000;
 
 /**
  * Compute LM-83-12 daylight metrics from a per-point illuminance time series.
@@ -266,16 +269,16 @@ const UDI_HIGH       = 2000;
  */
 export function computeMetrics(
   illuminance: ArrayLike<number>,
-  occupancyMask?: ArrayLike<boolean>,
+  occupancyMask?: ArrayLike<boolean>
 ): DaylightMetrics {
   const n = illuminance.length;
   if (n === 0) return { DA: 0, sDA: 0, ASE: 0, cDA: 0, UDI: 0 };
 
-  let daHours  = 0;
-  let cDaSum   = 0;
+  let daHours = 0;
+  let cDaSum = 0;
   let udiHours = 0;
   let aseHours = 0;
-  let total    = 0;
+  let total = 0;
 
   for (let i = 0; i < n; i++) {
     const occupied = !occupancyMask || occupancyMask[i];
@@ -297,11 +300,11 @@ export function computeMetrics(
   if (total === 0) return { DA: 0, sDA: 0, ASE: 0, cDA: 0, UDI: 0 };
 
   return {
-    DA:   daHours   / total,
-    sDA:  daHours   / total,    // sDA = spatial average computed at system level
-    ASE:  aseHours,              // raw hours; system level computes % of points > 250h
-    cDA:  cDaSum    / total,
-    UDI:  udiHours  / total,
+    DA: daHours / total,
+    sDA: daHours / total, // sDA = spatial average computed at system level
+    ASE: aseHours, // raw hours; system level computes % of points > 250h
+    cDA: cDaSum / total,
+    UDI: udiHours / total,
   };
 }
 
@@ -330,27 +333,27 @@ export function aggregateSpaceMetrics(pointMetrics: DaylightMetrics[]): SpaceMet
     return { sDA: 0, ASE: 0, avgDA: 0, avgUDI: 0, LEEDScore: 0 };
   }
 
-  const n  = pointMetrics.length;
-  let sDA  = 0;
-  let ase  = 0;
-  let sumDA  = 0;
+  const n = pointMetrics.length;
+  let sDA = 0;
+  let ase = 0;
+  let sumDA = 0;
   let sumUDI = 0;
 
   for (const m of pointMetrics) {
-    if (m.DA >= 0.50) sDA++;
+    if (m.DA >= 0.5) sDA++;
     if (m.ASE > ASE_HOURS) ase++;
-    sumDA  += m.DA;
+    sumDA += m.DA;
     sumUDI += m.UDI;
   }
 
   const sDAFrac = sDA / n;
   const aseFrac = ase / n;
-  const avgDA   = sumDA  / n;
-  const avgUDI  = sumUDI / n;
+  const avgDA = sumDA / n;
+  const avgUDI = sumUDI / n;
 
   // LEED v4.1 EQ-1 Option 1
   let LEEDScore = 0;
-  if (aseFrac <= 0.10) {
+  if (aseFrac <= 0.1) {
     if (sDAFrac >= 0.75) LEEDScore = 3;
     else if (sDAFrac >= 0.55) LEEDScore = 2;
   }
@@ -371,10 +374,10 @@ export function aggregateSpaceMetrics(pointMetrics: DaylightMetrics[]): SpaceMet
  * `distanceToWindow` is the straight-line distance (m).
  */
 export function estimatePointIlluminance(
-  ghi: number,          // lux (global horizontal illuminance)
-  windowArea: number,   // m²
+  ghi: number, // lux (global horizontal illuminance)
+  windowArea: number, // m²
   distanceToWindow: number, // m
-  windowTransmittance = 0.6,
+  windowTransmittance = 0.6
 ): number {
   if (ghi <= 0 || windowArea <= 0 || distanceToWindow <= 0) return 0;
 

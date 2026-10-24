@@ -15,37 +15,27 @@ describe('T-COL-001: usePresence', () => {
   });
 
   it('returns localUser with correct userId', () => {
-    const { result } = renderHook(() =>
-      usePresence({ userId: 'user-1', displayName: 'Alice' })
-    );
+    const { result } = renderHook(() => usePresence({ userId: 'user-1', displayName: 'Alice' }));
     expect(result.current.localUser.userId).toBe('user-1');
   });
 
   it('returns localUser with correct displayName', () => {
-    const { result } = renderHook(() =>
-      usePresence({ userId: 'user-1', displayName: 'Alice' })
-    );
+    const { result } = renderHook(() => usePresence({ userId: 'user-1', displayName: 'Alice' }));
     expect(result.current.localUser.displayName).toBe('Alice');
   });
 
   it('starts with empty remote users list', () => {
-    const { result } = renderHook(() =>
-      usePresence({ userId: 'user-1', displayName: 'Alice' })
-    );
+    const { result } = renderHook(() => usePresence({ userId: 'user-1', displayName: 'Alice' }));
     expect(result.current.users).toHaveLength(0);
   });
 
   it('starts with isOnline reflecting navigator.onLine', () => {
-    const { result } = renderHook(() =>
-      usePresence({ userId: 'user-1', displayName: 'Alice' })
-    );
+    const { result } = renderHook(() => usePresence({ userId: 'user-1', displayName: 'Alice' }));
     expect(typeof result.current.isOnline).toBe('boolean');
   });
 
   it('updateCursor updates localUser cursor', () => {
-    const { result } = renderHook(() =>
-      usePresence({ userId: 'user-1', displayName: 'Alice' })
-    );
+    const { result } = renderHook(() => usePresence({ userId: 'user-1', displayName: 'Alice' }));
     act(() => {
       result.current.updateCursor(100, 200);
     });
@@ -53,9 +43,7 @@ describe('T-COL-001: usePresence', () => {
   });
 
   it('updateTool updates localUser activeTool', () => {
-    const { result } = renderHook(() =>
-      usePresence({ userId: 'user-1', displayName: 'Alice' })
-    );
+    const { result } = renderHook(() => usePresence({ userId: 'user-1', displayName: 'Alice' }));
     act(() => {
       result.current.updateTool('line');
     });
@@ -71,9 +59,7 @@ describe('T-COL-001: usePresence', () => {
 
   it('localUser has lastSeen timestamp', () => {
     const before = Date.now();
-    const { result } = renderHook(() =>
-      usePresence({ userId: 'user-1', displayName: 'Alice' })
-    );
+    const { result } = renderHook(() => usePresence({ userId: 'user-1', displayName: 'Alice' }));
     expect(result.current.localUser.lastSeen).toBeGreaterThanOrEqual(before);
   });
 });

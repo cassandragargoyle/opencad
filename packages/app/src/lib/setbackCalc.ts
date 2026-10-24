@@ -5,13 +5,16 @@
  * intersection — correct for convex polygons, approximate for concave.
  */
 
-export interface Point2D { x: number; y: number; }
+export interface Point2D {
+  x: number;
+  y: number;
+}
 
 export interface SetbackDistances {
-  front:  number; // mm from front boundary edge
-  rear:   number; // mm from rear boundary edge
-  left:   number; // mm from left side boundary edge
-  right:  number; // mm from right side boundary edge
+  front: number; // mm from front boundary edge
+  rear: number; // mm from rear boundary edge
+  left: number; // mm from left side boundary edge
+  right: number; // mm from right side boundary edge
 }
 
 export interface SetbackResult {
@@ -82,8 +85,8 @@ export function computeSetbackEnvelope(
     const len = Math.sqrt(ex * ex + ey * ey) || 1;
     // Inward normal for CCW polygon.
     const nx = -ey / len;
-    const ny =  ex / len;
-    const d  = offsets[i]!;
+    const ny = ex / len;
+    const d = offsets[i]!;
     // Offset point on this edge's offset line.
     const opx = a.x + nx * d;
     const opy = a.y + ny * d;
@@ -114,8 +117,12 @@ export function polygonArea(pts: Point2D[]): number {
 
 /** Centroid of a polygon. */
 export function polygonCentroid(pts: Point2D[]): Point2D {
-  let cx = 0, cy = 0;
-  for (const p of pts) { cx += p.x; cy += p.y; }
+  let cx = 0,
+    cy = 0;
+  for (const p of pts) {
+    cx += p.x;
+    cy += p.y;
+  }
   return { x: cx / pts.length, y: cy / pts.length };
 }
 
@@ -131,10 +138,10 @@ function edgeAngle(a: Point2D, b: Point2D): number {
  */
 function selectSetback(angleDeg: number, s: SetbackDistances): number {
   const a = ((angleDeg % 360) + 360) % 360;
-  if (a >= 315 || a < 45)   return s.rear;   // north-facing edge → rear
-  if (a >= 45  && a < 135)  return s.right;  // east-facing edge → right
-  if (a >= 135 && a < 225)  return s.front;  // south-facing edge → front
-  return s.left;                              // west-facing edge → left
+  if (a >= 315 || a < 45) return s.rear; // north-facing edge → rear
+  if (a >= 45 && a < 135) return s.right; // east-facing edge → right
+  if (a >= 135 && a < 225) return s.front; // south-facing edge → front
+  return s.left; // west-facing edge → left
 }
 
 /** Inward-offset line: shifts edge a→b inward (to the left of CCW polygon). */
@@ -148,7 +155,7 @@ function inwardOffsetLine(
   const len = Math.sqrt(ex * ex + ey * ey) || 1;
   // Inward normal for CCW polygon = perpendicular left = (-ey, ex) normalised.
   const nx = -ey / len;
-  const ny =  ex / len;
+  const ny = ex / len;
   return {
     px: a.x + nx * d,
     py: a.y + ny * d,
@@ -162,10 +169,11 @@ export function pointInPolygon(pt: Point2D, poly: Point2D[]): boolean {
   const n = poly.length;
   let inside = false;
   for (let i = 0, j = n - 1; i < n; j = i++) {
-    const xi = poly[i]!.x, yi = poly[i]!.y;
-    const xj = poly[j]!.x, yj = poly[j]!.y;
-    const intersect = (yi > pt.y) !== (yj > pt.y) &&
-      pt.x < (xj - xi) * (pt.y - yi) / (yj - yi) + xi;
+    const xi = poly[i]!.x,
+      yi = poly[i]!.y;
+    const xj = poly[j]!.x,
+      yj = poly[j]!.y;
+    const intersect = yi > pt.y !== yj > pt.y && pt.x < ((xj - xi) * (pt.y - yi)) / (yj - yi) + xi;
     if (intersect) inside = !inside;
   }
   return inside;

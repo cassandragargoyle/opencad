@@ -18,7 +18,7 @@ export interface TagTemplate {
 export function resolveTag(el: ElementSchema, template: string): string {
   return template.replace(/\{([^}]+)\}/g, (_match, key: string) => {
     if (key === 'Type') return el.type;
-    if (key === 'Id')   return el.id;
+    if (key === 'Id') return el.id;
     const val = el.properties?.[key];
     if (val === undefined || val === null) return '';
     return String(val);
@@ -33,14 +33,14 @@ export function buildTagLabel(el: ElementSchema, tmpl: TagTemplate): string[] {
 // ── Built-in tag templates ────────────────────────────────────────────────────
 
 export const BUILTIN_TAG_TEMPLATES: TagTemplate[] = [
-  { elementType: 'door',   lines: ['{Mark}', '{Width}×{Height}'] },
+  { elementType: 'door', lines: ['{Mark}', '{Width}×{Height}'] },
   { elementType: 'window', lines: ['{Mark}', '{Width}×{Height}'] },
-  { elementType: 'wall',   lines: ['{Mark}', 'T={Thickness}'] },
-  { elementType: 'room',   lines: ['{Name}', '{Area} m²'] },
+  { elementType: 'wall', lines: ['{Mark}', 'T={Thickness}'] },
+  { elementType: 'room', lines: ['{Name}', '{Area} m²'] },
   { elementType: 'column', lines: ['{Mark}', '{Width}×{Depth}'] },
-  { elementType: 'beam',   lines: ['{Mark}', '{Width}×{Height}'] },
-  { elementType: 'slab',   lines: ['{Mark}', 'T={Thickness}'] },
-  { elementType: 'space',  lines: ['{Name}', '{Area} m²'] },
+  { elementType: 'beam', lines: ['{Mark}', '{Width}×{Height}'] },
+  { elementType: 'slab', lines: ['{Mark}', 'T={Thickness}'] },
+  { elementType: 'space', lines: ['{Name}', '{Area} m²'] },
 ];
 
 export function getTemplateForType(type: string): TagTemplate {
