@@ -200,7 +200,8 @@
       "orTemplate": "Or start from a template"
     },
     "card": {
-      "clickToOpen": "Click to open · Double-click to rename",
+      "clickToOpen": "Click to open",
+      "rename": "Rename project",
       "star": "Star project",
       "unstar": "Unstar project",
       "delete": "Delete project"

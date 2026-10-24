@@ -200,7 +200,8 @@
       "orTemplate": "Ou comece a partir de um modelo"
     },
     "card": {
-      "clickToOpen": "Clique para abrir · Clique duplo para renomear",
+      "clickToOpen": "Clique para abrir",
+      "rename": "Renomear projeto",
       "star": "Marcar como favorito",
       "unstar": "Remover dos favoritos",
       "delete": "Excluir projeto"

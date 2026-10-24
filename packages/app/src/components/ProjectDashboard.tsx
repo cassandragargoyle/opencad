@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   LayoutGrid,
   List,
+  Pencil,
   Star,
   Settings as SettingsIcon,
   LogOut,
@@ -295,10 +296,6 @@ export function ProjectDashboard() {
                     <span
                       className="project-name"
                       onClick={() => handleOpenProject(project.id)}
-                      onDoubleClick={(e) => {
-                        e.stopPropagation();
-                        startRename(project.id, project.name);
-                      }}
                       title={t('dashboard.card.clickToOpen')}
                       role="button"
                       tabIndex={0}
@@ -314,6 +311,17 @@ export function ProjectDashboard() {
                     </span>
                   )}
                   <div className="project-card-actions">
+                    <button
+                      className="rename-btn"
+                      title={t('dashboard.card.rename')}
+                      aria-label={t('dashboard.card.rename')}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startRename(project.id, project.name);
+                      }}
+                    >
+                      <Pencil size={14} />
+                    </button>
                     <button
                       className={`star-btn${project.starred ? ' starred' : ''}`}
                       title={

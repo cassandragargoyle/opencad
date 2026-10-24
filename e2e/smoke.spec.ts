@@ -31,8 +31,7 @@ test.describe('Smoke Tests', () => {
     await expect(page.locator('.app-toolbar')).toBeVisible();
     await page.goto('/');
 
-    // F2, not double-click: the first click of a double-click opens the
-    // project (navigates away) before the rename input can appear.
+    // Keyboard path: F2 on the focused project name
     await page.locator('.project-card .project-name').first().focus();
     await page.keyboard.press('F2');
     const input = page.locator('.project-card .project-name-input');
@@ -40,6 +39,23 @@ test.describe('Smoke Tests', () => {
     await input.press('Enter');
 
     await expect(page.locator('.project-card .project-name').first()).toHaveText('Renamed Project');
+  });
+
+  // INT-002: mouse path, the pencil button renames without opening the project
+  test('should rename a project via the pencil button', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('.dashboard-header .btn-primary').click();
+    await expect(page.locator('.app-toolbar')).toBeVisible();
+    await page.goto('/');
+
+    await page.locator('.project-card .rename-btn').first().click();
+    const input = page.locator('.project-card .project-name-input');
+    await expect(input).toBeFocused();
+    await input.fill('Pencil Renamed');
+    await input.press('Enter');
+
+    await expect(page.locator('.app-toolbar')).toBeHidden();
+    await expect(page.locator('.project-card .project-name').first()).toHaveText('Pencil Renamed');
   });
 });
 

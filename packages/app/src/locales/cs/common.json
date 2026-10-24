@@ -204,7 +204,8 @@
       "orTemplate": "Nebo začněte ze šablony"
     },
     "card": {
-      "clickToOpen": "Kliknutím otevřete · Dvojklikem přejmenujete",
+      "clickToOpen": "Kliknutím otevřete",
+      "rename": "Přejmenovat projekt",
       "star": "Označit hvězdičkou",
       "unstar": "Odebrat hvězdičku",
       "delete": "Smazat projekt"
