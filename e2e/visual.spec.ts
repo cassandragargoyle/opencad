@@ -2,128 +2,121 @@
  * T-VIS: Visual Regression Tests
  *
  * Uses Playwright screenshot comparison to catch unintended UI regressions.
+ * Baselines live in e2e/visual.spec.ts-snapshots/ and are rendered inside the
+ * official Playwright Docker image, the same environment CI runs in — fonts
+ * and rasterisation differ between hosts, so never regenerate them natively.
  *
- * FIRST RUN: generates snapshot baselines in e2e/visual.spec.ts-snapshots/
- * SUBSEQUENT RUNS: compares against baselines (diff threshold: 0.1%)
- *
- * To update baselines after intentional UI changes:
- *   pnpm test:e2e --update-snapshots
+ * To update baselines after intentional UI changes (from the repo root, after
+ * `pnpm build:browser`):
+ *   pnpm test:e2e:visual:update
  */
 
-import { test, expect } from '@playwright/test';
-// Tests marked test.fixme are stale or regressed — tracked in e2e/FIXME.md
+import { test, expect, type Page, type Locator } from '@playwright/test';
+import { waitForAppReady } from './helpers';
 
 const VIEWPORT = { width: 1440, height: 900 };
 
 test.use({ viewport: VIEWPORT });
 
+// Baselines are Chromium renders from the Playwright container; a native host
+// or another browser would never match them.
+test.skip(
+  !process.env.PW_CONTAINER,
+  'Visual tests run in the Playwright container — pnpm test:e2e:visual'
+);
+test.skip(({ browserName }) => browserName !== 'chromium', 'Visual baselines are Chromium-only');
+
+/** Regions whose content changes between runs (timers, frame rate, GPU canvases). */
+function dynamicRegions(page: Page): Locator[] {
+  return [page.locator('canvas'), page.locator('.status-fps'), page.locator('.last-synced')];
+}
+
+const SCREENSHOT = { maxDiffPixelRatio: 0.005, animations: 'disabled', caret: 'hide' } as const;
+
+test.beforeEach(async ({ page }) => {
+  await waitForAppReady(page);
+});
+
 test.describe('T-VIS-001: App shell layout', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    // Wait for the app to fully hydrate
-    await page.waitForSelector('.app-toolbar', { timeout: 10000 });
-    await page.waitForSelector('.navigator', { timeout: 5000 });
-    // Give Three.js / canvas time to initialize
-    await page.waitForTimeout(500);
-  });
-
-  test.fixme('light theme — default 3D view', async ({ page }) => {
+  test('light theme — default 3D view', async ({ page }) => {
     await expect(page).toHaveScreenshot('app-light-3d.png', {
-      maxDiffPixelRatio: 0.005,
+      ...SCREENSHOT,
+      mask: dynamicRegions(page),
     });
   });
 
-  test.fixme('dark theme', async ({ page }) => {
-    // Toggle to dark by clicking the theme button
-    await page.click('[title="Toggle Theme"]');
-    await page.waitForTimeout(200);
+  test('dark theme', async ({ page }) => {
+    await page.locator('[title="Toggle light/dark theme"]').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect(page).toHaveScreenshot('app-dark-3d.png', {
-      maxDiffPixelRatio: 0.005,
+      ...SCREENSHOT,
+      mask: dynamicRegions(page),
     });
   });
 
-  test.fixme('floor plan view', async ({ page }) => {
-    await page.click('button:has-text("Floor Plan")');
-    await page.waitForTimeout(200);
+  test('floor plan view', async ({ page }) => {
+    await page.locator('.toolbar-tabs .tab-btn:has-text("Floor Plan")').click();
+    await expect(page.locator('.toolbar-tabs .tab-btn.active')).toHaveText('Floor Plan');
     await expect(page).toHaveScreenshot('app-light-floor-plan.png', {
-      maxDiffPixelRatio: 0.005,
+      ...SCREENSHOT,
+      mask: dynamicRegions(page),
     });
   });
 
-  test.fixme('section view', async ({ page }) => {
-    await page.click('button:has-text("Section")');
-    await page.waitForTimeout(200);
+  test('section view', async ({ page }) => {
+    await page.locator('.toolbar-tabs .tab-btn:has-text("Section")').click();
+    await expect(page.locator('.toolbar-tabs .tab-btn.active')).toHaveText('Section');
     await expect(page).toHaveScreenshot('app-light-section.png', {
-      maxDiffPixelRatio: 0.005,
+      ...SCREENSHOT,
+      mask: dynamicRegions(page),
     });
   });
 });
 
 test.describe('T-VIS-002: Panels and overlays', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForSelector('.app-toolbar', { timeout: 10000 });
-    await page.waitForTimeout(500);
+  test('AI chat panel open', async ({ page }) => {
+    await page.locator('[title="AI Assistant"]').click();
+    await expect(page.locator('.ai-chat-panel')).toBeVisible();
+    await expect(page.locator('.ai-chat-panel')).toHaveScreenshot('ai-chat-panel.png', SCREENSHOT);
   });
 
-  test.fixme('AI chat panel open', async ({ page }) => {
-    await page.click('[title="AI Assistant"]');
-    await page.waitForSelector('.ai-chat-panel', { timeout: 3000 });
-    await expect(page).toHaveScreenshot('app-ai-chat-open.png', {
-      maxDiffPixelRatio: 0.005,
-    });
+  test('import modal', async ({ page }) => {
+    await page.locator('[title="Import IFC"]').click();
+    // Element shot: a full-page mask over the viewport canvas would hide the modal.
+    await expect(page.locator('.modal-content')).toHaveScreenshot('import-modal.png', SCREENSHOT);
   });
 
-  test.fixme('import modal', async ({ page }) => {
-    await page.click('[title="Import IFC"]');
-    await page.waitForSelector('.modal-overlay', { timeout: 3000 });
-    await expect(page).toHaveScreenshot('app-import-modal.png', {
-      maxDiffPixelRatio: 0.005,
-    });
-  });
-
-  test.fixme('export modal', async ({ page }) => {
-    await page.click('[title="Export IFC"]');
-    await page.waitForSelector('.modal-overlay', { timeout: 3000 });
-    await expect(page).toHaveScreenshot('app-export-modal.png', {
-      maxDiffPixelRatio: 0.005,
-    });
+  test('export modal', async ({ page }) => {
+    await page.locator('[title="Export IFC"]').click();
+    await expect(page.locator('.modal-content')).toHaveScreenshot('export-modal.png', SCREENSHOT);
   });
 });
 
-test.describe('T-VIS-003: ToolShelf interactions', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForSelector('.toolshelf', { timeout: 10000 });
+test.describe('T-VIS-003: ToolShelf', () => {
+  test('toolshelf default state', async ({ page }) => {
+    await expect(page.locator('.app-toolshelf-container')).toHaveScreenshot(
+      'toolshelf-default.png',
+      SCREENSHOT
+    );
   });
 
-  test.fixme('toolshelf default state', async ({ page }) => {
-    const toolshelf = page.locator('.app-toolshelf-container');
-    await expect(toolshelf).toHaveScreenshot('toolshelf-default.png', {
-      maxDiffPixelRatio: 0.005,
-    });
-  });
-
-  test.fixme('toolshelf draw category selected', async ({ page }) => {
-    await page.click('.toolshelf .category-btn[title="Draw"]');
-    await page.waitForTimeout(100);
-    const toolshelf = page.locator('.app-toolshelf-container');
-    await expect(toolshelf).toHaveScreenshot('toolshelf-draw-category.png', {
-      maxDiffPixelRatio: 0.005,
-    });
+  test('toolshelf with the wall tool active', async ({ page }) => {
+    await page.locator('.app-main').click();
+    await page.keyboard.press('w');
+    await expect(page.locator('.tool-btn.active[title^="Wall"]')).toBeVisible();
+    await expect(page.locator('.app-toolshelf-container')).toHaveScreenshot(
+      'toolshelf-wall-active.png',
+      SCREENSHOT
+    );
   });
 });
 
-test.describe('T-VIS-004: Status bar states', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForSelector('.app-status-bar', { timeout: 10000 });
-  });
-
-  test.fixme('status bar online state', async ({ page }) => {
-    const statusBar = page.locator('.app-status-bar');
-    await expect(statusBar).toHaveScreenshot('status-bar-online.png', {
+test.describe('T-VIS-004: Status bar', () => {
+  test('status bar online state', async ({ page }) => {
+    await expect(page.locator('.app-status-bar')).toHaveScreenshot('status-bar-online.png', {
+      ...SCREENSHOT,
       maxDiffPixelRatio: 0.01,
+      mask: dynamicRegions(page),
     });
   });
 });

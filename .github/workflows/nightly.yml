@@ -50,11 +50,11 @@ jobs:
       - name: Build browser app
         run: pnpm build:browser
 
-      - name: Install Playwright browsers
-        run: pnpm --filter=@opencad/e2e exec playwright install --with-deps chromium firefox
-
       - name: Run full E2E suite
-        run: pnpm --filter=@opencad/e2e exec playwright test --project=chromium --project=firefox
+        working-directory: e2e
+        env:
+          CONTAINER_ENGINE: docker
+        run: scripts/in-playwright-container.sh --project=chromium --project=firefox
 
       - name: Upload test results
         if: always()
