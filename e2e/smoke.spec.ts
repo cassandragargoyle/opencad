@@ -31,7 +31,10 @@ test.describe('Smoke Tests', () => {
     await expect(page.locator('.app-toolbar')).toBeVisible();
     await page.goto('/');
 
-    await page.locator('.project-card .project-name').first().dblclick();
+    // F2, not double-click: the first click of a double-click opens the
+    // project (navigates away) before the rename input can appear.
+    await page.locator('.project-card .project-name').first().focus();
+    await page.keyboard.press('F2');
     const input = page.locator('.project-card .project-name-input');
     await input.fill('Renamed Project');
     await input.press('Enter');
