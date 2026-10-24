@@ -12,6 +12,7 @@ describe('T-OFF-020: background sync', () => {
   });
   afterEach(() => {
     vi.useRealTimers();
+    vi.restoreAllMocks();
     stopBackgroundSync();
   });
 
@@ -35,12 +36,18 @@ describe('T-OFF-020: background sync', () => {
     vi.spyOn(offline, 'loadDocument').mockResolvedValue('payload');
     vi.spyOn(offline, 'markSynced').mockResolvedValue(undefined);
     const push = vi.fn().mockRejectedValue(new Error('boom'));
+    // Retry delay = back-off + random jitter (0–999 ms); pin the jitter so a
+    // near-zero draw can't land the retry inside the window under test.
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
 
     const stop = startBackgroundSync({ push, pollMs: 10, maxBackoffMs: 200 });
     await vi.advanceTimersByTimeAsync(15); // first failure
     const after1 = push.mock.calls.length;
+    expect(after1).toBe(1);
     await vi.advanceTimersByTimeAsync(15); // within back-off window → no retry
     expect(push.mock.calls.length).toBe(after1);
+    await vi.advanceTimersByTimeAsync(600); // back-off (10) + jitter (500) elapsed → retry
+    expect(push.mock.calls.length).toBe(after1 + 1);
     stop();
   });
 
