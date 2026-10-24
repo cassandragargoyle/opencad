@@ -15,8 +15,11 @@ permissions:
 
 jobs:
   # ── 1. Run CI ────────────────────────────────────────────────────────────────
+  # Production deploy belongs to the upstream repo only — forks have no GCP
+  # credentials. The deploy jobs need this one, so they are skipped too.
   ci:
     name: CI
+    if: github.repository == 'CariHQ/opencad'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
